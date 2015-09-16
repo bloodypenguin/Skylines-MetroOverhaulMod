@@ -4,57 +4,54 @@ using System.Linq;
 using System.Reflection;
 using ColossalFramework;
 using UnityEngine;
-using Object = UnityEngine.Object;
-
 
 namespace ElevatedTrainStationTrack
 {
     public class Container : MonoBehaviour
     {
-        public bool clonedPrefab = false;
+        public bool ClonedPrefab;
 
-        private void Awake()
+        public void Awake()
         {
-            Object.DontDestroyOnLoad(this);
+            DontDestroyOnLoad(this);
         }
 
-        private void OnLevelWasLoaded(int level)
+        public void OnLevelWasLoaded(int level)
         {
             if (level == 6)
             {
-                this.clonedPrefab = false;
+                ClonedPrefab = false;
             }
         }
 
-        private void Update()
+        public void Update()
         {
-            if (!clonedPrefab)
+            if (ClonedPrefab) return;
+            try
             {
-                try
-                {
-                    GameObject.Find("Public Transport").GetComponent<NetCollection>();
-                }
-                catch (Exception)
-                {
-                    return;
-                }
-                ClonePrefab();
-                clonedPrefab = true;
+                GameObject.Find("Public Transport").GetComponent<NetCollection>();
             }
+            catch (Exception)
+            {
+                return;
+            }
+            ClonePrefab();
+            ClonedPrefab = true;
         }
 
         private void ClonePrefab()
         {
-            const string prefabName = "Train Station Track";
-
-            var originalPrefab = FindPrefab(prefabName);
+            var originalPrefab =
+                Resources.FindObjectsOfTypeAll<NetInfo>().
+                FirstOrDefault(netInfo => netInfo.name == "Train Station Track");
             if (originalPrefab == null)
             {
-                UnityEngine.Debug.LogError("ElevatedTrainStationTrack - Station track prefab not found");
+                Debug.LogError("ElevatedTrainStationTrack - Station track prefab not found");
                 return;
             }
 
             var elevatedPrefab = ClonePrefab(originalPrefab, "Station Track Eleva");
+            var tunnelPrefab = ClonePrefab(originalPrefab, "Station Track Tunnel");
             if (elevatedPrefab != null)
             {
                 later(() =>
@@ -76,61 +73,59 @@ namespace ElevatedTrainStationTrack
                     //var customMesh = Util.CreateMesh();
                     //elevatedPrefab.m_segments[0].m_segmentMesh = customMesh;
                     //elevatedPrefab.m_nodes[0].m_nodeMesh = customMesh;
+
+                    if (tunnelPrefab != null)
+                    {
+                        var stationAI = tunnelPrefab.GetComponent<TrainTrackAI>();
+                        DestroyImmediate(stationAI);
+
+                        var tunnelAI = tunnelPrefab.gameObject.AddComponent<TrainTrackTunnelAI>();
+                        tunnelAI.m_outsideConnection = originalPrefab.GetComponent<TrainTrackAI>().m_outsideConnection;
+                        tunnelAI.m_constructionCost = 0;
+                        tunnelAI.m_maintenanceCost = 0;
+                        
+                        ((TrainTrackAI)elevatedPrefab.m_netAI).m_tunnelInfo = tunnelPrefab;
+                        
+                        tunnelPrefab.m_clipTerrain = false;
+
+                        tunnelPrefab.m_createGravel = false;
+                        tunnelPrefab.m_createPavement = false;
+                        tunnelPrefab.m_createRuining = false;
+
+                        tunnelPrefab.m_flattenTerrain = false;
+                        tunnelPrefab.m_followTerrain = false;
+
+                        tunnelPrefab.m_intersectClass = null;
+
+                        tunnelPrefab.m_minHeight = -1;
+
+                        tunnelPrefab.m_requireSurfaceMaps = false;
+                        tunnelPrefab.m_snapBuildingNodes = false;
+
+                        tunnelPrefab.m_placementStyle = ItemClass.Placement.Procedural;
+                        tunnelPrefab.m_useFixedHeight = true;
+                        tunnelPrefab.m_lowerTerrain = false;
+                        tunnelPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
+                    }
+                    else
+                    {
+                        Debug.LogError("ElevatedTrainStationTrack - Couldn't make tunnel prefab");
+                    }
+
                 });
             }
             else
             {
-                UnityEngine.Debug.LogError("ElevatedTrainStationTrack - Couldn't make elevated prefab");
-            }
-            var tunnelPrefab = ClonePrefab(originalPrefab, "Station Track Tunnel");
-            if (tunnelPrefab != null)
-            {
-                TrainTrackAI stationAI = elevatedPrefab.GetComponent<TrainTrackAI>();
-                TrainTrackTunnelAI tunnelAI = elevatedPrefab.gameObject.AddComponent<TrainTrackTunnelAI>();
-                tunnelAI.m_outsideConnection = stationAI.m_outsideConnection;
-                tunnelAI.m_constructionCost = 0;
-                tunnelAI.m_maintenanceCost = 0;
-                GameObject.DestroyImmediate(stationAI);
-
-                later(() =>
-                {
-                    ((TrainTrackAI)tunnelPrefab.m_netAI).m_tunnelInfo = tunnelPrefab;
-                    tunnelPrefab.m_clipTerrain = false;
-
-                    tunnelPrefab.m_createGravel = false;
-                    tunnelPrefab.m_createPavement = false;
-                    tunnelPrefab.m_createRuining = false;
-
-                    tunnelPrefab.m_flattenTerrain = false;
-                    tunnelPrefab.m_followTerrain = false;
-
-                    tunnelPrefab.m_intersectClass = null;
-
-                    tunnelPrefab.m_minHeight = -1;
-
-                    tunnelPrefab.m_requireSurfaceMaps = false;
-                    tunnelPrefab.m_snapBuildingNodes = false;
-
-                    tunnelPrefab.m_placementStyle = ItemClass.Placement.Procedural;
-                    tunnelPrefab.m_useFixedHeight = true;
-                    tunnelPrefab.m_lowerTerrain = false;
-                    tunnelPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
-                });
-            }
-            else
-            {
-                UnityEngine.Debug.LogError("ElevatedTrainStationTrack - Couldn't make tunnel prefab");
+                Debug.LogError("ElevatedTrainStationTrack - Couldn't make elevated prefab");
             }
         }
-
-
 
         private void later(Action a)
         {
-            Singleton<LoadingManager>.instance.QueueLoadingAction(this.inCoroutine(a));
+            Singleton<LoadingManager>.instance.QueueLoadingAction(InCoroutine(a));
         }
 
-        private IEnumerator inCoroutine(Action a)
+        private static IEnumerator InCoroutine(Action a)
         {
             a();
             yield break;
@@ -138,7 +133,7 @@ namespace ElevatedTrainStationTrack
 
         NetInfo ClonePrefab(NetInfo originalPrefab, string newName)
         {
-            GameObject instance = GameObject.Instantiate<GameObject>(originalPrefab.gameObject);
+            var instance = Instantiate(originalPrefab.gameObject);
             instance.name = newName;
             instance.transform.SetParent(transform);
             instance.transform.localPosition = new Vector3(-7500, -7500, -7500);
@@ -155,24 +150,6 @@ namespace ElevatedTrainStationTrack
             newPrefab.m_prefabInitialized = false;
 
             return newPrefab;
-        }
-        private NetInfo FindPrefab(string sourceName)
-        {
-            NetCollection[] array = Object.FindObjectsOfType<NetCollection>();
-            for (int i = 0; i < array.Length; i++)
-            {
-                NetCollection netCollection = array[i];
-                NetInfo[] prefabs = netCollection.m_prefabs;
-                for (int j = 0; j < prefabs.Length; j++)
-                {
-                    NetInfo netInfo = prefabs[j];
-                    if (netInfo.name == sourceName)
-                    {
-                        return netInfo;
-                    }
-                }
-            }
-            return null;
         }
     }
 }
