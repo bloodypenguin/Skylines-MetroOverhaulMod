@@ -45,88 +45,83 @@ namespace ElevatedTrainStationTrack
 
         private void ClonePrefab()
         {
-            string prefabName = "Train Station Track";
+            const string prefabName = "Train Station Track";
 
             var originalPrefab = FindPrefab(prefabName);
             if (originalPrefab == null)
             {
-                UnityEngine.Debug.LogError("Station track prefab not found!");
+                UnityEngine.Debug.LogError("ElevatedTrainStationTrack - Station track prefab not found");
                 return;
             }
 
-            string newName = "Station Track Eleva";
-            var elevatedPrefab = ClonePrefab(originalPrefab, newName);
-            if (elevatedPrefab == null)
+            var elevatedPrefab = ClonePrefab(originalPrefab, "Station Track Eleva");
+            if (elevatedPrefab != null)
             {
-                UnityEngine.Debug.LogError("Couldn't clone prefab!");
-                return;
+                later(() =>
+                {
+                    ((TrainTrackAI)elevatedPrefab.m_netAI).m_elevatedInfo = elevatedPrefab;
+                    elevatedPrefab.m_followTerrain = false;
+                    elevatedPrefab.m_flattenTerrain = false;
+                    elevatedPrefab.m_createGravel = false;
+                    elevatedPrefab.m_createPavement = false;
+                    elevatedPrefab.m_createRuining = false;
+                    elevatedPrefab.m_requireSurfaceMaps = false;
+                    elevatedPrefab.m_clipTerrain = false;
+                    elevatedPrefab.m_snapBuildingNodes = false;
+                    elevatedPrefab.m_placementStyle = ItemClass.Placement.Procedural;
+                    elevatedPrefab.m_useFixedHeight = true;
+                    elevatedPrefab.m_lowerTerrain = true;
+                    elevatedPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
+                    //TODO(earalov):
+                    //var customMesh = Util.CreateMesh();
+                    //elevatedPrefab.m_segments[0].m_segmentMesh = customMesh;
+                    //elevatedPrefab.m_nodes[0].m_nodeMesh = customMesh;
+                });
             }
-            later(() =>
+            else
             {
-                ((TrainTrackAI)elevatedPrefab.m_netAI).m_elevatedInfo = prefab;
-                elevatedPrefab.m_followTerrain = false;
-                elevatedPrefab.m_flattenTerrain = false;
-                elevatedPrefab.m_createGravel = false;
-                elevatedPrefab.m_createPavement = false;
-                elevatedPrefab.m_createRuining = false;
-                elevatedPrefab.m_requireSurfaceMaps = false;
-                elevatedPrefab.m_clipTerrain = false;
-                elevatedPrefab.m_snapBuildingNodes = false;
-                elevatedPrefab.m_placementStyle = ItemClass.Placement.Procedural;
-                elevatedPrefab.m_useFixedHeight = true;
-                elevatedPrefab.m_lowerTerrain = true;
-                elevatedPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
-                //TODO(earalov):
-                //var customMesh = Util.CreateMesh();
-                //elevatedPrefab.m_segments[0].m_segmentMesh = customMesh;
-                //elevatedPrefab.m_nodes[0].m_nodeMesh = customMesh;
-            });
-
-            newName = "Station Track Tunnel";
-            var tunnelPrefab = ClonePrefab(originalPrefab, newName);
-            if (tunnelPrefab == null)
-            {
-                UnityEngine.Debug.LogError("Couldn't clone prefab!");
-                return;
+                UnityEngine.Debug.LogError("ElevatedTrainStationTrack - Couldn't make elevated prefab");
             }
-
-            TrainTrackAI stationAI = elevatedPrefab.GetComponent<TrainTrackAI>();
-            TrainTrackTunnelAI tunnelAI = elevatedPrefab.gameObject.AddComponent<TrainTrackTunnelAI>();
-            tunnelAI.m_outsideConnection = stationAI.m_outsideConnection;
-            tunnelAI.m_constructionCost = 0;
-            tunnelAI.m_maintenanceCost = 0;
-            GameObject.DestroyImmediate(stationAI);
-
-            later(() =>
+            var tunnelPrefab = ClonePrefab(originalPrefab, "Station Track Tunnel");
+            if (tunnelPrefab != null)
             {
-                tunnelPrefab.m_clipTerrain = false;
+                TrainTrackAI stationAI = elevatedPrefab.GetComponent<TrainTrackAI>();
+                TrainTrackTunnelAI tunnelAI = elevatedPrefab.gameObject.AddComponent<TrainTrackTunnelAI>();
+                tunnelAI.m_outsideConnection = stationAI.m_outsideConnection;
+                tunnelAI.m_constructionCost = 0;
+                tunnelAI.m_maintenanceCost = 0;
+                GameObject.DestroyImmediate(stationAI);
 
-                tunnelPrefab.m_createGravel = false;
-                tunnelPrefab.m_createPavement = false;
-                tunnelPrefab.m_createRuining = false;
+                later(() =>
+                {
+                    ((TrainTrackAI)tunnelPrefab.m_netAI).m_tunnelInfo = tunnelPrefab;
+                    tunnelPrefab.m_clipTerrain = false;
 
-                tunnelPrefab.m_flattenTerrain = false;
-                tunnelPrefab.m_followTerrain = false;
+                    tunnelPrefab.m_createGravel = false;
+                    tunnelPrefab.m_createPavement = false;
+                    tunnelPrefab.m_createRuining = false;
 
-                tunnelPrefab.m_intersectClass = null;
+                    tunnelPrefab.m_flattenTerrain = false;
+                    tunnelPrefab.m_followTerrain = false;
 
-                tunnelPrefab.m_minHeight = -1;
+                    tunnelPrefab.m_intersectClass = null;
 
-                tunnelPrefab.m_requireSurfaceMaps = false;
-                tunnelPrefab.m_snapBuildingNodes = false;
+                    tunnelPrefab.m_minHeight = -1;
 
-                tunnelPrefab.m_placementStyle = ItemClass.Placement.Procedural;
-                tunnelPrefab.m_useFixedHeight = true;
-                tunnelPrefab.m_lowerTerrain = false;
-                tunnelPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
-            });
+                    tunnelPrefab.m_requireSurfaceMaps = false;
+                    tunnelPrefab.m_snapBuildingNodes = false;
 
-
-
-            TrainTrackAI ai = originalPrefab.GetComponent<TrainTrackAI>();
-            ai.m_elevatedInfo = elevatedPrefab;
-            ai.m_tunnelInfo = tunnelPrefab;
-        } 
+                    tunnelPrefab.m_placementStyle = ItemClass.Placement.Procedural;
+                    tunnelPrefab.m_useFixedHeight = true;
+                    tunnelPrefab.m_lowerTerrain = false;
+                    tunnelPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
+                });
+            }
+            else
+            {
+                UnityEngine.Debug.LogError("ElevatedTrainStationTrack - Couldn't make tunnel prefab");
+            }
+        }
 
 
 
