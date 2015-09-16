@@ -80,11 +80,14 @@ namespace ElevatedTrainStationTrack
                         DestroyImmediate(stationAI);
 
                         var tunnelAI = tunnelPrefab.gameObject.AddComponent<TrainTrackTunnelAI>();
+                        tunnelPrefab.m_netAI = tunnelAI;
                         tunnelAI.m_outsideConnection = originalPrefab.GetComponent<TrainTrackAI>().m_outsideConnection;
                         tunnelAI.m_constructionCost = 0;
                         tunnelAI.m_maintenanceCost = 0;
+                        tunnelAI.m_info = tunnelPrefab;
                         
                         ((TrainTrackAI)elevatedPrefab.m_netAI).m_tunnelInfo = tunnelPrefab;
+
                         
                         tunnelPrefab.m_clipTerrain = false;
 
@@ -97,7 +100,8 @@ namespace ElevatedTrainStationTrack
 
                         tunnelPrefab.m_intersectClass = null;
 
-                        tunnelPrefab.m_minHeight = -1;
+                        tunnelPrefab.m_maxHeight = -1;
+                        tunnelPrefab.m_minHeight = -3;
 
                         tunnelPrefab.m_requireSurfaceMaps = false;
                         tunnelPrefab.m_snapBuildingNodes = false;
@@ -106,6 +110,22 @@ namespace ElevatedTrainStationTrack
                         tunnelPrefab.m_useFixedHeight = true;
                         tunnelPrefab.m_lowerTerrain = false;
                         tunnelPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
+
+                        foreach (var lane in tunnelPrefab.m_lanes)
+                        {
+                            lane.m_laneProps = null;
+                        }
+
+                        var metroStation = Resources.FindObjectsOfTypeAll<NetInfo>().FirstOrDefault(netInfo => netInfo.name == "Metro Station Track");
+                        if (metroStation != null)
+                        {
+                            tunnelPrefab.m_segments = new[]{metroStation.m_segments[0]}; //TODO(earalov): make a shallow copy of segment and change some properties
+                            tunnelPrefab.m_nodes = new[] { metroStation.m_nodes[0] }; //TODO(earalov): make a shallow copy of segment and change some properties
+                        }
+                        else
+                        {
+                            Debug.LogWarning("ElevatedTrainStationTrack - Couldn't find metro station track");    
+                        }
                     }
                     else
                     {
