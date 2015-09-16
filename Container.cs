@@ -63,7 +63,7 @@ namespace ElevatedTrainStationTrack
             }
             later(() =>
             {
-                ((TrainTrackAI)elevatedPrefab.m_netAI).m_elevatedInfo = elevatedPrefab;
+                ((TrainTrackAI)elevatedPrefab.m_netAI).m_elevatedInfo = prefab;
                 elevatedPrefab.m_followTerrain = false;
                 elevatedPrefab.m_flattenTerrain = false;
                 elevatedPrefab.m_createGravel = false;
@@ -76,6 +76,10 @@ namespace ElevatedTrainStationTrack
                 elevatedPrefab.m_useFixedHeight = true;
                 elevatedPrefab.m_lowerTerrain = true;
                 elevatedPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
+                //TODO(earalov):
+                //var customMesh = Util.CreateMesh();
+                //elevatedPrefab.m_segments[0].m_segmentMesh = customMesh;
+                //elevatedPrefab.m_nodes[0].m_nodeMesh = customMesh;
             });
 
             newName = "Station Track Tunnel";
