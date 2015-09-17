@@ -69,10 +69,17 @@ namespace ElevatedTrainStationTrack
                     elevatedPrefab.m_useFixedHeight = true;
                     elevatedPrefab.m_lowerTerrain = true;
                     elevatedPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
-                    //TODO(earalov):
-                    //var customMesh = Util.CreateMesh();
-                    //elevatedPrefab.m_segments[0].m_segmentMesh = customMesh;
-                    //elevatedPrefab.m_nodes[0].m_nodeMesh = customMesh;
+                    var elevatedTrack = Resources.FindObjectsOfTypeAll<NetInfo>().
+                        FirstOrDefault(netInfo => netInfo.name == "Train Track Elevated");
+                    if (elevatedTrack != null)
+                    {
+                        elevatedPrefab.m_segments[0].m_segmentMaterial.shader = elevatedTrack.m_segments[0].m_material.shader;
+                        elevatedPrefab.m_segments[0].m_lodMaterial = elevatedTrack.m_segments[0].m_lodMaterial;
+                        elevatedPrefab.m_segments[0].m_lodMesh = elevatedTrack.m_segments[0].m_lodMesh;
+                        elevatedPrefab.m_nodes[0].m_nodeMaterial.shader = elevatedTrack.m_nodes[0].m_material.shader;
+                        elevatedPrefab.m_nodes[0].m_lodMaterial = elevatedTrack.m_nodes[0].m_lodMaterial;
+                        elevatedPrefab.m_nodes[0].m_lodMesh = elevatedTrack.m_nodes[0].m_lodMesh;
+                    }
 
                     if (tunnelPrefab != null)
                     {
