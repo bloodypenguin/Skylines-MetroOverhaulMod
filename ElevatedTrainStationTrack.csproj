@@ -47,6 +47,9 @@
     <Reference Include="ICities">
       <HintPath>..\..\..\..\..\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
     </Reference>
+    <Reference Include="ObjUnity3D">
+      <HintPath>C:\Users\user\AppData\Local\Colossal Order\Cities_Skylines\Addons\Mods\ElevatedTrainStationTrack\ObjUnity3D.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>

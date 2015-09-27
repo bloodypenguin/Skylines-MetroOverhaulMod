@@ -73,12 +73,16 @@ namespace ElevatedTrainStationTrack
                         FirstOrDefault(netInfo => netInfo.name == "Train Track Elevated");
                     if (elevatedTrack != null)
                     {
-                        elevatedPrefab.m_segments[0].m_segmentMaterial.shader = elevatedTrack.m_segments[0].m_material.shader;
+                        var etstMesh = Util.LoadMesh(String.Concat(Util.AssemblyDirectory, "\\No undermesh no railings.obj"), "ETST_MESH");
+                        elevatedPrefab.m_segments[0].m_segmentMaterial = elevatedTrack.m_segments[0].m_material;
+                        elevatedPrefab.m_segments[0].m_segmentMesh =
+                            etstMesh;
                         elevatedPrefab.m_segments[0].m_lodMaterial = elevatedTrack.m_segments[0].m_lodMaterial;
                         elevatedPrefab.m_segments[0].m_lodMesh = elevatedTrack.m_segments[0].m_lodMesh;
-                        elevatedPrefab.m_nodes[0].m_nodeMaterial.shader = elevatedTrack.m_nodes[0].m_material.shader;
+                        elevatedPrefab.m_nodes[0].m_nodeMaterial = elevatedTrack.m_nodes[0].m_material;
                         elevatedPrefab.m_nodes[0].m_lodMaterial = elevatedTrack.m_nodes[0].m_lodMaterial;
                         elevatedPrefab.m_nodes[0].m_lodMesh = elevatedTrack.m_nodes[0].m_lodMesh;
+                        elevatedPrefab.m_nodes[0].m_nodeMesh = etstMesh;
                     }
 
                     if (tunnelPrefab != null)
