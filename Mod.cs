@@ -6,7 +6,7 @@ namespace ElevatedTrainStationTrack
     public class Mod : LoadingExtensionBase, IUserMod
     {
 
-        public static Container Container;
+        public static Initializer Container;
 
         public string Name
         {
@@ -23,7 +23,7 @@ namespace ElevatedTrainStationTrack
             base.OnCreated(loading);
 
             if (Container == null) {
-                Container = new GameObject("ElevatedTrainStationTrack").AddComponent<Container>();
+                Container = new GameObject("ElevatedTrainStationTrack").AddComponent<Initializer>();
             }
         }
 
