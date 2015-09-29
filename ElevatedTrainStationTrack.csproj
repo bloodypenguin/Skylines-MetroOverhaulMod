@@ -48,8 +48,9 @@
     <Reference Include="ICities">
       <HintPath>..\..\..\..\..\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
     </Reference>
-    <Reference Include="ObjUnity3D">
-      <HintPath>C:\Users\user\AppData\Local\Colossal Order\Cities_Skylines\Addons\Mods\ElevatedTrainStationTrack\ObjUnity3D.dll</HintPath>
+    <Reference Include="ObjUnity3D, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\ObjUnity3D.dll</HintPath>
     </Reference>
     <Reference Include="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -60,7 +61,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="No undermesh no railings.obj" />
+    <None Include="Meshes\TTNR.obj" />
+    <None Include="Meshes\TTNR_LOD.obj" />
+    <None Include="Meshes\TTNR_Node_LOD.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="lib\ObjUnity3D.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

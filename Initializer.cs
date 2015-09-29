@@ -23,7 +23,6 @@ namespace ElevatedTrainStationTrack
         {
             if (level == 6)
             {
-                Loading.Reset();
                 m_customPrefabs.Clear();
                 isInitialized = false;
             }
@@ -84,9 +83,6 @@ namespace ElevatedTrainStationTrack
                     Debug.LogError("ElevatedTrainStationTrack - Couldn't make tunnel prefab");
                 }
             }
-
-
-            Loading.AddQueuedActionsToLoadingQueue();
         }
 
         private static void SetupElevatedPrefab(NetInfo elevatedPrefab, NetInfo originalPrefab)
@@ -197,7 +193,7 @@ namespace ElevatedTrainStationTrack
             var newPrefab = instance.GetComponent<NetInfo>();
             instance.SetActive(false);
             MethodInfo initMethod = typeof(NetCollection).GetMethod("InitializePrefabs", BindingFlags.Static | BindingFlags.NonPublic);
-            Loading.QueuePrioritizedLoadingAction((IEnumerator)initMethod.Invoke(null, new object[] { newName, new[] { newPrefab }, new string[] { null } }));
+            Loading.QueueLoadingAction((IEnumerator)initMethod.Invoke(null, new object[] { newName, new[] { newPrefab }, new string[] { null } }));
             newPrefab.m_prefabInitialized = false;
             return newPrefab;
         }
