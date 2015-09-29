@@ -76,11 +76,25 @@ namespace ElevatedTrainStationTrack
                 if (tunnelPrefab != null)
                 {
                     SetupTunnelPrefab(tunnelPrefab, originalPrefab, elevatedPrefab);
-                    m_customPrefabs.Add(stationTrackTunnel, elevatedPrefab);
+                    m_customPrefabs.Add(stationTrackTunnel, tunnelPrefab);
                 }
                 else
                 {
                     Debug.LogError("ElevatedTrainStationTrack - Couldn't make tunnel prefab");
+                }
+            }
+            var stationTrackSunken = "Station Track Sunken";
+            if (!m_customPrefabs.ContainsKey(stationTrackSunken))
+            {
+                var sunkenPrefab = ClonePrefab(originalPrefab, stationTrackSunken);
+                if (sunkenPrefab != null)
+                {
+                    SetupSunkenPrefab(sunkenPrefab, originalPrefab);
+                    m_customPrefabs.Add(stationTrackSunken, sunkenPrefab);
+                }
+                else
+                {
+                    Debug.LogError("ElevatedTrainStationTrack - Couldn't make sunken prefab");
                 }
             }
         }
@@ -182,6 +196,41 @@ namespace ElevatedTrainStationTrack
             {
                 Debug.LogWarning("ElevatedTrainStationTrack - Couldn't find metro station track");
             }
+        }
+
+        private static void SetupSunkenPrefab(NetInfo sunkenPrefab, NetInfo originalPrefab)
+        {
+            var stationAI = sunkenPrefab.GetComponent<TrainTrackAI>();
+            DestroyImmediate(stationAI);
+
+            var tunnelAI = sunkenPrefab.gameObject.AddComponent<TrainTrackTunnelAI>();
+            sunkenPrefab.m_netAI = tunnelAI;
+            tunnelAI.m_outsideConnection = originalPrefab.GetComponent<TrainTrackAI>().m_outsideConnection;
+            tunnelAI.m_constructionCost = 0;
+            tunnelAI.m_maintenanceCost = 0;
+            tunnelAI.m_info = sunkenPrefab;
+
+            sunkenPrefab.m_clipTerrain = false;
+
+            sunkenPrefab.m_createGravel = false;
+            sunkenPrefab.m_createPavement = false;
+            sunkenPrefab.m_createRuining = false;
+
+            sunkenPrefab.m_flattenTerrain = false;
+            sunkenPrefab.m_followTerrain = false;
+
+            sunkenPrefab.m_intersectClass = null;
+
+            sunkenPrefab.m_maxHeight = -1;
+            sunkenPrefab.m_minHeight = -3;
+
+            sunkenPrefab.m_requireSurfaceMaps = false;
+            sunkenPrefab.m_snapBuildingNodes = false;
+
+            sunkenPrefab.m_placementStyle = ItemClass.Placement.Procedural;
+            sunkenPrefab.m_useFixedHeight = true;
+            sunkenPrefab.m_lowerTerrain = false;
+            sunkenPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
         }
 
         NetInfo ClonePrefab(NetInfo originalPrefab, string newName)
