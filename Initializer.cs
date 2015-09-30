@@ -11,12 +11,12 @@ namespace ElevatedTrainStationTrack
     public class Initializer : MonoBehaviour
     {
         public bool isInitialized;
-        Dictionary<string, PrefabInfo> m_customPrefabs;
+        Dictionary<string, NetInfo> m_customPrefabs;
 
         public void Awake()
         {
             DontDestroyOnLoad(this);
-            m_customPrefabs = new Dictionary<string, PrefabInfo>();
+            m_customPrefabs = new Dictionary<string, NetInfo>();
         }
 
         public void OnLevelWasLoaded(int level)
@@ -39,7 +39,7 @@ namespace ElevatedTrainStationTrack
             {
                 return;
             }
-            Singleton<LoadingManager>.instance.QueueLoadingAction(Loading.ActionWrapper(InitializeImpl));
+            Loading.QueueLoadingAction(Loading.ActionWrapper(InitializeImpl));
             isInitialized = true;
         }
 
@@ -83,6 +83,7 @@ namespace ElevatedTrainStationTrack
                     Debug.LogError("ElevatedTrainStationTrack - Couldn't make tunnel prefab");
                 }
             }
+
             var stationTrackSunken = "Station Track Sunken";
             if (!m_customPrefabs.ContainsKey(stationTrackSunken))
             {
@@ -96,6 +97,11 @@ namespace ElevatedTrainStationTrack
                 {
                     Debug.LogError("ElevatedTrainStationTrack - Couldn't make sunken prefab");
                 }
+            }
+
+            foreach (var mCustomPrefab in m_customPrefabs)
+            {
+                PrefabCollection<NetInfo>.InitializePrefabs(mCustomPrefab.Key, new[] { mCustomPrefab.Value }, new string[] { null });
             }
         }
 
@@ -241,8 +247,6 @@ namespace ElevatedTrainStationTrack
             instance.transform.localPosition = new Vector3(-7500, -7500, -7500);
             var newPrefab = instance.GetComponent<NetInfo>();
             instance.SetActive(false);
-            MethodInfo initMethod = typeof(NetCollection).GetMethod("InitializePrefabs", BindingFlags.Static | BindingFlags.NonPublic);
-            Loading.QueueLoadingAction((IEnumerator)initMethod.Invoke(null, new object[] { newName, new[] { newPrefab }, new string[] { null } }));
             newPrefab.m_prefabInitialized = false;
             return newPrefab;
         }
