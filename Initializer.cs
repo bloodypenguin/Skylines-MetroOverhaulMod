@@ -126,9 +126,9 @@ namespace ElevatedTrainStationTrack
                 FirstOrDefault(netInfo => netInfo.name == "Train Track Elevated");
             if (elevatedTrack != null)
             {
-                var etstMesh = Util.LoadMesh(String.Concat(Util.AssemblyDirectory, "\\TTNR.obj"), "ETST ");
-                var etstSegmentLodMesh = Util.LoadMesh(String.Concat(Util.AssemblyDirectory, "\\TTNR_LOD.obj"), "ETST_SLOD");
-                var etstNodeLodMesh = Util.LoadMesh(String.Concat(Util.AssemblyDirectory, "\\TTNR_Node_LOD.obj"), "ETST_NLOD");
+                var etstMesh = Util.LoadMesh(String.Concat(Util.AssemblyDirectory, "/TTNR.obj"), "ETST ");
+                var etstSegmentLodMesh = Util.LoadMesh(String.Concat(Util.AssemblyDirectory, "/TTNR_LOD.obj"), "ETST_SLOD");
+                var etstNodeLodMesh = Util.LoadMesh(String.Concat(Util.AssemblyDirectory, "/TTNR_Node_LOD.obj"), "ETST_NLOD");
                 elevatedPrefab.m_segments[0].m_segmentMaterial = elevatedTrack.m_segments[0].m_segmentMaterial;
                 elevatedPrefab.m_segments[0].m_material = elevatedTrack.m_segments[0].m_material;
                 elevatedPrefab.m_segments[0].m_mesh = etstMesh;
