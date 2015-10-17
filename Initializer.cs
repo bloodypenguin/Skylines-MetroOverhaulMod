@@ -76,7 +76,7 @@ namespace ElevatedTrainStationTrack
                 var tunnelPrefab = ClonePrefab(originalPrefab, stationTrackTunnel);
                 if (tunnelPrefab != null)
                 {
-                    SetupTunnelPrefab(tunnelPrefab, originalPrefab, elevatedPrefab);
+                    SetupTunnelPrefab(tunnelPrefab, originalPrefab);
                     m_customPrefabs.Add(stationTrackTunnel, tunnelPrefab);
                 }
                 else
@@ -104,9 +104,9 @@ namespace ElevatedTrainStationTrack
 
         private static void SetupElevatedPrefab(NetInfo elevatedPrefab, NetInfo originalPrefab)
         {
-            var ai = elevatedPrefab.GetComponent<TrainTrackAI>();
-            ai.m_elevatedInfo = elevatedPrefab;
-            ai.m_outsideConnection = originalPrefab.GetComponent<TrainTrackAI>().m_outsideConnection;
+            var stationAI = elevatedPrefab.GetComponent<TrainTrackAI>();
+            stationAI.m_elevatedInfo = elevatedPrefab;
+
             elevatedPrefab.m_followTerrain = false;
             elevatedPrefab.m_flattenTerrain = false;
             elevatedPrefab.m_createGravel = false;
@@ -155,23 +155,10 @@ namespace ElevatedTrainStationTrack
             }
         }
 
-        private static void SetupTunnelPrefab(NetInfo tunnelPrefab, NetInfo originalPrefab, NetInfo elevatedPrefab)
+        private static void SetupTunnelPrefab(NetInfo tunnelPrefab, NetInfo originalPrefab)
         {
             var stationAI = tunnelPrefab.GetComponent<TrainTrackAI>();
-            DestroyImmediate(stationAI);
-
-            var tunnelAI = tunnelPrefab.gameObject.AddComponent<TrainTrackTunnelAI>();
-            tunnelPrefab.m_netAI = tunnelAI;
-            tunnelAI.m_outsideConnection = originalPrefab.GetComponent<TrainTrackAI>().m_outsideConnection;
-            tunnelAI.m_constructionCost = 0;
-            tunnelAI.m_maintenanceCost = 0;
-            tunnelAI.m_info = tunnelPrefab;
-
-            if (elevatedPrefab != null)
-            {
-                var elevatedPrefabAi = elevatedPrefab.GetComponent<TrainTrackAI>();
-                elevatedPrefabAi.m_tunnelInfo = tunnelPrefab;
-            }
+            stationAI.m_tunnelInfo = tunnelPrefab;
 
             tunnelPrefab.m_clipTerrain = false;
 
@@ -218,14 +205,7 @@ namespace ElevatedTrainStationTrack
         private static void SetupSunkenPrefab(NetInfo sunkenPrefab, NetInfo originalPrefab)
         {
             var stationAI = sunkenPrefab.GetComponent<TrainTrackAI>();
-            DestroyImmediate(stationAI);
-
-            var tunnelAI = sunkenPrefab.gameObject.AddComponent<TrainTrackTunnelAI>();
-            sunkenPrefab.m_netAI = tunnelAI;
-            tunnelAI.m_outsideConnection = originalPrefab.GetComponent<TrainTrackAI>().m_outsideConnection;
-            tunnelAI.m_constructionCost = 0;
-            tunnelAI.m_maintenanceCost = 0;
-            tunnelAI.m_info = sunkenPrefab;
+            stationAI.m_tunnelInfo = sunkenPrefab;
 
             sunkenPrefab.m_clipTerrain = false;
 
