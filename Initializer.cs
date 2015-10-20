@@ -172,6 +172,7 @@ namespace ElevatedTrainStationTrack
         private static void SetupTunnelPrefab(NetInfo tunnelPrefab, NetInfo originalPrefab)
         {
             SetupSunkenPrefab(tunnelPrefab, originalPrefab);
+            tunnelPrefab.m_canCollide = false;
             foreach (var lane in tunnelPrefab.m_lanes)
             {
                 lane.m_laneProps = null;
