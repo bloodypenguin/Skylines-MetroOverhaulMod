@@ -158,36 +158,11 @@ namespace ElevatedTrainStationTrack
 
         private static void SetupTunnelPrefab(NetInfo tunnelPrefab, NetInfo originalPrefab)
         {
-            var stationAI = tunnelPrefab.GetComponent<TrainTrackAI>();
-            stationAI.m_tunnelInfo = tunnelPrefab;
-
-            tunnelPrefab.m_clipTerrain = false;
-
-            tunnelPrefab.m_createGravel = false;
-            tunnelPrefab.m_createPavement = false;
-            tunnelPrefab.m_createRuining = false;
-
-            tunnelPrefab.m_flattenTerrain = false;
-            tunnelPrefab.m_followTerrain = false;
-
-            tunnelPrefab.m_intersectClass = null;
-
-            tunnelPrefab.m_maxHeight = -1;
-            tunnelPrefab.m_minHeight = -3;
-
-            tunnelPrefab.m_requireSurfaceMaps = false;
-            tunnelPrefab.m_snapBuildingNodes = false;
-
-            tunnelPrefab.m_placementStyle = ItemClass.Placement.Procedural;
-            tunnelPrefab.m_useFixedHeight = true;
-            tunnelPrefab.m_lowerTerrain = false;
-            tunnelPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
-
+            SetupSunkenPrefab(tunnelPrefab, originalPrefab);
             foreach (var lane in tunnelPrefab.m_lanes)
             {
                 lane.m_laneProps = null;
             }
-
             var metroStation =
                 Resources.FindObjectsOfTypeAll<NetInfo>().FirstOrDefault(netInfo => netInfo.name == "Metro Station Track");
             if (metroStation != null)
