@@ -54,7 +54,7 @@ namespace ElevatedTrainStationTrack
             PrefabCollection<NetInfo>.InitializePrefabs("Rail Extensions", _customPrefabs.Values.ToArray(), null);
         }
 
-        private void CreatePrefab(string originalPrefabName, string newPrefabName, Action<NetInfo, NetInfo> setupAction)
+        private void CreatePrefab(string newPrefabName, string originalPrefabName, Action<NetInfo, NetInfo> setupAction)
         {
             var originalPrefab = FindOriginalPrefab(originalPrefabName);
 
