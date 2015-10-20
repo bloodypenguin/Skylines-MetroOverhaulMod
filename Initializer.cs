@@ -121,7 +121,6 @@ namespace ElevatedTrainStationTrack
             elevatedPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
             foreach(var lane in elevatedPrefab.m_lanes)
             {
-                lane.m_laneProps = new NetLaneProps();
                 var mLaneProps = lane.m_laneProps;
                 if (mLaneProps == null)
                 {
@@ -132,7 +131,15 @@ namespace ElevatedTrainStationTrack
                 {
                     continue;
                 }
-                lane.m_laneProps.m_props = (from prop in props where prop != null let mProp = prop.m_prop where mProp != null where mProp.name != "RailwayPowerline" select prop).ToArray();
+                lane.m_laneProps = new NetLaneProps
+                {
+                    m_props = (from prop in props
+                        where prop != null
+                        let mProp = prop.m_prop
+                        where mProp != null
+                        where mProp.name != "RailwayPowerline"
+                        select prop).ToArray()
+                };
             }
             var elevatedTrack = Resources.FindObjectsOfTypeAll<NetInfo>().
                 FirstOrDefault(netInfo => netInfo.name == "Train Track Elevated");
