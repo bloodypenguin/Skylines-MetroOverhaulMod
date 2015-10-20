@@ -51,32 +51,47 @@ namespace ElevatedTrainStationTrack
             CreatePrefab("Station Track Eleva", "Train Station Track", SetupElevatedPrefab);
             CreatePrefab("Station Track Tunnel", "Train Station Track", SetupTunnelPrefab);
             CreatePrefab("Station Track Sunken", "Train Station Track", SetupSunkenPrefab);
+            var oneWay = CreatePrefab("Oneway Train Track", "Train Track", SetupOneWayPrefab);
+            var oneWayTunnel = CreatePrefab("Oneway Train Track Tunnel", "Train Track Tunnel", SetupOneWayPrefab);
+            var oneWayBridge = CreatePrefab("Oneway Train Track Bridge", "Train Track Bridge", SetupOneWayPrefab);
+            var oneWayElevated = CreatePrefab("Oneway Train Track Elevated", "Train Track Elevated", SetupOneWayPrefab);
+            var oneWaySlope = CreatePrefab("Oneway Train Track Slope", "Train Track Slope", SetupOneWayPrefab);
+            if (oneWay != null)
+            {
+                var ai = oneWay.GetComponent<TrainTrackAI>();
+                ai.m_tunnelInfo = oneWayTunnel;
+                ai.m_bridgeInfo = oneWayBridge;
+                ai.m_elevatedInfo = oneWayElevated;
+                ai.m_slopeInfo = oneWaySlope;
+            }
             PrefabCollection<NetInfo>.InitializePrefabs("Rail Extensions", _customPrefabs.Values.ToArray(), null);
         }
 
-        private void CreatePrefab(string newPrefabName, string originalPrefabName, Action<NetInfo, NetInfo> setupAction)
+        private NetInfo CreatePrefab(string newPrefabName, string originalPrefabName, Action<NetInfo, NetInfo> setupAction)
         {
             var originalPrefab = FindOriginalPrefab(originalPrefabName);
 
             if (originalPrefab == null)
             {
                 Debug.LogErrorFormat("ElevatedTrainStationTrack - Prefab '{0}' not found (required for '{1}')", originalPrefabName, newPrefabName);
-                return;
+                return null;
             }
             if (_customPrefabs.ContainsKey(newPrefabName))
             {
-                return;
+                return _customPrefabs[newPrefabName];
             }
             var newPrefab = Util.ClonePrefab(originalPrefab, newPrefabName, transform);
             if (newPrefab != null)
             {
                 setupAction.Invoke(newPrefab, originalPrefab);
                 _customPrefabs.Add(newPrefabName, newPrefab);
+                return newPrefab;
             }
             else
             {
                 Debug.LogErrorFormat("ElevatedTrainStationTrack - Couldn't make prefab '{0}'", newPrefabName);
             }
+            return null;
         }
 
         private static NetInfo FindOriginalPrefab(string originalPrefabName)
@@ -201,6 +216,18 @@ namespace ElevatedTrainStationTrack
             sunkenPrefab.m_useFixedHeight = true;
             sunkenPrefab.m_lowerTerrain = false;
             sunkenPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
+        }
+
+        private static void SetupOneWayPrefab(NetInfo newPrefab, NetInfo originalPrefab)
+        {
+            foreach (var lane in newPrefab.m_lanes)
+            {
+                if (lane.m_direction == NetInfo.Direction.Backward)
+                {
+                    lane.m_direction = NetInfo.Direction.None;
+                }
+            }
+            newPrefab.m_hasBackwardVehicleLanes = false;
         }
     }
 }
