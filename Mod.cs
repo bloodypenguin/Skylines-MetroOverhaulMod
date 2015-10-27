@@ -10,12 +10,12 @@ namespace ElevatedTrainStationTrack
 
         public string Name
         {
-            get { return "ElevatedTrainStationTrack"; }
+            get { return "Extra Train Station Tracks"; }
         }
 
         public string Description
         {
-            get { return "ElevatedTrainStationTrack"; }
+            get { return "Provides more types of train station tracks"; }
         }
 
         public override void OnCreated(ILoading loading)
