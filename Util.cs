@@ -85,5 +85,16 @@ namespace ElevatedTrainStationTrack
             }
         }
 
+        public static Action<T1> Apply<T1, T2>(Action<T1, T2> action, T2 param1)
+        {
+            return arg => action(arg, param1);
+        }
+
+        public static Action<T1> Apply<T1, T2, T3>(Action<T1, T2, T3> action, T2 param1, T3 param2)
+        {
+            return arg => action(arg, param1, param2);
+        }
+
+
     }
 }

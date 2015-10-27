@@ -23,17 +23,19 @@ namespace ElevatedTrainStationTrack
             base.OnCreated(loading);
 
             if (Container == null) {
-                Container = new GameObject("ElevatedTrainStationTrack").AddComponent<Initializer>();
+                Container = new GameObject("ExtraTrainStationTracks").AddComponent<Initializer>();
             }
         }
 
         public override void OnReleased()
         {
             base.OnReleased();
-            if (Container != null)
+            if (Container == null)
             {
-                Object.Destroy(Container.gameObject);
+                return;
             }
+            Object.Destroy(Container.gameObject);
+            Container = null;
         }
     }
 }

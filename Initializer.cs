@@ -1,101 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace ElevatedTrainStationTrack
 {
-    public class Initializer : MonoBehaviour
+    public class Initializer : AbstractInitializer
     {
-        private bool _isInitialized;
-        private Dictionary<string, NetInfo> _customPrefabs;
-        private static readonly Dictionary<string, NetInfo> OriginalPrefabs = new Dictionary<string, NetInfo>();
-
-        public void Awake()
+        protected override void InitializeImpl()
         {
-            DontDestroyOnLoad(this);
-            _customPrefabs = new Dictionary<string, NetInfo>();
-            OriginalPrefabs.Clear();
-        }
+            //for compatibility, never change this prefab's name
+            CreatePrefab("Station Track Eleva", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupElevatedPrefab, false, false));
+            CreatePrefab("Station Track Elevated (C)", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupElevatedPrefab, false, true));
+            CreatePrefab("Station Track Elevated (NP)", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupElevatedPrefab, true, false));
+            CreatePrefab("Station Track Elevated (CNP)", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupElevatedPrefab, true, true));
 
-        public void OnLevelWasLoaded(int level)
-        {
-            if (level == 6)
-            {
-                _customPrefabs.Clear();
-                OriginalPrefabs.Clear();
-                _isInitialized = false;
-            }
-        }
+            //for compatibility, never change this prefab's name
+            CreatePrefab("Station Track Sunken", "Train Station Track", Util.Apply<NetInfo, bool>(SetupSunkenPrefab, false));
+            CreatePrefab("Station Track Sunken (NP)", "Train Station Track", Util.Apply<NetInfo, bool>(SetupSunkenPrefab, true));
 
-        public void Update()
-        {
-            if (_isInitialized)
-            {
-                return;
-            }
-            try
-            {
-                GameObject.Find("Public Transport").GetComponent<NetCollection>();
-            }
-            catch (Exception)
-            {
-                return;
-            }
-            Loading.QueueLoadingAction(Loading.ActionWrapper(InitializeImpl));
-            _isInitialized = true;
-        }
+            CreatePrefab("Train Station Track (C)", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupRegularPrefab, false, true));
+            CreatePrefab("Train Station Track (NP)", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupRegularPrefab, true, false));
+            CreatePrefab("Train Station Track (CNP)", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupRegularPrefab, true, true));
 
-        private void InitializeImpl()
-        {
-            CreatePrefab("Station Track Eleva", "Train Station Track", SetupElevatedPrefab);
+            //for compatibility, never change this prefab's name
             CreatePrefab("Station Track Tunnel", "Train Station Track", SetupTunnelPrefab);
-            CreatePrefab("Station Track Sunken", "Train Station Track", SetupSunkenPrefab);
-            PrefabCollection<NetInfo>.InitializePrefabs("Rail Extensions", _customPrefabs.Values.ToArray(), null);
         }
 
-        private NetInfo CreatePrefab(string newPrefabName, string originalPrefabName, Action<NetInfo> setupAction)
-        {
-            var originalPrefab = FindOriginalPrefab(originalPrefabName);
-
-            if (originalPrefab == null)
-            {
-                Debug.LogErrorFormat("ElevatedTrainStationTrack - Prefab '{0}' not found (required for '{1}')", originalPrefabName, newPrefabName);
-                return null;
-            }
-            if (_customPrefabs.ContainsKey(newPrefabName))
-            {
-                return _customPrefabs[newPrefabName];
-            }
-            var newPrefab = Util.ClonePrefab(originalPrefab, newPrefabName, transform);
-            if (newPrefab != null)
-            {
-                setupAction.Invoke(newPrefab);
-                _customPrefabs.Add(newPrefabName, newPrefab);
-                return newPrefab;
-            }
-            else
-            {
-                Debug.LogErrorFormat("ElevatedTrainStationTrack - Couldn't make prefab '{0}'", newPrefabName);
-            }
-            return null;
-        }
-
-        private static NetInfo FindOriginalPrefab(string originalPrefabName)
-        {
-            NetInfo foundPrefab;
-            if (OriginalPrefabs.TryGetValue(originalPrefabName, out foundPrefab))
-            {
-                return foundPrefab;
-            }
-            foundPrefab = Resources.FindObjectsOfTypeAll<NetInfo>().
-            FirstOrDefault(netInfo => netInfo.name == originalPrefabName);
-            OriginalPrefabs.Add(originalPrefabName, foundPrefab);
-            return foundPrefab;
-        }
-
-
-        private static void SetupElevatedPrefab(NetInfo elevatedPrefab)
+        private static void SetupElevatedPrefab(NetInfo elevatedPrefab, bool removePoles, bool concrete)
         {
             var stationAI = elevatedPrefab.GetComponent<TrainTrackAI>();
             stationAI.m_elevatedInfo = elevatedPrefab;
@@ -112,7 +42,35 @@ namespace ElevatedTrainStationTrack
             elevatedPrefab.m_useFixedHeight = true;
             elevatedPrefab.m_lowerTerrain = true;
             elevatedPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
-            foreach (var lane in elevatedPrefab.m_lanes)
+            if (removePoles)
+            {
+                RemoveElectricityPoles(elevatedPrefab);
+            }
+            var elevatedTrack = FindOriginalPrefab("Train Track Elevated");
+            if (elevatedTrack == null)
+            {
+                return;
+            }
+            var etstMesh = Util.LoadMesh(string.Concat(Util.AssemblyDirectory, "/TTNR.obj"), "ETST ");
+            var etstSegmentLodMesh = Util.LoadMesh(string.Concat(Util.AssemblyDirectory, "/TTNR_LOD.obj"), "ETST_SLOD");
+            var etstNodeLodMesh = Util.LoadMesh(string.Concat(Util.AssemblyDirectory, "/TTNR_Node_LOD.obj"), "ETST_NLOD");
+            elevatedPrefab.m_segments[0].m_segmentMaterial = ModifyRailMaterial(elevatedTrack.m_segments[0].m_segmentMaterial, concrete);
+            elevatedPrefab.m_segments[0].m_material = ModifyRailMaterial(elevatedTrack.m_segments[0].m_material, concrete);
+            elevatedPrefab.m_segments[0].m_mesh = etstMesh;
+            elevatedPrefab.m_segments[0].m_segmentMesh = etstMesh;
+            elevatedPrefab.m_segments[0].m_lodMaterial = ModifyRailMaterial(elevatedTrack.m_segments[0].m_lodMaterial, concrete);
+            elevatedPrefab.m_segments[0].m_lodMesh = etstSegmentLodMesh;
+            elevatedPrefab.m_nodes[0].m_material = ModifyRailMaterial(elevatedTrack.m_nodes[0].m_material, concrete);
+            elevatedPrefab.m_nodes[0].m_nodeMaterial = ModifyRailMaterial(elevatedTrack.m_nodes[0].m_nodeMaterial, concrete);
+            elevatedPrefab.m_nodes[0].m_lodMaterial = ModifyRailMaterial(elevatedTrack.m_nodes[0].m_lodMaterial, concrete);
+            elevatedPrefab.m_nodes[0].m_lodMesh = etstNodeLodMesh;
+            elevatedPrefab.m_nodes[0].m_nodeMesh = etstMesh;
+            elevatedPrefab.m_nodes[0].m_mesh = etstMesh;
+        }
+
+        private static void RemoveElectricityPoles(NetInfo prefab)
+        {
+            foreach (var lane in prefab.m_lanes)
             {
                 var mLaneProps = lane.m_laneProps;
                 if (mLaneProps == null)
@@ -134,31 +92,25 @@ namespace ElevatedTrainStationTrack
                                select prop).ToArray()
                 };
             }
-            var elevatedTrack = FindOriginalPrefab("Train Track Elevated");
-            if (elevatedTrack == null)
+        }
+
+        private static Material ModifyRailMaterial(Material material, bool concrete)
+        {
+            if (!concrete)
             {
-                return;
+                return material;
             }
-            var etstMesh = Util.LoadMesh(string.Concat(Util.AssemblyDirectory, "/TTNR.obj"), "ETST ");
-            var etstSegmentLodMesh = Util.LoadMesh(string.Concat(Util.AssemblyDirectory, "/TTNR_LOD.obj"), "ETST_SLOD");
-            var etstNodeLodMesh = Util.LoadMesh(string.Concat(Util.AssemblyDirectory, "/TTNR_Node_LOD.obj"), "ETST_NLOD");
-            elevatedPrefab.m_segments[0].m_segmentMaterial = elevatedTrack.m_segments[0].m_segmentMaterial;
-            elevatedPrefab.m_segments[0].m_material = elevatedTrack.m_segments[0].m_material;
-            elevatedPrefab.m_segments[0].m_mesh = etstMesh;
-            elevatedPrefab.m_segments[0].m_segmentMesh = etstMesh;
-            elevatedPrefab.m_segments[0].m_lodMaterial = elevatedTrack.m_segments[0].m_lodMaterial;
-            elevatedPrefab.m_segments[0].m_lodMesh = etstSegmentLodMesh;
-            elevatedPrefab.m_nodes[0].m_material = elevatedTrack.m_nodes[0].m_material;
-            elevatedPrefab.m_nodes[0].m_nodeMaterial = elevatedTrack.m_nodes[0].m_nodeMaterial;
-            elevatedPrefab.m_nodes[0].m_lodMaterial = elevatedTrack.m_nodes[0].m_lodMaterial;
-            elevatedPrefab.m_nodes[0].m_lodMesh = etstNodeLodMesh;
-            elevatedPrefab.m_nodes[0].m_nodeMesh = etstMesh;
-            elevatedPrefab.m_nodes[0].m_mesh = etstMesh;
+            var newMaterial = new Material(material)
+            {
+                name = string.Format("{0}-concrete", material.name),
+                shader = Shader.Find("Custom/Net/RoadBridge")
+            };
+            return newMaterial;
         }
 
         private static void SetupTunnelPrefab(NetInfo tunnelPrefab)
         {
-            SetupSunkenPrefab(tunnelPrefab);
+            SetupSunkenPrefab(tunnelPrefab, false);
             tunnelPrefab.m_canCollide = false;
             foreach (var lane in tunnelPrefab.m_lanes)
             {
@@ -178,7 +130,7 @@ namespace ElevatedTrainStationTrack
             }
         }
 
-        private static void SetupSunkenPrefab(NetInfo sunkenPrefab)
+        private static void SetupSunkenPrefab(NetInfo sunkenPrefab, bool removePoles)
         {
             var stationAI = sunkenPrefab.GetComponent<TrainTrackAI>();
             stationAI.m_tunnelInfo = sunkenPrefab;
@@ -204,6 +156,24 @@ namespace ElevatedTrainStationTrack
             sunkenPrefab.m_useFixedHeight = true;
             sunkenPrefab.m_lowerTerrain = false;
             sunkenPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
+            if (removePoles)
+            {
+                RemoveElectricityPoles(sunkenPrefab);
+            }
+        }
+
+        private static void SetupRegularPrefab(NetInfo stationTrack, bool removePoles, bool concrete)
+        {
+            if (removePoles)
+            {
+                RemoveElectricityPoles(stationTrack);
+            }
+            if (concrete)
+            {
+                stationTrack.m_createGravel = false;
+                stationTrack.m_createRuining = false;
+                stationTrack.m_createPavement = true;
+            }
         }
     }
 }

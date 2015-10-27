@@ -1,0 +1,96 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+namespace ElevatedTrainStationTrack
+{
+    public abstract class AbstractInitializer : MonoBehaviour
+    {
+        private bool _isInitialized;
+        private Dictionary<string, NetInfo> _customPrefabs;
+        private static readonly Dictionary<string, NetInfo> OriginalPrefabs = new Dictionary<string, NetInfo>();
+
+        public void Awake()
+        {
+            DontDestroyOnLoad(this);
+            _customPrefabs = new Dictionary<string, NetInfo>();
+            OriginalPrefabs.Clear();
+        }
+
+        public void OnLevelWasLoaded(int level)
+        {
+            if (level == 6)
+            {
+                _customPrefabs.Clear();
+                OriginalPrefabs.Clear();
+                _isInitialized = false;
+            }
+        }
+
+        public void Update()
+        {
+            if (_isInitialized)
+            {
+                return;
+            }
+            try
+            {
+                GameObject.Find("Public Transport").GetComponent<NetCollection>();
+            }
+            catch (Exception)
+            {
+                return;
+            }
+            Loading.QueueLoadingAction(() =>
+            {
+                InitializeImpl();
+                PrefabCollection<NetInfo>.InitializePrefabs("Rail Extensions", _customPrefabs.Values.ToArray(), null);
+            });
+            _isInitialized = true;
+        }
+
+        protected abstract void InitializeImpl();
+
+        protected NetInfo CreatePrefab(string newPrefabName, string originalPrefabName, Action<NetInfo> setupAction)
+        {
+            var originalPrefab = FindOriginalPrefab(originalPrefabName);
+
+            if (originalPrefab == null)
+            {
+                Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Prefab '{0}' not found (required for '{1}')", originalPrefabName, newPrefabName);
+                return null;
+            }
+            if (_customPrefabs.ContainsKey(newPrefabName))
+            {
+                return _customPrefabs[newPrefabName];
+            }
+            var newPrefab = Util.ClonePrefab(originalPrefab, newPrefabName, transform);
+            if (newPrefab != null)
+            {
+                setupAction.Invoke(newPrefab);
+                _customPrefabs.Add(newPrefabName, newPrefab);
+                return newPrefab;
+            }
+            else
+            {
+                Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Couldn't make prefab '{0}'", newPrefabName);
+            }
+            return null;
+        }
+
+        protected static NetInfo FindOriginalPrefab(string originalPrefabName)
+        {
+            NetInfo foundPrefab;
+            if (OriginalPrefabs.TryGetValue(originalPrefabName, out foundPrefab))
+            {
+                return foundPrefab;
+            }
+            foundPrefab = Resources.FindObjectsOfTypeAll<NetInfo>().
+            FirstOrDefault(netInfo => netInfo.name == originalPrefabName);
+            OriginalPrefabs.Add(originalPrefabName, foundPrefab);
+            return foundPrefab;
+        }
+
+    }
+}
