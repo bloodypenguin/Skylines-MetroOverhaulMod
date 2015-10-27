@@ -2,7 +2,7 @@
 using System.Collections;
 using ColossalFramework;
 
-namespace ElevatedTrainStationTrack
+namespace OneWayTrainTrack
 {
     public class Loading
     {

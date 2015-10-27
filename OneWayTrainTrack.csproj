@@ -7,8 +7,8 @@
     <ProjectGuid>{A42C9F60-7A15-48B1-86CB-CF5EEAA72D98}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ElevatedTrainStationTrack</RootNamespace>
-    <AssemblyName>ElevatedTrainStationTrack</AssemblyName>
+    <RootNamespace>OneWayTrainTrack</RootNamespace>
+    <AssemblyName>OneWayTrainTrack</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -60,14 +60,6 @@
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Meshes\TTNR.obj" />
-    <None Include="Meshes\TTNR_LOD.obj" />
-    <None Include="Meshes\TTNR_Node_LOD.obj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="lib\ObjUnity3D.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

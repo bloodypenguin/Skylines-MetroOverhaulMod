@@ -1,7 +1,7 @@
 ﻿using ICities;
 using UnityEngine;
 
-namespace ElevatedTrainStationTrack
+namespace OneWayTrainTrack
 {
     public class Mod : LoadingExtensionBase, IUserMod
     {
@@ -10,20 +10,21 @@ namespace ElevatedTrainStationTrack
 
         public string Name
         {
-            get { return "Extra Train Station Tracks"; }
+            get { return "One-Way Train Track"; }
         }
 
         public string Description
         {
-            get { return "Provides more types of train station tracks"; }
+            get { return "Provides a one-way train track"; }
         }
 
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
 
-            if (Container == null) {
-                Container = new GameObject("ExtraTrainStationTracks").AddComponent<Initializer>();
+            if (Container == null)
+            {
+                Container = new GameObject("OneWayTrainTrack").AddComponent<Initializer>();
             }
         }
 
