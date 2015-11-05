@@ -21,9 +21,9 @@ namespace ElevatedTrainStationTrack
             CreatePrefab("Station Track Elevated Narrow (C)", "Train Station Track",
                 new Action<NetInfo, bool>(SetupElevatedPrefab).Apply(true).Chain(Modifiers.MakePedestrianLanesNarrow));
             CreatePrefab("Station Track Elevated Narrow (NP)", "Train Station Track",
-                new Action<NetInfo>(SetupElevatedPrefab).Chain(Modifiers.MakePedestrianLanesNarrow).Chain(Modifiers.RemoveElectricityPoles));
+                new Action<NetInfo>(SetupElevatedPrefab).Chain(Modifiers.RemoveElectricityPoles).Chain(Modifiers.MakePedestrianLanesNarrow));
             CreatePrefab("Station Track Elevated Narrow (CNP)", "Train Station Track",
-                new Action<NetInfo, bool>(SetupElevatedPrefab).Apply(true).Chain(Modifiers.MakePedestrianLanesNarrow).Chain(Modifiers.RemoveElectricityPoles));
+                new Action<NetInfo, bool>(SetupElevatedPrefab).Apply(true).Chain(Modifiers.RemoveElectricityPoles).Chain(Modifiers.MakePedestrianLanesNarrow));
             
             CreatePrefab("Station Track Sunken", "Train Station Track", 
                 SetupSunkenPrefab); //for compatibility, never change this prefab's name
