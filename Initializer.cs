@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
 
 namespace ElevatedTrainStationTrack
@@ -13,6 +14,8 @@ namespace ElevatedTrainStationTrack
             CreatePrefab("Station Track Elevated (NP)", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupElevatedPrefab, true, false));
             CreatePrefab("Station Track Elevated (CNP)", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupElevatedPrefab, true, true));
 
+            MakePlatformsNarrow(CreatePrefab("Station Track Elevated Narrow (C)", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupElevatedPrefab, false, true)));
+            
             //for compatibility, never change this prefab's name
             CreatePrefab("Station Track Sunken", "Train Station Track", Util.Apply<NetInfo, bool>(SetupSunkenPrefab, false));
             CreatePrefab("Station Track Sunken (NP)", "Train Station Track", Util.Apply<NetInfo, bool>(SetupSunkenPrefab, true));
@@ -23,6 +26,20 @@ namespace ElevatedTrainStationTrack
 
             //for compatibility, never change this prefab's name
             CreatePrefab("Station Track Tunnel", "Train Station Track", SetupTunnelPrefab);
+        }
+
+        private static void MakePlatformsNarrow(NetInfo stationTrack)
+        {
+            if (stationTrack != null && stationTrack.m_lanes != null)
+            {
+                foreach (var lane in stationTrack.m_lanes)
+                {
+                    if (lane == null || lane.m_laneType != NetInfo.LaneType.Pedestrian) continue;
+
+                    lane.m_width = 2;
+                    lane.m_position = Math.Sign(lane.m_position) * (4 + .5f * lane.m_width);
+                }
+            }
         }
 
         private static void SetupElevatedPrefab(NetInfo elevatedPrefab, bool removePoles, bool concrete)
