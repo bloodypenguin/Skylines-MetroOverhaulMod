@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using System;
+using System.Linq;
 
 namespace OneWayTrainTrack
 {
@@ -7,35 +7,26 @@ namespace OneWayTrainTrack
     {
         protected override void InitializeImpl()
         {
-            var oneWay = CreatePrefab("Oneway Train Track", "Train Track", SetupOneWayPrefab);
-            var oneWayTunnel = CreatePrefab("Oneway Train Track Tunnel", "Train Track Tunnel", SetupOneWayPrefab);
-            var oneWayBridge = CreatePrefab("Oneway Train Track Bridge", "Train Track Bridge", SetupOneWayPrefab);
-            var oneWayElevated = CreatePrefab("Oneway Train Track Elevated", "Train Track Elevated", SetupOneWayPrefab);
-            var oneWaySlope = CreatePrefab("Oneway Train Track Slope", "Train Track Slope", SetupOneWayPrefab);
-            if (oneWay != null)
+            CreatePrefab("Oneway Train Track", "Train Track", SetupOneWayPrefabAction().Chain(arg =>
             {
-                var ai = oneWay.GetComponent<TrainTrackAI>();
-                ai.m_tunnelInfo = oneWayTunnel;
-                ai.m_bridgeInfo = oneWayBridge;
-                ai.m_elevatedInfo = oneWayElevated;
-                ai.m_slopeInfo = oneWaySlope;
-            }
-            else
-            {
-                UnityEngine.Debug.LogError("OneWayTrainTrack - failed to create one way track!");
-            }
+                var ai = arg.GetComponent<TrainTrackAI>();
+                CreatePrefab("Oneway Train Track Tunnel", "Train Track Tunnel", SetupOneWayPrefabAction().Chain(arg1 => ai.m_tunnelInfo = arg1));
+                CreatePrefab("Oneway Train Track Bridge", "Train Track Bridge", SetupOneWayPrefabAction().Chain(arg2 => ai.m_bridgeInfo = arg));
+                CreatePrefab("Oneway Train Track Elevated", "Train Track Elevated", SetupOneWayPrefabAction().Chain(arg3 => ai.m_elevatedInfo = arg));
+                CreatePrefab("Oneway Train Track Slope", "Train Track Slope", SetupOneWayPrefabAction().Chain(arg4 => ai.m_slopeInfo = arg4));
+            }));
         }
 
-        private static void SetupOneWayPrefab(NetInfo newPrefab)
+        private static Action<NetInfo> SetupOneWayPrefabAction()
         {
-            foreach (var lane in newPrefab.m_lanes)
+            return newPrefab =>
             {
-                if (lane.m_direction == NetInfo.Direction.Backward)
+                foreach (var lane in newPrefab.m_lanes.Where(lane => lane.m_direction == NetInfo.Direction.Backward))
                 {
                     lane.m_direction = NetInfo.Direction.None;
                 }
-            }
-            newPrefab.m_hasBackwardVehicleLanes = false;
+                newPrefab.m_hasBackwardVehicleLanes = false;
+            };
         }
     }
 }
