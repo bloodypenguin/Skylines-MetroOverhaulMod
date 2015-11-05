@@ -6,12 +6,6 @@ namespace OneWayTrainTrack
 {
     public class Loading
     {
-        public static IEnumerator ActionWrapper(Action a)
-        {
-            a.Invoke();
-            yield break;
-        }
-
         public static void QueueLoadingAction(Action action)
         {
             Singleton<LoadingManager>.instance.QueueLoadingAction(ActionWrapper(action));
@@ -22,5 +16,10 @@ namespace OneWayTrainTrack
             Singleton<LoadingManager>.instance.QueueLoadingAction(action);
         }
 
+        private static IEnumerator ActionWrapper(Action a)
+        {
+            a.Invoke();
+            yield break;
+        }
     }
 }
