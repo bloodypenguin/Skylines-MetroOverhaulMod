@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using UnityEngine;
 
 namespace ElevatedTrainStationTrack
@@ -8,41 +7,45 @@ namespace ElevatedTrainStationTrack
     {
         protected override void InitializeImpl()
         {
-            //for compatibility, never change this prefab's name
-            CreatePrefab("Station Track Eleva", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupElevatedPrefab, false, false));
-            CreatePrefab("Station Track Elevated (C)", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupElevatedPrefab, false, true));
-            CreatePrefab("Station Track Elevated (NP)", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupElevatedPrefab, true, false));
-            CreatePrefab("Station Track Elevated (CNP)", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupElevatedPrefab, true, true));
+            CreatePrefab("Station Track Eleva", "Train Station Track", 
+                SetupElevatedPrefab); //for compatibility, never change this prefab's name
+            CreatePrefab("Station Track Elevated (C)", "Train Station Track",
+                new Action<NetInfo, bool>(SetupElevatedPrefab).Apply(true));
+            CreatePrefab("Station Track Elevated (NP)", "Train Station Track",
+                new Action<NetInfo>(SetupElevatedPrefab).Chain(Modifiers.RemoveElectricityPoles));
+            CreatePrefab("Station Track Elevated (CNP)", "Train Station Track",
+                new Action<NetInfo, bool>(SetupElevatedPrefab).Apply(true).Chain(Modifiers.RemoveElectricityPoles));
 
-            MakePlatformsNarrow(CreatePrefab("Station Track Elevated Narrow (C)", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupElevatedPrefab, false, true)));
+            CreatePrefab("Station Track Elevated Narrow", "Train Station Track",
+                new Action<NetInfo>(SetupElevatedPrefab).Chain(Modifiers.MakePedestrianLanesNarrow));
+            CreatePrefab("Station Track Elevated Narrow (C)", "Train Station Track",
+                new Action<NetInfo, bool>(SetupElevatedPrefab).Apply(true).Chain(Modifiers.MakePedestrianLanesNarrow));
+            CreatePrefab("Station Track Elevated Narrow (NP)", "Train Station Track",
+                new Action<NetInfo>(SetupElevatedPrefab).Chain(Modifiers.MakePedestrianLanesNarrow).Chain(Modifiers.RemoveElectricityPoles));
+            CreatePrefab("Station Track Elevated Narrow (CNP)", "Train Station Track",
+                new Action<NetInfo, bool>(SetupElevatedPrefab).Apply(true).Chain(Modifiers.MakePedestrianLanesNarrow).Chain(Modifiers.RemoveElectricityPoles));
             
-            //for compatibility, never change this prefab's name
-            CreatePrefab("Station Track Sunken", "Train Station Track", Util.Apply<NetInfo, bool>(SetupSunkenPrefab, false));
-            CreatePrefab("Station Track Sunken (NP)", "Train Station Track", Util.Apply<NetInfo, bool>(SetupSunkenPrefab, true));
-
-            CreatePrefab("Train Station Track (C)", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupRegularPrefab, false, true));
-            CreatePrefab("Train Station Track (NP)", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupRegularPrefab, true, false));
-            CreatePrefab("Train Station Track (CNP)", "Train Station Track", Util.Apply<NetInfo, bool, bool>(SetupRegularPrefab, true, true));
-
-            //for compatibility, never change this prefab's name
-            CreatePrefab("Station Track Tunnel", "Train Station Track", SetupTunnelPrefab);
+            CreatePrefab("Station Track Sunken", "Train Station Track", 
+                SetupSunkenPrefab); //for compatibility, never change this prefab's name
+            CreatePrefab("Station Track Sunken (NP)", "Train Station Track",
+                new Action<NetInfo>(SetupSunkenPrefab).Chain(Modifiers.RemoveElectricityPoles));
+            CreatePrefab("Train Station Track (C)", "Train Station Track",
+                Modifiers.CreatePavement);
+            CreatePrefab("Train Station Track (NP)", "Train Station Track",
+                Modifiers.RemoveElectricityPoles);
+            CreatePrefab("Train Station Track (CNP)", "Train Station Track",
+                new Action<NetInfo>(Modifiers.CreatePavement).Chain(Modifiers.RemoveElectricityPoles));
+            
+            CreatePrefab("Station Track Tunnel", "Train Station Track", 
+                SetupTunnelPrefab); //for compatibility, never change this prefab's name
         }
 
-        private static void MakePlatformsNarrow(NetInfo stationTrack)
+        private static void SetupElevatedPrefab(NetInfo elevatedPrefab)
         {
-            if (stationTrack != null && stationTrack.m_lanes != null)
-            {
-                foreach (var lane in stationTrack.m_lanes)
-                {
-                    if (lane == null || lane.m_laneType != NetInfo.LaneType.Pedestrian) continue;
-
-                    lane.m_width = 2;
-                    lane.m_position = Math.Sign(lane.m_position) * (4 + .5f * lane.m_width);
-                }
-            }
+            SetupElevatedPrefab(elevatedPrefab, false);
         }
 
-        private static void SetupElevatedPrefab(NetInfo elevatedPrefab, bool removePoles, bool concrete)
+        private static void SetupElevatedPrefab(NetInfo elevatedPrefab, bool concrete)
         {
             var stationAI = elevatedPrefab.GetComponent<TrainTrackAI>();
             stationAI.m_elevatedInfo = elevatedPrefab;
@@ -59,10 +62,6 @@ namespace ElevatedTrainStationTrack
             elevatedPrefab.m_useFixedHeight = true;
             elevatedPrefab.m_lowerTerrain = true;
             elevatedPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
-            if (removePoles)
-            {
-                RemoveElectricityPoles(elevatedPrefab);
-            }
             var elevatedTrack = FindOriginalPrefab("Train Track Elevated");
             if (elevatedTrack == null)
             {
@@ -85,32 +84,6 @@ namespace ElevatedTrainStationTrack
             elevatedPrefab.m_nodes[0].m_mesh = etstMesh;
         }
 
-        private static void RemoveElectricityPoles(NetInfo prefab)
-        {
-            foreach (var lane in prefab.m_lanes)
-            {
-                var mLaneProps = lane.m_laneProps;
-                if (mLaneProps == null)
-                {
-                    continue;
-                }
-                var props = mLaneProps.m_props;
-                if (props == null)
-                {
-                    continue;
-                }
-                lane.m_laneProps = new NetLaneProps
-                {
-                    m_props = (from prop in props
-                               where prop != null
-                               let mProp = prop.m_prop
-                               where mProp != null
-                               where mProp.name != "RailwayPowerline"
-                               select prop).ToArray()
-                };
-            }
-        }
-
         private static Material ModifyRailMaterial(Material material, bool concrete)
         {
             if (!concrete)
@@ -127,7 +100,7 @@ namespace ElevatedTrainStationTrack
 
         private static void SetupTunnelPrefab(NetInfo tunnelPrefab)
         {
-            SetupSunkenPrefab(tunnelPrefab, false);
+            SetupSunkenPrefab(tunnelPrefab);
             tunnelPrefab.m_canCollide = false;
             foreach (var lane in tunnelPrefab.m_lanes)
             {
@@ -147,7 +120,7 @@ namespace ElevatedTrainStationTrack
             }
         }
 
-        private static void SetupSunkenPrefab(NetInfo sunkenPrefab, bool removePoles)
+        private static void SetupSunkenPrefab(NetInfo sunkenPrefab)
         {
             var stationAI = sunkenPrefab.GetComponent<TrainTrackAI>();
             stationAI.m_tunnelInfo = sunkenPrefab;
@@ -173,24 +146,6 @@ namespace ElevatedTrainStationTrack
             sunkenPrefab.m_useFixedHeight = true;
             sunkenPrefab.m_lowerTerrain = false;
             sunkenPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
-            if (removePoles)
-            {
-                RemoveElectricityPoles(sunkenPrefab);
-            }
-        }
-
-        private static void SetupRegularPrefab(NetInfo stationTrack, bool removePoles, bool concrete)
-        {
-            if (removePoles)
-            {
-                RemoveElectricityPoles(stationTrack);
-            }
-            if (concrete)
-            {
-                stationTrack.m_createGravel = false;
-                stationTrack.m_createRuining = false;
-                stationTrack.m_createPavement = true;
-            }
         }
     }
 }

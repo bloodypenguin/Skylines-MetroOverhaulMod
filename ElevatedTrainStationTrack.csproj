@@ -33,9 +33,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AbstractInitializer.cs" />
+    <Compile Include="ActionExtensions.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="Loading.cs" />
     <Compile Include="Mod.cs" />
+    <Compile Include="Modifiers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>

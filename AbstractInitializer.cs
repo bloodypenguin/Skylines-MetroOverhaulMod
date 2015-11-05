@@ -52,31 +52,28 @@ namespace ElevatedTrainStationTrack
 
         protected abstract void InitializeImpl();
 
-        protected NetInfo CreatePrefab(string newPrefabName, string originalPrefabName, Action<NetInfo> setupAction)
+        protected void CreatePrefab(string newPrefabName, string originalPrefabName, Action<NetInfo> setupAction)
         {
             var originalPrefab = FindOriginalPrefab(originalPrefabName);
 
             if (originalPrefab == null)
             {
                 Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Prefab '{0}' not found (required for '{1}')", originalPrefabName, newPrefabName);
-                return null;
+                return;
             }
             if (_customPrefabs.ContainsKey(newPrefabName))
             {
-                return _customPrefabs[newPrefabName];
+                return;
             }
             var newPrefab = Util.ClonePrefab(originalPrefab, newPrefabName, transform);
-            if (newPrefab != null)
-            {
-                setupAction.Invoke(newPrefab);
-                _customPrefabs.Add(newPrefabName, newPrefab);
-                return newPrefab;
-            }
-            else
+            if (newPrefab == null)
             {
                 Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Couldn't make prefab '{0}'", newPrefabName);
+                return;
             }
-            return null;
+            setupAction.Invoke(newPrefab);
+            _customPrefabs.Add(newPrefabName, newPrefab);
+
         }
 
         protected static NetInfo FindOriginalPrefab(string originalPrefabName)
