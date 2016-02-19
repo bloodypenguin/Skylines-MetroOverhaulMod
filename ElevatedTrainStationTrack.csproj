@@ -63,6 +63,14 @@
       <HintPath>..\..\..\..\..\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Meshes\TTNR.obj" />
+    <None Include="Meshes\TTNR_LOD.obj" />
+    <None Include="Meshes\TTNR_Node_LOD.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="lib\ObjUnity3D.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"

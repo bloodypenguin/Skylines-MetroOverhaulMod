@@ -36,7 +36,11 @@ namespace OneWayTrainTrack
             }
             try
             {
-                GameObject.Find("Public Transport").GetComponent<NetCollection>();
+                var parent = GameObject.Find(SimulationManager.instance.m_metaData.m_environment + " Collections");
+                foreach (var t in from Transform t in parent.transform where t.name == "Public Transport" select t)
+                {
+                    t.gameObject.GetComponent<NetCollection>();
+                }
             }
             catch (Exception)
             {
