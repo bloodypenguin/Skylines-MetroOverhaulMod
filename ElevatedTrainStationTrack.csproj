@@ -36,6 +36,7 @@
     <Compile Include="ActionExtensions.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="Loading.cs" />
+    <Compile Include="LoadingExtension.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Modifiers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

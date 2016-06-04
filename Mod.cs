@@ -1,41 +1,10 @@
 ﻿using ICities;
-using UnityEngine;
 
 namespace ElevatedTrainStationTrack
 {
-    public class Mod : LoadingExtensionBase, IUserMod
+    public class Mod : IUserMod
     {
-
-        public static Initializer Container;
-
-        public string Name
-        {
-            get { return "Extra Train Station Tracks"; }
-        }
-
-        public string Description
-        {
-            get { return "Provides more types of train station tracks"; }
-        }
-
-        public override void OnCreated(ILoading loading)
-        {
-            base.OnCreated(loading);
-
-            if (Container == null) {
-                Container = new GameObject("ExtraTrainStationTracks").AddComponent<Initializer>();
-            }
-        }
-
-        public override void OnReleased()
-        {
-            base.OnReleased();
-            if (Container == null)
-            {
-                return;
-            }
-            Object.Destroy(Container.gameObject);
-            Container = null;
-        }
+        public string Name => "Extra Train Station Tracks";
+        public string Description => "Provides more types of train station tracks";
     }
 }
