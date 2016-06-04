@@ -36,9 +36,15 @@
     <Compile Include="ActionExtensions.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="Loading.cs" />
+    <Compile Include="LoadingExtension.cs" />
+    <Compile Include="Meshes\RailModels.10m.cs" />
+    <Compile Include="Meshes\RailModels.10mStation.cs" />
     <Compile Include="Mod.cs" />
-    <Compile Include="Modifiers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rail1LStation\Rail1LStationBuilder.cs" />
+    <Compile Include="Rail1LStation\Rail1LStationBuilder.Texturing.cs" />
+    <Compile Include="Rail1L\Rail1LBuilder.cs" />
+    <Compile Include="Rail1L\Rail1LBuilder.Texturing.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -59,17 +65,80 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\System.dll</HintPath>
     </Reference>
+    <Reference Include="Transit.Addon.RoadExtensions">
+      <HintPath>C:\Games\Steam\steamapps\workshop\content\255710\478820060\Transit.Addon.RoadExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Transit.Framework">
+      <HintPath>C:\Games\Steam\steamapps\workshop\content\255710\478820060\Transit.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Transit.Framework.ExtensionPoints">
+      <HintPath>C:\Games\Steam\steamapps\workshop\content\255710\478820060\Transit.Framework.ExtensionPoints.dll</HintPath>
+    </Reference>
+    <Reference Include="Transit.Framework.Hooks">
+      <HintPath>C:\Games\Steam\steamapps\workshop\content\255710\478820060\Transit.Framework.Hooks.dll</HintPath>
+    </Reference>
+    <Reference Include="Transit.Framework.Redirection">
+      <HintPath>C:\Games\Steam\steamapps\workshop\content\255710\478820060\Transit.Framework.Redirection.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Meshes\TTNR.obj" />
-    <None Include="Meshes\TTNR_LOD.obj" />
-    <None Include="Meshes\TTNR_Node_LOD.obj" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="lib\ObjUnity3D.dll" />
+    <Content Include="Rail1LStation\infotooltip.png" />
+    <Content Include="Rail1LStation\Textures\Ground_Segment_Pavement__AlphaMap.png" />
+    <Content Include="Rail1LStation\Textures\ground_segment_pavement__MainTex.png" />
+    <Content Include="Rail1LStation\Textures\Slope_Cover_LOD__AlphaMap.png" />
+    <Content Include="Rail1LStation\Textures\Slope_Cover_LOD__MainTex.png" />
+    <Content Include="Rail1LStation\Textures\Slope_Cover_LOD__XYSMap.png" />
+    <Content Include="Rail1LStation\Textures\Slope_Segment__AlphaMap.png" />
+    <Content Include="Rail1LStation\Textures\Slope_Segment__MainTex.png" />
+    <Content Include="Rail1LStation\Textures\Tunnel_Segment__AlphaMap.png" />
+    <Content Include="Rail1LStation\Textures\Tunnel_Segment__MainTex.png" />
+    <Content Include="Rail1LStation\thumbnails.png" />
+    <Content Include="Rail1L\infotooltip.png" />
+    <Content Include="Rail1L\Textures\Ground_Segment_Pavement__AlphaMap.png" />
+    <Content Include="Rail1L\Textures\ground_segment_pavement__MainTex.png" />
+    <Content Include="Rail1L\Textures\Slope_Cover_LOD__AlphaMap.png" />
+    <Content Include="Rail1L\Textures\Slope_Cover_LOD__MainTex.png" />
+    <Content Include="Rail1L\Textures\Slope_Cover_LOD__XYSMap.png" />
+    <Content Include="Rail1L\Textures\Slope_Segment__AlphaMap.png" />
+    <Content Include="Rail1L\Textures\Slope_Segment__MainTex.png" />
+    <Content Include="Rail1L\Textures\Tunnel_Segment__AlphaMap.png" />
+    <Content Include="Rail1L\Textures\Tunnel_Segment__MainTex.png" />
+    <Content Include="Rail1L\thumbnails.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="Meshes\10m\Bridge_Pavement.obj" />
+    <None Include="Meshes\10m\Bridge_Pavement_LOD.obj" />
+    <None Include="Meshes\10m\Elevated_Pavement.obj" />
+    <None Include="Meshes\10m\Elevated_Pavement_LOD.obj" />
+    <None Include="Meshes\10m\Elevated_Pavement_Node_LOD.obj" />
+    <None Include="Meshes\10m\Ground_Level_Crossing.obj" />
+    <None Include="Meshes\10m\Ground_Level_Crossing_LOD.obj" />
+    <None Include="Meshes\10m\Ground_Pavement.obj" />
+    <None Include="Meshes\10m\Ground_Pavement_LOD.obj" />
+    <None Include="Meshes\10m\Ground_Pavement_Node.obj" />
+    <None Include="Meshes\10m\Ground_Pavement_Node_LOD.obj" />
+    <None Include="Meshes\10m\Ground_Power.obj" />
+    <None Include="Meshes\10m\Ground_Power_End.obj" />
+    <None Include="Meshes\10m\Ground_Power_Start.obj" />
+    <None Include="Meshes\10m\Ground_Rail.obj" />
+    <None Include="Meshes\10m\Ground_Rail_End.obj" />
+    <None Include="Meshes\10m\Ground_Rail_End_LOD.obj" />
+    <None Include="Meshes\10m\Ground_Rail_LOD.obj" />
+    <None Include="Meshes\10m\Ground_Rail_Node_LOD.obj" />
+    <None Include="Meshes\10m\Ground_Rail_Start.obj" />
+    <None Include="Meshes\10m\Ground_Rail_Start_LOD.obj" />
+    <None Include="Meshes\10m\Station\Ground_Power_End.obj" />
+    <None Include="Meshes\10m\Station\Ground_Power_Start.obj" />
+    <None Include="Meshes\10m\Station\Ground_Station_Rail_End.obj" />
+    <None Include="Meshes\10m\Station\Ground_Station_Rail_Start.obj" />
+    <None Include="Meshes\10m\Tunnel.obj" />
+    <None Include="Meshes\10m\Tunnel_Node.obj" />
+    <None Include="Meshes\10m\Tunnel_Node_LOD.obj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
