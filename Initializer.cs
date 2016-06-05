@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using ColossalFramework;
 using Transit.Addon.RoadExtensions.PublicTransport.Rail1L;
 using Transit.Addon.RoadExtensions.PublicTransport.Rail1LStation;
 using Transit.Addon.RoadExtensions.PublicTransport.RailUtils;
@@ -16,42 +16,81 @@ namespace OneWayTrainTrack
 
         protected override void InitializeImpl()
         {
-            var trackBuilder = new Rail1LBuilder();
-            CreatePrefab(trackBuilder.Name, trackBuilder.BasedPrefabName, new Action<NetInfo, Rail1LBuilder, NetInfoVersion>(SetupOneWayPrefabAction)
-                    .Apply(trackBuilder, NetInfoVersion.Ground).Chain(arg =>
-            {
-                var ai = arg.GetComponent<TrainTrackAI>();
-                CreatePrefab($"{trackBuilder.Name} Tunnel", $"{trackBuilder.Name} Tunnel",
-                    new Action<NetInfo, Rail1LBuilder, NetInfoVersion>(SetupOneWayPrefabAction)
-                    .Apply(trackBuilder, NetInfoVersion.Tunnel)
-                    .Chain(arg1 => ai.m_tunnelInfo = arg1));
-                CreatePrefab($"{trackBuilder.Name} Bridge", $"{trackBuilder.Name} Bridge", new Action<NetInfo, Rail1LBuilder, NetInfoVersion>(SetupOneWayPrefabAction)
-                    .Apply(trackBuilder, NetInfoVersion.Bridge)
-                    .Chain(arg2 => ai.m_bridgeInfo = arg));
-                CreatePrefab($"{trackBuilder.Name} Elevated", $"{trackBuilder.Name} Elevated", new Action<NetInfo, Rail1LBuilder, NetInfoVersion>(SetupOneWayPrefabAction)
-                    .Apply(trackBuilder, NetInfoVersion.Elevated)
-                    .Chain(arg3 => ai.m_elevatedInfo = arg));
-                CreatePrefab($"{trackBuilder.Name} Slope", $"{trackBuilder.Name} Slope", new Action<NetInfo, Rail1LBuilder, NetInfoVersion>(SetupOneWayPrefabAction)
-                    .Apply(trackBuilder, NetInfoVersion.Slope)
-                    .Chain(arg4 => ai.m_slopeInfo = arg4));
-            }));
-
-            //TODO(earalov): init station track
+            InitializeByBuilder(new Rail1LBuilder(), tracks);
+            InitializeByBuilder(new Rail1LStationBuilder(), tracks);
         }
 
-        private static void SetupOneWayPrefabAction(NetInfo newPrefab, object builder, NetInfoVersion version)
+        private void InitializeByBuilder(object trackBuilder, List<KeyValuePair<NetInfo, NetInfoVersion>> tracks)
         {
-            var buildUp = builder.GetType().GetMethod("BuildUp");
-            buildUp.Invoke(builder, new object[] {newPrefab, version});
-            newPrefab.Setup10mMesh(version);
-            if (builder is Rail1LBuilder)
+            TrainTrackAI mainAi = null;
+            foreach (
+                var version in
+                    new[]
+                    {
+                        NetInfoVersion.Ground, NetInfoVersion.Elevated, NetInfoVersion.Bridge, NetInfoVersion.Slope,
+                        NetInfoVersion.Tunnel
+                    })
             {
-                tracks.Add(new KeyValuePair<NetInfo, NetInfoVersion>(newPrefab, version));
+                if (!(trackBuilder.GetPropery<NetInfoVersion>("SupportedVersions").IsFlagSet(version) || version == NetInfoVersion.Ground))
+                {
+                    continue;
+                }
+                var versionString = version == NetInfoVersion.Ground ? string.Empty : $" {version}";
+                var newPrefabName = $"{trackBuilder.GetPropery<string>("Name")}{versionString}";
+                var originalPrefabName = $"{trackBuilder.GetPropery<string>("BasedPrefabName")}{versionString}";
+
+                UnityEngine.Debug.Log($"{originalPrefabName}=>{newPrefabName}");
+                Action<NetInfo> action;
+                switch (version)
+                {
+                    case NetInfoVersion.Ground:
+                        action = arg => mainAi = arg.GetComponent<TrainTrackAI>();
+                        break;
+                    case NetInfoVersion.Elevated:
+                        action = arg => mainAi.m_elevatedInfo = arg;
+                        break;
+                    case NetInfoVersion.Bridge:
+                        action = arg => mainAi.m_bridgeInfo = arg;
+                        break;
+                    case NetInfoVersion.Tunnel:
+                        action = arg => mainAi.m_tunnelInfo = arg;
+                        break;
+                    case NetInfoVersion.Slope:
+                        action = arg => mainAi.m_slopeInfo = arg;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                CreatePrefab(newPrefabName, originalPrefabName,
+                    SetupOneWayPrefabAction().Apply(trackBuilder).Apply(version)
+                        .Chain(action)
+                        .Chain(AddPairAction().Apply(version).Apply(tracks)));
+                Util.AddLocale("NET", trackBuilder.GetPropery<string>("Name"), trackBuilder.GetPropery<string>("DisplayName"), trackBuilder.GetPropery<string>("Description"));
+
             }
-            if (builder is Rail1LStationBuilder)
+        }
+
+        private static Action<NetInfo, object, NetInfoVersion> SetupOneWayPrefabAction()
+        {
+            return (newPrefab, builder, version) =>
             {
-                stationTracks.Add(new KeyValuePair<NetInfo, NetInfoVersion>(newPrefab, version));
-            }
+                var buildUp = builder.GetType().GetMethod("BuildUp");
+                buildUp.Invoke(builder, new object[] {newPrefab, version});
+                newPrefab.Setup10mMesh(version);
+                if (builder is Rail1LBuilder)
+                {
+                    tracks.Add(new KeyValuePair<NetInfo, NetInfoVersion>(newPrefab, version));
+                }
+                if (builder is Rail1LStationBuilder)
+                {
+                    stationTracks.Add(new KeyValuePair<NetInfo, NetInfoVersion>(newPrefab, version));
+                }
+            };
+        }
+
+        private static Action<NetInfo, NetInfoVersion, List<KeyValuePair<NetInfo, NetInfoVersion>>> AddPairAction()
+        {
+            return (newPrefab, version, list) => { list.Add(new KeyValuePair<NetInfo, NetInfoVersion>(newPrefab, version)); };
         }
     }
 }

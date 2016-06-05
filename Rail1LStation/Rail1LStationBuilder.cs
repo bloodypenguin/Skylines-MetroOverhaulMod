@@ -99,7 +99,7 @@ namespace Transit.Addon.RoadExtensions.PublicTransport.Rail1LStation
             }
 
             var oldPlPropInfo = Prefabs.Find<PropInfo>("RailwayPowerline");
-            info.ReplaceProps(plPropInfo, oldPlPropInfo);
+            OneWayTrainTrack.NetInfoExtensions.ReplaceProps(info, plPropInfo, oldPlPropInfo);
             for (int i = 0; i < info.m_lanes.Count(); i++)
             {
                 var powerLineProp = info.m_lanes[i].m_laneProps.m_props.Where(p => p.m_prop == plPropInfo).ToList();

@@ -98,17 +98,6 @@ namespace Transit.Addon.RoadExtensions.PublicTransport.Rail1L
             info.m_connectGroup = NetInfo.ConnectGroup.CenterTram;
             info.m_nodeConnectGroups = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.NarrowTram;
             //info.m_nodes[1].m_connectGroup = (NetInfo.ConnectGroup)9; 
-            railInfo.m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
-            railInfo.m_nodeConnectGroups = NetInfo.ConnectGroup.NarrowTram;
-            if (railInfo.m_nodes.Length > 1)
-            {
-                railInfo.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
-            }
-            else
-            {
-                UnityEngine.Debug.Log(version + " skipped!");
-            }
-            
             var owPlayerNetAI = railInfo.GetComponent<PlayerNetAI>();
             var playerNetAI = info.GetComponent<PlayerNetAI>();
             if (owPlayerNetAI != null && playerNetAI != null)
@@ -132,9 +121,8 @@ namespace Transit.Addon.RoadExtensions.PublicTransport.Rail1L
             {
                 plPropInfo = PrefabCollection<PropInfo>.FindLoaded("478820060.Rail1LPowerLine_Data");
             }
-
             var oldPlPropInfo = Prefabs.Find<PropInfo>("RailwayPowerline");
-            info.ReplaceProps(plPropInfo, oldPlPropInfo);
+            OneWayTrainTrack.NetInfoExtensions.ReplaceProps(info, plPropInfo, oldPlPropInfo);
             for (int i = 0; i < info.m_lanes.Count(); i++)
             {
                 var powerLineProp = info.m_lanes[i].m_laneProps.m_props.Where(p => p.m_prop == plPropInfo).ToList();

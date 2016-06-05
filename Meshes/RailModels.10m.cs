@@ -367,7 +367,7 @@ namespace Transit.Addon.RoadExtensions.PublicTransport.RailUtils
 
                 case NetInfoVersion.Slope:
                     {
-                        var pedSlope = Prefabs.Find<NetInfo>("Pedestrian Pavement Slope");
+                        var pedSlope = Prefabs.Find<NetInfo>("Pedestrian Slope");
                         var segments0 = info.m_segments[0];
                         var segments1 = info.m_segments[1];
                         var segments2 = info.m_segments[2];

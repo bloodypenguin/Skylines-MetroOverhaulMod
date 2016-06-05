@@ -40,6 +40,8 @@
     <Compile Include="Meshes\RailModels.10m.cs" />
     <Compile Include="Meshes\RailModels.10mStation.cs" />
     <Compile Include="Mod.cs" />
+    <Compile Include="NetInfoExtensions.cs" />
+    <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rail1LStation\Rail1LStationBuilder.cs" />
     <Compile Include="Rail1LStation\Rail1LStationBuilder.Texturing.cs" />
