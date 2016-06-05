@@ -22,8 +22,8 @@ namespace Transit.Addon.RoadExtensions.PublicTransport.Rail1LStation
         public string ShortDescription { get { return "Single Rail Track"; } }
         public string UICategory { get { return "PublicTransportTrain"; } }
 
-        public string ThumbnailsPath { get { return @"PublicTransport\Rail\Rail1LStation\thumbnails.png"; } }
-        public string InfoTooltipPath { get { return @"PublicTransport\Rail\Rail1LStation\infotooltip.png"; } }
+        public string ThumbnailsPath { get { return @"Textures\Rail1LStation\thumbnails.png"; } }
+        public string InfoTooltipPath { get { return @"Textures\Rail1LStation\infotooltip.png"; } }
 
         public NetInfoVersion SupportedVersions
         {

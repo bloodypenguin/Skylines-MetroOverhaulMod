@@ -88,65 +88,166 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="lib\ObjUnity3D.dll" />
-    <Content Include="Rail1LStation\infotooltip.png" />
-    <Content Include="Rail1LStation\Textures\Ground_Segment_Pavement__AlphaMap.png" />
-    <Content Include="Rail1LStation\Textures\ground_segment_pavement__MainTex.png" />
-    <Content Include="Rail1LStation\Textures\Slope_Cover_LOD__AlphaMap.png" />
-    <Content Include="Rail1LStation\Textures\Slope_Cover_LOD__MainTex.png" />
-    <Content Include="Rail1LStation\Textures\Slope_Cover_LOD__XYSMap.png" />
-    <Content Include="Rail1LStation\Textures\Slope_Segment__AlphaMap.png" />
-    <Content Include="Rail1LStation\Textures\Slope_Segment__MainTex.png" />
-    <Content Include="Rail1LStation\Textures\Tunnel_Segment__AlphaMap.png" />
-    <Content Include="Rail1LStation\Textures\Tunnel_Segment__MainTex.png" />
-    <Content Include="Rail1LStation\thumbnails.png" />
-    <Content Include="Rail1L\infotooltip.png" />
-    <Content Include="Rail1L\Textures\Ground_Segment_Pavement__AlphaMap.png" />
-    <Content Include="Rail1L\Textures\ground_segment_pavement__MainTex.png" />
-    <Content Include="Rail1L\Textures\Slope_Cover_LOD__AlphaMap.png" />
-    <Content Include="Rail1L\Textures\Slope_Cover_LOD__MainTex.png" />
-    <Content Include="Rail1L\Textures\Slope_Cover_LOD__XYSMap.png" />
-    <Content Include="Rail1L\Textures\Slope_Segment__AlphaMap.png" />
-    <Content Include="Rail1L\Textures\Slope_Segment__MainTex.png" />
-    <Content Include="Rail1L\Textures\Tunnel_Segment__AlphaMap.png" />
-    <Content Include="Rail1L\Textures\Tunnel_Segment__MainTex.png" />
-    <Content Include="Rail1L\thumbnails.png" />
+    <None Include="Resources\Textures\Rail1LStation\infotooltip.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1LStation\Ground_Segment_Pavement__AlphaMap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1LStation\ground_segment_pavement__MainTex.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1LStation\Slope_Cover_LOD__AlphaMap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1LStation\Slope_Cover_LOD__MainTex.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1LStation\Slope_Cover_LOD__XYSMap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1LStation\Slope_Segment__AlphaMap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1LStation\Slope_Segment__MainTex.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1LStation\Tunnel_Segment__AlphaMap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1LStation\Tunnel_Segment__MainTex.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1LStation\thumbnails.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1L\infotooltip.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1L\Ground_Segment_Pavement__AlphaMap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1L\ground_segment_pavement__MainTex.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1L\Slope_Cover_LOD__AlphaMap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1L\Slope_Cover_LOD__MainTex.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1L\Slope_Cover_LOD__XYSMap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1L\Slope_Segment__AlphaMap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1L\Slope_Segment__MainTex.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1L\Tunnel_Segment__AlphaMap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1L\Tunnel_Segment__MainTex.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Textures\Rail1L\thumbnails.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <None Include="Meshes\10m\Bridge_Pavement.obj" />
-    <None Include="Meshes\10m\Bridge_Pavement_LOD.obj" />
-    <None Include="Meshes\10m\Elevated_Pavement.obj" />
-    <None Include="Meshes\10m\Elevated_Pavement_LOD.obj" />
-    <None Include="Meshes\10m\Elevated_Pavement_Node_LOD.obj" />
-    <None Include="Meshes\10m\Ground_Level_Crossing.obj" />
-    <None Include="Meshes\10m\Ground_Level_Crossing_LOD.obj" />
-    <None Include="Meshes\10m\Ground_Pavement.obj" />
-    <None Include="Meshes\10m\Ground_Pavement_LOD.obj" />
-    <None Include="Meshes\10m\Ground_Pavement_Node.obj" />
-    <None Include="Meshes\10m\Ground_Pavement_Node_LOD.obj" />
-    <None Include="Meshes\10m\Ground_Power.obj" />
-    <None Include="Meshes\10m\Ground_Power_End.obj" />
-    <None Include="Meshes\10m\Ground_Power_Start.obj" />
-    <None Include="Meshes\10m\Ground_Rail.obj" />
-    <None Include="Meshes\10m\Ground_Rail_End.obj" />
-    <None Include="Meshes\10m\Ground_Rail_End_LOD.obj" />
-    <None Include="Meshes\10m\Ground_Rail_LOD.obj" />
-    <None Include="Meshes\10m\Ground_Rail_Node_LOD.obj" />
-    <None Include="Meshes\10m\Ground_Rail_Start.obj" />
-    <None Include="Meshes\10m\Ground_Rail_Start_LOD.obj" />
-    <None Include="Meshes\10m\Station\Ground_Power_End.obj" />
-    <None Include="Meshes\10m\Station\Ground_Power_Start.obj" />
-    <None Include="Meshes\10m\Station\Ground_Station_Rail_End.obj" />
-    <None Include="Meshes\10m\Station\Ground_Station_Rail_Start.obj" />
-    <None Include="Meshes\10m\Tunnel.obj" />
-    <None Include="Meshes\10m\Tunnel_Node.obj" />
-    <None Include="Meshes\10m\Tunnel_Node_LOD.obj" />
+    <None Include="Resources\Meshes\10m\Bridge_Pavement.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Bridge_Pavement_LOD.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Elevated_Pavement.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Elevated_Pavement_LOD.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Elevated_Pavement_Node_LOD.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Ground_Level_Crossing.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Ground_Level_Crossing_LOD.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Ground_Pavement.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Ground_Pavement_LOD.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Ground_Pavement_Node.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Ground_Pavement_Node_LOD.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Ground_Power.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Ground_Power_End.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Ground_Power_Start.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Ground_Rail.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Ground_Rail_End.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Ground_Rail_End_LOD.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Ground_Rail_LOD.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Ground_Rail_Node_LOD.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Ground_Rail_Start.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Ground_Rail_Start_LOD.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Station\Ground_Power_End.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Station\Ground_Power_Start.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Station\Ground_Station_Rail_End.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Station\Ground_Station_Rail_Start.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Tunnel.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Tunnel_Node.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Tunnel_Node_LOD.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"
-del "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)\$(TargetFileName)"
-xcopy /y "$(TargetPath)" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"</PostBuildEvent>
+    <PostBuildEvent>rmdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)" /s /q
+mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"
+xcopy /y "$(TargetPath)" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"
+xcopy "$(ProjectDir)\Resources" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)" /s /e</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
