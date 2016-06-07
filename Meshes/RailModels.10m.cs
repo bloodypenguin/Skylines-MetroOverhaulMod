@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Transit.Framework;
-using Transit.Framework.Network;
 
-namespace Transit.Addon.RoadExtensions.PublicTransport.RailUtils
+namespace SingleTrainTrack.Meshes
 {
     public static partial class RailModels
     {
@@ -12,7 +11,7 @@ namespace Transit.Addon.RoadExtensions.PublicTransport.RailUtils
             ///////////////////////////
             // Template              //
             ///////////////////////////
-            var ttInfo = Prefabs.Find<NetInfo>("Train Track");
+            var ttInfo = Prefabs.Find<NetInfo>(Mod.TRAIN_TRACK);
             var defaultMaterial = ttInfo.m_nodes[0].m_material;
 
             switch (version)

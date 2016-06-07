@@ -1,23 +1,20 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
+using SingleTrainTrack.Meshes;
+using Transit.Addon.RoadExtensions.Roads.Common;
 using Transit.Framework;
 using Transit.Framework.Builders;
-using Transit.Addon.RoadExtensions.PublicTransport.RailUtils;
-using System.Collections.Generic;
-using Transit.Framework.Network;
-using Transit.Addon.RoadExtensions.Roads.Common;
 using UnityEngine;
 
-namespace Transit.Addon.RoadExtensions.PublicTransport.Rail1LStation
+namespace SingleTrainTrack.Rail1LStation
 {
     public partial class Rail1LStationBuilder : Activable, INetInfoBuilderPart, INetInfoLateBuilder
     {
         public int Order { get { return 7; } }
         public int UIOrder { get { return 9; } }
 
-        public string BasedPrefabName { get { return "Train Station Track"; } }
+        public string BasedPrefabName { get { return Mod.TRAIN_STATION_TRACK; } }
         public string Name { get { return "Rail1LStation"; } }
-        public string DisplayName { get { return "Single Rail Station Track"; } }
+        public string DisplayName { get { return "Single One-Way Rail Station Track"; } }
         public string Description { get { return "A single one way rail track that can be connected to conventional rail."; } }
         public string ShortDescription { get { return "Single Rail Track"; } }
         public string UICategory { get { return "PublicTransportTrain"; } }
@@ -35,9 +32,7 @@ namespace Transit.Addon.RoadExtensions.PublicTransport.Rail1LStation
             ///////////////////////////
             // Template              //
             ///////////////////////////
-            //var highwayInfo = Prefabs.Find<NetInfo>(NetInfos.Vanilla.HIGHWAY_3L_SLOPE);
-            var railInfo = Prefabs.Find<NetInfo>("Train Station Track");
-            //var owRoadTunnelInfo = Prefabs.Find<NetInfo>(NetInfos.Vanilla.ONEWAY_2L_TUNNEL);
+            var railInfo = Prefabs.Find<NetInfo>(Mod.TRAIN_STATION_TRACK);
             info.m_class = railInfo.m_class.Clone("NExtSingleStationTrack");
             ///////////////////////////
             // 3DModeling            //
@@ -47,7 +42,7 @@ namespace Transit.Addon.RoadExtensions.PublicTransport.Rail1LStation
             ///////////////////////////
             // Texturing             //
             ///////////////////////////
-            SetupTextures(info, version);
+            Rail1LStationBuilder.SetupTextures(info, version);
 
             ///////////////////////////
             // Set up                //
@@ -99,7 +94,7 @@ namespace Transit.Addon.RoadExtensions.PublicTransport.Rail1LStation
             }
 
             var oldPlPropInfo = Prefabs.Find<PropInfo>("RailwayPowerline");
-            OneWayTrainTrack.NetInfoExtensions.ReplaceProps(info, plPropInfo, oldPlPropInfo);
+            SingleTrainTrack.NetInfoExtensions.ReplaceProps(info, plPropInfo, oldPlPropInfo);
             for (int i = 0; i < info.m_lanes.Count(); i++)
             {
                 var powerLineProp = info.m_lanes[i].m_laneProps.m_props.Where(p => p.m_prop == plPropInfo).ToList();
@@ -145,10 +140,7 @@ namespace Transit.Addon.RoadExtensions.PublicTransport.Rail1LStation
                     var bridgeAI = info.GetComponent<TrainTrackBridgeAI>();
                     if (bridgeAI != null)
                     {
-                        //bridgeAI.m_doubleLength = false;
                         bridgeAI.m_bridgePillarInfo = bpPropInfo;
-                        //bridgeAI.m_bridgePillarOffset = 1;
-                        //bridgeAI.m_middlePillarInfo = null;
                     }
                 }
             }

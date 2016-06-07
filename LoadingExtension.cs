@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using ICities;
-using Transit.Addon.RoadExtensions.PublicTransport.Rail1L;
-using Transit.Addon.RoadExtensions.PublicTransport.Rail1LStation;
 using Transit.Framework;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Rail1LBuilder = SingleTrainTrack.Rail1L.Rail1LBuilder;
+using Rail1LStationBuilder = SingleTrainTrack.Rail1LStation.Rail1LStationBuilder;
 
-namespace OneWayTrainTrack
+namespace SingleTrainTrack
 {
     public class LoadingExtension : LoadingExtensionBase
     {
@@ -46,7 +46,7 @@ namespace OneWayTrainTrack
             Done = true;
             if (Container == null)
             {
-                Container = new GameObject("OneWayTrainTrack").AddComponent<Initializer>();
+                Container = new GameObject("Rail1L").AddComponent<Initializer>();
             }
 
             Initializer.tracks = new List<KeyValuePair<NetInfo, NetInfoVersion>>();

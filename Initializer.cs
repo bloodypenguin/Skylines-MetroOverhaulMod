@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using ColossalFramework;
-using Transit.Addon.RoadExtensions.PublicTransport.Rail1L;
-using Transit.Addon.RoadExtensions.PublicTransport.Rail1LStation;
-using Transit.Addon.RoadExtensions.PublicTransport.RailUtils;
+using SingleTrainTrack.Meshes;
 using Transit.Framework;
+using Rail1LBuilder = SingleTrainTrack.Rail1L.Rail1LBuilder;
+using Rail1LStationBuilder = SingleTrainTrack.Rail1LStation.Rail1LStationBuilder;
 
-namespace OneWayTrainTrack
+namespace SingleTrainTrack
 {
     public class Initializer : AbstractInitializer
     {

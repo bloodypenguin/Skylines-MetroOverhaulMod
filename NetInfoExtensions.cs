@@ -3,7 +3,7 @@ using System.Linq;
 using Transit.Framework;
 using UnityEngine;
 
-namespace OneWayTrainTrack
+namespace SingleTrainTrack
 {
     public static class NetInfoExtensions
     {

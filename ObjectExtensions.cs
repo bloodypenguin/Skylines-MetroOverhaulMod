@@ -1,4 +1,4 @@
-﻿namespace OneWayTrainTrack
+﻿namespace SingleTrainTrack
 {
     public static class ObjectExtensions
     {
