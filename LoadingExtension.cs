@@ -24,7 +24,7 @@ namespace SingleTrainTrack
                 return;
             }
 
-            var path = Util.AssemblyDirectory;
+            var path = Util.AssemblyPath;
             foreach (var action in AssetManager.instance.CreateLoadingSequence(path))
             {
                 var localAction = action;
@@ -74,17 +74,24 @@ namespace SingleTrainTrack
                     ri.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
                 }
             }
-
-            var trackBuilder = new Rail1LBuilder();
-            foreach (var pair in Initializer.tracks)
+            try
             {
-                trackBuilder.LateBuildUp(pair.Key, pair.Value);
+                var trackBuilder = new Rail1LBuilder();
+                foreach (var pair in Initializer.tracks)
+                {
+                    trackBuilder.LateBuildUp(pair.Key, pair.Value);
+                }
+                Initializer.tracks = null;
+                var stationTrackBuilder = new Rail1LStationBuilder();
+                ;
+                foreach (var pair in Initializer.stationTracks)
+                {
+                    stationTrackBuilder.LateBuildUp(pair.Key, pair.Value);
+                }
             }
-            Initializer.tracks = null;
-            var stationTrackBuilder = new Rail1LStationBuilder();;
-            foreach (var pair in Initializer.stationTracks)
+            catch (Exception e)
             {
-                stationTrackBuilder.LateBuildUp(pair.Key, pair.Value);
+                throw new Exception($"{e.Message}\nMake sure the required prop is installed and is enabled in Content Manager!");
             }
             Initializer.stationTracks = null;
         }
