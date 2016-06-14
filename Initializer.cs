@@ -76,7 +76,7 @@ namespace SingleTrainTrack
             {
                 var buildUp = builder.GetType().GetMethod("BuildUp");
                 buildUp.Invoke(builder, new object[] {newPrefab, version});
-                newPrefab.Setup10mMesh(version);
+                //newPrefab.Setup10mMesh(version);
                 if (builder is Rail1LBuilder)
                 {
                     tracks.Add(new KeyValuePair<NetInfo, NetInfoVersion>(newPrefab, version));

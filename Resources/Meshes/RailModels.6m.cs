@@ -6,7 +6,7 @@ namespace SingleTrainTrack.Meshes
 {
     public static partial class RailModels
     {
-        public static void Setup10mMesh(this NetInfo info, NetInfoVersion version)
+        public static void Setup6mMesh(this NetInfo info, NetInfoVersion version)
         {
             ///////////////////////////
             // Template              //
@@ -40,56 +40,56 @@ namespace SingleTrainTrack.Meshes
                         segments0
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Pavement.obj",
-                            @"Meshes\10m\Ground_Pavement_LOD.obj");
+                            (@"Meshes\6m\Ground_Pavement.obj",
+                            @"Meshes\6m\Ground_Pavement_LOD.obj");
 
                         segments1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Rail.obj",
-                            @"Meshes\10m\Ground_Rail_LOD.obj");
+                            (@"Meshes\6m\Ground_Rail.obj",
+                            @"Meshes\6m\Ground_Rail_LOD.obj");
 
                         segments2
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Power.obj",
-                            @"Meshes\10m\Ground_Power.obj");
+                            (@"Meshes\6m\Ground_Power.obj",
+                            @"Meshes\6m\Ground_Power.obj");
 
                         nodes0
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Pavement_Node.obj",
-                            @"Meshes\10m\Ground_Pavement_Node_LOD.obj");
+                            (@"Meshes\6m\Ground_Pavement_Node.obj",
+                            @"Meshes\6m\Ground_Pavement_Node_LOD.obj");
 
                         nodes1
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Rail.obj",
-                            @"Meshes\10m\Ground_Rail_Node_LOD.obj");
+                            (@"Meshes\6m\Ground_Rail.obj",
+                            @"Meshes\6m\Ground_Rail_Node_LOD.obj");
 
                         nodes2
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Level_Crossing.obj",
-                            @"Meshes\10m\Ground_Level_Crossing_LOD.obj");
+                            (@"Meshes\6m\Ground_Level_Crossing.obj",
+                            @"Meshes\6m\Ground_Level_Crossing_LOD.obj");
 
 
                         nodes3
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Power.obj",
-                            @"Meshes\10m\Ground_Power.obj");
+                            (@"Meshes\6m\Ground_Power.obj",
+                            @"Meshes\6m\Ground_Power.obj");
                         nodes4
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Rail_Start.obj",
-                            @"Meshes\10m\Ground_Rail_Start_LOD.obj");
+                            (@"Meshes\6m\Ground_Rail_Start.obj",
+                            @"Meshes\6m\Ground_Rail_Start_LOD.obj");
                         nodes5
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Rail_End.obj",
-                            @"Meshes\10m\Ground_Rail_End_LOD.obj");
+                            (@"Meshes\6m\Ground_Rail_End.obj",
+                            @"Meshes\6m\Ground_Rail_End_LOD.obj");
                         nodes6
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Power_Start.obj",
-                            @"Meshes\10m\Ground_Power_Start.obj");
+                            (@"Meshes\6m\Ground_Power_Start.obj",
+                            @"Meshes\6m\Ground_Power_Start.obj");
                         nodes7
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Power_End.obj",
-                            @"Meshes\10m\Ground_Power_End.obj");
+                            (@"Meshes\6m\Ground_Power_End.obj",
+                            @"Meshes\6m\Ground_Power_End.obj");
 
                         var colors = new List<UnityEngine.Color>();
                         var colors32 = new List<UnityEngine.Color32>();
@@ -147,49 +147,49 @@ namespace SingleTrainTrack.Meshes
                         segments0
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\10m\Elevated_Pavement.obj",
-                            @"Meshes\10m\Elevated_Pavement_LOD.obj");
+                            (@"Meshes\6m\Elevated_Pavement.obj",
+                            @"Meshes\6m\Elevated_Pavement_LOD.obj");
 
                         segments1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Rail.obj",
-                            @"Meshes\10m\Ground_Rail_LOD.obj");
+                            (@"Meshes\6m\Ground_Rail.obj",
+                            @"Meshes\6m\Ground_Rail_LOD.obj");
 
                         segments2
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Power.obj",
-                            @"Meshes\10m\Ground_Power.obj");
+                            (@"Meshes\6m\Ground_Power.obj",
+                            @"Meshes\6m\Ground_Power.obj");
 
                         nodes0
                             .SetMeshes
-                            (@"Meshes\10m\Elevated_Pavement.obj",
-                            @"Meshes\10m\Elevated_Pavement_Node_LOD.obj");
+                            (@"Meshes\6m\Elevated_Pavement.obj",
+                            @"Meshes\6m\Elevated_Pavement_Node_LOD.obj");
 
                         nodes1
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Rail.obj",
-                            @"Meshes\10m\Ground_Rail_Node_LOD.obj");
+                            (@"Meshes\6m\Ground_Rail.obj",
+                            @"Meshes\6m\Ground_Rail_Node_LOD.obj");
                         nodes2
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Power.obj",
-                            @"Meshes\10m\Ground_Power.obj");
+                            (@"Meshes\6m\Ground_Power.obj",
+                            @"Meshes\6m\Ground_Power.obj");
                         nodes4
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Rail_Start.obj",
-                            @"Meshes\10m\Ground_Rail_Start_LOD.obj");
+                            (@"Meshes\6m\Ground_Rail_Start.obj",
+                            @"Meshes\6m\Ground_Rail_Start_LOD.obj");
                         nodes5
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Rail_End.obj",
-                            @"Meshes\10m\Ground_Rail_End_LOD.obj");
+                            (@"Meshes\6m\Ground_Rail_End.obj",
+                            @"Meshes\6m\Ground_Rail_End_LOD.obj");
                         nodes6
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Power_Start.obj",
-                            @"Meshes\10m\Ground_Power_Start.obj");
+                            (@"Meshes\6m\Ground_Power_Start.obj",
+                            @"Meshes\6m\Ground_Power_Start.obj");
                         nodes7
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Power_End.obj",
-                            @"Meshes\10m\Ground_Power_End.obj");
+                            (@"Meshes\6m\Ground_Power_End.obj",
+                            @"Meshes\6m\Ground_Power_End.obj");
 
                         var colors = new List<UnityEngine.Color>();
                         var colors32 = new List<UnityEngine.Color32>();
@@ -246,49 +246,49 @@ namespace SingleTrainTrack.Meshes
                         segments0
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\10m\Bridge_Pavement.obj",
-                            @"Meshes\10m\Bridge_Pavement_LOD.obj");
+                            (@"Meshes\6m\Bridge_Pavement.obj",
+                            @"Meshes\6m\Bridge_Pavement_LOD.obj");
 
                         segments1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Rail.obj",
-                            @"Meshes\10m\Ground_Rail_LOD.obj");
+                            (@"Meshes\6m\Ground_Rail.obj",
+                            @"Meshes\6m\Ground_Rail_LOD.obj");
 
                         segments2
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Power.obj",
-                            @"Meshes\10m\Ground_Power.obj");
+                            (@"Meshes\6m\Ground_Power.obj",
+                            @"Meshes\6m\Ground_Power.obj");
 
                         nodes0
                             .SetMeshes
-                            (@"Meshes\10m\Elevated_Pavement.obj",
-                            @"Meshes\10m\Elevated_Pavement_Node_LOD.obj");
+                            (@"Meshes\6m\Elevated_Pavement.obj",
+                            @"Meshes\6m\Elevated_Pavement_Node_LOD.obj");
 
                         nodes1
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Rail.obj",
-                            @"Meshes\10m\Ground_Rail_Node_LOD.obj");
+                            (@"Meshes\6m\Ground_Rail.obj",
+                            @"Meshes\6m\Ground_Rail_Node_LOD.obj");
                         nodes2
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Power.obj",
-                            @"Meshes\10m\Ground_Power.obj");
+                            (@"Meshes\6m\Ground_Power.obj",
+                            @"Meshes\6m\Ground_Power.obj");
                         nodes4
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Rail_Start.obj",
-                            @"Meshes\10m\Ground_Rail_Start_LOD.obj");
+                            (@"Meshes\6m\Ground_Rail_Start.obj",
+                            @"Meshes\6m\Ground_Rail_Start_LOD.obj");
                         nodes5
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Rail_End.obj",
-                            @"Meshes\10m\Ground_Rail_End_LOD.obj");
+                            (@"Meshes\6m\Ground_Rail_End.obj",
+                            @"Meshes\6m\Ground_Rail_End_LOD.obj");
                         nodes6
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Power_Start.obj",
-                            @"Meshes\10m\Ground_Power_Start.obj");
+                            (@"Meshes\6m\Ground_Power_Start.obj",
+                            @"Meshes\6m\Ground_Power_Start.obj");
                         nodes7
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Power_End.obj",
-                            @"Meshes\10m\Ground_Power_End.obj");
+                            (@"Meshes\6m\Ground_Power_End.obj",
+                            @"Meshes\6m\Ground_Power_End.obj");
 
                         var colors = new List<UnityEngine.Color>();
                         var colors32 = new List<UnityEngine.Color32>();
@@ -391,56 +391,56 @@ namespace SingleTrainTrack.Meshes
 
                         segments0
                             .SetMeshes
-                            (@"Meshes\10m\Tunnel.obj",
-                            @"Meshes\10m\Tunnel_Node_LOD.obj");
+                            (@"Meshes\6m\Tunnel.obj",
+                            @"Meshes\6m\Tunnel_Node_LOD.obj");
                         segments1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Rail.obj",
-                            @"Meshes\10m\Ground_Rail_LOD.obj");
+                            (@"Meshes\6m\Ground_Rail.obj",
+                            @"Meshes\6m\Ground_Rail_LOD.obj");
 
                         segments2
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Power.obj",
-                            @"Meshes\10m\Ground_Power.obj");
+                            (@"Meshes\6m\Ground_Power.obj",
+                            @"Meshes\6m\Ground_Power.obj");
                         segments4
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Pavement.obj",
-                            @"Meshes\10m\Ground_Pavement_LOD.obj");
+                            (@"Meshes\6m\Ground_Pavement.obj",
+                            @"Meshes\6m\Ground_Pavement_LOD.obj");
 
                         nodes0
                             .SetMeshes
-                            (@"Meshes\10m\Tunnel_Node.obj",
-                            @"Meshes\10m\Tunnel_Node_LOD.obj");
+                            (@"Meshes\6m\Tunnel_Node.obj",
+                            @"Meshes\6m\Tunnel_Node_LOD.obj");
 
                         nodes1
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Rail.obj",
-                            @"Meshes\10m\Ground_Rail_Node_LOD.obj");
+                            (@"Meshes\6m\Ground_Rail.obj",
+                            @"Meshes\6m\Ground_Rail_Node_LOD.obj");
                         nodes2
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Power.obj",
-                            @"Meshes\10m\Ground_Power.obj");
+                            (@"Meshes\6m\Ground_Power.obj",
+                            @"Meshes\6m\Ground_Power.obj");
                         nodes3
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Pavement_Node.obj",
-                            @"Meshes\10m\Ground_Pavement_Node_LOD.obj");
+                            (@"Meshes\6m\Ground_Pavement_Node.obj",
+                            @"Meshes\6m\Ground_Pavement_Node_LOD.obj");
                         nodes5
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Rail_Start.obj",
-                            @"Meshes\10m\Ground_Rail_Start_LOD.obj");
+                            (@"Meshes\6m\Ground_Rail_Start.obj",
+                            @"Meshes\6m\Ground_Rail_Start_LOD.obj");
                         nodes6
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Rail_End.obj",
-                            @"Meshes\10m\Ground_Rail_End_LOD.obj");
+                            (@"Meshes\6m\Ground_Rail_End.obj",
+                            @"Meshes\6m\Ground_Rail_End_LOD.obj");
                         nodes7
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Power_Start.obj",
-                            @"Meshes\10m\Ground_Power_Start.obj");
+                            (@"Meshes\6m\Ground_Power_Start.obj",
+                            @"Meshes\6m\Ground_Power_Start.obj");
                         nodes8
                             .SetMeshes
-                            (@"Meshes\10m\Ground_Power_End.obj",
-                            @"Meshes\10m\Ground_Power_End.obj");
+                            (@"Meshes\6m\Ground_Power_End.obj",
+                            @"Meshes\6m\Ground_Power_End.obj");
 
                         var colors = new List<UnityEngine.Color>();
                         var colors32 = new List<UnityEngine.Color32>();
@@ -480,13 +480,13 @@ namespace SingleTrainTrack.Meshes
 
                         segments0
                             .SetMeshes
-                            (@"Meshes\10m\Tunnel.obj",
-                            @"Meshes\10m\Tunnel_Node_LOD.obj");
+                            (@"Meshes\6m\Tunnel.obj",
+                            @"Meshes\6m\Tunnel_Node_LOD.obj");
 
                         nodes0
                             .SetMeshes
-                            (@"Meshes\10m\Tunnel_Node.obj",
-                            @"Meshes\10m\Tunnel_Node_LOD.obj");
+                            (@"Meshes\6m\Tunnel_Node.obj",
+                            @"Meshes\6m\Tunnel_Node_LOD.obj");
 
                         info.m_segments = new[] { segments0 };
                         info.m_nodes = new[] { nodes0 };
