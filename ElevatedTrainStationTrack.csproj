@@ -93,6 +93,7 @@
     <None Include="Assets\Rail1LPowerLine.crp" />
     <None Include="Resources\Textures\Rail1LStation\infotooltip.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\6m\Bridge_Pavement.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
