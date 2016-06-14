@@ -5,6 +5,7 @@ using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.Plugins;
+using ColossalFramework.Steamworks;
 using ICities;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -44,7 +45,19 @@ namespace SingleTrainTrack
             return newPrefab;
         }
 
-        public static string AssemblyDirectory
+        public static string PackageName(string assetName)
+        {
+            var publishedFileID = PluginInfo.publishedFileID.ToString();
+            if (publishedFileID.Equals(PublishedFileId.invalid.ToString()))
+            {
+                return assetName;
+            }
+            return publishedFileID;
+        }
+
+        public static string AssemblyPath => PluginInfo.modPath;
+
+        private static PluginManager.PluginInfo PluginInfo
         {
             get
             {
@@ -60,14 +73,14 @@ namespace SingleTrainTrack
                         {
                             continue;
                         }
-                        return item.modPath;
+                        return item;
                     }
                     catch
                     {
-                        
+
                     }
                 }
-                throw new Exception("Failed to find OneWayTrainTrack assembly!");
+                throw new Exception("Failed to find SingleTrainTrack assembly!");
 
             }
         }

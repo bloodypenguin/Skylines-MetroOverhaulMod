@@ -62,12 +62,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
     </Reference>
-    <Reference Include="ObjUnity3D, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\ObjUnity3D.dll</HintPath>
+    <Reference Include="ObjUnity3D">
+      <HintPath>C:\Games\Steam\steamapps\workshop\content\255710\478820060\ObjUnity3D.dll</HintPath>
     </Reference>
-    <Reference Include="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="System">
       <HintPath>..\..\..\..\..\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\System.dll</HintPath>
     </Reference>
     <Reference Include="Transit.Addon.RoadExtensions">
@@ -90,6 +88,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Rail1LBridgePillar.crp" />
+    <None Include="Assets\Rail1LElevatedPillar.crp" />
+    <None Include="Assets\Rail1LPowerLine.crp" />
+    <None Include="Resources\Textures\Rail1LStation\infotooltip.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     <None Include="Resources\Meshes\6m\Bridge_Pavement.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -246,8 +249,12 @@
   <PropertyGroup>
     <PostBuildEvent>rmdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)" /s /q
 mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)"
+rmdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Assets\$(TargetName)" /s /q
+mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Assets\$(TargetName)"
 xcopy /y "$(TargetPath)" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)"
-xcopy "$(ProjectDir)\Resources" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)" /s /e</PostBuildEvent>
+xcopy "$(ProjectDir)\Resources" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)" /s /e
+xcopy "$(ProjectDir)\Assets" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Assets\$(TargetName)" /s /e
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

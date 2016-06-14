@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using SingleTrainTrack.Meshes;
 using Transit.Addon.RoadExtensions.Roads.Common;
 using Transit.Framework;
@@ -92,10 +93,10 @@ namespace SingleTrainTrack.Rail1L
 
         public void LateBuildUp(NetInfo info, NetInfoVersion version)
         {
-            var plPropInfo = PrefabCollection<PropInfo>.FindLoaded("Rail1LPowerLine.Rail1LPowerLine_Data");
+            var plPropInfo = PrefabCollection<PropInfo>.FindLoaded($"{Util.PackageName("Rail1LPowerLine")}.Rail1LPowerLine_Data");
             if (plPropInfo == null)
             {
-                plPropInfo = PrefabCollection<PropInfo>.FindLoaded("478820060.Rail1LPowerLine_Data");
+                throw new Exception($"{info.name}: Rail1LPowerLine prop not found!");
             }
             var oldPlPropInfo = Prefabs.Find<PropInfo>("RailwayPowerline");
             SingleTrainTrack.NetInfoExtensions.ReplaceProps(info, plPropInfo, oldPlPropInfo);
@@ -111,11 +112,11 @@ namespace SingleTrainTrack.Rail1L
 
             if (version == NetInfoVersion.Elevated)
             {
-                var epPropInfo = PrefabCollection<BuildingInfo>.FindLoaded("478820060.Rail1LElevatedPillar_Data");
+                var epPropInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Rail1LElevatedPillar")}.Rail1LElevatedPillar_Data");
 
                 if (epPropInfo == null)
                 {
-                    epPropInfo = PrefabCollection<BuildingInfo>.FindLoaded("Rail1LElevatedPillar.Rail1LElevatedPillar_Data");
+                    throw new Exception($"{info.name}: Rail1LElevatedPillar prop not found!");
                 }
 
                 if (epPropInfo != null)
@@ -132,11 +133,11 @@ namespace SingleTrainTrack.Rail1L
             }
             else if (version == NetInfoVersion.Bridge)
             {
-                var bpPropInfo = PrefabCollection<BuildingInfo>.FindLoaded("478820060.Rail1LBridgePillar_Data");
+                var bpPropInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Rail1LBridgePillar")}.Rail1LBridgePillar_Data");
 
                 if (bpPropInfo == null)
                 {
-                    bpPropInfo = PrefabCollection<BuildingInfo>.FindLoaded("Rail1LBridgePillar.Rail1LBridgePillar_Data");
+                    throw new Exception($"{info.name}: Rail1LBridgePillar prop not found!");
                 }
 
                 if (bpPropInfo != null)
