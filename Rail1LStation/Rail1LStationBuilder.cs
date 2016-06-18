@@ -37,7 +37,7 @@ namespace SingleTrainTrack.Rail1LStation
             ///////////////////////////
             // 3DModeling            //
             ///////////////////////////
-            info.Setup10mStationMesh(version);
+            info.Setup6mStationMesh(version);
 
             ///////////////////////////
             // Texturing             //
