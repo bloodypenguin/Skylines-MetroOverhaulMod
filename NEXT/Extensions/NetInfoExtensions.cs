@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Transit.Framework;
 using UnityEngine;
 
-namespace SingleTrainTrack
+namespace SingleTrainTrack.NEXT.Extensions
 {
-    public static class NetInfoExtensions
+    public static partial class NetInfoExtensions
     {
         public static void ReplaceProps(NetInfo info, PropInfo newPropInfo, PropInfo oldPropInfo)
         {

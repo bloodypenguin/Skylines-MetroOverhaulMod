@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using ColossalFramework;
 using SingleTrainTrack.Meshes;
-using Transit.Framework;
+using SingleTrainTrack.NEXT;
 using Rail1LBuilder = SingleTrainTrack.Rail1L.Rail1LBuilder;
 using Rail1LStationBuilder = SingleTrainTrack.Rail1LStation.Rail1LStationBuilder;
 

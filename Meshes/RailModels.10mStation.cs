@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using Transit.Framework;
+using SingleTrainTrack.NEXT;
+using SingleTrainTrack.NEXT.Extensions;
 
 namespace SingleTrainTrack.Meshes
 {

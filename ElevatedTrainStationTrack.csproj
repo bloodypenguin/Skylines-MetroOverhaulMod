@@ -40,7 +40,34 @@
     <Compile Include="Meshes\RailModels.10m.cs" />
     <Compile Include="Meshes\RailModels.10mStation.cs" />
     <Compile Include="Mod.cs" />
-    <Compile Include="NetInfoExtensions.cs" />
+    <Compile Include="NEXT\Extensions\NetInfoExtensions.cs" />
+    <Compile Include="NEXT\CenterLaneType.cs" />
+    <Compile Include="NEXT\Extensions\CloningExtensions.cs" />
+    <Compile Include="NEXT\Extensions\EnumExtensions.cs" />
+    <Compile Include="NEXT\Extensions\ItemClassExtensions.cs" />
+    <Compile Include="NEXT\Extensions\MaterialExtensions.cs" />
+    <Compile Include="NEXT\Extensions\NetInfoExtensions.Lane.cs" />
+    <Compile Include="NEXT\Extensions\NetInfoExtensions.Node.cs" />
+    <Compile Include="NEXT\Extensions\NetInfoExtensions.Segment.cs" />
+    <Compile Include="NEXT\Extensions\NetLanePropsExtensions.cs" />
+    <Compile Include="NEXT\Extensions\TextureSetExtensions.cs" />
+    <Compile Include="NEXT\LanesConfiguration.cs" />
+    <Compile Include="NEXT\NetInfoVersion.cs" />
+    <Compile Include="NEXT\Prefabs.cs" />
+    <Compile Include="NEXT\AssetManager.cs" />
+    <Compile Include="NEXT\RoadHelper.LaneSetup.cs" />
+    <Compile Include="NEXT\Texturing\ITextureBlenderComponent.cs" />
+    <Compile Include="NEXT\Texturing\ITextureProvider.cs" />
+    <Compile Include="NEXT\Texturing\PathTextureProvider.cs" />
+    <Compile Include="NEXT\Texturing\Point.cs" />
+    <Compile Include="NEXT\Texturing\TextureBlender.Component.Alpha.cs" />
+    <Compile Include="NEXT\Texturing\TextureBlender.Component.Color.cs" />
+    <Compile Include="NEXT\Texturing\TextureBlender.Component.cs" />
+    <Compile Include="NEXT\Texturing\TextureBlender.Component.Texture.cs" />
+    <Compile Include="NEXT\Texturing\TextureBlender.Component.XOffset.cs" />
+    <Compile Include="NEXT\Texturing\TextureBlender.cs" />
+    <Compile Include="NEXT\Texturing\TextureHelper.cs" />
+    <Compile Include="NEXT\Texturing\TextureSet.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rail1LStation\Rail1LStationBuilder.cs" />
@@ -64,21 +91,6 @@
     </Reference>
     <Reference Include="System">
       <HintPath>..\..\..\..\..\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\System.dll</HintPath>
-    </Reference>
-    <Reference Include="Transit.Addon.RoadExtensions">
-      <HintPath>C:\Games\Steam\steamapps\workshop\content\255710\478820060\Transit.Addon.RoadExtensions.dll</HintPath>
-    </Reference>
-    <Reference Include="Transit.Framework">
-      <HintPath>C:\Games\Steam\steamapps\workshop\content\255710\478820060\Transit.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="Transit.Framework.ExtensionPoints">
-      <HintPath>C:\Games\Steam\steamapps\workshop\content\255710\478820060\Transit.Framework.ExtensionPoints.dll</HintPath>
-    </Reference>
-    <Reference Include="Transit.Framework.Hooks">
-      <HintPath>C:\Games\Steam\steamapps\workshop\content\255710\478820060\Transit.Framework.Hooks.dll</HintPath>
-    </Reference>
-    <Reference Include="Transit.Framework.Redirection">
-      <HintPath>C:\Games\Steam\steamapps\workshop\content\255710\478820060\Transit.Framework.Redirection.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>

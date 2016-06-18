@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Linq;
 using SingleTrainTrack.Meshes;
-using Transit.Addon.RoadExtensions.Roads.Common;
-using Transit.Framework;
-using Transit.Framework.Builders;
+using SingleTrainTrack.NEXT;
+using SingleTrainTrack.NEXT.Extensions;
 using UnityEngine;
 
 namespace SingleTrainTrack.Rail1L
 {
-    public partial class Rail1LBuilder : Activable, INetInfoBuilderPart, INetInfoLateBuilder
+    public partial class Rail1LBuilder
     {
         public int Order { get { return 7; } }
         public int UIOrder { get { return 9; } }
@@ -99,7 +98,7 @@ namespace SingleTrainTrack.Rail1L
                 throw new Exception($"{info.name}: Rail1LPowerLine prop not found!");
             }
             var oldPlPropInfo = Prefabs.Find<PropInfo>("RailwayPowerline");
-            SingleTrainTrack.NetInfoExtensions.ReplaceProps(info, plPropInfo, oldPlPropInfo);
+            NetInfoExtensions.ReplaceProps(info, plPropInfo, oldPlPropInfo);
             for (int i = 0; i < info.m_lanes.Count(); i++)
             {
                 var powerLineProp = info.m_lanes[i].m_laneProps.m_props.Where(p => p.m_prop == plPropInfo).ToList();
