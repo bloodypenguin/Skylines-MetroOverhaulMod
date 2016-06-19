@@ -37,8 +37,11 @@
     <Compile Include="Initializer.cs" />
     <Compile Include="Loading.cs" />
     <Compile Include="LoadingExtension.cs" />
-    <Compile Include="Resources\Meshes\RailModels.6m.cs" />
-    <Compile Include="Resources\Meshes\RailModels.6mStation.cs" />
+    <Compile Include="NEXT\Extensions\AssetManagerExtensions.cs" />
+    <Compile Include="NEXT\Extensions\PrefabInfoExtensions.cs" />
+    <Compile Include="NEXT\Extensions\TextureExtensions.cs" />
+    <Compile Include="Common\RailModels.6m.cs" />
+    <Compile Include="Common\RailModels.6mStation.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="NEXT\Extensions\NetInfoExtensions.cs" />
     <Compile Include="NEXT\CenterLaneType.cs" />

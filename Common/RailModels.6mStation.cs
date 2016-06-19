@@ -2,7 +2,7 @@
 using SingleTrainTrack.NEXT;
 using SingleTrainTrack.NEXT.Extensions;
 
-namespace SingleTrainTrack.Meshes
+namespace SingleTrainTrack.Common
 {
     public static partial class RailModels
     {

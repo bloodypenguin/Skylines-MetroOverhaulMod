@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using ColossalFramework;
-using SingleTrainTrack.Meshes;
 using SingleTrainTrack.NEXT;
+using SingleTrainTrack.NEXT.Extensions;
 using Rail1LBuilder = SingleTrainTrack.Rail1L.Rail1LBuilder;
 using Rail1LStationBuilder = SingleTrainTrack.Rail1LStation.Rail1LStationBuilder;
 
@@ -64,11 +64,39 @@ namespace SingleTrainTrack
                 CreatePrefab(newPrefabName, originalPrefabName,
                     SetupOneWayPrefabAction().Apply(trackBuilder).Apply(version)
                         .Chain(action)
-                        .Chain(AddPairAction().Apply(version).Apply(tracks)));
+                        .Chain(AddPairAction().Apply(version).Apply(tracks))
+                        .Chain(SetupUIAction().Apply(trackBuilder))
+                        );
                 Util.AddLocale("NET", trackBuilder.GetPropery<string>("Name"), trackBuilder.GetPropery<string>("DisplayName"), trackBuilder.GetPropery<string>("Description"));
 
             }
         }
+
+
+        private static Action<NetInfo, object> SetupUIAction()
+        {
+            return (info, trackBuilder) =>
+            {
+                info.m_UIPriority = trackBuilder.GetPropery<int>("UIOrder");
+                info.SetUICategory(trackBuilder.GetPropery<string>("UICategory"));
+
+                if (!trackBuilder.GetPropery<string>("ThumbnailsPath").IsNullOrWhiteSpace())
+                {
+                    var thumbnails = AssetManager.instance.GetThumbnails(trackBuilder.GetPropery<string>("Name"), trackBuilder.GetPropery<string>("ThumbnailsPath"));
+                    info.m_Atlas = thumbnails;
+                    info.m_Thumbnail = thumbnails.name;
+                }
+
+                if (!trackBuilder.GetPropery<string>("InfoTooltipPath").IsNullOrWhiteSpace())
+                {
+                    var infoTips = AssetManager.instance.GetInfoTooltip(trackBuilder.GetPropery<string>("Name"), trackBuilder.GetPropery<string>("InfoTooltipPath"));
+                    info.m_InfoTooltipAtlas = infoTips;
+                    info.m_InfoTooltipThumbnail = infoTips.name;
+
+                }
+            };
+        }
+
 
         private static Action<NetInfo, object, NetInfoVersion> SetupOneWayPrefabAction()
         {
