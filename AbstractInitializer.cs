@@ -48,8 +48,16 @@ namespace SingleTrainTrack
             }
             Loading.QueueLoadingAction(() =>
             {
+                try
+                {
                 InitializeImpl();
                 PrefabCollection<NetInfo>.InitializePrefabs("Rail Extensions", _customPrefabs.Values.ToArray(), null);
+                }
+                catch(Exception ex)
+                {
+                    Debug.Log(ex.Message);
+                    Debug.Log(ex.ToString());
+                }
             });
             _isInitialized = true;
         }
@@ -62,7 +70,7 @@ namespace SingleTrainTrack
 
             if (originalPrefab == null)
             {
-                Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Prefab '{0}' not found (required for '{1}')", originalPrefabName, newPrefabName);
+                UnityEngine.Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Prefab '{0}' not found (required for '{1}')", originalPrefabName, newPrefabName);
                 return;
             }
             if (_customPrefabs.ContainsKey(newPrefabName))
@@ -72,7 +80,7 @@ namespace SingleTrainTrack
             var newPrefab = Util.ClonePrefab(originalPrefab, newPrefabName, transform);
             if (newPrefab == null)
             {
-                Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Couldn't make prefab '{0}'", newPrefabName);
+                UnityEngine.Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Couldn't make prefab '{0}'", newPrefabName);
                 return;
             }
             setupAction.Invoke(newPrefab);

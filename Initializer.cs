@@ -5,6 +5,7 @@ using SingleTrainTrack.NEXT;
 using SingleTrainTrack.NEXT.Extensions;
 using Rail1LBuilder = SingleTrainTrack.Rail1L.Rail1LBuilder;
 using Rail1LStationBuilder = SingleTrainTrack.Rail1LStation.Rail1LStationBuilder;
+using Rail2LOWBuilder = DoubleTrainTrack.Rail2LOW.Rail2LOWBuilder;
 
 namespace SingleTrainTrack
 {
@@ -13,11 +14,13 @@ namespace SingleTrainTrack
 
         public static List<KeyValuePair<NetInfo, NetInfoVersion>> tracks;
         public static List<KeyValuePair<NetInfo, NetInfoVersion>> stationTracks;
+        public static List<KeyValuePair<NetInfo, NetInfoVersion>> tracks2LOW;
 
         protected override void InitializeImpl()
         {
             InitializeByBuilder(new Rail1LBuilder(), tracks);
             InitializeByBuilder(new Rail1LStationBuilder(), tracks);
+            InitializeByBuilder(new Rail2LOWBuilder(), tracks);
         }
 
         private void InitializeByBuilder(object trackBuilder, List<KeyValuePair<NetInfo, NetInfoVersion>> tracks)
@@ -35,9 +38,9 @@ namespace SingleTrainTrack
                 {
                     continue;
                 }
-                var versionString = version == NetInfoVersion.Ground ? string.Empty : $" {version}";
-                var newPrefabName = $"{trackBuilder.GetPropery<string>("Name")}{versionString}";
-                var originalPrefabName = $"{trackBuilder.GetPropery<string>("BasedPrefabName")}{versionString}";
+                //var versionString = version == NetInfoVersion.Ground ? string.Empty : $" {version}";
+                var newPrefabName = SharedHelpers.NameBuilder(trackBuilder.GetPropery<string>("Name"), version);//$"{trackBuilder.GetPropery<string>("Name")}{versionString}";
+                var originalPrefabName = SharedHelpers.NameBuilder(trackBuilder.GetPropery<string>("BasedPrefabName"), version);
 
                 UnityEngine.Debug.Log($"{originalPrefabName}=>{newPrefabName}");
                 Action<NetInfo> action;
@@ -105,7 +108,7 @@ namespace SingleTrainTrack
                 var buildUp = builder.GetType().GetMethod("BuildUp");
                 buildUp.Invoke(builder, new object[] {newPrefab, version});
                 //newPrefab.Setup10mMesh(version);
-                if (builder is Rail1LBuilder)
+                if (builder is Rail1LBuilder || builder is Rail2LOWBuilder)
                 {
                     tracks.Add(new KeyValuePair<NetInfo, NetInfoVersion>(newPrefab, version));
                 }

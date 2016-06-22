@@ -8,6 +8,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using Rail1LBuilder = SingleTrainTrack.Rail1L.Rail1LBuilder;
 using Rail1LStationBuilder = SingleTrainTrack.Rail1LStation.Rail1LStationBuilder;
+using DoubleTrainTrack.Rail2LOW;
 
 namespace SingleTrainTrack
 {
@@ -79,21 +80,26 @@ namespace SingleTrainTrack
                 var trackBuilder = new Rail1LBuilder();
                 foreach (var pair in Initializer.tracks)
                 {
-                    trackBuilder.LateBuildUp(pair.Key, pair.Value);
+                    if (pair.Key.m_halfWidth < 4)
+                        trackBuilder.LateBuildUp(pair.Key, pair.Value);
                 }
                 Initializer.tracks = null;
                 var stationTrackBuilder = new Rail1LStationBuilder();
-                ;
+
                 foreach (var pair in Initializer.stationTracks)
                 {
                     stationTrackBuilder.LateBuildUp(pair.Key, pair.Value);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw new Exception($"{e.Message}\nMake sure the required prop is installed and is enabled in Content Manager!");
+                //Debug.Log(string.Format("REx: Crashed-Network builder {0}", builder.Name));
+                Debug.Log("APT: " + ex.Message);
+                Debug.Log("APT: " + ex.ToString());
+                //throw new Exception($"{e.Message}\nMake sure the required prop is installed and is enabled in Content Manager!");
             }
             Initializer.stationTracks = null;
+            ModifyExistingNetInfos.ModifyExistingIcons();
         }
 
         public override void OnReleased()

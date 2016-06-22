@@ -34,10 +34,14 @@
   <ItemGroup>
     <Compile Include="AbstractInitializer.cs" />
     <Compile Include="ActionExtensions.cs" />
+    <Compile Include="Common\RailModels.10m.cs" />
+    <Compile Include="Debug.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="Loading.cs" />
     <Compile Include="LoadingExtension.cs" />
+    <Compile Include="ModifyExistingNetInfos.cs" />
     <Compile Include="NEXT\Extensions\AssetManagerExtensions.cs" />
+    <Compile Include="NEXT\Extensions\LocaleManagerExtensions.cs" />
     <Compile Include="NEXT\Extensions\PrefabInfoExtensions.cs" />
     <Compile Include="NEXT\Extensions\TextureExtensions.cs" />
     <Compile Include="Common\RailModels.6m.cs" />
@@ -77,6 +81,8 @@
     <Compile Include="Rail1LStation\Rail1LStationBuilder.Texturing.cs" />
     <Compile Include="Rail1L\Rail1LBuilder.cs" />
     <Compile Include="Rail1L\Rail1LBuilder.Texturing.cs" />
+    <Compile Include="Rail2LOW\Rail2LOWBuilder.cs" />
+    <Compile Include="SharedHelpers.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +112,18 @@
     <None Include="Assets\Rail1LBridgePillar.crp" />
     <None Include="Assets\Rail1LElevatedPillar.crp" />
     <None Include="Assets\Rail1LPowerLine.crp" />
+    <None Include="Resources\Meshes\10m\Ground_Power_End.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Ground_Power_Start.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\RailEnd.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\RailStart.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Textures\Rail1LStation\infotooltip.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -226,9 +244,9 @@
     <None Include="Resources\Textures\Rail1LStation\thumbnails.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\Textures\Rail1L\infotooltip.png">
+    <Content Include="Resources\Textures\Rail1L\infotooltip.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="Resources\Textures\Rail1L\Ground_Segment_Pavement__AlphaMap.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -256,11 +274,24 @@
     <None Include="Resources\Textures\Rail1L\Tunnel_Segment__MainTex.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\Textures\Rail1L\thumbnails.png">
+    <Content Include="Resources\Textures\Rail1L\thumbnails.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Content Include="Resources\Textures\Rail2LOW\infotooltip.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Textures\Rail2LOW\thumbnails.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Textures\Rail2L\thumbnails.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>rmdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)" /s /q

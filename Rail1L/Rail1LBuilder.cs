@@ -14,8 +14,8 @@ namespace SingleTrainTrack.Rail1L
 
         public string BasedPrefabName { get { return Mod.TRAIN_TRACK; } }
         public string Name { get { return "Rail1L"; } }
-        public string DisplayName { get { return "Single One-Way Rail Track"; } }
-        public string Description { get { return "A single one way rail track that can be connected to conventional rail."; } }
+        public string DisplayName { get { return "Single One-Way Rail"; } }
+        public string Description { get { return "A single one-way rail track that can be connected to conventional rail."; } }
         public string ShortDescription { get { return "Single Rail Track"; } }
         public string UICategory { get { return "PublicTransportTrain"; } }
 
@@ -32,9 +32,9 @@ namespace SingleTrainTrack.Rail1L
             ///////////////////////////
             // Template              //
             ///////////////////////////
-            var railVersionName = string.Format("{0} {1}", Mod.TRAIN_TRACK, (version == NetInfoVersion.Ground ? string.Empty : version.ToString())).Trim();
+            var railVersionName = SharedHelpers.NameBuilder(SharedHelpers.TRAIN_TRACK, version);
             var railInfo = Prefabs.Find<NetInfo>(railVersionName);
-            info.m_class = railInfo.m_class.Clone("NExtSingleTrack");
+            info.m_class = railInfo.m_class.Clone("APT" + railVersionName);
             ///////////////////////////
             // 3DModeling            //
             ///////////////////////////
@@ -60,11 +60,11 @@ namespace SingleTrainTrack.Rail1L
                 info.m_halfWidth = 3;
             }
             
-            if (version == NetInfoVersion.Tunnel)
-            {
-                info.m_setVehicleFlags = Vehicle.Flags.Transition;
-                info.m_setCitizenFlags = CitizenInstance.Flags.Transition;
-            }
+            //if (version == NetInfoVersion.Tunnel)
+            //{
+            //    info.m_setVehicleFlags = Vehicle.Flags.Transition;
+            //    info.m_setCitizenFlags = CitizenInstance.Flags.Transition;
+            //}
 
             info.SetRoadLanes(version, new LanesConfiguration()
             {
@@ -78,8 +78,8 @@ namespace SingleTrainTrack.Rail1L
             var playerNetAI = info.GetComponent<PlayerNetAI>();
             if (owPlayerNetAI != null && playerNetAI != null)
             {
-                playerNetAI.m_constructionCost = owPlayerNetAI.m_constructionCost * 3 / 2; 
-                playerNetAI.m_maintenanceCost = owPlayerNetAI.m_maintenanceCost * 3 / 2; 
+                playerNetAI.m_constructionCost = owPlayerNetAI.m_constructionCost * 1 / 2; 
+                playerNetAI.m_maintenanceCost = owPlayerNetAI.m_maintenanceCost * 1 / 2; 
             }
 
             var trainTrackAI = info.GetComponent<TrainTrackAI>();

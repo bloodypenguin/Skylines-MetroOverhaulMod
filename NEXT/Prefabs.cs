@@ -21,5 +21,10 @@ namespace SingleTrainTrack.NEXT
 
             return prefab;
         }
+
+        internal static object Find<T>(object tRAINTRACK)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

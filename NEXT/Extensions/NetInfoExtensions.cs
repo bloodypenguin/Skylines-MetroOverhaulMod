@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using ColossalFramework;
+using ColossalFramework.Globalization;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -45,6 +47,23 @@ namespace SingleTrainTrack.NEXT.Extensions
                     newProps.m_props = newPropsContent.ToArray();
                     lane.m_laneProps = newProps;
                 }
+            }
+        }
+        public static void ModifyTitle(this NetInfo info, string newTitle)
+        {
+            var localizedStringsField = typeof(Locale).GetFieldByName("m_LocalizedStrings");
+            var locale = SingletonLite<LocaleManager>.instance.GetLocale();
+            var localizedStrings = (Dictionary<Locale.Key, string>)localizedStringsField.GetValue(locale);
+
+            var kvp =
+                localizedStrings
+                .FirstOrDefault(kvpInternal =>
+                    kvpInternal.Key.m_Identifier == "NET_TITLE" &&
+                    kvpInternal.Key.m_Key == info.name);
+
+            if (!Equals(kvp, default(KeyValuePair<Locale.Key, string>)))
+            {
+                localizedStrings[kvp.Key] = newTitle;
             }
         }
     }
