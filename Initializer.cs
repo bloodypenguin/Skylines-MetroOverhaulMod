@@ -9,11 +9,14 @@ namespace MetroOverhaul
         {
             CreatePrefab("Metro Track Ground", "Train Track", SetupMetroTrack().Chain(p =>
             {
-                p.GetComponent<TrainTrackAI>().m_tunnelInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+                var mTunnelInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+                p.GetComponent<TrainTrackAI>().m_tunnelInfo = mTunnelInfo;
+                p.m_InfoTooltipAtlas = mTunnelInfo.m_InfoTooltipAtlas;
+                p.m_InfoTooltipThumbnail = mTunnelInfo.m_InfoTooltipThumbnail;
+                p.m_Thumbnail = mTunnelInfo.m_Thumbnail;
                 CreatePrefab("Metro Track Slope", "Train Track Slope", SetupMetroTrack().Chain(p1 => p.GetComponent<TrainTrackAI>().m_slopeInfo = p1));
                 CreatePrefab("Metro Track Bridge", "Train Track Bridge", SetupMetroTrack().Chain(p2 => p.GetComponent<TrainTrackAI>().m_bridgeInfo = p2));
                 CreatePrefab("Metro Track Elevated", "Train Track Elevated", SetupMetroTrack().Chain(p3 => p.GetComponent<TrainTrackAI>().m_elevatedInfo = p3));
-                //CreatePrefab("Metro Track Tunnel", "Train Track Tunnel", SetupMetroTrack().Chain(p4 => p.GetComponent<TrainTrackAI>().m_tunnelInfo = p4));
             }));
         }
 
