@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace ElevatedTrainStationTrack
+namespace MetroOverhaul
 {
     public abstract class AbstractInitializer : MonoBehaviour
     {

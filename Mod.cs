@@ -1,10 +1,14 @@
-﻿using ICities;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using ICities;
 
-namespace ElevatedTrainStationTrack
+namespace MetroOverhaul
 {
     public class Mod : IUserMod
     {
-        public string Name => "Extra Train Station Tracks";
-        public string Description => "Provides more types of train station tracks";
+        public string Name => "Metro Overhaul";
+        public string Description => "Metro Overhaul";
     }
 }

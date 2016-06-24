@@ -5,11 +5,10 @@ using System.Linq;
 using System.Reflection;
 using ColossalFramework.Plugins;
 using ICities;
-using ObjUnity3D;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace ElevatedTrainStationTrack
+namespace MetroOverhaul
 {
     public static class Util
     {
@@ -32,18 +31,18 @@ namespace ElevatedTrainStationTrack
             return type.GetAllFieldsFromType().Where(p => p.Name == name).FirstOrDefault();
         }
 
-        public static Mesh LoadMesh(string fullPath, string meshName)
-        {
-            var mesh = new Mesh();
-            using (var fileStream = File.Open(fullPath, FileMode.Open))
-            {
-                mesh.LoadOBJ(OBJLoader.LoadOBJ(fileStream));
-            }
-            mesh.Optimize();
-            mesh.name = meshName;
-
-            return mesh;
-        }
+//        public static Mesh LoadMesh(string fullPath, string meshName)
+//        {
+//            var mesh = new Mesh();
+//            using (var fileStream = File.Open(fullPath, FileMode.Open))
+//            {
+//                mesh.LoadOBJ(OBJLoader.LoadOBJ(fileStream));
+//            }
+//            mesh.Optimize();
+//            mesh.name = meshName;
+//
+//            return mesh;
+//        }
 
         public static NetInfo ClonePrefab(NetInfo originalPrefab, string newName, Transform parentTransform)
         {

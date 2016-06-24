@@ -7,8 +7,8 @@
     <ProjectGuid>{A42C9F60-7A15-48B1-86CB-CF5EEAA72D98}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ElevatedTrainStationTrack</RootNamespace>
-    <AssemblyName>ElevatedTrainStationTrack</AssemblyName>
+    <RootNamespace>MetroOverhaul</RootNamespace>
+    <AssemblyName>MetroOverhaul</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -52,10 +52,6 @@
     <Reference Include="ICities">
       <HintPath>..\..\..\..\..\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
     </Reference>
-    <Reference Include="ObjUnity3D, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\ObjUnity3D.dll</HintPath>
-    </Reference>
     <Reference Include="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\System.dll</HintPath>
@@ -65,18 +61,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Meshes\TTNR.obj" />
-    <None Include="Meshes\TTNR_LOD.obj" />
-    <None Include="Meshes\TTNR_Node_LOD.obj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="lib\ObjUnity3D.dll" />
+    <None Include="Assets\MetroDepot.crp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"
-del "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)\$(TargetFileName)"
-xcopy /y "$(TargetPath)" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"</PostBuildEvent>
+    <PostBuildEvent>rmdir "%2525LOCALAPPDATA%2525\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)" /s /q
+mkdir "%2525LOCALAPPDATA%2525\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)"
+xcopy /y "$(TargetPath)" "%2525LOCALAPPDATA%2525\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)"
+xcopy "$(ProjectDir)\Assets" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Assets" /s /e
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
