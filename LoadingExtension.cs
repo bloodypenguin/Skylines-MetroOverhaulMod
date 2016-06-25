@@ -72,13 +72,6 @@ namespace MetroOverhaul
             track.m_placementStyle = ItemClass.Placement.Procedural;
             track.m_netAI = newAi;
             track.m_netAI.m_info = track;
-            track.m_buildHeight = trainTrack.m_buildHeight;
-            track.m_maxHeight = trainTrack.m_maxHeight;
-            track.m_minHeight = trainTrack.m_minHeight;
-            track.m_surfaceLevel = trainTrack.m_surfaceLevel;
-            track.m_terrainEndOffset = trainTrack.m_terrainEndOffset;
-            track.m_terrainStartOffset = trainTrack.m_terrainStartOffset;
-            track.m_followTerrain = false;
             newAi.m_createPassMilestone = milestone;
         }
 
