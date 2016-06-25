@@ -24,9 +24,7 @@ namespace MetroOverhaul
         {
             return (prefab, metroTunnel) =>
             {
-                var stationAI = prefab.GetComponent<TrainTrackBaseAI>();
-
-                stationAI.m_createPassMilestone = LoadingExtension.milestone;
+                prefab.GetComponent<TrainTrackBaseAI>().m_createPassMilestone = LoadingExtension.milestone;
 
                 prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
                 prefab.m_class.m_subService = ItemClass.SubService.PublicTransportMetro;
@@ -42,14 +40,17 @@ namespace MetroOverhaul
                 prefab.m_averageVehicleLaneSpeed = metroTunnel.m_averageVehicleLaneSpeed;
                 prefab.m_UnlockMilestone = metroTunnel.m_UnlockMilestone;
 
-                foreach (var VARIABLE in prefab.m_lanes)
+                foreach (var lane in prefab.m_lanes)
                 {
-                    if (VARIABLE.m_vehicleType != VehicleInfo.VehicleType.None)
+                    if (lane.m_vehicleType == VehicleInfo.VehicleType.None)
                     {
-                        VARIABLE.m_vehicleType = VehicleInfo.VehicleType.Metro;
-                        VARIABLE.m_stopType = VehicleInfo.VehicleType.Metro;
+                        continue;
                     }
+                    lane.m_vehicleType = VehicleInfo.VehicleType.Metro;
+                    lane.m_stopType = VehicleInfo.VehicleType.Metro;
                 }
+
+                Modifiers.RemoveElectricityPoles(prefab);
             };
         }
     }

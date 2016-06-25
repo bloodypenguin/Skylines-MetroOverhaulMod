@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using UnityEngine;
 
 namespace MetroOverhaul
 {
@@ -7,31 +8,25 @@ namespace MetroOverhaul
     {
         public static void RemoveElectricityPoles(NetInfo prefab)
         {
-            if (prefab == null || prefab.m_lanes == null)
+            if (prefab?.m_lanes == null)
             {
                 return;
             }
             foreach (var lane in prefab.m_lanes)
             {
                 var mLaneProps = lane.m_laneProps;
-                if (mLaneProps == null)
-                {
-                    continue;
-                }
-                var props = mLaneProps.m_props;
+                var props = mLaneProps?.m_props;
                 if (props == null)
                 {
                     continue;
                 }
-                lane.m_laneProps = new NetLaneProps
-                {
-                    m_props = (from prop in props
-                               where prop != null
-                               let mProp = prop.m_prop
-                               where mProp != null
-                               where mProp.name != "RailwayPowerline"
-                               select prop).ToArray()
-                };
+                lane.m_laneProps = ScriptableObject.CreateInstance<NetLaneProps>();
+                lane.m_laneProps.m_props = (from prop in props
+                    where prop != null
+                    let mProp = prop.m_prop
+                    where mProp != null
+                    where mProp.name != "RailwayPowerline"
+                    select prop).ToArray();
             }
         }
 
@@ -48,7 +43,7 @@ namespace MetroOverhaul
 
         public static void MakePedestrianLanesNarrow(NetInfo prefab)
         {
-            if (prefab == null || prefab.m_lanes == null)
+            if (prefab?.m_lanes == null)
             {
                 return;
             }
