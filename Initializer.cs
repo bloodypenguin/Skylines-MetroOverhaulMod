@@ -92,7 +92,7 @@ namespace ElevatedTrainStationTrack
             }
             var newMaterial = new Material(material)
             {
-                name = string.Format("{0}-concrete", material.name),
+                name = $"{material.name}-concrete",
                 shader = Shader.Find("Custom/Net/RoadBridge")
             };
             return newMaterial;
@@ -101,7 +101,9 @@ namespace ElevatedTrainStationTrack
         private static void SetupTunnelPrefab(NetInfo tunnelPrefab)
         {
             SetupSunkenPrefab(tunnelPrefab);
+
             tunnelPrefab.m_canCollide = false;
+
             foreach (var lane in tunnelPrefab.m_lanes)
             {
                 lane.m_laneProps = null;
@@ -122,6 +124,8 @@ namespace ElevatedTrainStationTrack
 
         private static void SetupSunkenPrefab(NetInfo sunkenPrefab)
         {
+
+            
             var stationAI = sunkenPrefab.GetComponent<TrainTrackAI>();
             stationAI.m_tunnelInfo = sunkenPrefab;
 

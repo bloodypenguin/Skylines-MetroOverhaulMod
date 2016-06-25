@@ -41,7 +41,7 @@ namespace ElevatedTrainStationTrack
             }
             mesh.Optimize();
             mesh.name = meshName;
-
+            mesh.UploadMeshData(true);
             return mesh;
         }
 
