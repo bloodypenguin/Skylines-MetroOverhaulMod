@@ -1,4 +1,6 @@
 ﻿using ICities;
+using MetroOverhaul.Detours;
+using MetroOverhaul.Redirection;
 using UnityEngine;
 
 namespace MetroOverhaul
@@ -15,6 +17,8 @@ namespace MetroOverhaul
             {
                 Container = new GameObject("MetroOverhaul").AddComponent<Initializer>();
             }
+            Redirector<DepotAIDetour>.Deploy();
+            Redirector<MetroTrainAIDetour>.Deploy();
         }
 
         public override void OnReleased()
@@ -26,6 +30,8 @@ namespace MetroOverhaul
             }
             Object.Destroy(Container.gameObject);
             Container = null;
+            Redirector<DepotAIDetour>.Revert();
+            Redirector<MetroTrainAI>.Revert();
         }
 
         public override void OnLevelUnloading()

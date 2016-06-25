@@ -34,12 +34,21 @@
   <ItemGroup>
     <Compile Include="AbstractInitializer.cs" />
     <Compile Include="ActionExtensions.cs" />
+    <Compile Include="Detours\DepotAIDetour.cs" />
+    <Compile Include="Detours\MetroTrainAIDetour.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="Loading.cs" />
     <Compile Include="LoadingExtension.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Modifiers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Redirection\RedirectionHelper.cs" />
+    <Compile Include="Redirection\RedirectionUtil.cs" />
+    <Compile Include="Redirection\RedirectMethodAttribute.cs" />
+    <Compile Include="Redirection\Redirector.cs" />
+    <Compile Include="Redirection\RedirectReverseAttribute.cs" />
+    <Compile Include="Redirection\TargetTypeAttribute.cs" />
+    <Compile Include="Redirection\Tuple.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>

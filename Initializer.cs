@@ -32,7 +32,7 @@ namespace MetroOverhaul
                 prefab.m_class.m_subService = ItemClass.SubService.PublicTransportMetro;
                 prefab.m_class.m_service = ItemClass.Service.PublicTransport;
                 prefab.m_class.m_level = ItemClass.Level.Level1;
-                prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
+                prefab.m_class.m_layer = ItemClass.Layer.Default;
                 prefab.m_class.hideFlags = HideFlags.None;
                 prefab.m_class.name = prefab.name;
 
