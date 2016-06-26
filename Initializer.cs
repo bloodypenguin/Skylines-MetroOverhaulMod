@@ -24,7 +24,10 @@ namespace MetroOverhaul
         {
             return (prefab, metroTunnel) =>
             {
-                prefab.GetComponent<TrainTrackBaseAI>().m_createPassMilestone = LoadingExtension.milestone;
+                var milestone = metroTunnel.GetComponent<MetroTrackAI>().m_createPassMilestone;
+                metroTunnel.m_placementStyle = ItemClass.Placement.Procedural;
+                prefab.GetComponent<TrainTrackBaseAI>().m_createPassMilestone = milestone;
+
 
                 prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
                 prefab.m_class.m_subService = ItemClass.SubService.PublicTransportMetro;

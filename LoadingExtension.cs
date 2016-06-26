@@ -8,7 +8,7 @@ namespace MetroOverhaul
     public class LoadingExtension : LoadingExtensionBase
     {
         public static Initializer Container;
-        public static ManualMilestone milestone;
+
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
@@ -18,7 +18,7 @@ namespace MetroOverhaul
                 Container = new GameObject("MetroOverhaul").AddComponent<Initializer>();
             }
             Redirector<DepotAIDetour>.Deploy();
-            Redirector<MetroTrainAIDetour>.Deploy();
+            //Redirector<MetroTrainAIDetour>.Deploy(); //don't deploy this! For some reason that causes citizens not boarding trains
         }
 
         public override void OnReleased()
@@ -34,12 +34,6 @@ namespace MetroOverhaul
             Redirector<MetroTrainAI>.Revert();
         }
 
-        public override void OnLevelUnloading()
-        {
-            base.OnLevelUnloading();
-            DetroyRefresher();
-        }
-
         public override void OnLevelLoaded(LoadMode mode)
         {
             base.OnLevelLoaded(mode);
@@ -51,63 +45,12 @@ namespace MetroOverhaul
                 }
                 UpdateMetroStation(info);
             }
-            var trainTrack = PrefabCollection<NetInfo>.FindLoaded("Train Track Tunnel");
-            var track = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
-            milestone = track.GetComponent<MetroTrackAI>().m_createPassMilestone;
-            SetupMetroTrack(track, trainTrack);
-            var stationTrack = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track");
-            SetupMetroTrack(stationTrack, trainTrack);
-
-            if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame)
-            {
-                RefreshPanelInGame();
-            }        
-        }
-
-        private static void SetupMetroTrack(NetInfo track, NetInfo trainTrack)
-        {
-            var ai = track.GetComponent<NetAI>();
-            GameObject.Destroy(ai);
-            var newAi = track.gameObject.AddComponent<TrainTrackTunnelAI>();
-            track.m_placementStyle = ItemClass.Placement.Procedural;
-            track.m_netAI = newAi;
-            track.m_netAI.m_info = track;
-            newAi.m_createPassMilestone = milestone;
         }
 
         private static void UpdateMetroStation(BuildingInfo info)
         {
             var transportStationAi = ((TransportStationAI) info.m_buildingAI);
             transportStationAi.m_maxVehicleCount = 0;
-        }
-
-        private static void RefreshPanelInGame()
-        {
-            new GameObject("MetroOverhaulPanelRefresher").AddComponent<PanelRefresher>();
-        }
-
-        private class PanelRefresher : MonoBehaviour
-        {
-            private void Update()
-            {
-                var go = GameObject.Find("PublicTransportMetroPanel");
-                var panel = go?.GetComponent<PublicTransportPanel>();
-                if (panel == null)
-                {
-                    return;
-                }
-                panel?.RefreshPanel();
-                Destroy(this);
-            }
-        }
-
-        private static void DetroyRefresher()
-        {
-            var refresher = GameObject.Find("MetroOverhaulPanelRefresherr");
-            if (refresher != null)
-            {
-                Object.Destroy(refresher);
-            }
         }
     }
 }
