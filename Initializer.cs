@@ -7,7 +7,7 @@ namespace ElevatedTrainStationTrack
     {
         protected override void InitializeImpl()
         {
-            CreatePrefab("Station Track Eleva", "Train Station Track", 
+            CreatePrefab("Station Track Eleva", "Train Station Track",
                 SetupElevatedPrefab); //for compatibility, never change this prefab's name
             CreatePrefab("Station Track Elevated (C)", "Train Station Track",
                 new Action<NetInfo, bool>(SetupElevatedPrefab).Apply(true));
@@ -24,8 +24,8 @@ namespace ElevatedTrainStationTrack
                 new Action<NetInfo>(SetupElevatedPrefab).Chain(Modifiers.RemoveElectricityPoles).Chain(Modifiers.MakePedestrianLanesNarrow));
             CreatePrefab("Station Track Elevated Narrow (CNP)", "Train Station Track",
                 new Action<NetInfo, bool>(SetupElevatedPrefab).Apply(true).Chain(Modifiers.RemoveElectricityPoles).Chain(Modifiers.MakePedestrianLanesNarrow));
-            
-            CreatePrefab("Station Track Sunken", "Train Station Track", 
+
+            CreatePrefab("Station Track Sunken", "Train Station Track",
                 SetupSunkenPrefab); //for compatibility, never change this prefab's name
             CreatePrefab("Station Track Sunken (NP)", "Train Station Track",
                 new Action<NetInfo>(SetupSunkenPrefab).Chain(Modifiers.RemoveElectricityPoles));
@@ -35,8 +35,8 @@ namespace ElevatedTrainStationTrack
                 Modifiers.RemoveElectricityPoles);
             CreatePrefab("Train Station Track (CNP)", "Train Station Track",
                 new Action<NetInfo>(Modifiers.CreatePavement).Chain(Modifiers.RemoveElectricityPoles));
-            
-            CreatePrefab("Station Track Tunnel", "Train Station Track", 
+
+            CreatePrefab("Station Track Tunnel", "Metro Station Track",
                 SetupTunnelPrefab); //for compatibility, never change this prefab's name
         }
 
@@ -98,34 +98,40 @@ namespace ElevatedTrainStationTrack
             return newMaterial;
         }
 
-        private static void SetupTunnelPrefab(NetInfo tunnelPrefab)
+        private static void SetupTunnelPrefab(NetInfo prefab)
         {
-            SetupSunkenPrefab(tunnelPrefab);
+            var trainStationTrack = FindOriginalPrefab("Train Station Track");
+            prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
+            prefab.m_class.m_subService = ItemClass.SubService.PublicTransportTrain;
+            prefab.m_class.m_service = ItemClass.Service.PublicTransport;
+            prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
 
-            tunnelPrefab.m_canCollide = false;
+            var metroAI = prefab.GetComponent<MetroTrackAI>();
+            Destroy(metroAI);
+            prefab.m_netAI = prefab.gameObject.AddComponent<TrainTrackAI>();
+            var trackAI = (TrainTrackAI) prefab.m_netAI;
+            trackAI.m_createPassMilestone =
+                trainStationTrack.GetComponent<TrainTrackAI>().m_createPassMilestone;
+            trackAI.m_info = prefab;
+            trackAI.m_tunnelInfo = prefab;
 
-            foreach (var lane in tunnelPrefab.m_lanes)
+            foreach (var lane in prefab.m_lanes)
             {
-                lane.m_laneProps = null;
+                if (lane.m_vehicleType == VehicleInfo.VehicleType.None)
+                {
+                    lane.m_stopType = VehicleInfo.VehicleType.Train;
+                }
+                else {
+                    lane.m_vehicleType = VehicleInfo.VehicleType.Train;
+                }
             }
-            var metroStation = FindOriginalPrefab("Metro Station Track");
-            if (metroStation != null)
-            {
-                tunnelPrefab.m_segments = new[] { metroStation.m_segments[0] };
-                //TODO(earalov): make a shallow copy of segment and change some properties
-                tunnelPrefab.m_nodes = new[] { metroStation.m_nodes[0] };
-                //TODO(earalov): make a shallow copy of segment and change some properties
-            }
-            else
-            {
-                Debug.LogWarning("ElevatedTrainStationTrack - Couldn't find metro station track");
-            }
+
         }
 
         private static void SetupSunkenPrefab(NetInfo sunkenPrefab)
         {
 
-            
+
             var stationAI = sunkenPrefab.GetComponent<TrainTrackAI>();
             stationAI.m_tunnelInfo = sunkenPrefab;
 
