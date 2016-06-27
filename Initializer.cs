@@ -18,6 +18,31 @@ namespace MetroOverhaul
                 CreatePrefab("Metro Track Bridge", "Train Track Bridge", SetupMetroTrack().Apply(mTunnelInfo).Chain(p2 => p.GetComponent<TrainTrackAI>().m_bridgeInfo = p2));
                 CreatePrefab("Metro Track Elevated", "Train Track Elevated", SetupMetroTrack().Apply(mTunnelInfo).Chain(p3 => p.GetComponent<TrainTrackAI>().m_elevatedInfo = p3));
             }));
+            CreatePrefab("Metro Station Track Ground", "Train Station Track", SetupMetroTrack().Apply(mTunnelInfo));
+            CreatePrefab("Metro Station Track Elevated", "Train Station Track", SetupMetroTrack().Apply(mTunnelInfo).Chain(SetupElevatedStationTrack()));
+
+        }
+
+        public static Action<NetInfo> SetupElevatedStationTrack()
+        {
+            return elevatedPrefab =>
+            {
+                var trackAi = elevatedPrefab.GetComponent<TrainTrackAI>();
+                trackAi.m_elevatedInfo = elevatedPrefab;
+
+                elevatedPrefab.m_followTerrain = false;
+                elevatedPrefab.m_flattenTerrain = false;
+                elevatedPrefab.m_createGravel = false;
+                elevatedPrefab.m_createPavement = false;
+                elevatedPrefab.m_createRuining = false;
+                elevatedPrefab.m_requireSurfaceMaps = false;
+                elevatedPrefab.m_clipTerrain = false;
+                elevatedPrefab.m_snapBuildingNodes = false;
+                elevatedPrefab.m_placementStyle = ItemClass.Placement.Procedural;
+                elevatedPrefab.m_useFixedHeight = true;
+                elevatedPrefab.m_lowerTerrain = true;
+                elevatedPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
+            };
         }
 
         private static Action<NetInfo, NetInfo> SetupMetroTrack()
@@ -27,8 +52,6 @@ namespace MetroOverhaul
                 var milestone = metroTunnel.GetComponent<MetroTrackAI>().m_createPassMilestone;
                 metroTunnel.m_placementStyle = ItemClass.Placement.Procedural;
                 prefab.GetComponent<TrainTrackBaseAI>().m_createPassMilestone = milestone;
-
-
                 prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
                 prefab.m_class.m_subService = ItemClass.SubService.PublicTransportMetro;
                 prefab.m_class.m_service = ItemClass.Service.PublicTransport;
@@ -47,10 +70,12 @@ namespace MetroOverhaul
                 {
                     if (lane.m_vehicleType == VehicleInfo.VehicleType.None)
                     {
-                        continue;
+                        lane.m_stopType = VehicleInfo.VehicleType.Metro;
                     }
-                    lane.m_vehicleType = VehicleInfo.VehicleType.Metro;
-                    lane.m_stopType = VehicleInfo.VehicleType.Metro;
+                    else
+                    {
+                        lane.m_vehicleType = VehicleInfo.VehicleType.Metro;
+                    }
                 }
 
                 Modifiers.RemoveElectricityPoles(prefab);
