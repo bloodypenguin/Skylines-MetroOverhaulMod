@@ -31,7 +31,6 @@ namespace SubwayOverhaul.NEXT
         public IEnumerable<Action> CreateLoadingSequence(string modPath)
         {
             var modDirectory = new DirectoryInfo(modPath);
-
             var files = new List<FileInfo>();
             files.AddRange(modDirectory.GetFiles("*.png", SearchOption.AllDirectories));
             files.AddRange(modDirectory.GetFiles("*.obj", SearchOption.AllDirectories));
@@ -145,9 +144,9 @@ namespace SubwayOverhaul.NEXT
             var trimmedPath = path
                 .Replace('\\', Path.DirectorySeparatorChar)
                 .Replace('/', Path.DirectorySeparatorChar);
-
             if (!_allMeshes.ContainsKey(trimmedPath))
             {
+                Next.Debug.Log(String.Format("TFW: Mesh {0} not found", trimmedPath));
                 throw new Exception(String.Format("TFW: Mesh {0} not found", trimmedPath));
             }
 

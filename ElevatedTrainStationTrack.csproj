@@ -44,6 +44,7 @@
     <Compile Include="Modifiers.cs" />
     <Compile Include="NEXT\AssetManager.cs" />
     <Compile Include="NEXT\CenterLaneType.cs" />
+    <Compile Include="NEXT\Debug.cs" />
     <Compile Include="NEXT\Extensions\AssetManagerExtensions.cs" />
     <Compile Include="NEXT\Extensions\CloningExtensions.cs" />
     <Compile Include="NEXT\Extensions\EnumExtensions.cs" />
