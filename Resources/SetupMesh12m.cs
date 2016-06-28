@@ -1,13 +1,14 @@
-﻿using System;
+﻿using SubwayOverhaul.NEXT;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MetroOverhaul.Resources
+namespace MetroOverhaul.SetupMesh
 {
-    class SetupMesh12m
+    public class SetupMesh
     {
-        public void SetupMesh(NetInfo info, NetInfoVersion version)
+        public void Setup12mMesh(NetInfo info, NetInfoVersion version)
         {
 
         }

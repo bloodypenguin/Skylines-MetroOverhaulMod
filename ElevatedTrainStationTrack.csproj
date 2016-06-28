@@ -41,6 +41,38 @@
     <Compile Include="LoadingExtension.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Modifiers.cs" />
+    <Compile Include="NEXT\AssetManager.cs" />
+    <Compile Include="NEXT\CenterLaneType.cs" />
+    <Compile Include="NEXT\Extensions\AssetManagerExtensions.cs" />
+    <Compile Include="NEXT\Extensions\CloningExtensions.cs" />
+    <Compile Include="NEXT\Extensions\EnumExtensions.cs" />
+    <Compile Include="NEXT\Extensions\ItemClassExtensions.cs" />
+    <Compile Include="NEXT\Extensions\LocaleManagerExtensions.cs" />
+    <Compile Include="NEXT\Extensions\MaterialExtensions.cs" />
+    <Compile Include="NEXT\Extensions\NetInfoExtensions.cs" />
+    <Compile Include="NEXT\Extensions\NetInfoExtensions.Lane.cs" />
+    <Compile Include="NEXT\Extensions\NetInfoExtensions.Node.cs" />
+    <Compile Include="NEXT\Extensions\NetInfoExtensions.Segment.cs" />
+    <Compile Include="NEXT\Extensions\NetLanePropsExtensions.cs" />
+    <Compile Include="NEXT\Extensions\PrefabInfoExtensions.cs" />
+    <Compile Include="NEXT\Extensions\TextureExtensions.cs" />
+    <Compile Include="NEXT\Extensions\TextureSetExtensions.cs" />
+    <Compile Include="NEXT\LanesConfiguration.cs" />
+    <Compile Include="NEXT\NetInfoVersion.cs" />
+    <Compile Include="NEXT\Prefabs.cs" />
+    <Compile Include="NEXT\RoadHelper.LaneSetup.cs" />
+    <Compile Include="NEXT\Texturing\ITextureBlenderComponent.cs" />
+    <Compile Include="NEXT\Texturing\ITextureProvider.cs" />
+    <Compile Include="NEXT\Texturing\PathTextureProvider.cs" />
+    <Compile Include="NEXT\Texturing\Point.cs" />
+    <Compile Include="NEXT\Texturing\TextureBlender.Component.Alpha.cs" />
+    <Compile Include="NEXT\Texturing\TextureBlender.Component.Color.cs" />
+    <Compile Include="NEXT\Texturing\TextureBlender.Component.cs" />
+    <Compile Include="NEXT\Texturing\TextureBlender.Component.Texture.cs" />
+    <Compile Include="NEXT\Texturing\TextureBlender.Component.XOffset.cs" />
+    <Compile Include="NEXT\Texturing\TextureBlender.cs" />
+    <Compile Include="NEXT\Texturing\TextureHelper.cs" />
+    <Compile Include="NEXT\Texturing\TextureSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Redirection\RedirectionHelper.cs" />
     <Compile Include="Redirection\RedirectionUtil.cs" />
@@ -75,7 +107,15 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="Resources\Textures\Ground_Pavement.png" />
+    <Content Include="Resources\Textures\Ground_Pavement__AlphaMap.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Textures\Ground_Pavement__MainTex.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Textures\Ground_Pavement__XYSMap.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
