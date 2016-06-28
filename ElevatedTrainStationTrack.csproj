@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -82,6 +83,7 @@
     <Compile Include="Redirection\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Tuple.cs" />
     <Compile Include="Resources\SetupMesh12m.cs" />
+    <Compile Include="Resources\SetupTexture12m.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +96,10 @@
     <Reference Include="ICities">
       <HintPath>..\..\..\..\..\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
     </Reference>
+    <Reference Include="ObjUnity3D, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\ObjUnity3D.dll</HintPath>
+    </Reference>
     <Reference Include="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Games\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\System.dll</HintPath>
@@ -104,16 +110,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\MetroDepot.crp" />
+    <None Include="Resources\Meshes\Ground_Pavement.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\Ground_Rail.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="Resources\Textures\Ground_Pavement__AlphaMap.png">
+    <Content Include="Resources\Textures\Ground_Segment_Pavement__AlphaMap.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Textures\Ground_Pavement__MainTex.png">
+    <Content Include="Resources\Textures\Ground_Segment_Pavement__MainTex.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Textures\Ground_Pavement__XYSMap.png">
+    <Content Include="Resources\Textures\Ground_Segment_Pavement__XYSMap.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

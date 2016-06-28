@@ -1,5 +1,7 @@
 ﻿using System;
 using UnityEngine;
+using MetroOverhaul.SetupPrefab;
+using SubwayOverhaul.NEXT;
 
 namespace MetroOverhaul
 {
@@ -49,6 +51,8 @@ namespace MetroOverhaul
         {
             return (prefab, metroTunnel) =>
             {
+                SetupMesh.Setup12mMesh(prefab, NetInfoVersion.Ground);
+                SetupTexture.Setup12mTexture(prefab, NetInfoVersion.Ground);
                 var milestone = metroTunnel.GetComponent<MetroTrackAI>().m_createPassMilestone;
                 metroTunnel.m_placementStyle = ItemClass.Placement.Procedural;
                 prefab.GetComponent<TrainTrackBaseAI>().m_createPassMilestone = milestone;
