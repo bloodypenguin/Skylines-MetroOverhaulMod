@@ -51,6 +51,9 @@ namespace MetroOverhaul
             {
                 var milestone = metroTunnel.GetComponent<MetroTrackAI>().m_createPassMilestone;
                 metroTunnel.m_placementStyle = ItemClass.Placement.Procedural;
+                PrefabCollection<VehicleInfo>.FindLoaded("Metro").m_class =
+                    ScriptableObject.CreateInstance<ItemClass>();
+
                 prefab.GetComponent<TrainTrackBaseAI>().m_createPassMilestone = milestone;
                 prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
                 prefab.m_class.m_subService = ItemClass.SubService.PublicTransportMetro;
