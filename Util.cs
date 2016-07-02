@@ -32,19 +32,6 @@ namespace MetroOverhaul
             return type.GetAllFieldsFromType().Where(p => p.Name == name).FirstOrDefault();
         }
 
-//        public static Mesh LoadMesh(string fullPath, string meshName)
-//        {
-//            var mesh = new Mesh();
-//            using (var fileStream = File.Open(fullPath, FileMode.Open))
-//            {
-//                mesh.LoadOBJ(OBJLoader.LoadOBJ(fileStream));
-//            }
-//            mesh.Optimize();
-//            mesh.name = meshName;
-//
-//            return mesh;
-//        }
-
         public static NetInfo ClonePrefab(NetInfo originalPrefab, string newName, Transform parentTransform)
         {
             var instance = Object.Instantiate(originalPrefab.gameObject);
@@ -80,7 +67,7 @@ namespace MetroOverhaul
 
                     }
                 }
-                throw new Exception("Failed to find SingleTrainTrack assembly!");
+                throw new Exception("Failed to find MetroOverhaul assembly!");
 
             }
         }
@@ -108,7 +95,7 @@ namespace MetroOverhaul
                         
                     }
                 }
-                throw new Exception("Failed to find ElevatedTrainStationTrack assembly!");
+                throw new Exception("Failed to find MetroOverhaul assembly!");
 
             }
         }

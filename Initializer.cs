@@ -54,12 +54,14 @@ namespace MetroOverhaul
             var trainTrackInfo = FindOriginalPrefab("Train Track");
             return (prefab, metroTunnel) =>
             {
-                SetupMesh.Setup12mMesh(prefab, NetInfoVersion.Ground, trainTrackInfo);
-                SetupTexture.Setup12mTexture(prefab, NetInfoVersion.Ground);
+                if (prefab.name.Contains("Ground"))
+                {
+                    SetupMesh.Setup12mMesh(prefab, NetInfoVersion.Ground, trainTrackInfo);
+                    SetupTexture.Setup12mTexture(prefab, NetInfoVersion.Ground);
+                }
                 var milestone = metroTunnel.GetComponent<MetroTrackAI>().m_createPassMilestone;
                 PrefabCollection<VehicleInfo>.FindLoaded("Metro").m_class =
                     ScriptableObject.CreateInstance<ItemClass>();
-
                 prefab.GetComponent<TrainTrackBaseAI>().m_createPassMilestone = milestone;
                 prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
                 prefab.m_class.m_subService = ItemClass.SubService.PublicTransportMetro;
@@ -75,10 +77,10 @@ namespace MetroOverhaul
                 }
                 prefab.m_class.hideFlags = HideFlags.None;
                 prefab.m_class.name = prefab.name;
-                prefab.m_maxBuildAngle = trainTrackInfo.m_maxBuildAngle;
-                prefab.m_maxBuildAngleCos = trainTrackInfo.m_maxBuildAngleCos;
-                prefab.m_maxTurnAngle = trainTrackInfo.m_maxTurnAngle;
-                prefab.m_maxTurnAngleCos = trainTrackInfo.m_maxTurnAngleCos;
+                prefab.m_maxBuildAngle = metroTunnel.m_maxBuildAngle;
+                prefab.m_maxBuildAngleCos = metroTunnel.m_maxBuildAngleCos;
+                prefab.m_maxTurnAngle = metroTunnel.m_maxTurnAngle;
+                prefab.m_maxTurnAngleCos = metroTunnel.m_maxTurnAngleCos;
                 prefab.m_averageVehicleLaneSpeed = metroTunnel.m_averageVehicleLaneSpeed;
                 prefab.m_UnlockMilestone = metroTunnel.m_UnlockMilestone;
                 prefab.m_createGravel = false;

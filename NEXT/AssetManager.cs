@@ -146,7 +146,7 @@ namespace SubwayOverhaul.NEXT
                 .Replace('/', Path.DirectorySeparatorChar);
             if (!_allMeshes.ContainsKey(trimmedPath))
             {
-                Next.Debug.Log(String.Format("TFW: Mesh {0} not found", trimmedPath));
+                UnityEngine.Debug.Log(String.Format("TFW: Mesh {0} not found", trimmedPath));
                 throw new Exception(String.Format("TFW: Mesh {0} not found", trimmedPath));
             }
 
