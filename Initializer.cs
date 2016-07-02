@@ -49,9 +49,10 @@ namespace MetroOverhaul
 
         private static Action<NetInfo, NetInfo> SetupMetroTrack()
         {
+            var trainTrackInfo = FindOriginalPrefab("Train Track");
             return (prefab, metroTunnel) =>
             {
-                SetupMesh.Setup12mMesh(prefab, NetInfoVersion.Ground);
+                SetupMesh.Setup12mMesh(prefab, NetInfoVersion.Ground, trainTrackInfo);
                 SetupTexture.Setup12mTexture(prefab, NetInfoVersion.Ground);
                 var milestone = metroTunnel.GetComponent<MetroTrackAI>().m_createPassMilestone;
                 metroTunnel.m_placementStyle = ItemClass.Placement.Procedural;
@@ -63,12 +64,15 @@ namespace MetroOverhaul
                 prefab.m_class.m_layer = ItemClass.Layer.Default;
                 prefab.m_class.hideFlags = HideFlags.None;
                 prefab.m_class.name = prefab.name;
-                prefab.m_maxBuildAngle = metroTunnel.m_maxBuildAngle;
-                prefab.m_maxBuildAngleCos = metroTunnel.m_maxBuildAngleCos;
-                prefab.m_maxTurnAngle = metroTunnel.m_maxTurnAngle;
-                prefab.m_maxTurnAngleCos = metroTunnel.m_maxTurnAngleCos;
+                prefab.m_maxBuildAngle = trainTrackInfo.m_maxBuildAngle;
+                prefab.m_maxBuildAngleCos = trainTrackInfo.m_maxBuildAngleCos;
+                prefab.m_maxTurnAngle = trainTrackInfo.m_maxTurnAngle;
+                prefab.m_maxTurnAngleCos = trainTrackInfo.m_maxTurnAngleCos;
                 prefab.m_averageVehicleLaneSpeed = metroTunnel.m_averageVehicleLaneSpeed;
                 prefab.m_UnlockMilestone = metroTunnel.m_UnlockMilestone;
+                prefab.m_createGravel = false;
+                prefab.m_createPavement = true;
+                prefab.m_halfWidth = 5;
 
                 foreach (var lane in prefab.m_lanes)
                 {

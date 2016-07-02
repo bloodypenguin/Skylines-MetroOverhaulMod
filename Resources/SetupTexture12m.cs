@@ -16,18 +16,45 @@ namespace MetroOverhaul.SetupPrefab
             {
                 case NetInfoVersion.Ground:
                     {
-                    for (var i = 0; i < info.m_segments.Length; i++)
-                    {
-                        if (info.m_segments[i].m_mesh.name.Contains("Ground_Pavement"))
+                        for (var i = 0; i < info.m_segments.Length; i++)
                         {
-                            info.m_segments[i].SetTextures(
-                                new TextureSet
-                                    (@"Textures\Ground_Segment_Pavement__MainTex.png",
-                                    @"Textures\Ground_Segment_Pavement__AlphaMap.png",
-                                    @"Textures\Ground_Segment_Pavement__XYSMap.png"));
+                            if (info.m_segments[i].m_mesh.name.Contains("Ground_Pavement"))
+                            {
+                                info.m_segments[i].SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Ground_Segment_Pavement__MainTex.png",
+                                        @"Textures\Ground_Segment_Pavement__AlphaMap.png",
+                                        @"Textures\Ground_Segment_Pavement__XYSMap.png"));
+                            }
+                            else
+                            {
+                                info.m_segments[i].SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                                        @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                            }
                         }
-                    }
-                    break;
+                        for (var i = 0; i < info.m_nodes.Length; i++)
+                        {
+                            if (info.m_nodes[i].m_mesh.name.Contains("Ground_Node_Pavement"))
+                            {
+                                info.m_nodes[i].SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Ground_Node_Pavement__MainTex.png",
+                                        @"Textures\Ground_Node_Pavement__AlphaMap.png",
+                                        @"Textures\Ground_Segment_Pavement__XYSMap.png"));
+                            }
+                            else
+                            {
+                                info.m_nodes[i].SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                                        @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                            }
+                        }
+                        break;
                     }
             }
         }

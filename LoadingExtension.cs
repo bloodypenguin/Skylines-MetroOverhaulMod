@@ -21,7 +21,6 @@ namespace MetroOverhaul
             }
 
             var path = Util.AssemblyPath;
-            Next.Debug.Log(path + " HEJYEYEY");
             foreach (var action in AssetManager.instance.CreateLoadingSequence(path))
             {
                 var localAction = action;

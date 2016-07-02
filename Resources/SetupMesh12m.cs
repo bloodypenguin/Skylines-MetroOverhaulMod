@@ -9,8 +9,10 @@ namespace MetroOverhaul.SetupPrefab
 {
     public class SetupMesh
     {
-        public static void Setup12mMesh(NetInfo info, NetInfoVersion version)
+        public static void Setup12mMesh(NetInfo info, NetInfoVersion version, NetInfo trainTrackInfo = null)
         {
+
+            var railMaterial = trainTrackInfo?.m_nodes[1].m_material;
             switch (version)
             {
 
@@ -29,13 +31,23 @@ namespace MetroOverhaul.SetupPrefab
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Ground_Rail.obj");
+                            (@"Meshes\Ground_Rail.obj")
+                            .SetConsistentUVs();
                         node0
                             .SetMeshes
-                            (@"Meshes\Ground_Pavement.obj");
+                            (@"Meshes\Ground_Node_Pavement.obj")
+                            .SetConsistentUVs();
                         node1
                             .SetMeshes
-                            (@"Meshes\Ground_Rail.obj");
+                            (@"Meshes\Ground_Rail.obj")
+                            .SetConsistentUVs();
+
+                        if (railMaterial != null)
+                        {
+                            segment1.m_material = railMaterial;
+                            node1.m_material = railMaterial;
+                        }
+
                         info.m_segments = new[] { segment0, segment1 };
                         info.m_nodes = new[] { node0, node1, node2 };
                         break;
