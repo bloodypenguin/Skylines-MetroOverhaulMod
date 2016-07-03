@@ -110,7 +110,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Long Metro Station.crp" />
     <None Include="Assets\m100.crp" />
     <None Include="Assets\MetroDepot.crp" />
     <None Include="Resources\Meshes\Ground_Node_Pavement.obj">
