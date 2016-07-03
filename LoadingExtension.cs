@@ -64,7 +64,7 @@ namespace MetroOverhaul
         public override void OnLevelLoaded(LoadMode mode)
         {
             base.OnLevelLoaded(mode);
-            UpdateMetroStations();
+            MetroStations.UpdateMetroStations();
             var vehicles = Singleton<VehicleManager>.instance.m_vehicles;
             for (ushort i = 0; i < vehicles.m_size; i++)
             {
@@ -96,56 +96,6 @@ namespace MetroOverhaul
             }
         }
 
-        private static void UpdateMetroStations()
-        {
-            foreach (var info in Resources.FindObjectsOfTypeAll<BuildingInfo>())
-            {
-                if (!(info.m_buildingAI is TransportStationAI) ||
-                    info.m_class.m_subService != ItemClass.SubService.PublicTransportMetro)
-                {
-                    continue;
-                }
-                var transportStationAi = ((TransportStationAI)info.m_buildingAI);
-                transportStationAi.m_maxVehicleCount = 0;
-                foreach (var path in info.m_paths)
-                {
-                    if (path.m_netInfo.name != "Metro Station Track")
-                    {
-                        continue;
-                    }
-                    var start = path.m_nodes[0];
-                    var end = path.m_nodes[1];
 
-                    if (!(Vector3.Distance(start, end) < 144.0f))
-                    {
-                        UnityEngine.Debug.Log($"Station {info.name}: can't make longer tracks: track is already long enough");
-                        continue;
-                    }
-                    var middle = new Vector3
-                    {
-                        x = (start.x + end.x) / 2.0f,
-                        y = (start.y + end.y) / 2.0f,
-                        z = (start.z + end.z) / 2.0f
-                    };
-                    if (path.m_curveTargets.Length > 1 || (path.m_curveTargets.Length == 1 && Vector3.Distance(middle, path.m_curveTargets[0]) > 0.1))
-                    {
-                        UnityEngine.Debug.Log($"Station {info.name}: can't make longer tracks: unprocessable curve points");
-                        continue;
-                    }
-
-                    var toStart = Vector3.Distance(start, middle);
-                    start.x = middle.x + 72.0f * (start.x - middle.x) / toStart;
-                    start.y = middle.y + 72.0f * (start.y - middle.y) / toStart;
-                    start.z = middle.z + 72.0f * (start.z - middle.z) / toStart;
-                    path.m_nodes[0] = start;
-                    var toEnd = Vector3.Distance(end, middle);
-                    end.x = middle.x - 72.0f * (middle.x - end.x) / toEnd;
-                    end.y = middle.y - 72.0f * (middle.y - end.y) / toEnd;
-                    end.z = middle.z - 72.0f * (middle.z - end.z) / toEnd;
-                    path.m_nodes[1] = end;
-                    //TODO(earalov): shift connected segments
-                }
-            }
-        }
     }
 }
