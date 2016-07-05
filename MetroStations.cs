@@ -20,13 +20,15 @@ namespace MetroOverhaul
                     var transportStationAi = ((TransportStationAI)info.m_buildingAI);
                     transportStationAi.m_maxVehicleCount = 0;
                 }
-
+                if (info.m_paths == null)
+                {
+                    continue;
+                }
                 var processedPaths = new List<int>();
-
                 for (var index = 0; index < info.m_paths.Length; index++)
                 {
                     var path = info.m_paths[index];
-                    if (path.m_netInfo.name != "Metro Station Track")
+                    if (path.m_netInfo == null || path.m_netInfo.name != "Metro Station Track")
                     {
                         continue;
                     }
@@ -84,7 +86,7 @@ namespace MetroOverhaul
             for (var index = 0; index < mPaths.Count; index++)
             {
                 var path = mPaths[index];
-                if (path.m_netInfo.name == "Metro Station Track" || processedPaths.Contains(index))
+                if (path.m_netInfo == null || path.m_netInfo.name == "Metro Station Track" || processedPaths.Contains(index))
                 {
                     continue;
                 }

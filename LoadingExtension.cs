@@ -88,12 +88,12 @@ namespace MetroOverhaul
             for (uint i = 0; i < PrefabCollection<VehicleInfo>.LoadedCount(); i++)
             {
                 var info = PrefabCollection<VehicleInfo>.GetLoaded(i);
-                info.m_effects = metro.m_effects;
                 var metroTrainAI = info?.m_vehicleAI as MetroTrainAI;
                 if (metroTrainAI == null)
                 {
                     continue;
                 }
+                info.m_effects = metro.m_effects;
                 metroTrainAI.m_arriveEffect = arriveEffect;
             }
         }
