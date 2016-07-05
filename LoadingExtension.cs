@@ -83,16 +83,18 @@ namespace MetroOverhaul
 
         private static void UpdateEffect()
         {
-            var effect = ((MetroTrainAI)PrefabCollection<VehicleInfo>.FindLoaded("Metro").m_vehicleAI).m_arriveEffect;
+            var metro = PrefabCollection<VehicleInfo>.FindLoaded("Metro");
+            var arriveEffect = ((MetroTrainAI)metro.m_vehicleAI).m_arriveEffect;
             for (uint i = 0; i < PrefabCollection<VehicleInfo>.LoadedCount(); i++)
             {
                 var info = PrefabCollection<VehicleInfo>.GetLoaded(i);
+                info.m_effects = metro.m_effects;
                 var metroTrainAI = info?.m_vehicleAI as MetroTrainAI;
                 if (metroTrainAI == null)
                 {
                     continue;
                 }
-                metroTrainAI.m_arriveEffect = effect;
+                metroTrainAI.m_arriveEffect = arriveEffect;
             }
         }
 
