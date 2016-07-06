@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 using MetroOverhaul.SetupPrefab;
 using SubwayOverhaul.NEXT;
@@ -77,15 +78,17 @@ namespace MetroOverhaul
                 }
                 prefab.m_class.hideFlags = HideFlags.None;
                 prefab.m_class.name = prefab.name;
-                prefab.m_maxBuildAngle = metroTunnel.m_maxBuildAngle;
-                prefab.m_maxBuildAngleCos = metroTunnel.m_maxBuildAngleCos;
-                prefab.m_maxTurnAngle = metroTunnel.m_maxTurnAngle;
-                prefab.m_maxTurnAngleCos = metroTunnel.m_maxTurnAngleCos;
+                prefab.m_maxBuildAngle = 90;
+                prefab.m_maxTurnAngleCos = Mathf.Cos(prefab.m_maxBuildAngle);
+                prefab.m_maxTurnAngle = 60;
+                prefab.m_maxTurnAngleCos = Mathf.Cos(prefab.m_maxTurnAngle);
                 prefab.m_averageVehicleLaneSpeed = metroTunnel.m_averageVehicleLaneSpeed;
                 prefab.m_UnlockMilestone = metroTunnel.m_UnlockMilestone;
                 prefab.m_createGravel = false;
                 prefab.m_createPavement = true;
                 prefab.m_halfWidth = 5;
+
+                var speedLimit = metroTunnel.m_lanes.First(l => l.m_vehicleType != VehicleInfo.VehicleType.None).m_speedLimit;
 
                 foreach (var lane in prefab.m_lanes)
                 {
@@ -96,6 +99,7 @@ namespace MetroOverhaul
                     else
                     {
                         lane.m_vehicleType = VehicleInfo.VehicleType.Metro;
+                        lane.m_speedLimit = speedLimit;
                     }
                 }
 
