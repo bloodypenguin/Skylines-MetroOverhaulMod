@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using UnityEngine;
 
 namespace ElevatedTrainStationTrack
@@ -98,22 +99,37 @@ namespace ElevatedTrainStationTrack
             return newMaterial;
         }
 
+        public class UndergroundTrainStationTrackAI : MetroTrackAI
+        {
+            public override bool IsUnderground()
+            {
+                return false;
+            }
+        }
+
         private static void SetupTunnelPrefab(NetInfo prefab)
         {
             var trainStationTrack = FindOriginalPrefab("Train Station Track");
             prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
             prefab.m_class.m_subService = ItemClass.SubService.PublicTransportTrain;
             prefab.m_class.m_service = ItemClass.Service.PublicTransport;
-            prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
+            prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels | ItemClass.Layer.Default;
+            prefab.m_canCollide = false;
 
             var metroAI = prefab.GetComponent<MetroTrackAI>();
-            Destroy(metroAI);
-            prefab.m_netAI = prefab.gameObject.AddComponent<TrainTrackAI>();
-            var trackAI = (TrainTrackAI) prefab.m_netAI;
-            trackAI.m_createPassMilestone =
-                trainStationTrack.GetComponent<TrainTrackAI>().m_createPassMilestone;
+            GameObject.DestroyImmediate(metroAI);
+            var trackAI = prefab.gameObject.AddComponent<UndergroundTrainStationTrackAI>();
+            trackAI.m_transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Train");
+            prefab.m_netAI = trackAI;
+            trackAI.m_createPassMilestone = trainStationTrack.GetComponent<TrainTrackAI>().m_createPassMilestone;
             trackAI.m_info = prefab;
-            trackAI.m_tunnelInfo = prefab;
+
+            var field = typeof(PrefabInfo).GetField("m_UICategory", BindingFlags.Instance | BindingFlags.NonPublic);
+            field.SetValue(prefab, field.GetValue(trainStationTrack));
+
+            prefab.m_averageVehicleLaneSpeed = trainStationTrack.m_averageVehicleLaneSpeed;
+            prefab.m_vehicleTypes = VehicleInfo.VehicleType.Train;
+            prefab.m_buildHeight = 0;
 
             foreach (var lane in prefab.m_lanes)
             {
@@ -121,7 +137,8 @@ namespace ElevatedTrainStationTrack
                 {
                     lane.m_stopType = VehicleInfo.VehicleType.Train;
                 }
-                else {
+                else
+                {
                     lane.m_vehicleType = VehicleInfo.VehicleType.Train;
                 }
             }
