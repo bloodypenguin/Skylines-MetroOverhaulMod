@@ -41,7 +41,10 @@ namespace ElevatedTrainStationTrack
             }
             mesh.Optimize();
             mesh.name = meshName;
-            mesh.UploadMeshData(true);
+            if (!mesh.name.Contains("LOD"))
+            {
+                mesh.UploadMeshData(true);
+            }
             return mesh;
         }
 
