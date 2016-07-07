@@ -87,6 +87,7 @@ namespace MetroOverhaul
                 prefab.m_createGravel = false;
                 prefab.m_createPavement = true;
                 prefab.m_halfWidth = 5;
+                prefab.m_isCustomContent = true;
 
                 var speedLimit = metroTunnel.m_lanes.First(l => l.m_vehicleType != VehicleInfo.VehicleType.None).m_speedLimit;
 
