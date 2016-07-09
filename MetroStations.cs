@@ -20,6 +20,9 @@ namespace MetroOverhaul
                     var transportStationAi = ((TransportStationAI)info.m_buildingAI);
                     transportStationAi.m_maxVehicleCount = 0;
                 }
+                var metroStation = PrefabCollection<BuildingInfo>.FindLoaded("Metro Entrance");
+                info.m_UnlockMilestone = metroStation.m_UnlockMilestone;
+                ((DepotAI) info.m_buildingAI).m_createPassMilestone = ((DepotAI) metroStation.m_buildingAI).m_createPassMilestone;
                 if (info.m_paths == null)
                 {
                     continue;
