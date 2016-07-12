@@ -113,6 +113,15 @@
   <ItemGroup>
     <None Include="Assets\m100.crp" />
     <None Include="Assets\MetroDepot.crp" />
+    <None Include="Resources\Meshes\Elevated_Node_Pavement.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\Elevated_Pavement.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\Elevated_Rail.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\Ground_Node_Pavement.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -126,6 +135,12 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="lib\ObjUnity3D.dll" />
+    <Content Include="Resources\Textures\Elevated_Segment_Pavement__AlphaMap.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Textures\Elevated_Segment_Pavement__MainTex.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Textures\Ground_Node_Pavement__AlphaMap.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
