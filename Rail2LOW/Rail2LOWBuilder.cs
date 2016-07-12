@@ -15,7 +15,7 @@ namespace DoubleTrainTrack.Rail2LOW
         public int UIOrder { get { return 9; } }
 
         public string BasedPrefabName { get { return SharedHelpers.TRAIN_TRACK; } }
-        public string Name { get { return "Rail2LOW"; } }
+        public string Name { get { return "Oneway Train Track"; } }
         public string DisplayName { get { return "Two Lane One-Way Rail"; } }
         public string Description { get { return "Dual one way rail tracks that can be connected to conventional rail."; } }
         public string ShortDescription { get { return "Double Rail Track"; } }

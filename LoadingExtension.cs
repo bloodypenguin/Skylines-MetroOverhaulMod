@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using ColossalFramework.UI;
+using DoubleTrainTrack.Rail2LOW;
 using ICities;
 using SingleTrainTrack.NEXT;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Rail1LBuilder = SingleTrainTrack.Rail1L.Rail1LBuilder;
 using Rail1LStationBuilder = SingleTrainTrack.Rail1LStation.Rail1LStationBuilder;
-using DoubleTrainTrack.Rail2LOW;
 
 namespace SingleTrainTrack
 {
@@ -21,11 +20,32 @@ namespace SingleTrainTrack
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
+            InstallAssets();
+            if (Container == null)
+            {
+                Container = new GameObject("Rail1L").AddComponent<Initializer>();
+            }
+            Initializer.Tracks = new List<KeyValuePair<NetInfo, NetInfoVersion>>();
+            Initializer.Tracks2Low = new List<KeyValuePair<NetInfo, NetInfoVersion>>();
+            Initializer.StationTracks = new List<KeyValuePair<NetInfo, NetInfoVersion>>();
+
+           new object[]
+           {
+               new Rail2LOWBuilder(), 
+               new Rail1LBuilder(),
+               new Rail1LStationBuilder()
+           }.ForEach(trackBuilder =>
+           {
+               Util.AddLocale("NET", trackBuilder.GetPropery<string>("Name"), trackBuilder.GetPropery<string>("DisplayName"), trackBuilder.GetPropery<string>("Description"));
+           });
+        }
+
+        private static void InstallAssets()
+        {
             if (Done) // Only one Assets installation throughout the application
             {
                 return;
             }
-
             var path = Util.AssemblyPath;
             foreach (var action in AssetManager.instance.CreateLoadingSequence(path))
             {
@@ -40,32 +60,25 @@ namespace SingleTrainTrack
                     catch (Exception ex)
                     {
                         UnityEngine.Debug.LogException(ex);
-
                     }
                 });
             }
-
             Done = true;
-            if (Container == null)
-            {
-                Container = new GameObject("Rail1L").AddComponent<Initializer>();
-            }
-
-            Initializer.tracks = new List<KeyValuePair<NetInfo, NetInfoVersion>>();
-            Initializer.stationTracks = new List<KeyValuePair<NetInfo, NetInfoVersion>>();
         }
 
         public override void OnLevelLoaded(LoadMode mode)
         {
             base.OnLevelLoaded(mode);
-            if (Initializer.tracks == null || Initializer.stationTracks == null)
+            if (Initializer.Tracks == null || Initializer.StationTracks == null || Initializer.Tracks2Low == null)
             {
                 return;
             }
             var railInfos = Resources.FindObjectsOfTypeAll<NetInfo>();
-            foreach (var ri in railInfos.Where(ri => ri?.m_netAI is TrainTrackBaseAI))
+            foreach (var ri in railInfos.Where(ri => ri?.m_netAI is TrainTrackBaseAI && ri.m_class.m_subService == ItemClass.SubService.PublicTransportTrain))
             {
-                if (Initializer.tracks.Select(p => p.Key).Contains(ri) || Initializer.stationTracks.Select(p => p.Key).Contains(ri))
+                if (Initializer.Tracks.Select(p => p.Key).Contains(ri) || 
+                    Initializer.StationTracks.Select(p => p.Key).Contains(ri) ||
+                    Initializer.Tracks2Low.Select(p => p.Key).Contains(ri))
                 {
                     continue;
                 }
@@ -79,29 +92,29 @@ namespace SingleTrainTrack
             try
             {
                 var trackBuilder = new Rail1LBuilder();
-                foreach (var pair in Initializer.tracks)
+                foreach (var pair in Initializer.Tracks)
                 {
                     if (pair.Key.m_halfWidth < 4)
                         trackBuilder.LateBuildUp(pair.Key, pair.Value);
                 }
-                Initializer.tracks = null;
                 var stationTrackBuilder = new Rail1LStationBuilder();
-
-                foreach (var pair in Initializer.stationTracks)
+                foreach (var pair in Initializer.StationTracks)
                 {
                     stationTrackBuilder.LateBuildUp(pair.Key, pair.Value);
                 }
             }
             catch (Exception ex)
             {
-                //Debug.Log(string.Format("REx: Crashed-Network builder {0}", builder.Name));
-                Debug.Log("APT: " + ex.Message);
-                Debug.Log("APT: " + ex.ToString());
-                //throw new Exception($"{e.Message}\nMake sure the required prop is installed and is enabled in Content Manager!");
+                Debug.LogException(ex);
             }
-            Initializer.stationTracks = null;
-            ModifyExistingNetInfos.ModifyExistingIcons();
-            new GameObject("UpgradeSetup").AddComponent<UpgradeSetup>();
+            finally
+            {
+                Initializer.StationTracks = null;
+                Initializer.Tracks2Low = null;
+                Initializer.Tracks = null;
+            }
+            //TODO(earalov): bring back later
+            //new GameObject("UpgradeSetup").AddComponent<UpgradeSetup>();
         }
 
         public override void OnReleased()
@@ -113,36 +126,7 @@ namespace SingleTrainTrack
             }
             Object.Destroy(Container.gameObject);
             Container = null;
-        }
-
-        public class UpgradeSetup : MonoBehaviour
-        {
-            public void Update()
-            {
-                var panel = GameObject.Find("TracksOptionPanel(PublicTransportPanel)");
-                if (panel == null)
-                {
-                    return;
-                }
-                var toolModeGo = panel.transform.FindChild("ToolMode");
-                var tabstrip = toolModeGo.GetComponent<UITabstrip>();
-                var button = tabstrip.AddTab("Upgrade");
-                button.size = new Vector2(36, 36);
-                var upgrade = GameObject.Find("Upgrade").GetComponent<UIButton>();
-                button.atlas = upgrade.atlas;
-                button.normalFgSprite = upgrade.normalFgSprite;
-                button.pressedFgSprite = upgrade.pressedFgSprite;
-                button.disabledFgSprite = upgrade.disabledFgSprite;
-                button.focusedFgSprite = upgrade.focusedFgSprite;
-                button.hoveredFgSprite = upgrade.hoveredFgSprite;
-                button.normalBgSprite = upgrade.normalBgSprite;
-                button.pressedBgSprite = upgrade.pressedBgSprite;
-                button.disabledBgSprite = upgrade.disabledBgSprite;
-                button.focusedBgSprite = upgrade.focusedBgSprite;
-                button.hoveredBgSprite = upgrade.hoveredBgSprite;
-                button.text = "";
-                Destroy(this);
-            }
+            ModifyExistingNetInfos.Reset();
         }
     }
 }
