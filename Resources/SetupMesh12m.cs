@@ -27,12 +27,15 @@ namespace MetroOverhaul.SetupPrefab
                         segment0
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Ground_Pavement.obj");
+                            (@"Meshes\Ground_Pavement.obj")
+                            .m_emptyTransparent = true;
+
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
                             (@"Meshes\Ground_Rail.obj")
                             .SetConsistentUVs();
+
                         node0
                             .SetMeshes
                             (@"Meshes\Ground_Node_Pavement.obj")
