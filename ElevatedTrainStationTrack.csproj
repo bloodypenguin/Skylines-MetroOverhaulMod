@@ -244,6 +244,7 @@
     <None Include="Resources\Textures\Rail1LStation\thumbnails.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="lib\ObjUnity3D.dll" />
     <Content Include="Resources\Textures\Rail1L\infotooltip.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -299,8 +300,9 @@ mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetNam
 rmdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Assets\$(TargetName)" /s /q
 mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Assets\$(TargetName)"
 xcopy /y "$(TargetPath)" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)"
-xcopy "$(ProjectDir)\Resources" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)" /s /e
-xcopy "$(ProjectDir)\Assets" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Assets\$(TargetName)" /s /e
+xcopy /y "$(ProjectDir)\Resources" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)" /s /e
+xcopy /y "$(ProjectDir)\lib" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)" /s /e
+xcopy /y "$(ProjectDir)\Assets" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Assets\$(TargetName)" /s /e
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
