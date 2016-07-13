@@ -114,7 +114,11 @@ namespace SingleTrainTrack
                 Initializer.Tracks2Low = null;
                 Initializer.Tracks = null;
             }
-            var gameObject = new GameObject("UISetup");
+            if (mode != LoadMode.NewGame && mode != LoadMode.LoadGame)
+            {
+                return;
+            }
+            var gameObject = new GameObject("SingleTrainTrackUISetup");
             gameObject.AddComponent<UpgradeSetup>();
             if (Util.IsModActive("One-Way Street Arrows"))
             {
@@ -125,6 +129,12 @@ namespace SingleTrainTrack
         public override void OnReleased()
         {
             base.OnReleased();
+            var gameObject = GameObject.Find("SingleTrainTrackUISetup");
+            if (gameObject != null)
+            {
+                GameObject.Destroy(gameObject);
+            }
+
             if (Container == null)
             {
                 return;

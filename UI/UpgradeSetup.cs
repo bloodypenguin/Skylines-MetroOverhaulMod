@@ -16,6 +16,7 @@ namespace SingleTrainTrack.UI
             var tabstrip = toolModeGo.GetComponent<UITabstrip>();
             if (tabstrip.tabCount > 3)
             {
+                Destroy(this);
                 return;
             }
             var rop = panel.GetComponent<RoadsOptionPanel>();
