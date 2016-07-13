@@ -24,40 +24,61 @@ namespace MetroOverhaul
                 p.GetComponent<TrainTrackAI>().m_connectedInfo = null;
             }));
             CreatePrefab("Metro Station Track Ground", "Train Station Track", SetupMetroTrack().Apply(mTunnelInfo));
-            CreatePrefab("Metro Station Track Elevated", "Train Station Track", SetupMetroTrack().Apply(mTunnelInfo).Chain(SetupElevatedStationTrack()));
-
+            CreatePrefab("Metro Station Track Elevated", "Train Station Track", SetupMetroTrack().Apply(mTunnelInfo).Chain(SetupStationTrack()).Chain(SetupElevatedStationTrack()));
+            CreatePrefab("Metro Station Track Sunken", "Train Station Track", SetupMetroTrack().Apply(mTunnelInfo).Chain(SetupStationTrack()).Chain(SetupSunkenStationTrack()));
         }
 
         public static Action<NetInfo> SetupElevatedStationTrack()
         {
-            return elevatedPrefab =>
+            return prefab =>
             {
-                var trackAi = elevatedPrefab.GetComponent<TrainTrackAI>();
-                trackAi.m_elevatedInfo = elevatedPrefab;
+                var trackAi = prefab.GetComponent<TrainTrackAI>();
+                trackAi.m_elevatedInfo = prefab;
+            };
+        }
 
-                elevatedPrefab.m_followTerrain = false;
-                elevatedPrefab.m_flattenTerrain = false;
-                elevatedPrefab.m_createGravel = false;
-                elevatedPrefab.m_createPavement = false;
-                elevatedPrefab.m_createRuining = false;
-                elevatedPrefab.m_requireSurfaceMaps = false;
-                elevatedPrefab.m_clipTerrain = false;
-                elevatedPrefab.m_snapBuildingNodes = false;
-                elevatedPrefab.m_placementStyle = ItemClass.Placement.Procedural;
-                elevatedPrefab.m_useFixedHeight = true;
-                elevatedPrefab.m_lowerTerrain = true;
-                elevatedPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
+        public static Action<NetInfo> SetupSunkenStationTrack()
+        {
+            return prefab =>
+            {
+                var trackAi = prefab.GetComponent<TrainTrackAI>();
+                trackAi.m_tunnelInfo = prefab;
+                prefab.m_maxHeight = -1;
+                prefab.m_minHeight = -3;
+                prefab.m_lowerTerrain = false;
+                prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels | ItemClass.Layer.Default;
+            };
+        }
+
+        public static Action<NetInfo> SetupStationTrack()
+        {
+            return prefab =>
+            {
+                prefab.m_followTerrain = false;
+                prefab.m_flattenTerrain = false;
+                prefab.m_createGravel = false;
+                prefab.m_createPavement = false;
+                prefab.m_createRuining = false;
+                prefab.m_requireSurfaceMaps = false;
+                prefab.m_clipTerrain = false;
+                prefab.m_snapBuildingNodes = false;
+                prefab.m_placementStyle = ItemClass.Placement.Procedural;
+                prefab.m_useFixedHeight = true;
+                prefab.m_lowerTerrain = true;
+                prefab.m_availableIn = ItemClass.Availability.GameAndAsset;
+                prefab.m_intersectClass = null;
             };
         }
 
         private static Action<NetInfo, NetInfo> SetupMetroTrack()
         {
-            var elevatedInfo = FindOriginalPrefab("Basic Road Elevated");
+            var trainTrackInfo = FindOriginalPrefab("Train Track");
+            var metroTrack = FindOriginalPrefab("Metro Track");
             return (prefab, metroTunnel) =>
             {
-                if (prefab.name.Contains("Ground"))
+                if (prefab.name.Contains("Ground") || prefab.name.Contains("Sunken"))
                 {
-                    SetupMesh.Setup12mMesh(prefab, NetInfoVersion.Ground, elevatedInfo);
+                    SetupMesh.Setup12mMesh(prefab, NetInfoVersion.Ground, trainTrackInfo);
                     SetupTexture.Setup12mTexture(prefab, NetInfoVersion.Ground);
                 }
                 var milestone = metroTunnel.GetComponent<MetroTrackAI>().m_createPassMilestone;
@@ -68,6 +89,7 @@ namespace MetroOverhaul
                 prefab.m_class.m_subService = ItemClass.SubService.PublicTransportMetro;
                 prefab.m_class.m_service = ItemClass.Service.PublicTransport;
                 prefab.m_class.m_level = ItemClass.Level.Level1;
+                prefab.m_UIPriority = metroTrack.m_UIPriority;
                 if (prefab.name.Contains("Slope"))
                 {
                     prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels | ItemClass.Layer.Default;
