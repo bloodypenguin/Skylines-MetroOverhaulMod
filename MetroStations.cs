@@ -10,12 +10,12 @@ namespace MetroOverhaul
         {
             foreach (var info in Resources.FindObjectsOfTypeAll<BuildingInfo>())
             {
-                if (!(info.m_buildingAI is DepotAI))
+                if (!(info.m_buildingAI is DepotAI) || info.m_class.m_subService != ItemClass.SubService.PublicTransportMetro)
                 {
                     continue;
                 }
 
-                if (info.m_buildingAI.GetType() != typeof(DepotAI) && info.m_class.m_subService == ItemClass.SubService.PublicTransportMetro)
+                if (info.m_buildingAI.GetType() != typeof(DepotAI))
                 {
                     var transportStationAi = ((TransportStationAI)info.m_buildingAI);
                     transportStationAi.m_maxVehicleCount = 0;
