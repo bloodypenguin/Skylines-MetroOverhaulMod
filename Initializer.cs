@@ -52,12 +52,12 @@ namespace MetroOverhaul
 
         private static Action<NetInfo, NetInfo> SetupMetroTrack()
         {
-            var trainTrackInfo = FindOriginalPrefab("Train Track");
+            var elevatedInfo = FindOriginalPrefab("Basic Road Elevated");
             return (prefab, metroTunnel) =>
             {
                 if (prefab.name.Contains("Ground"))
                 {
-                    SetupMesh.Setup12mMesh(prefab, NetInfoVersion.Ground, trainTrackInfo);
+                    SetupMesh.Setup12mMesh(prefab, NetInfoVersion.Ground, elevatedInfo);
                     SetupTexture.Setup12mTexture(prefab, NetInfoVersion.Ground);
                 }
                 var milestone = metroTunnel.GetComponent<MetroTrackAI>().m_createPassMilestone;
