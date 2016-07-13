@@ -83,6 +83,7 @@
     <Compile Include="Rail1L\Rail1LBuilder.Texturing.cs" />
     <Compile Include="Rail2LOW\Rail2LOWBuilder.cs" />
     <Compile Include="SharedHelpers.cs" />
+    <Compile Include="UI\ArrowsButtonSetup.cs" />
     <Compile Include="UI\UpgradeSetup.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>

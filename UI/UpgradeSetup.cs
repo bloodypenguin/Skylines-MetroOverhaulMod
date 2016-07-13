@@ -14,6 +14,18 @@ namespace SingleTrainTrack.UI
             }
             var toolModeGo = panel.transform.FindChild("ToolMode");
             var tabstrip = toolModeGo.GetComponent<UITabstrip>();
+            if (tabstrip.tabCount > 3)
+            {
+                return;
+            }
+            var rop = panel.GetComponent<RoadsOptionPanel>();
+            rop.m_Modes = new[]
+            {
+            NetTool.Mode.Straight,
+            NetTool.Mode.Curved,
+            NetTool.Mode.Freeform,
+            NetTool.Mode.Upgrade
+            };
             var button = tabstrip.AddTab("Upgrade");
             button.size = new Vector2(36, 36);
             var upgrade = GameObject.Find("Upgrade").GetComponent<UIButton>();

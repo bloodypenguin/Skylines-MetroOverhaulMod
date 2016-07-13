@@ -5,6 +5,7 @@ using ColossalFramework.UI;
 using DoubleTrainTrack.Rail2LOW;
 using ICities;
 using SingleTrainTrack.NEXT;
+using SingleTrainTrack.UI;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Rail1LBuilder = SingleTrainTrack.Rail1L.Rail1LBuilder;
@@ -29,15 +30,15 @@ namespace SingleTrainTrack
             Initializer.Tracks2Low = new List<KeyValuePair<NetInfo, NetInfoVersion>>();
             Initializer.StationTracks = new List<KeyValuePair<NetInfo, NetInfoVersion>>();
 
-           new object[]
-           {
-               new Rail2LOWBuilder(), 
+            new object[]
+            {
+               new Rail2LOWBuilder(),
                new Rail1LBuilder(),
                new Rail1LStationBuilder()
-           }.ForEach(trackBuilder =>
-           {
-               Util.AddLocale("NET", trackBuilder.GetPropery<string>("Name"), trackBuilder.GetPropery<string>("DisplayName"), trackBuilder.GetPropery<string>("Description"));
-           });
+            }.ForEach(trackBuilder =>
+            {
+                Util.AddLocale("NET", trackBuilder.GetPropery<string>("Name"), trackBuilder.GetPropery<string>("DisplayName"), trackBuilder.GetPropery<string>("Description"));
+            });
         }
 
         private static void InstallAssets()
@@ -71,12 +72,12 @@ namespace SingleTrainTrack
             base.OnLevelLoaded(mode);
             if (Initializer.Tracks == null || Initializer.StationTracks == null || Initializer.Tracks2Low == null)
             {
-                return;
+                return; //that assures that following code gets executed only on the first loading
             }
             var railInfos = Resources.FindObjectsOfTypeAll<NetInfo>();
             foreach (var ri in railInfos.Where(ri => ri?.m_netAI is TrainTrackBaseAI && ri.m_class.m_subService == ItemClass.SubService.PublicTransportTrain))
             {
-                if (Initializer.Tracks.Select(p => p.Key).Contains(ri) || 
+                if (Initializer.Tracks.Select(p => p.Key).Contains(ri) ||
                     Initializer.StationTracks.Select(p => p.Key).Contains(ri) ||
                     Initializer.Tracks2Low.Select(p => p.Key).Contains(ri))
                 {
@@ -113,8 +114,12 @@ namespace SingleTrainTrack
                 Initializer.Tracks2Low = null;
                 Initializer.Tracks = null;
             }
-            //TODO(earalov): bring back later
-            //new GameObject("UpgradeSetup").AddComponent<UpgradeSetup>();
+            var gameObject = new GameObject("UISetup");
+            gameObject.AddComponent<UpgradeSetup>();
+            if (Util.IsModActive("One-Way Street Arrows"))
+            {
+                gameObject.AddComponent<ArrowsButtonSetup>();
+            }
         }
 
         public override void OnReleased()
