@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ColossalFramework.UI;
@@ -30,24 +31,34 @@ namespace SingleTrainTrack.UI
 
             var extensions = (List<IThreadingExtension>)SimulationManager.instance.m_ThreadingWrapper.GetType()
                 .GetField("m_ThreadingExtensions", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(SimulationManager.instance.m_ThreadingWrapper);
-            var extension = extensions.First(x => x.GetType().GetField("arrowManager", BindingFlags.NonPublic | BindingFlags.Instance) != null);
-            var arrowManager =
-                extension.GetType()
-                    .GetField("arrowManager", BindingFlags.NonPublic | BindingFlags.Instance)
-                    .GetValue(extension);
-
-            button.eventActiveStateIndexChanged += (component, value) =>
+            try
             {
-                if (value == 0)
+
+                var extension =
+                    extensions.First(
+                        x =>
+                            x.GetType().GetField("arrowManager", BindingFlags.NonPublic | BindingFlags.Instance) != null);
+                var arrowManager =
+                    extension.GetType()
+                        .GetField("arrowManager", BindingFlags.NonPublic | BindingFlags.Instance)
+                        .GetValue(extension);
+
+                button.eventActiveStateIndexChanged += (component, value) =>
                 {
-                    arrowManager.GetType().GetMethod("DestroyArrows").Invoke(arrowManager, new object[] {});
-                }
-                else
-                {
-                    arrowManager.GetType().GetMethod("CreateArrows").Invoke(arrowManager, new object[] {});
-                }
-            };
-            
+                    if (value == 0)
+                    {
+                        arrowManager.GetType().GetMethod("DestroyArrows").Invoke(arrowManager, new object[] { });
+                    }
+                    else
+                    {
+                        arrowManager.GetType().GetMethod("CreateArrows").Invoke(arrowManager, new object[] { });
+                    }
+                };
+            }
+            catch (Exception e)
+            {
+                //swallow
+            }
             Destroy(this);
         }
     }
