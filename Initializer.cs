@@ -72,13 +72,11 @@ namespace MetroOverhaul
 
         private static Action<NetInfo, NetInfo> SetupMetroTrack()
         {
-            var trainTrackInfo = FindOriginalPrefab("Train Track");
-            var metroTrack = FindOriginalPrefab("Metro Track");
             return (prefab, metroTunnel) =>
             {
                 if (prefab.name.Contains("Ground") || prefab.name.Contains("Sunken"))
                 {
-                    SetupMesh.Setup12mMesh(prefab, NetInfoVersion.Ground, trainTrackInfo);
+                    SetupMesh.Setup12mMesh(prefab, NetInfoVersion.Ground, FindOriginalPrefab("Basic Road Elevated"));
                     SetupTexture.Setup12mTexture(prefab, NetInfoVersion.Ground);
                 }
                 var milestone = metroTunnel.GetComponent<MetroTrackAI>().m_createPassMilestone;
@@ -89,7 +87,7 @@ namespace MetroOverhaul
                 prefab.m_class.m_subService = ItemClass.SubService.PublicTransportMetro;
                 prefab.m_class.m_service = ItemClass.Service.PublicTransport;
                 prefab.m_class.m_level = ItemClass.Level.Level1;
-                prefab.m_UIPriority = metroTrack.m_UIPriority;
+                prefab.m_UIPriority = FindOriginalPrefab("Metro Track").m_UIPriority;
                 if (prefab.name.Contains("Slope"))
                 {
                     prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels | ItemClass.Layer.Default;
