@@ -16,6 +16,17 @@ namespace MetroOverhaul
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
+            InstallAssets();
+            if (Container == null)
+            {
+                Container = new GameObject("MetroOverhaul").AddComponent<Initializer>();
+            }
+            Redirector<DepotAIDetour>.Deploy();
+            //Redirector<MetroTrainAIDetour>.Deploy(); //don't deploy this! For some reason that causes citizens not boarding trains
+        }
+
+        private static void InstallAssets()
+        {
             if (Done) // Only one Assets installation throughout the application
             {
                 return;
@@ -38,14 +49,7 @@ namespace MetroOverhaul
                     }
                 });
             }
-
             Done = true;
-            if (Container == null)
-            {
-                Container = new GameObject("MetroOverhaul").AddComponent<Initializer>();
-            }
-            Redirector<DepotAIDetour>.Deploy();
-            //Redirector<MetroTrainAIDetour>.Deploy(); //don't deploy this! For some reason that causes citizens not boarding trains
         }
 
         public override void OnReleased()
