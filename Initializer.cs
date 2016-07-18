@@ -53,13 +53,17 @@ namespace MetroOverhaul
         private static Action<NetInfo, NetInfo> SetupMetroTrack()
         {
             var elevatedInfo = FindOriginalPrefab("Basic Road Elevated");
+            var version = NetInfoVersion.Ground;
             return (prefab, metroTunnel) =>
             {
-                if (prefab.name.Contains("Ground"))
+                if (prefab.name.Contains("Elevated"))
                 {
-                    SetupMesh.Setup12mMesh(prefab, NetInfoVersion.Ground, elevatedInfo);
-                    SetupTexture.Setup12mTexture(prefab, NetInfoVersion.Ground);
+                    version = NetInfoVersion.Elevated;
                 }
+
+                SetupMesh.Setup12mMesh(prefab, version, elevatedInfo);
+                SetupTexture.Setup12mTexture(prefab, version);
+
                 var milestone = metroTunnel.GetComponent<MetroTrackAI>().m_createPassMilestone;
                 PrefabCollection<VehicleInfo>.FindLoaded("Metro").m_class =
                     ScriptableObject.CreateInstance<ItemClass>();
@@ -88,6 +92,7 @@ namespace MetroOverhaul
                 prefab.m_createPavement = true;
                 prefab.m_halfWidth = 5;
                 prefab.m_isCustomContent = true;
+                prefab.m_pavementWidth = 3.5f;
 
                 var speedLimit = metroTunnel.m_lanes.First(l => l.m_vehicleType != VehicleInfo.VehicleType.None).m_speedLimit;
 

@@ -135,10 +135,19 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="lib\ObjUnity3D.dll" />
+    <Content Include="Resources\Textures\Elevated_Node_Pavement__AlphaMap.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Textures\Elevated_Node_Pavement__MainTex.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Textures\Elevated_Segment_Pavement__AlphaMap.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Textures\Elevated_Segment_Pavement__MainTex.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Textures\Elevated_Segment_Pavement__XYSMap.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Textures\Ground_Node_Pavement__AlphaMap.png">
