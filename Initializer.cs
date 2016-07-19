@@ -5,8 +5,9 @@ using ColossalFramework.UI;
 using SingleTrainTrack.NEXT;
 using SingleTrainTrack.NEXT.Extensions;
 using Rail1LBuilder = SingleTrainTrack.Rail1L.Rail1LBuilder;
-using Rail1LStationBuilder = SingleTrainTrack.Rail1LStation.Rail1LStationBuilder;
-using Rail2LOWBuilder = DoubleTrainTrack.Rail2LOW.Rail2LOWBuilder;
+using Rail1L2SidedStationBuilder = SingleTrainTrack.Rail1LStation.Rail1L2SidedStation.Rail1L2SidedStationBuilder;
+using Rail1L1SidedStationBuilder = SingleTrainTrack.Rail1LStation.Rail1L1SidedStation.Rail1L1SidedStationBuilder;
+using Rail2L1WBuilder = DoubleTrainTrack.Rail2L1W.Rail2L1WBuilder;
 
 namespace SingleTrainTrack
 {
@@ -14,14 +15,16 @@ namespace SingleTrainTrack
     {
 
         public static List<KeyValuePair<NetInfo, NetInfoVersion>> Tracks;
-        public static List<KeyValuePair<NetInfo, NetInfoVersion>> StationTracks;
-        public static List<KeyValuePair<NetInfo, NetInfoVersion>> Tracks2Low;
+        public static List<KeyValuePair<NetInfo, NetInfoVersion>> Station2SidedTracks;
+        public static List<KeyValuePair<NetInfo, NetInfoVersion>> Station1SidedTracks;
+        public static List<KeyValuePair<NetInfo, NetInfoVersion>> Tracks2L1W;
 
         protected override void InitializeImpl()
         {
             InitializeByBuilder(new Rail1LBuilder(), Tracks);
-            InitializeByBuilder(new Rail1LStationBuilder(), StationTracks);
-            InitializeByBuilder(new Rail2LOWBuilder(), Tracks2Low);
+            InitializeByBuilder(new Rail1L2SidedStationBuilder(), Station2SidedTracks);
+            InitializeByBuilder(new Rail1L1SidedStationBuilder(), Station1SidedTracks);
+            InitializeByBuilder(new Rail2L1WBuilder(), Tracks2L1W);
         }
 
         private void InitializeByBuilder(object trackBuilder, List<KeyValuePair<NetInfo, NetInfoVersion>> tracks)
@@ -107,13 +110,17 @@ namespace SingleTrainTrack
                 {
                     Tracks.Add(new KeyValuePair<NetInfo, NetInfoVersion>(newPrefab, version));
                 }
-                if (builder is Rail2LOWBuilder)
+                if (builder is Rail2L1WBuilder)
                 {
-                    Tracks2Low.Add(new KeyValuePair<NetInfo, NetInfoVersion>(newPrefab, version));
+                    Tracks2L1W.Add(new KeyValuePair<NetInfo, NetInfoVersion>(newPrefab, version));
                 }
-                if (builder is Rail1LStationBuilder)
+                if (builder is Rail1L2SidedStationBuilder)
                 {
-                    StationTracks.Add(new KeyValuePair<NetInfo, NetInfoVersion>(newPrefab, version));
+                    Station2SidedTracks.Add(new KeyValuePair<NetInfo, NetInfoVersion>(newPrefab, version));
+                }
+                if (builder is Rail1L1SidedStationBuilder)
+                {
+                    Station1SidedTracks.Add(new KeyValuePair<NetInfo, NetInfoVersion>(newPrefab, version));
                 }
             };
         }

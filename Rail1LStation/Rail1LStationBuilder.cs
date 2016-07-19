@@ -7,27 +7,14 @@ using UnityEngine;
 
 namespace SingleTrainTrack.Rail1LStation
 {
-    public partial class Rail1LStationBuilder
+    public abstract partial class Rail1LStationBuilder
     {
-        public int Order { get { return 7; } }
-        public int UIOrder { get { return 9; } }
-
-        public string BasedPrefabName { get { return Mod.TRAIN_STATION_TRACK; } }
-        public string Name { get { return "Rail1LStation"; } }
-        public string DisplayName { get { return "Single One-Way Rail Station Track"; } }
-        public string Description { get { return "A single one way rail track that can be connected to conventional rail."; } }
-        public string ShortDescription { get { return "Single Rail Track"; } }
-        public string UICategory { get { return "PublicTransportTrain"; } }
-
-        public string ThumbnailsPath { get { return @"Textures\Rail1LStation\thumbnails.png"; } }
-        public string InfoTooltipPath { get { return @"Textures\Rail1LStation\infotooltip.png"; } }
-
         public NetInfoVersion SupportedVersions
         {
             get { return NetInfoVersion.Ground; }
         }
 
-        public void BuildUp(NetInfo info, NetInfoVersion version)
+        public virtual void BuildUp(NetInfo info, NetInfoVersion version)
         {
             ///////////////////////////
             // Template              //
@@ -50,7 +37,8 @@ namespace SingleTrainTrack.Rail1LStation
             info.m_hasParkingSpaces = false;
             //info.m_class = roadInfo.m_class.Clone(NetInfoClasses.NEXT_SMALL3L_ROAD);
             info.m_halfWidth = 3;
-
+            info.m_availableIn = ItemClass.Availability.AssetEditor;
+            info.m_placementStyle = ItemClass.Placement.Manual;
             info.SetRoadLanes(version, new LanesConfiguration()
             {
                 IsTwoWay = false,
@@ -60,12 +48,6 @@ namespace SingleTrainTrack.Rail1LStation
             var railLane = info.m_lanes.FirstOrDefault(l => l.m_laneType == NetInfo.LaneType.Vehicle);
             railLane.m_direction = NetInfo.Direction.AvoidBackward | NetInfo.Direction.AvoidForward;
 
-            var pedLanes = info.m_lanes.Where(l => l.m_laneType == NetInfo.LaneType.Pedestrian).ToList();
-
-            for(int i = 0; i < pedLanes.Count; i++)
-            {
-                pedLanes[i].m_position = (((i - 1) * 2) + 1) * 4;
-            }
             info.m_connectGroup = NetInfo.ConnectGroup.CenterTram;
             info.m_nodeConnectGroups = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.NarrowTram;
 

@@ -7,9 +7,9 @@ using System.Linq;
 
 using UnityEngine;
 
-namespace DoubleTrainTrack.Rail2LOW
+namespace DoubleTrainTrack.Rail2L1W
 {
-    public partial class Rail2LOWBuilder
+    public partial class Rail2L1WBuilder
     {
         public int Order { get { return 7; } }
         public int UIOrder { get { return 9; } }
@@ -21,8 +21,8 @@ namespace DoubleTrainTrack.Rail2LOW
         public string ShortDescription { get { return "Double Rail Track"; } }
         public string UICategory { get { return "PublicTransportTrain"; } }
 
-        public string ThumbnailsPath { get { return @"Textures\Rail2LOW\thumbnails.png"; } }
-        public string InfoTooltipPath { get { return @"Textures\Rail2LOW\infotooltip.png"; } }
+        public string ThumbnailsPath { get { return @"Textures\Rail2L1W\thumbnails.png"; } }
+        public string InfoTooltipPath { get { return @"Textures\Rail2L1W\infotooltip.png"; } }
 
         public NetInfoVersion SupportedVersions
         {
