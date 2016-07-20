@@ -11,8 +11,8 @@ namespace DoubleTrainTrack.Rail2L1W
 {
     public partial class Rail2L1WBuilder
     {
-        public int Order { get { return 7; } }
-        public int UIOrder { get { return 9; } }
+        public int Order { get { return 5; } }
+        public int UIOrder { get { return 5; } }
 
         public string BasedPrefabName { get { return SharedHelpers.TRAIN_TRACK; } }
         public string Name { get { return "Oneway Train Track"; } }

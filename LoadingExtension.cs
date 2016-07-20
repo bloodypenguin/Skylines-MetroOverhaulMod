@@ -8,7 +8,8 @@ using SingleTrainTrack.NEXT;
 using SingleTrainTrack.UI;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Rail1LBuilder = SingleTrainTrack.Rail1L.Rail1LBuilder;
+using Rail1L1WBuilder = SingleTrainTrack.Rail1L.Rail1L1W.Rail1L1WBuilder;
+using Rail1L2WBuilder = SingleTrainTrack.Rail1L.Rail1L2W.Rail1L2WBuilder;
 using Rail1L2SidedStationBuilder = SingleTrainTrack.Rail1LStation.Rail1L2SidedStation.Rail1L2SidedStationBuilder;
 using Rail1L1SidedStationBuilder = SingleTrainTrack.Rail1LStation.Rail1L1SidedStation.Rail1L1SidedStationBuilder;
 
@@ -27,14 +28,16 @@ namespace SingleTrainTrack
             {
                 Container = new GameObject("Rail1L").AddComponent<Initializer>();
             }
-            Initializer.Tracks = new List<KeyValuePair<NetInfo, NetInfoVersion>>();
+            Initializer.Tracks1W = new List<KeyValuePair<NetInfo, NetInfoVersion>>();
+            Initializer.Tracks2W = new List<KeyValuePair<NetInfo, NetInfoVersion>>();
             Initializer.Tracks2L1W = new List<KeyValuePair<NetInfo, NetInfoVersion>>();
             Initializer.Station2SidedTracks = new List<KeyValuePair<NetInfo, NetInfoVersion>>();
             Initializer.Station1SidedTracks = new List<KeyValuePair<NetInfo, NetInfoVersion>>();
             new object[]
             {
                new Rail2L1WBuilder(),
-               new Rail1LBuilder(),
+               new Rail1L1WBuilder(),
+               new Rail1L2WBuilder(),
                new Rail1L2SidedStationBuilder(),
                new Rail1L1SidedStationBuilder()
             }.ForEach(trackBuilder =>
@@ -72,14 +75,15 @@ namespace SingleTrainTrack
         public override void OnLevelLoaded(LoadMode mode)
         {
             base.OnLevelLoaded(mode);
-            if (Initializer.Tracks == null || Initializer.Station2SidedTracks == null || Initializer.Station1SidedTracks == null || Initializer.Tracks2L1W == null)
+            if (Initializer.Tracks1W == null || Initializer.Tracks2W == null || Initializer.Station2SidedTracks == null || Initializer.Station1SidedTracks == null || Initializer.Tracks2L1W == null)
             {
                 return; //that assures that following code gets executed only on the first loading
             }
             var railInfos = Resources.FindObjectsOfTypeAll<NetInfo>();
             foreach (var ri in railInfos.Where(ri => ri?.m_netAI is TrainTrackBaseAI && ri.m_class.m_subService == ItemClass.SubService.PublicTransportTrain))
             {
-                if (Initializer.Tracks.Select(p => p.Key).Contains(ri) ||
+                if (Initializer.Tracks1W.Select(p => p.Key).Contains(ri) ||
+                    Initializer.Tracks2W.Select(p => p.Key).Contains(ri) ||
                     Initializer.Station2SidedTracks.Select(p => p.Key).Contains(ri) ||
                     Initializer.Station1SidedTracks.Select(p => p.Key).Contains(ri) ||
                     Initializer.Tracks2L1W.Select(p => p.Key).Contains(ri))
@@ -95,11 +99,17 @@ namespace SingleTrainTrack
             }
             try
             {
-                var trackBuilder = new Rail1LBuilder();
-                foreach (var pair in Initializer.Tracks)
+                var track1WBuilder = new Rail1L1WBuilder();
+                var track2WBuilder = new Rail1L2WBuilder();
+                foreach (var pair in Initializer.Tracks1W)
                 {
                     if (pair.Key.m_halfWidth < 4)
-                        trackBuilder.LateBuildUp(pair.Key, pair.Value);
+                        track1WBuilder.LateBuildUp(pair.Key, pair.Value);
+                }
+                foreach (var pair in Initializer.Tracks2W)
+                {
+                    if (pair.Key.m_halfWidth < 4)
+                        track2WBuilder.LateBuildUp(pair.Key, pair.Value);
                 }
                 var stationTrackBuilder2 = new Rail1L2SidedStationBuilder();
                 foreach (var pair in Initializer.Station2SidedTracks)
@@ -121,7 +131,8 @@ namespace SingleTrainTrack
                 Initializer.Station2SidedTracks = null;
                 Initializer.Station1SidedTracks = null;
                 Initializer.Tracks2L1W = null;
-                Initializer.Tracks = null;
+                Initializer.Tracks1W = null;
+                Initializer.Tracks2W = null;
             }
             if (mode != LoadMode.NewGame && mode != LoadMode.LoadGame)
             {

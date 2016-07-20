@@ -7,27 +7,14 @@ using UnityEngine;
 
 namespace SingleTrainTrack.Rail1L
 {
-    public partial class Rail1LBuilder
+    public abstract partial class Rail1LBuilder
     {
-        public int Order { get { return 7; } }
-        public int UIOrder { get { return 9; } }
-
-        public string BasedPrefabName { get { return Mod.TRAIN_TRACK; } }
-        public string Name { get { return "Rail1L"; } }
-        public string DisplayName { get { return "Single One-Way Rail"; } }
-        public string Description { get { return "A single one-way rail track that can be connected to conventional rail."; } }
-        public string ShortDescription { get { return "Single Rail Track"; } }
-        public string UICategory { get { return "PublicTransportTrain"; } }
-
-        public string ThumbnailsPath { get { return @"Textures\Rail1L\thumbnails.png"; } }
-        public string InfoTooltipPath { get { return @"Textures\Rail1L\infotooltip.png"; } }
-
         public NetInfoVersion SupportedVersions
         {
             get { return NetInfoVersion.All; }
         }
 
-        public void BuildUp(NetInfo info, NetInfoVersion version)
+        public virtual void BuildUp(NetInfo info, NetInfoVersion version)
         {
             ///////////////////////////
             // Template              //
@@ -35,10 +22,6 @@ namespace SingleTrainTrack.Rail1L
             var railVersionName = SharedHelpers.NameBuilder(SharedHelpers.TRAIN_TRACK, version);
             var railInfo = Prefabs.Find<NetInfo>(railVersionName);
             info.m_class = railInfo.m_class.Clone("APT" + railVersionName);
-            ///////////////////////////
-            // 3DModeling            //
-            ///////////////////////////
-            info.Setup6mMesh(version);
 
             ///////////////////////////
             // Texturing             //

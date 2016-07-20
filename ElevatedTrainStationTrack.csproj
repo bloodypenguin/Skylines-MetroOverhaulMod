@@ -81,6 +81,8 @@
     <Compile Include="Rail1LStation\Rail1L2SidedStation\Rail1L2SidedStationBuilder.cs" />
     <Compile Include="Rail1LStation\Rail1LStationBuilder.cs" />
     <Compile Include="Rail1LStation\Rail1LStationBuilder.Texturing.cs" />
+    <Compile Include="Rail1L\Rail1L1W\Rail1L1WBuilder.cs" />
+    <Compile Include="Rail1L\Rail1L2W\Rail1L2WBuilder.cs" />
     <Compile Include="Rail1L\Rail1LBuilder.cs" />
     <Compile Include="Rail1L\Rail1LBuilder.Texturing.cs" />
     <Compile Include="Rail2L1W\Rail2L1WBuilder.cs" />
@@ -282,12 +284,15 @@
     <None Include="Resources\Textures\Rail1L\Tunnel_Segment__MainTex.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="Resources\Textures\Rail1L\thumbnails.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Resources\Textures\Rail1L\Rail1L1W\thumbnails.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Textures\Rail1L\Rail1L2W\thumbnails.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Textures\Rail2L1W\infotooltip.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

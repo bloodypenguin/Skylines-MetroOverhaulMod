@@ -21,11 +21,11 @@ namespace SingleTrainTrack.Rail1LStation.Rail1L1SidedStation
         public override void BuildUp(NetInfo info, NetInfoVersion version)
         {
             base.BuildUp(info, version);
-            var pedLane = info.m_lanes.FirstOrDefault(l => l.m_laneType == NetInfo.LaneType.Pedestrian);
-            if (pedLane != null)
+            var pedLanes = info.m_lanes.Where(l => l.m_laneType == NetInfo.LaneType.Pedestrian).ToList();
+
+            for (int i = 0; i < pedLanes.Count; i++)
             {
-                pedLane.m_position = -4;
-                info.m_lanes = new NetInfo.Lane[] { pedLane };
+                pedLanes[i].m_position = -4;
             }
         }
     }
