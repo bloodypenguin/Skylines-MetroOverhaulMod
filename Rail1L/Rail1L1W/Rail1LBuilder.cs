@@ -9,7 +9,7 @@ namespace SingleTrainTrack.Rail1L.Rail1L1W
         public int UIOrder { get { return 3; } }
 
         public string BasedPrefabName { get { return Mod.TRAIN_TRACK; } }
-        public string Name { get { return "Rail1L1W"; } }
+        public string Name { get { return "Rail1L"; } }
         public string DisplayName { get { return "Single One-Way Rail"; } }
         public string Description { get { return "A single one-way rail track that can be connected to conventional rail."; } }
         public string ShortDescription { get { return "Single Rail Track"; } }
