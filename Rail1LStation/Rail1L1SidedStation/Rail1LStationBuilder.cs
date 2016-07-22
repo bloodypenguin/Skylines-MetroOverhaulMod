@@ -9,7 +9,7 @@ namespace SingleTrainTrack.Rail1LStation.Rail1L1SidedStation
         public int UIOrder { get { return 1; } }
 
         public string BasedPrefabName { get { return Mod.TRAIN_STATION_TRACK; } }
-        public string Name { get { return "Rail1L1SidedStation"; } }
+        public string Name { get { return "Rail1LStation"; } }
         public string DisplayName { get { return "Single Rail Station Track: 1 Sided Boarding"; } }
         public string Description { get { return "Single Rail Station Track. Cims can enter from the left side in perspective to the direction the track is drawn."; } }
         public string ShortDescription { get { return "Single Rail Station Track"; } }
