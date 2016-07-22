@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace SingleTrainTrack.Rail1LStation.Rail1L2SidedStation
 {
-    public class Rail1L2SidedStationBuilder : Rail1LStationBuilder
+    public class Rail1L2SidedStationBuilder : Rail1LStationBuilderBase
     {
         public int Order { get { return 2; } }
         public int UIOrder { get { return 2; } }

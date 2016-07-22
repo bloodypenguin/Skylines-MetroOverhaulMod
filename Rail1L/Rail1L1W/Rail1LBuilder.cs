@@ -3,7 +3,7 @@ using SingleTrainTrack.NEXT;
 
 namespace SingleTrainTrack.Rail1L.Rail1L1W
 {
-    class Rail1L1WBuilder : Rail1LBuilder
+    class Rail1LBuilder : Rail1LBuilderBase
     {
         public int Order { get { return 3; } }
         public int UIOrder { get { return 3; } }

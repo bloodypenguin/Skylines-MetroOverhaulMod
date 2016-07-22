@@ -4,7 +4,7 @@ using SingleTrainTrack.NEXT.Texturing;
 
 namespace SingleTrainTrack.Rail1LStation
 {
-    public partial class Rail1LStationBuilder
+    public partial class Rail1LStationBuilderBase
     {
         private static void SetupTextures(NetInfo info, NetInfoVersion version)
         {

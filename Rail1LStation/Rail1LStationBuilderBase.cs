@@ -5,13 +5,13 @@ using SingleTrainTrack.NEXT;
 using SingleTrainTrack.NEXT.Extensions;
 using UnityEngine;
 
-namespace SingleTrainTrack.Rail1L
+namespace SingleTrainTrack.Rail1LStation
 {
-    public abstract partial class Rail1LBuilder
+    public abstract partial class Rail1LStationBuilderBase
     {
         public NetInfoVersion SupportedVersions
         {
-            get { return NetInfoVersion.All; }
+            get { return NetInfoVersion.Ground; }
         }
 
         public virtual void BuildUp(NetInfo info, NetInfoVersion version)
@@ -19,50 +19,44 @@ namespace SingleTrainTrack.Rail1L
             ///////////////////////////
             // Template              //
             ///////////////////////////
-            var railVersionName = SharedHelpers.NameBuilder(SharedHelpers.TRAIN_TRACK, version);
-            var railInfo = Prefabs.Find<NetInfo>(railVersionName);
-            info.m_class = railInfo.m_class.Clone("APT" + railVersionName);
+            var railInfo = Prefabs.Find<NetInfo>(Mod.TRAIN_STATION_TRACK);
+            info.m_class = railInfo.m_class.Clone("NExtSingleStationTrack");
+            ///////////////////////////
+            // 3DModeling            //
+            ///////////////////////////
+            info.Setup6mStationMesh(version);
 
             ///////////////////////////
             // Texturing             //
             ///////////////////////////
-            SetupTextures(info, version);
+            Rail1LStationBuilderBase.SetupTextures(info, version);
 
             ///////////////////////////
             // Set up                //
             ///////////////////////////
             info.m_hasParkingSpaces = false;
             //info.m_class = roadInfo.m_class.Clone(NetInfoClasses.NEXT_SMALL3L_ROAD);
-            if (version == NetInfoVersion.Slope || version == NetInfoVersion.Tunnel)
-            {
-                info.m_halfWidth = 4;
-                info.m_pavementWidth = 2;
-            }
-            else
-            {
-                info.m_halfWidth = 3;
-            }
-            
-            //if (version == NetInfoVersion.Tunnel)
-            //{
-            //    info.m_setVehicleFlags = Vehicle.Flags.Transition;
-            //    info.m_setCitizenFlags = CitizenInstance.Flags.Transition;
-            //}
-
+            info.m_halfWidth = 3;
+            info.m_availableIn = ItemClass.Availability.AssetEditor;
+            info.m_placementStyle = ItemClass.Placement.Manual;
             info.SetRoadLanes(version, new LanesConfiguration()
             {
                 IsTwoWay = false,
                 LanesToAdd = -1,
             });
 
+            var railLane = info.m_lanes.FirstOrDefault(l => l.m_laneType == NetInfo.LaneType.Vehicle);
+            railLane.m_direction = NetInfo.Direction.AvoidBackward | NetInfo.Direction.AvoidForward;
+
             info.m_connectGroup = NetInfo.ConnectGroup.CenterTram;
             info.m_nodeConnectGroups = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.NarrowTram;
+
             var owPlayerNetAI = railInfo.GetComponent<PlayerNetAI>();
             var playerNetAI = info.GetComponent<PlayerNetAI>();
             if (owPlayerNetAI != null && playerNetAI != null)
             {
-                playerNetAI.m_constructionCost = owPlayerNetAI.m_constructionCost * 1 / 2; 
-                playerNetAI.m_maintenanceCost = owPlayerNetAI.m_maintenanceCost * 1 / 2; 
+                playerNetAI.m_constructionCost = owPlayerNetAI.m_constructionCost * 3 / 2; 
+                playerNetAI.m_maintenanceCost = owPlayerNetAI.m_maintenanceCost * 3 / 2; 
             }
 
             var trainTrackAI = info.GetComponent<TrainTrackAI>();
@@ -80,6 +74,7 @@ namespace SingleTrainTrack.Rail1L
             {
                 throw new Exception($"{info.name}: Rail1LPowerLine prop not found!");
             }
+
             var oldPlPropInfo = Prefabs.Find<PropInfo>("RailwayPowerline");
             NetInfoExtensions.ReplaceProps(info, plPropInfo, oldPlPropInfo);
             for (int i = 0; i < info.m_lanes.Count(); i++)

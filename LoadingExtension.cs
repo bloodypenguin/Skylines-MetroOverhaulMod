@@ -8,10 +8,10 @@ using SingleTrainTrack.NEXT;
 using SingleTrainTrack.UI;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Rail1L1WBuilder = SingleTrainTrack.Rail1L.Rail1L1W.Rail1L1WBuilder;
+using Rail1LBuilder = SingleTrainTrack.Rail1L.Rail1L1W.Rail1LBuilder;
 using Rail1L2WBuilder = SingleTrainTrack.Rail1L.Rail1L2W.Rail1L2WBuilder;
 using Rail1L2SidedStationBuilder = SingleTrainTrack.Rail1LStation.Rail1L2SidedStation.Rail1L2SidedStationBuilder;
-using Rail1L1SidedStationBuilder = SingleTrainTrack.Rail1LStation.Rail1L1SidedStation.Rail1L1SidedStationBuilder;
+using Rail1LStationBuilder = SingleTrainTrack.Rail1LStation.Rail1L1SidedStation.Rail1LStationBuilder;
 
 namespace SingleTrainTrack
 {
@@ -36,10 +36,10 @@ namespace SingleTrainTrack
             new object[]
             {
                new Rail2L1WBuilder(),
-               new Rail1L1WBuilder(),
+               new Rail1LBuilder(),
                new Rail1L2WBuilder(),
                new Rail1L2SidedStationBuilder(),
-               new Rail1L1SidedStationBuilder()
+               new Rail1LStationBuilder()
             }.ForEach(trackBuilder =>
             {
                 Util.AddLocale("NET", trackBuilder.GetPropery<string>("Name"), trackBuilder.GetPropery<string>("DisplayName"), trackBuilder.GetPropery<string>("Description"));
@@ -99,7 +99,7 @@ namespace SingleTrainTrack
             }
             try
             {
-                var track1WBuilder = new Rail1L1WBuilder();
+                var track1WBuilder = new Rail1LBuilder();
                 var track2WBuilder = new Rail1L2WBuilder();
                 foreach (var pair in Initializer.Tracks1W)
                 {
@@ -116,7 +116,7 @@ namespace SingleTrainTrack
                 {
                     stationTrackBuilder2.LateBuildUp(pair.Key, pair.Value);
                 }
-                var stationTrackBuilder1 = new Rail1L1SidedStationBuilder();
+                var stationTrackBuilder1 = new Rail1LStationBuilder();
                 foreach (var pair in Initializer.Station1SidedTracks)
                 {
                     stationTrackBuilder1.LateBuildUp(pair.Key, pair.Value);

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SingleTrainTrack.Rail1L.Rail1L2W
 {
-    class Rail1L2WBuilder : Rail1LBuilder
+    class Rail1L2WBuilder : Rail1LBuilderBase
     {
         public int Order { get { return 4; } }
         public int UIOrder { get { return 4; } }
