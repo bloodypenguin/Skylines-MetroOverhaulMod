@@ -25,7 +25,7 @@ namespace SingleTrainTrack.Rail1L
                 case NetInfoVersion.Slope:
                     for (var i = 0; i < info.m_segments.Length; i++)
                     {
-                        if (info.m_segments[i].m_mesh.name.Contains("slope"))
+                        if (info.m_segments[i].m_mesh.name == "pedestrian-tunnel-slope") 
                         {
                             info.m_segments[i].SetTextures(
                                 new TextureSet

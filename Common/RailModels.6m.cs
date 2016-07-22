@@ -7,7 +7,7 @@ namespace SingleTrainTrack.Common
 {
     public static partial class RailModels
     {
-        public static void Setup6mMesh(this NetInfo info, NetInfoVersion version)
+        public static NetInfo Setup6mMesh(this NetInfo info, NetInfoVersion version)
         {
             ///////////////////////////
             // Template              //
@@ -371,7 +371,7 @@ namespace SingleTrainTrack.Common
                         var segments0 = info.m_segments[0];
                         var segments1 = info.m_segments[1];
                         var segments2 = info.m_segments[2];
-                        var segments3 = pedSlope.m_segments[0];
+                        var segments3 = pedSlope.m_segments[0].ShallowClone();
                         var segments4 = ttInfo.m_segments[0].ShallowClone();
                         var nodes0 = info.m_nodes[0];
                         var nodes1 = info.m_nodes[1];
@@ -494,6 +494,7 @@ namespace SingleTrainTrack.Common
                     }
                     break;
             }
+            return info;
         }
     }
 }
