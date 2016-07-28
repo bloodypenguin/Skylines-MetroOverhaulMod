@@ -13,13 +13,10 @@ namespace MetroOverhaul
             var mTunnelInfo = FindOriginalPrefab("Metro Track");
             CreatePrefab("Metro Track Ground", "Train Track", SetupMetroTrack().Apply(mTunnelInfo).Chain(p =>
             {
-                CreatePrefab("Metro Track Slope", "Train Track Slope", SetupMetroTrack().Apply(mTunnelInfo).Chain(p1 =>
-                {
-                    p.GetComponent<TrainTrackAI>().m_slopeInfo = p1;
-                    p.GetComponent<TrainTrackAI>().m_tunnelInfo = p1;
-                }));
-                CreatePrefab("Metro Track Bridge", "Train Track Bridge", SetupMetroTrack().Apply(mTunnelInfo).Chain(p2 => p.GetComponent<TrainTrackAI>().m_bridgeInfo = p2));
-                CreatePrefab("Metro Track Elevated", "Train Track Elevated", SetupMetroTrack().Apply(mTunnelInfo).Chain(p3 => p.GetComponent<TrainTrackAI>().m_elevatedInfo = p3));
+                CreatePrefab("Metro Track Bridge", "Train Track Bridge", SetupMetroTrack().Apply(mTunnelInfo).Chain(p1 => p.GetComponent<TrainTrackAI>().m_bridgeInfo = p1));
+                CreatePrefab("Metro Track Elevated", "Train Track Elevated", SetupMetroTrack().Apply(mTunnelInfo).Chain(p2 => p.GetComponent<TrainTrackAI>().m_elevatedInfo = p2));
+                CreatePrefab("Metro Track Slope", "Train Track Slope", SetupMetroTrack().Apply(mTunnelInfo).Chain(p3 => p.GetComponent<TrainTrackAI>().m_slopeInfo = p3));
+                CreatePrefab("Metro Track Tunnel", "Train Track Tunnel", SetupMetroTrack().Apply(mTunnelInfo).Chain(p4 => p.GetComponent<TrainTrackAI>().m_tunnelInfo = p4));
                 p.GetComponent<TrainTrackAI>().m_connectedElevatedInfo = null;
                 p.GetComponent<TrainTrackAI>().m_connectedInfo = null;
             }));
@@ -73,15 +70,25 @@ namespace MetroOverhaul
         private static Action<NetInfo, NetInfo> SetupMetroTrack()
         {
             var elevatedInfo = FindOriginalPrefab("Basic Road Elevated");
+            NetInfo trainTrackInfo = null;
             var version = NetInfoVersion.Ground;
             return (prefab, metroTunnel) =>
             {
-                if (prefab.name.Contains("Elevated"))
+                switch (prefab.name)
                 {
-                    version = NetInfoVersion.Elevated;
+                    case "Metro Track Elevated":
+                        version = NetInfoVersion.Elevated;
+                        break;
+                    case "Metro Track Slope":
+                        version = NetInfoVersion.Slope;
+                        break;
+                    case "Metro Track Tunnel":
+                        version = NetInfoVersion.Tunnel;
+                        trainTrackInfo = FindOriginalPrefab("Train Track");
+                        break;
                 }
 
-                SetupMesh.Setup12mMesh(prefab, version, elevatedInfo);
+                SetupMesh.Setup12mMesh(prefab, version, elevatedInfo, trainTrackInfo);
                 SetupTexture.Setup12mTexture(prefab, version);
 
                 var milestone = metroTunnel.GetComponent<MetroTrackAI>().m_createPassMilestone;
@@ -93,9 +100,11 @@ namespace MetroOverhaul
                 prefab.m_class.m_service = ItemClass.Service.PublicTransport;
                 prefab.m_class.m_level = ItemClass.Level.Level1;
                 prefab.m_UIPriority = FindOriginalPrefab("Metro Track").m_UIPriority;
-                if (prefab.name.Contains("Slope"))
+                if (prefab.name.Contains("Slope") || prefab.name.Contains("Tunnel"))
                 {
                     prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels | ItemClass.Layer.Default;
+                    prefab.m_setVehicleFlags = Vehicle.Flags.Transition | Vehicle.Flags.Underground;
+                    prefab.m_setCitizenFlags = CitizenInstance.Flags.Transition | CitizenInstance.Flags.Underground;
                 }
                 else
                 {
@@ -110,8 +119,8 @@ namespace MetroOverhaul
                 prefab.m_averageVehicleLaneSpeed = metroTunnel.m_averageVehicleLaneSpeed;
                 prefab.m_UnlockMilestone = metroTunnel.m_UnlockMilestone;
                 prefab.m_createGravel = false;
-                prefab.m_createPavement = true;
-                prefab.m_halfWidth = 5;
+                prefab.m_createPavement = false;
+                prefab.m_halfWidth = (version == NetInfoVersion.Slope || version == NetInfoVersion.Tunnel) ? 7 : 6;
                 prefab.m_isCustomContent = true;
                 prefab.m_pavementWidth = 3.5f;
 
