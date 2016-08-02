@@ -41,7 +41,7 @@ namespace SingleTrainTrack.Common
                         segments0
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\6m\Ground_Pavement.obj",
+                            (@"Meshes\6m\Station\Ground_Station_Pavement.obj",
                             @"Meshes\6m\Ground_Pavement_LOD.obj");
 
                         segments1
