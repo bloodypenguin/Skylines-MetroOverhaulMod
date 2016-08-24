@@ -13,13 +13,17 @@ namespace MetroOverhaul
             var mTunnelInfo = FindOriginalPrefab("Metro Track");
             CreatePrefab("Metro Track Ground", "Train Track", SetupMetroTrack().Apply(mTunnelInfo).Chain(p =>
             {
-                CreatePrefab("Metro Track Bridge", "Train Track Bridge", SetupMetroTrack().Apply(mTunnelInfo).Chain(p1 => p.GetComponent<TrainTrackAI>().m_bridgeInfo = p1));
-                CreatePrefab("Metro Track Elevated", "Train Track Elevated", SetupMetroTrack().Apply(mTunnelInfo).Chain(p2 => p.GetComponent<TrainTrackAI>().m_elevatedInfo = p2));
-                CreatePrefab("Metro Track Slope", "Train Track Slope", SetupMetroTrack().Apply(mTunnelInfo).Chain(p3 => p.GetComponent<TrainTrackAI>().m_slopeInfo = p3));
-                CreatePrefab("Metro Track Tunnel", "Train Track Tunnel", SetupMetroTrack().Apply(mTunnelInfo).Chain(p4 => p.GetComponent<TrainTrackAI>().m_tunnelInfo = p4));
+                CreatePrefab("Metro Track Bridge", "Train Track Bridge",
+                    SetupMetroTrack().Apply(mTunnelInfo).Chain(p1 => p.GetComponent<TrainTrackAI>().m_bridgeInfo = p1).Chain(SetCosts().Apply("Train Track Bridge")));
+                CreatePrefab("Metro Track Elevated", "Train Track Elevated",
+                    SetupMetroTrack().Apply(mTunnelInfo).Chain(p2 => p.GetComponent<TrainTrackAI>().m_elevatedInfo = p2).Chain(SetCosts().Apply("Train Track Elevated")));
+                CreatePrefab("Metro Track Slope", "Train Track Slope",
+                    SetupMetroTrack().Apply(mTunnelInfo).Chain(p3 => p.GetComponent<TrainTrackAI>().m_slopeInfo = p3).Chain(SetCosts().Apply("Train Track Slope")));
+                CreatePrefab("Metro Track Tunnel", "Train Track Tunnel",
+                    SetupMetroTrack().Apply(mTunnelInfo).Chain(p4 => p.GetComponent<TrainTrackAI>().m_tunnelInfo = p4).Chain(SetCosts().Apply("Train Track Tunnel"))); //TODO(earalov): why can't we just set needed meshes etc. for vanilla track?
                 p.GetComponent<TrainTrackAI>().m_connectedElevatedInfo = null;
                 p.GetComponent<TrainTrackAI>().m_connectedInfo = null;
-            }));
+            }).Chain(SetCosts().Apply("Train Track")));
             CreatePrefab("Metro Station Track Ground", "Train Station Track", SetupMetroTrack().Apply(mTunnelInfo));
             CreatePrefab("Metro Station Track Elevated", "Train Station Track", SetupMetroTrack().Apply(mTunnelInfo).Chain(SetupStationTrack()).Chain(SetupElevatedStationTrack()));
             CreatePrefab("Metro Station Track Sunken", "Train Station Track", SetupMetroTrack().Apply(mTunnelInfo).Chain(SetupStationTrack()).Chain(SetupSunkenStationTrack()));
@@ -140,6 +144,26 @@ namespace MetroOverhaul
                 }
 
                 Modifiers.RemoveElectricityPoles(prefab);
+            };
+        }
+
+        private static Action<NetInfo, string> SetCosts()
+        {
+            return (newPrefab, originalPrefabName) =>
+            {
+                var originalPrefab = FindOriginalPrefab(originalPrefabName);
+                var trainTrackTunnel = FindOriginalPrefab("Train Track Tunnel");
+                var metroTrack = FindOriginalPrefab("Metro Track");
+
+                var constructionCost = originalPrefab.GetComponent<PlayerNetAI>().m_constructionCost *
+                                            metroTrack.GetComponent<PlayerNetAI>().m_constructionCost /
+                                            trainTrackTunnel.GetComponent<PlayerNetAI>().m_constructionCost;
+                newPrefab.GetComponent<PlayerNetAI>().m_constructionCost = constructionCost;
+                var maintenanceCost = originalPrefab.GetComponent<PlayerNetAI>().m_maintenanceCost *
+                            metroTrack.GetComponent<PlayerNetAI>().m_maintenanceCost /
+                            trainTrackTunnel.GetComponent<PlayerNetAI>().m_maintenanceCost;
+                newPrefab.GetComponent<PlayerNetAI>().m_maintenanceCost = maintenanceCost;
+
             };
         }
     }
