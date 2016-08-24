@@ -74,16 +74,23 @@ namespace MetroOverhaul
             var version = NetInfoVersion.Ground;
             return (prefab, metroTunnel) =>
             {
+                prefab.m_halfWidth = 6;
                 switch (prefab.name)
                 {
                     case "Metro Track Elevated":
                         version = NetInfoVersion.Elevated;
                         break;
+                    case "Metro Track Bridge":
+                        version = NetInfoVersion.Bridge;
+                        prefab.m_halfWidth = 5.9999f;
+                        break;
                     case "Metro Track Slope":
                         version = NetInfoVersion.Slope;
+                        prefab.m_halfWidth = 7;
                         break;
                     case "Metro Track Tunnel":
                         version = NetInfoVersion.Tunnel;
+                        prefab.m_halfWidth = 7;
                         trainTrackInfo = FindOriginalPrefab("Train Track");
                         break;
                 }
@@ -120,7 +127,7 @@ namespace MetroOverhaul
                 prefab.m_UnlockMilestone = metroTunnel.m_UnlockMilestone;
                 prefab.m_createGravel = false;
                 prefab.m_createPavement = false;
-                prefab.m_halfWidth = (version == NetInfoVersion.Slope || version == NetInfoVersion.Tunnel) ? 7 : 6;
+                //MetroElevatedPillarprefab.m_halfWidth = (version == NetInfoVersion.Slope || version == NetInfoVersion.Tunnel) ? 7 : 6;
                 prefab.m_isCustomContent = true;
                 prefab.m_pavementWidth = 3.5f;
 

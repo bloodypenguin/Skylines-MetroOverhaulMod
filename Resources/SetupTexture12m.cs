@@ -57,10 +57,11 @@ namespace MetroOverhaul.SetupPrefab
                         break;
                     }
                 case NetInfoVersion.Elevated:
+                case NetInfoVersion.Bridge:
                     {
                         for (var i = 0; i < info.m_segments.Length; i++)
                         {
-                            if (info.m_segments[i].m_mesh.name.Contains("Elevated_Pavement"))
+                            if (info.m_segments[i].m_mesh.name.Contains("Elevated_Pavement") || info.m_segments[i].m_mesh.name.Contains("Bridge_Pavement"))
                             {
                                 info.m_segments[i].SetTextures(
                                     new TextureSet
@@ -87,6 +88,14 @@ namespace MetroOverhaul.SetupPrefab
                                         @"Textures\Elevated_Node_Pavement__AlphaMap.png",
                                         @"Textures\Ground_Segment_Pavement__XYSMap.png"));
                             }
+                            else if (info.m_nodes[i].m_mesh.name.Contains("Bridge_Node_Pavement"))
+                            {
+                                info.m_nodes[i].SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Bridge_Node_Pavement__MainTex.png",
+                                        @"Textures\Elevated_Node_Pavement__AlphaMap.png",
+                                        @"Textures\Bridge_Node_Pavement__XYSMap.png"));
+                    }
                             else
                             {
                                 info.m_nodes[i].SetTextures(
@@ -109,7 +118,7 @@ namespace MetroOverhaul.SetupPrefab
                                     new TextureSet
                                         (@"Textures\Tunnel_Segment_Pavement__MainTex.png",
                                         @"Textures\Elevated_Segment_Pavement__AlphaMap.png",
-                                        @"Textures\Elevated_Segment_Pavement__XYSMap.png"));
+                                        @"Textures\Tunnel_Segment_Pavement__XYSMap.png"));
                             }
                             else
                             {
@@ -128,7 +137,7 @@ namespace MetroOverhaul.SetupPrefab
                                     new TextureSet
                                         (@"Textures\Tunnel_Node_Pavement__MainTex.png",
                                         @"Textures\Elevated_Node_Pavement__AlphaMap.png",
-                                        @"Textures\Ground_Segment_Pavement__XYSMap.png"));
+                                        @"Textures\Tunnel_Segment_Pavement__XYSMap.png"));
                             }
                             else
                             {

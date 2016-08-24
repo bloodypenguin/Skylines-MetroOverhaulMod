@@ -15,7 +15,6 @@ namespace MetroOverhaul.SetupPrefab
             var elevatedMaterial = elevatedInfo?.m_segments[0].m_material;
             switch (version)
             {
-
                 case NetInfoVersion.Ground:
                     {
                         var segment0 = info.m_segments[0];
@@ -77,6 +76,47 @@ namespace MetroOverhaul.SetupPrefab
                         node0
                             .SetMeshes
                             (@"Meshes\Elevated_Node_Pavement.obj")
+                            .SetConsistentUVs();
+                        node1
+                            .SetMeshes
+                            (@"Meshes\Elevated_Rail.obj")
+                            .SetConsistentUVs();
+
+                        if (elevatedMaterial != null)
+                        {
+                            segment0.m_material = elevatedMaterial;
+                            node0.m_material = elevatedMaterial;
+                            //segment1.m_material = railMaterial;
+                            //node1.m_material = railMaterial;
+                        }
+
+                        info.m_segments = new[] { segment0, segment1 };
+                        info.m_nodes = new[] { node0, node1, node3 };
+                        break;
+                    }
+                case NetInfoVersion.Bridge:
+                    {
+                        var segment0 = info.m_segments[0];
+                        var segment1 = info.m_segments[1];
+                        var node0 = info.m_nodes[0];
+                        var node1 = info.m_nodes[1];
+                        var node3 = info.m_nodes[3];
+
+                        segment0
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            (@"Meshes\Bridge_Pavement.obj")
+                            .SetConsistentUVs();
+
+                        segment1
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            (@"Meshes\Elevated_Rail.obj")
+                            .SetConsistentUVs();
+
+                        node0
+                            .SetMeshes
+                            (@"Meshes\Bridge_Node_Pavement.obj")
                             .SetConsistentUVs();
                         node1
                             .SetMeshes

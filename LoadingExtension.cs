@@ -83,8 +83,45 @@ namespace MetroOverhaul
                 }
             }
             UpdateEffect();
+            var prefabElevated = PrefabCollection<NetInfo>.FindLoaded("Metro Track Elevated");
+            if (prefabElevated != null)
+            {
+                LateBuildUp(prefabElevated, NetInfoVersion.Elevated);
+            }
+            var prefabBridge = PrefabCollection<NetInfo>.FindLoaded("Metro Track Bridge");
+            if (prefabBridge != null)
+            {
+                LateBuildUp(prefabBridge, NetInfoVersion.Bridge);
+            }
         }
-
+        private void LateBuildUp(NetInfo prefab, NetInfoVersion version)
+        {
+            switch (version)
+            {
+                case NetInfoVersion.Elevated:
+                    {
+                        var elevatedPillarInfo = PrefabCollection<BuildingInfo>.FindLoaded("MetroElevatedPillar.MetroElevatedPillar_Data");
+                        var bridgeAI = prefab.GetComponent<TrainTrackBridgeAI>();
+                        if (elevatedPillarInfo != null && bridgeAI != null)
+                        {
+                            bridgeAI.m_bridgePillarInfo = elevatedPillarInfo;
+                            //bridgeAI.m_bridgePillarOffset = -2;
+                        }
+                        break;
+                    }
+                case NetInfoVersion.Bridge:
+                    {
+                        var bridgePillarInfo = PrefabCollection<BuildingInfo>.FindLoaded("MetroBridgePillar.MetroBridgePillar_Data");
+                        var bridgeAI = prefab.GetComponent<TrainTrackBridgeAI>();
+                        if (bridgePillarInfo != null && bridgeAI != null)
+                        {
+                            bridgeAI.m_bridgePillarInfo = bridgePillarInfo;
+                            bridgeAI.m_middlePillarInfo = bridgePillarInfo;
+                        }
+                        break;
+                    }
+            }
+        }
         private static void UpdateEffect()
         {
             var metro = PrefabCollection<VehicleInfo>.FindLoaded("Metro");
