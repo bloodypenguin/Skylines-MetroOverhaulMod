@@ -53,7 +53,8 @@ namespace SingleTrainTrack.Common
                         segments2
                             .SetMeshes
                             (@"Meshes\6m\Ground_Power.obj",
-                            @"Meshes\6m\Ground_Power.obj");
+                            @"Meshes\6m\Ground_Power.obj")
+                            .SetConsistentUVs();
 
                         nodes0
                             .SetMeshes
@@ -73,7 +74,8 @@ namespace SingleTrainTrack.Common
                         nodes3
                             .SetMeshes
                             (@"Meshes\6m\Ground_Power.obj",
-                            @"Meshes\6m\Ground_Power.obj");
+                            @"Meshes\6m\Ground_Power.obj")
+                            .SetConsistentUVs();
                         nodes4
                             .SetMeshes
                             (@"Meshes\6m\Station\Ground_Station_Rail_Start.obj",
@@ -81,7 +83,8 @@ namespace SingleTrainTrack.Common
                         nodes5
                             .SetMeshes
                             (@"Meshes\6m\Station\Ground_Power_Start.obj",
-                            @"Meshes\6m\Station\Ground_Power_Start.obj");
+                            @"Meshes\6m\Station\Ground_Power_Start.obj")
+                            .SetConsistentUVs();
                         nodes6
                             .SetMeshes
                             (@"Meshes\6m\Station\Ground_Station_Rail_End.obj",
@@ -89,7 +92,8 @@ namespace SingleTrainTrack.Common
                         nodes7
                             .SetMeshes
                             (@"Meshes\6m\Station\Ground_Power_End.obj",
-                            @"Meshes\6m\Station\Ground_Power_End.obj");
+                            @"Meshes\6m\Station\Ground_Power_End.obj")
+                            .SetConsistentUVs();
 
                         var colors = new List<UnityEngine.Color>();
                         var colors32 = new List<UnityEngine.Color32>();
@@ -159,7 +163,8 @@ namespace SingleTrainTrack.Common
                         segments2
                             .SetMeshes
                             (@"Meshes\6m\Ground_Power.obj",
-                            @"Meshes\6m\Ground_Power.obj");
+                            @"Meshes\6m\Ground_Power.obj")
+                            .SetConsistentUVs();
 
                         nodes0
                             .SetMeshes
@@ -173,7 +178,8 @@ namespace SingleTrainTrack.Common
                         nodes2
                             .SetMeshes
                             (@"Meshes\6m\Ground_Power.obj",
-                            @"Meshes\6m\Ground_Power.obj");
+                            @"Meshes\6m\Ground_Power.obj")
+                            .SetConsistentUVs();
                         nodes4
                             .SetMeshes
                             (@"Meshes\6m\Station\Ground_Station_Rail_Start.obj",
@@ -185,12 +191,14 @@ namespace SingleTrainTrack.Common
                         nodes6
                             .SetMeshes
                             (@"Meshes\6m\Station\Ground_Power_Start.obj",
-                            @"Meshes\6m\Station\Ground_Power_Start.obj");
+                            @"Meshes\6m\Station\Ground_Power_Start.obj")
+                            .SetConsistentUVs();
 
                         nodes7
                             .SetMeshes
                             (@"Meshes\6m\Station\Ground_Power_End.obj",
-                            @"Meshes\6m\Station\Ground_Power_End.obj");
+                            @"Meshes\6m\Station\Ground_Power_End.obj")
+                            .SetConsistentUVs();
 
                         var colors = new List<UnityEngine.Color>();
                         var colors32 = new List<UnityEngine.Color32>();
@@ -259,7 +267,8 @@ namespace SingleTrainTrack.Common
                         segments2
                             .SetMeshes
                             (@"Meshes\6m\Ground_Power.obj",
-                            @"Meshes\6m\Ground_Power.obj");
+                            @"Meshes\6m\Ground_Power.obj")
+                            .SetConsistentUVs();
 
                         nodes0
                             .SetMeshes
@@ -273,7 +282,8 @@ namespace SingleTrainTrack.Common
                         nodes2
                             .SetMeshes
                             (@"Meshes\6m\Ground_Power.obj",
-                            @"Meshes\6m\Ground_Power.obj");
+                            @"Meshes\6m\Ground_Power.obj")
+                            .SetConsistentUVs();
                         nodes4
                             .SetMeshes
                             (@"Meshes\6m\Station\Ground_Station_Rail_Start.obj",
@@ -285,11 +295,13 @@ namespace SingleTrainTrack.Common
                         nodes6
                             .SetMeshes
                             (@"Meshes\6m\Station\Ground_Power_Start.obj",
-                            @"Meshes\6m\Station\Ground_Power_Start.obj");
+                            @"Meshes\6m\Station\Ground_Power_Start.obj")
+                            .SetConsistentUVs();
                         nodes7
                             .SetMeshes
                             (@"Meshes\6m\Station\Ground_Power_End.obj",
-                            @"Meshes\6m\Station\Ground_Power_End.obj");
+                            @"Meshes\6m\Station\Ground_Power_End.obj")
+                            .SetConsistentUVs();
 
                         var colors = new List<UnityEngine.Color>();
                         var colors32 = new List<UnityEngine.Color32>();
@@ -403,7 +415,8 @@ namespace SingleTrainTrack.Common
                         segments2
                             .SetMeshes
                             (@"Meshes\6m\Ground_Power.obj",
-                            @"Meshes\6m\Ground_Power.obj");
+                            @"Meshes\6m\Ground_Power.obj")
+                            .SetConsistentUVs();
                         segments4
                             .SetMeshes
                             (@"Meshes\6m\Ground_Pavement.obj",
@@ -421,7 +434,8 @@ namespace SingleTrainTrack.Common
                         nodes2
                             .SetMeshes
                             (@"Meshes\6m\Ground_Power.obj",
-                            @"Meshes\6m\Ground_Power.obj");
+                            @"Meshes\6m\Ground_Power.obj")
+                            .SetConsistentUVs();
                         nodes3
                             .SetMeshes
                             (@"Meshes\6m\Ground_Pavement_Node.obj",
@@ -437,11 +451,13 @@ namespace SingleTrainTrack.Common
                         nodes7
                             .SetMeshes
                             (@"Meshes\6m\Station\Ground_Power_Start.obj",
-                            @"Meshes\6m\Station\Ground_Power_Start.obj");
+                            @"Meshes\6m\Station\Ground_Power_Start.obj")
+                            .SetConsistentUVs();
                         nodes8
                             .SetMeshes
                             (@"Meshes\6m\Station\Ground_Power_End.obj",
-                            @"Meshes\6m\Station\Ground_Power_End.obj");
+                            @"Meshes\6m\Station\Ground_Power_End.obj")
+                            .SetConsistentUVs();
 
                         var colors = new List<UnityEngine.Color>();
                         var colors32 = new List<UnityEngine.Color32>();

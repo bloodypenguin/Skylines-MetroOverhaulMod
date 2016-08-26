@@ -36,7 +36,7 @@ namespace SingleTrainTrack.Rail1LStation
             ///////////////////////////
             info.m_hasParkingSpaces = false;
             //info.m_class = roadInfo.m_class.Clone(NetInfoClasses.NEXT_SMALL3L_ROAD);
-            info.m_halfWidth = 3;
+            info.m_halfWidth = 1;
             info.m_availableIn = ItemClass.Availability.AssetEditor;
             info.m_placementStyle = ItemClass.Placement.Manual;
             info.SetRoadLanes(version, new LanesConfiguration()
@@ -46,8 +46,7 @@ namespace SingleTrainTrack.Rail1LStation
             });
 
             var railLane = info.m_lanes.FirstOrDefault(l => l.m_laneType == NetInfo.LaneType.Vehicle);
-            railLane.m_direction = NetInfo.Direction.AvoidBackward | NetInfo.Direction.AvoidForward;
-
+            railLane.m_direction = NetInfo.Direction.AvoidForward;
             info.m_connectGroup = NetInfo.ConnectGroup.CenterTram;
             info.m_nodeConnectGroups = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.NarrowTram;
 
