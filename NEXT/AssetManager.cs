@@ -80,9 +80,10 @@ namespace SubwayOverhaul.NEXT
             mesh.Optimize();
             var name = Path.GetFileNameWithoutExtension(meshName);
             mesh.name = name;
-//            if (!name.Contains("LOD")) { 
-//                mesh.UploadMeshData(true);
-//            }
+            //if (!name.Contains("LOD"))
+            //{
+            //    mesh.UploadMeshData(true);
+            //}
             return mesh;
         }
 

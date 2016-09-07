@@ -13,6 +13,7 @@ namespace MetroOverhaul.SetupPrefab
         {
 
             var elevatedMaterial = elevatedInfo?.m_segments[0].m_material;
+            var elevatedLODMaterial = elevatedInfo?.m_segments[0].m_lodMaterial;
             switch (version)
             {
                 case NetInfoVersion.Ground:
@@ -22,36 +23,50 @@ namespace MetroOverhaul.SetupPrefab
                         var node0 = info.m_nodes[0];
                         var node1 = info.m_nodes[1];
                         var node2 = info.m_nodes[2];
-
+                        var node3 = info.m_nodes[1].ShallowClone();
                         segment0
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Ground_Pavement.obj");
+                            (@"Meshes\Ground_Pavement.obj",
+                            @"Meshes\Ground_Pavement_LOD.obj");
+                            //.SetConsistentUVs();
 
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
                             (@"Meshes\Ground_Rail.obj")
                             .SetConsistentUVs();
-
                         node0
                             .SetMeshes
-                            (@"Meshes\Ground_Node_Pavement.obj")
-                            .SetConsistentUVs();
+                            (@"Meshes\Ground_Node_Pavement.obj",
+                            @"Meshes\Ground_Node_Pavement_LOD.obj")
+                            .SetConsistentUVs(true);
                         node1
                             .SetMeshes
                             (@"Meshes\Elevated_Rail.obj")
                             .SetConsistentUVs();
+                        node2
+                            .SetMeshes
+                            (@"Meshes\Ground_Level_Crossing.obj")
+                            .SetConsistentUVs();
+                        node3
+                            .SetMeshes
+                            (@"Meshes\Ground_Level_Crossing_Rail.obj")
+                            .SetConsistentUVs();
+                        node1.m_flagsForbidden = NetNode.Flags.LevelCrossing;
+                        node3.m_flagsRequired = NetNode.Flags.LevelCrossing;
 
                         if (elevatedMaterial != null)
                         {
                             segment0.m_material = elevatedMaterial;
+                            segment0.m_lodMaterial = elevatedLODMaterial;
+                            node2.m_material = elevatedMaterial;
                             //segment1.m_material = railMaterial;
                             //node1.m_material = railMaterial;
                         }
 
                         info.m_segments = new[] { segment0, segment1 };
-                        info.m_nodes = new[] { node0, node1, node2 };
+                        info.m_nodes = new[] { node0, node1, node2, node3 };
                         break;
                     }
                 case NetInfoVersion.Elevated:
@@ -65,29 +80,28 @@ namespace MetroOverhaul.SetupPrefab
                         segment0
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Elevated_Pavement.obj");
+                            (@"Meshes\Elevated_Pavement.obj",
+                            @"Meshes\Elevated_Pavement_LOD.obj");
 
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj")
-                            .SetConsistentUVs();
+                            (@"Meshes\Elevated_Rail.obj");
 
                         node0
                             .SetMeshes
-                            (@"Meshes\Elevated_Node_Pavement.obj")
+                            (@"Meshes\Elevated_Node_Pavement.obj",
+                            @"Meshes\Elevated_Node_Pavement_LOD.obj")
                             .SetConsistentUVs();
                         node1
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj")
-                            .SetConsistentUVs();
+                            (@"Meshes\Elevated_Rail.obj");
 
                         if (elevatedMaterial != null)
                         {
                             segment0.m_material = elevatedMaterial;
+                            segment0.m_lodMaterial = elevatedLODMaterial;
                             node0.m_material = elevatedMaterial;
-                            //segment1.m_material = railMaterial;
-                            //node1.m_material = railMaterial;
                         }
 
                         info.m_segments = new[] { segment0, segment1 };
@@ -105,27 +119,28 @@ namespace MetroOverhaul.SetupPrefab
                         segment0
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Bridge_Pavement.obj")
+                            (@"Meshes\Bridge_Pavement.obj",
+                            @"Meshes\Bridge_Pavement_LOD.obj")
                             .SetConsistentUVs();
 
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj")
-                            .SetConsistentUVs();
+                            (@"Meshes\Elevated_Rail.obj");
 
                         node0
                             .SetMeshes
-                            (@"Meshes\Bridge_Node_Pavement.obj")
+                            (@"Meshes\Bridge_Node_Pavement.obj",
+                            @"Meshes\Bridge_Node_Pavement_LOD.obj")
                             .SetConsistentUVs();
                         node1
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj")
-                            .SetConsistentUVs();
+                            (@"Meshes\Elevated_Rail.obj");
 
                         if (elevatedMaterial != null)
                         {
                             segment0.m_material = elevatedMaterial;
+                            segment0.m_lodMaterial = elevatedLODMaterial;
                             node0.m_material = elevatedMaterial;
                             //segment1.m_material = railMaterial;
                             //node1.m_material = railMaterial;
@@ -148,24 +163,25 @@ namespace MetroOverhaul.SetupPrefab
 
                         segment1
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj")
-                            .SetConsistentUVs();
+                            (@"Meshes\Elevated_Rail.obj");
                         segment3
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Slope_Pavement.obj")
+                            (@"Meshes\Slope_Pavement.obj",
+                            @"Meshes\Slope_Pavement_LOD.obj")
                             .SetConsistentUVs();
                         node1
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj")
-                            .SetConsistentUVs();
+                            (@"Meshes\Elevated_Rail.obj");
                         node3
                             .SetMeshes
-                            (@"Meshes\Slope_Node_Pavement.obj")
+                            (@"Meshes\Slope_Node_Pavement.obj",
+                            @"Meshes\Slope_Node_Pavement_LOD.obj")
                             .SetConsistentUVs();
                         node5
                             .SetMeshes
-                            (@"Meshes\Tunnel_Node_Pavement.obj")
+                            (@"Meshes\Tunnel_Node_Pavement.obj",
+                            @"Meshes\Tunnel_Node_Pavement_LOD.obj")
                             .SetConsistentUVs();
                         if (elevatedMaterial != null)
                         {
@@ -189,21 +205,21 @@ namespace MetroOverhaul.SetupPrefab
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Tunnel_Pavement.obj")
+                            (@"Meshes\Tunnel_Pavement.obj",
+                            @"Meshes\Tunnel_Pavement_LOD.obj")
                             .SetConsistentUVs();
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj")
-                            .SetConsistentUVs();
+                            (@"Meshes\Elevated_Rail.obj");
                         node1
                             .SetMeshes
-                            (@"Meshes\Tunnel_Node_Pavement.obj")
+                            (@"Meshes\Tunnel_Node_Pavement.obj",
+                            @"Meshes\Tunnel_Node_Pavement_LOD.obj")
                             .SetConsistentUVs();
                         node2
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj")
-                            .SetConsistentUVs();
+                            (@"Meshes\Elevated_Rail.obj");
                         if (elevatedMaterial != null)
                         {
                             segment1.m_material = elevatedMaterial;

@@ -61,20 +61,22 @@ namespace SubwayOverhaul.NEXT.Extensions
             return segment;
         }
 
-        public static NetInfo.Segment SetConsistentUVs(this NetInfo.Segment segment)
+        public static NetInfo.Segment SetConsistentUVs(this NetInfo.Segment segment, bool lodOnly = false)
         {
             var colors = new List<Color>();
             var colors32 = new List<Color32>();
-            for (int i = 0; i < segment.m_mesh.vertexCount; i++)
+            if (lodOnly == false)
             {
-                colors.Add(new Color(255, 0, 255, 255));
-                colors32.Add(new Color32(255, 0, 255, 255));
+                for (int i = 0; i < segment.m_mesh.vertexCount; i++)
+                {
+                    colors.Add(new Color(255, 0, 255, 255));
+                    colors32.Add(new Color32(255, 0, 255, 255));
+                }
+                segment.m_mesh.colors = colors.ToArray();
+                segment.m_mesh.colors32 = colors32.ToArray();
+                colors = new List<Color>();
+                colors32 = new List<Color32>();
             }
-            segment.m_mesh.colors = colors.ToArray();
-            segment.m_mesh.colors32 = colors32.ToArray();
-
-            colors = new List<Color>();
-            colors32 = new List<Color32>();
             for (int i = 0; i < segment.m_lodMesh.vertexCount; i++)
             {
                 colors.Add(new Color(255, 0, 255, 255));

@@ -79,22 +79,27 @@ namespace MetroOverhaul
             return (prefab, metroTunnel) =>
             {
                 prefab.m_halfWidth = 6;
+                prefab.m_pavementWidth = 3.5f;
                 switch (prefab.name)
                 {
                     case "Metro Track Elevated":
                         version = NetInfoVersion.Elevated;
+                        prefab.m_pavementWidth = 3;
                         break;
                     case "Metro Track Bridge":
                         version = NetInfoVersion.Bridge;
                         prefab.m_halfWidth = 5.9999f;
+                        prefab.m_pavementWidth = 3;
                         break;
                     case "Metro Track Slope":
                         version = NetInfoVersion.Slope;
                         prefab.m_halfWidth = 7;
+                        prefab.m_pavementWidth = 4.8f;
                         break;
                     case "Metro Track Tunnel":
                         version = NetInfoVersion.Tunnel;
-                        prefab.m_halfWidth = 7;
+                        prefab.m_halfWidth = 7.5f;
+                        prefab.m_pavementWidth = 4.8f;
                         trainTrackInfo = FindOriginalPrefab("Train Track");
                         break;
                 }
@@ -133,7 +138,7 @@ namespace MetroOverhaul
                 prefab.m_createPavement = false;
                 //MetroElevatedPillarprefab.m_halfWidth = (version == NetInfoVersion.Slope || version == NetInfoVersion.Tunnel) ? 7 : 6;
                 prefab.m_isCustomContent = true;
-                prefab.m_pavementWidth = 3.5f;
+                
 
                 var speedLimit = metroTunnel.m_lanes.First(l => l.m_vehicleType != VehicleInfo.VehicleType.None).m_speedLimit;
 

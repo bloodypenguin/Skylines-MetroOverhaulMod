@@ -58,20 +58,22 @@ namespace SubwayOverhaul.NEXT.Extensions
             return node;
         }
 
-        public static NetInfo.Node SetConsistentUVs(this NetInfo.Node node)
+        public static NetInfo.Node SetConsistentUVs(this NetInfo.Node node, bool lodOnly = false)
         {
             var colors = new List<Color>();
             var colors32 = new List<Color32>();
-            for (int i = 0; i < node.m_mesh.vertexCount; i++)
+            if (lodOnly == false)
             {
-                colors.Add(new Color(255, 0, 255, 255));
-                colors32.Add(new Color32(255, 0, 255, 255));
+                for (int i = 0; i < node.m_mesh.vertexCount; i++)
+                {
+                    colors.Add(new Color(255, 0, 255, 255));
+                    colors32.Add(new Color32(255, 0, 255, 255));
+                }
+                node.m_mesh.colors = colors.ToArray();
+                node.m_mesh.colors32 = colors32.ToArray();
+                colors = new List<Color>();
+                colors32 = new List<Color32>();
             }
-            node.m_mesh.colors = colors.ToArray();
-            node.m_mesh.colors32 = colors32.ToArray();
-
-            colors = new List<Color>();
-            colors32 = new List<Color32>();
             for (int i = 0; i < node.m_lodMesh.vertexCount; i++)
             {
                 colors.Add(new Color(255, 0, 255, 255));
