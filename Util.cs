@@ -32,13 +32,13 @@ namespace MetroOverhaul
             return type.GetAllFieldsFromType().Where(p => p.Name == name).FirstOrDefault();
         }
 
-        public static NetInfo ClonePrefab(NetInfo originalPrefab, string newName, Transform parentTransform)
+        public static T ClonePrefab<T>(T originalPrefab, string newName, Transform parentTransform) where T:PrefabInfo
         {
             var instance = Object.Instantiate(originalPrefab.gameObject);
             instance.name = newName;
             instance.transform.SetParent(parentTransform);
             instance.transform.localPosition = new Vector3(-7500, -7500, -7500);
-            var newPrefab = instance.GetComponent<NetInfo>();
+            var newPrefab = instance.GetComponent<T>();
             instance.SetActive(false);
             newPrefab.m_prefabInitialized = false;
             return newPrefab;

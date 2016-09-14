@@ -68,7 +68,7 @@ namespace MetroOverhaul
         public override void OnLevelLoaded(LoadMode mode)
         {
             base.OnLevelLoaded(mode);
-            MetroStations.UpdateMetroStations();
+            MetroStations.UpdateMetro();
             var vehicles = Singleton<VehicleManager>.instance.m_vehicles;
             for (ushort i = 0; i < vehicles.m_size; i++)
             {

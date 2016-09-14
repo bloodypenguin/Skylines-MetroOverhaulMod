@@ -10,7 +10,7 @@ namespace MetroOverhaul.SetupPrefab
 {
     class SetupTexture
     {
-        public static void Setup12mTexture(NetInfo info, NetInfoVersion version)
+        public static void Setup12mTexture(NetInfo info, NetInfoVersion version, bool isAlt = false)
         {
             switch (version)
             {
@@ -18,7 +18,7 @@ namespace MetroOverhaul.SetupPrefab
                     {
                         for (var i = 0; i < info.m_segments.Length; i++)
                         {
-                            if (info.m_segments[i].m_mesh.name.Contains("Ground_Pavement"))
+                            if (info.m_segments[i].m_mesh.name.Contains("Pavement"))
                             {
                                 info.m_segments[i].SetTextures(
                                     new TextureSet
@@ -42,7 +42,7 @@ namespace MetroOverhaul.SetupPrefab
                         }
                         for (var i = 0; i < info.m_nodes.Length; i++)
                         {
-                            if (info.m_nodes[i].m_mesh.name.Contains("Ground_Node_Pavement"))
+                            if (info.m_nodes[i].m_mesh.name.Contains("Pavement"))
                             {
                                 info.m_nodes[i].SetTextures(
                                     new TextureSet
@@ -86,7 +86,7 @@ namespace MetroOverhaul.SetupPrefab
                     {
                         for (var i = 0; i < info.m_segments.Length; i++)
                         {
-                            if (info.m_segments[i].m_mesh.name.Contains("Elevated_Pavement") || info.m_segments[i].m_mesh.name.Contains("Bridge_Pavement"))
+                            if (info.m_segments[i].m_mesh.name.Contains("Pavement"))
                             {
                                 var isElevated = info.m_segments[i].m_mesh.name.Contains("Elevated_Pavement");
                                     
@@ -152,7 +152,7 @@ namespace MetroOverhaul.SetupPrefab
                     {
                         for (var i = 0; i < info.m_segments.Length; i++)
                         {
-                            if (info.m_segments[i].m_mesh.name.Contains("Slope_Pavement") || info.m_segments[i].m_mesh.name.Contains("Tunnel_Pavement"))
+                            if (info.m_segments[i].m_mesh.name.Contains("Pavement"))
                             {
                                 info.m_segments[i].SetTextures(
                                     new TextureSet
@@ -175,7 +175,7 @@ namespace MetroOverhaul.SetupPrefab
                         }
                         for (var i = 0; i < info.m_nodes.Length; i++)
                         {
-                            if (info.m_nodes[i].m_mesh.name.Contains("Slope_Node_Pavement") || info.m_nodes[i].m_mesh.name.Contains("Tunnel_Node_Pavement"))
+                            if (info.m_nodes[i].m_mesh.name.Contains("Node_Pavement"))
                             {
                                 info.m_nodes[i].SetTextures(
                                     new TextureSet
