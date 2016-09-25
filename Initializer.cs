@@ -162,11 +162,11 @@ namespace MetroOverhaul
 
                     prefab.m_segments = new[] { segment0, segment1 };
                     prefab.m_nodes = new[] { node0, node1, node2, node3 };
-                }
+               }
                 else
                 {
                     prefab.m_clipTerrain = false;
-                }
+                } 
             };
         }
 
@@ -178,6 +178,7 @@ namespace MetroOverhaul
             var version = NetInfoVersion.Ground;
             return (prefab, metroTunnel) =>
             {
+                prefab.m_minHeight = 0;
                 prefab.m_halfWidth = isAlt ? 5 : 6;
                 prefab.m_pavementWidth = 3.5f;
                 var prefabNameParts = prefab.name.Split(' ');
