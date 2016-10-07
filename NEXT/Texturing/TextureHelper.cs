@@ -2,7 +2,7 @@
 using System.IO;
 using UnityEngine;
 
-namespace SubwayOverhaul.NEXT.Texturing
+namespace MetroOverhaul.NEXT.Texturing
 {
     public static class TextureHelper
     {

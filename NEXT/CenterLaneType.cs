@@ -1,4 +1,4 @@
-﻿namespace SubwayOverhaul.NEXT
+﻿namespace MetroOverhaul.NEXT
 {
     public enum CenterLaneType
     {

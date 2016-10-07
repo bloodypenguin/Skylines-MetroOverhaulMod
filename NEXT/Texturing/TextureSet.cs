@@ -1,7 +1,7 @@
 ﻿using ColossalFramework;
 using UnityEngine;
 
-namespace SubwayOverhaul.NEXT.Texturing
+namespace MetroOverhaul.NEXT.Texturing
 {
     public class TextureSet
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using ColossalFramework;
 
-namespace SubwayOverhaul.NEXT.Extensions
+namespace MetroOverhaul.NEXT.Extensions
 {
     public static class CloningExtensions
     {

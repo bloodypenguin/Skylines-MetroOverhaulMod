@@ -1,7 +1,7 @@
 ﻿using ColossalFramework.UI;
 using UnityEngine;
 
-namespace SubwayOverhaul.NEXT.Extensions
+namespace MetroOverhaul.NEXT.Extensions
 {
     public static class AssetManagerExtensions
     {

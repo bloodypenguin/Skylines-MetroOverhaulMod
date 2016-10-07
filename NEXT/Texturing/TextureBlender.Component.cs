@@ -1,5 +1,5 @@
 ﻿
-namespace SubwayOverhaul.NEXT.Texturing
+namespace MetroOverhaul.NEXT.Texturing
 {
     public partial class TextureBlender
     {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SubwayOverhaul.NEXT.Texturing
+namespace MetroOverhaul.NEXT.Texturing
 {
     public interface ITextureBlenderComponent
     {

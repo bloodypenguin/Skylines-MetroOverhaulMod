@@ -1,8 +1,8 @@
-﻿using SubwayOverhaul.NEXT.Texturing;
+﻿using MetroOverhaul.NEXT.Texturing;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SubwayOverhaul.NEXT.Extensions
+namespace MetroOverhaul.NEXT.Extensions
 {
     public static partial class NetInfoExtensions
     {

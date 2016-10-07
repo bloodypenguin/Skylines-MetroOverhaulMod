@@ -2,7 +2,7 @@
 using ColossalFramework.Globalization;
 using MetroOverhaul;
 
-namespace SubwayOverhaul.NEXT.Extensions
+namespace MetroOverhaul.NEXT.Extensions
 {
     public static class LocaleManagerExtensions
     {

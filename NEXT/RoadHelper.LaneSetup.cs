@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using ColossalFramework;
-using SubwayOverhaul.NEXT.Extensions;
+using MetroOverhaul.NEXT.Extensions;
 using UnityEngine;
 
-namespace SubwayOverhaul.NEXT
+namespace MetroOverhaul.NEXT
 {
     public static partial class RoadHelper
     {

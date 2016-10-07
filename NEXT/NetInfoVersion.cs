@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SubwayOverhaul.NEXT.Extensions;
+using MetroOverhaul.NEXT.Extensions;
 
-namespace SubwayOverhaul.NEXT
+namespace MetroOverhaul.NEXT
 {
     [Flags]
     public enum NetInfoVersion

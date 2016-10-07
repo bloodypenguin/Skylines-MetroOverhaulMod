@@ -2,8 +2,8 @@
 using System.Linq;
 using UnityEngine;
 using MetroOverhaul.SetupPrefab;
-using SubwayOverhaul.NEXT;
-using SubwayOverhaul.NEXT.Extensions;
+using MetroOverhaul.NEXT;
+using MetroOverhaul.NEXT.Extensions;
 
 namespace MetroOverhaul
 {

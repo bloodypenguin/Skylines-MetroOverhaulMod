@@ -1,7 +1,7 @@
-﻿using SubwayOverhaul.NEXT.Texturing;
+﻿using MetroOverhaul.NEXT.Texturing;
 using UnityEngine;
 
-namespace SubwayOverhaul.NEXT.Extensions
+namespace MetroOverhaul.NEXT.Extensions
 {
     public static class TextureSetExtensions
     {

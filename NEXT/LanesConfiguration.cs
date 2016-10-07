@@ -1,5 +1,5 @@
 ﻿
-namespace SubwayOverhaul.NEXT
+namespace MetroOverhaul.NEXT
 {
     public class LanesConfiguration
     {

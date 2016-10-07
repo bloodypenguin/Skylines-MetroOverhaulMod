@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SubwayOverhaul.NEXT.Texturing
+namespace MetroOverhaul.NEXT.Texturing
 {
     public partial class TextureBlender : ITextureProvider
     {

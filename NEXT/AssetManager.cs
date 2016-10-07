@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using ColossalFramework;
 using ObjUnity3D;
-using SubwayOverhaul.NEXT.Texturing;
+using MetroOverhaul.NEXT.Texturing;
 using UnityEngine;
 
-namespace SubwayOverhaul.NEXT
+namespace MetroOverhaul.NEXT
 {
     public enum TextureType
     {
