@@ -78,6 +78,7 @@ namespace MetroOverhaul.SetupPrefab
                         {
                             segment0.m_material = elevatedMaterial;
                             segment0.m_lodMaterial = elevatedLODMaterial;
+                            node0.m_material = elevatedMaterial;
                             node2.m_material = elevatedMaterial;
                             //segment1.m_material = railMaterial;
                             //node1.m_material = railMaterial;
@@ -99,7 +100,8 @@ namespace MetroOverhaul.SetupPrefab
                             .SetFlagsDefault()
                             .SetMeshes
                             (@"Meshes\Elevated_Pavement.obj",
-                            @"Meshes\Elevated_Pavement_LOD.obj");
+                            @"Meshes\Elevated_Pavement_LOD.obj")
+                            .SetConsistentUVs(); //ehem
 
                         segment1
                             .SetFlagsDefault()

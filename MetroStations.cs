@@ -1,5 +1,4 @@
 ﻿using MetroOverhaul.NEXT.Extensions;
-using MetroOverhaul.NEXT.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,20 +35,16 @@ namespace MetroOverhaul
         }
         public static bool IsStation(this BuildingInfo info)
         {
-            if (!(info.m_buildingAI is DepotAI) || info.m_class.m_subService != ItemClass.SubService.PublicTransportMetro)
+            if (info == null || info.m_class == null || info.m_paths == null || !(info.m_buildingAI is DepotAI) || info.m_class.m_subService != ItemClass.SubService.PublicTransportMetro)
             {
                 return false;
             }
-            else if (info.m_paths == null)
-            {
-                return false; ;
-            }
             else
             {
-                var metroStations = info.m_paths.Where(p => p.m_netInfo.name == "Metro Station Track");
-                if (metroStations.Count() == 0)
+                var metroStations = info.m_paths.Where(p => p != null && p.m_netInfo != null && p.m_netInfo.name == "Metro Station Track");
+                if (metroStations == null || metroStations.Count() == 0)
                 {
-                    return false; ;
+                    return false;
                 }
             }
             return true;

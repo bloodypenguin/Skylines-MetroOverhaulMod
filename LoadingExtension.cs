@@ -5,6 +5,8 @@ using MetroOverhaul.Redirection;
 using MetroOverhaul.NEXT;
 using System;
 using UnityEngine;
+using MetroOverhaul.NEXT.Extensions;
+using MetroOverhaul.NEXT.Texturing;
 
 namespace MetroOverhaul
 {
@@ -93,14 +95,71 @@ namespace MetroOverhaul
             {
                 LateBuildUp(prefabBridge, NetInfoVersion.Bridge);
             }
+            var steelPrefabElevated = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Elevated");
+            if (steelPrefabElevated != null)
+            {
+                LateBuildUp(steelPrefabElevated, NetInfoVersion.Elevated);
+            }
+            var steelPrefabBridge = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Bridge");
+            if (steelPrefabBridge != null)
+            {
+                LateBuildUp(steelPrefabBridge, NetInfoVersion.Bridge);
+            }
         }
         private void LateBuildUp(NetInfo prefab, NetInfoVersion version)
         {
-            switch (version)
+            switch (prefab.name)
             {
-                case NetInfoVersion.Elevated:
+                case "Steel Metro Track Elevated":
                     {
-                        var elevatedPillarInfo = PrefabCollection<BuildingInfo>.FindLoaded("MetroElevatedPillar.MetroElevatedPillar_Data");
+                        var steelElevatedPillarInfo = PrefabCollection<BuildingInfo>.FindLoaded("Steel Metro Elevated Pillar");
+                        steelElevatedPillarInfo.SetMeshes(
+                            @"Meshes\Elevated_Pillar_Steel.obj",
+                            @"Meshes\Elevated_Pillar_Steel.obj"
+                        ).SetConsistentUVs();
+
+                        steelElevatedPillarInfo.SetTextures(
+                            new TextureSet(
+                                @"Textures\Elevated_Pillar_Steel__MainTex.png",
+                                @"Textures\Elevated_Pillar_Steel__AlphaMap.png",
+                                @"Textures\Elevated_Pillar_Steel__XYSMap.png"
+                            ));
+                        var bridgeAI = prefab.GetComponent<TrainTrackBridgeAI>();
+                        if (steelElevatedPillarInfo != null && bridgeAI != null)
+                        {
+                            bridgeAI.m_bridgePillarInfo = steelElevatedPillarInfo;
+                            bridgeAI.m_bridgePillarOffset = 2;
+                        }
+                        break;
+                    }
+                case "Steel Metro Track Bridge":
+                    {
+                        var steelBridgePillarInfo = PrefabCollection<BuildingInfo>.FindLoaded("Steel Metro Bridge Pillar");
+                        steelBridgePillarInfo.SetMeshes(@"Meshes\Elevated_Pillar.obj", @"Meshes\Elevated_Pillar.obj").SetConsistentUVs();
+                        steelBridgePillarInfo.SetTextures(new TextureSet(@"Textures\Elevated_Pillar__MainTex.png"));
+                        var bridgeAI = prefab.GetComponent<TrainTrackBridgeAI>();
+                        if (steelBridgePillarInfo != null && bridgeAI != null)
+                        {
+                            bridgeAI.m_bridgePillarInfo = steelBridgePillarInfo;
+                            bridgeAI.m_middlePillarInfo = steelBridgePillarInfo;
+                        }
+                        break;
+                    }
+                case "Metro Track Elevated":
+                    {
+                        var elevatedPillarInfo = PrefabCollection<BuildingInfo>.FindLoaded("Metro Elevated Pillar");
+                        elevatedPillarInfo.SetMeshes(
+                            @"Meshes\Elevated_Pillar.obj",
+                            @"Meshes\Elevated_Pillar.obj"
+                        ).SetConsistentUVs();
+
+                        elevatedPillarInfo.SetTextures(
+                            new TextureSet(
+                                @"Textures\Elevated_Pillar__MainTex.png",
+                                @"Textures\Elevated_Pillar__AlphaMap.png",
+                                @"Textures\Elevated_Pillar__XYSMap.png"
+                            ));
+
                         var bridgeAI = prefab.GetComponent<TrainTrackBridgeAI>();
                         if (elevatedPillarInfo != null && bridgeAI != null)
                         {
@@ -109,14 +168,25 @@ namespace MetroOverhaul
                         }
                         break;
                     }
-                case NetInfoVersion.Bridge:
+                case "Metro Track Bridge":
                     {
-                        var bridgePillarInfo = PrefabCollection<BuildingInfo>.FindLoaded("MetroBridgePillar.MetroBridgePillar_Data");
+                        var bridgePillarInfo = PrefabCollection<BuildingInfo>.FindLoaded("Metro Bridge Pillar");
+                        bridgePillarInfo.SetMeshes(
+                            @"Meshes\Bridge_Pillar.obj",
+                            @"Meshes\Bridge_Pillar.obj"
+                        ).SetConsistentUVs();
+
+                        bridgePillarInfo.SetTextures(
+                            new TextureSet(
+                                @"Textures\Bridge_Pillar__MainTex.png",
+                                @"Textures\Bridge_Pillar__AlphaMap.png",
+                                @"Textures\Bridge_Pillar__XYSMap.png"
+                            ));
+
                         var bridgeAI = prefab.GetComponent<TrainTrackBridgeAI>();
                         if (bridgePillarInfo != null && bridgeAI != null)
                         {
                             bridgeAI.m_bridgePillarInfo = bridgePillarInfo;
-                            bridgeAI.m_middlePillarInfo = bridgePillarInfo;
                         }
                         break;
                     }

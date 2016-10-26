@@ -8,26 +8,11 @@ using System.Reflection;
 
 namespace UIMod
 {
-    public class MetroUI : IUserMod
-    {
-        public string Description { get { return "MetroUI"; } }
-        public string Name { get { return "MetroUI"; } }
-    }
     public class MetroUILoader : LoadingExtensionBase
     {
         public override void OnLevelLoaded(LoadMode mode)
         {
             UIComponent uic = UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizer));
-            //if (MetroStationCustomizer.instance == null)
-            //{
-            //    MetroStationCustomizer.instance = new GameObject("MetroStationCustomizer").AddComponent<MetroStationCustomizer>();
-            //    GameObject.DontDestroyOnLoad(MetroStationCustomizer.instance);
-            //}
-            //else
-            //{
-            //    MetroStationCustomizer.instance.Start();
-            //    MetroStationCustomizer.instance.enabled = true;
-            //}
         }
     }
     public class MetroStationCustomizer : UIPanel
@@ -40,18 +25,9 @@ namespace UIMod
         private BulldozeTool m_bulldozeTool;
         private BuildingTool m_buildingTool;
         private NetTool m_netTool;
-        private FieldInfo m_buildErrors;
-        private FieldInfo m_elevationField;
-        private FieldInfo m_elevationDownField;
-        private FieldInfo m_elevationUpField;
-        private FieldInfo m_buildingElevationField;
-        private FieldInfo m_controlPointCountField;
-        private FieldInfo m_upgrading;
         private UIButton m_upgradeButtonTemplate;
         private BuildingInfo m_currentBuilding;
         private bool m_activated;
-        private bool m_toolEnabled;
-        private bool m_bulldozeToolEnabled;
         public static MetroStationCustomizer instance;
         public override void Update()
         {

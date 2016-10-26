@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using MetroOverhaul.SetupPrefab;
 using MetroOverhaul.NEXT;
+using MetroOverhaul.NEXT.Texturing;
 using MetroOverhaul.NEXT.Extensions;
 
 namespace MetroOverhaul
@@ -14,8 +15,10 @@ namespace MetroOverhaul
             try
             {
                 CreateFullPrefab("");
-                //CreateFullPrefab("", true);
+                CreateFullPrefab("Steel ");
                 CreateFullStationPrefab("");
+                CreatePillarPrefab("Steel ");
+                CreatePillarPrefab("");
             }
             catch (Exception ex)
             {
@@ -26,18 +29,18 @@ namespace MetroOverhaul
         {
             var altText = "";
             if (isAlt)
-                altText = "Alt ";
+                altText = "Alt";
 
-            var mTunnelInfo = FindOriginalPrefab("Metro Track");
-            CreatePrefab($"{alias}Metro Track {altText}Ground", "Train Track", SetupMetroTrack().Apply(mTunnelInfo).Chain(p =>
+            var mTunnelInfo = FindOriginalNetInfo("Metro Track");
+            CreateNetInfo($"{alias}Metro Track {altText}Ground", "Train Track", SetupMetroTrack().Apply(mTunnelInfo).Chain(p =>
             {
-                CreatePrefab($"{alias}Metro Track {altText}Bridge", "Train Track Bridge",
+                CreateNetInfo($"{alias}Metro Track {altText}Bridge", "Train Track Bridge",
                     SetupMetroTrack(isAlt).Apply(mTunnelInfo).Chain(p1 => p.GetComponent<TrainTrackAI>().m_bridgeInfo = p1).Chain(SetCosts().Apply("Train Track Bridge")));
-                CreatePrefab($"{alias}Metro Track {altText}Elevated", "Train Track Elevated",
+                CreateNetInfo($"{alias}Metro Track {altText}Elevated", "Train Track Elevated",
                     SetupMetroTrack(isAlt).Apply(mTunnelInfo).Chain(p2 => p.GetComponent<TrainTrackAI>().m_elevatedInfo = p2).Chain(SetCosts().Apply("Train Track Elevated")));
-                CreatePrefab($"{alias}Metro Track {altText}Slope", "Train Track Slope",
+                CreateNetInfo($"{alias}Metro Track {altText}Slope", "Train Track Slope",
                     SetupMetroTrack(isAlt).Apply(mTunnelInfo).Chain(p3 => p.GetComponent<TrainTrackAI>().m_slopeInfo = p3).Chain(SetCosts().Apply("Train Track Slope")));
-                CreatePrefab($"{alias}Metro Track {altText}Tunnel", "Train Track Tunnel",
+                CreateNetInfo($"{alias}Metro Track {altText}Tunnel", "Train Track Tunnel",
                     SetupMetroTrack(isAlt).Apply(mTunnelInfo).Chain(p4 => p.GetComponent<TrainTrackAI>().m_tunnelInfo = p4).Chain(SetCosts().Apply("Train Track Tunnel"))); //TODO(earalov): why can't we just set needed meshes etc. for vanilla track?
                 p.GetComponent<TrainTrackAI>().m_connectedElevatedInfo = null;
                 p.GetComponent<TrainTrackAI>().m_connectedInfo = null;
@@ -48,16 +51,35 @@ namespace MetroOverhaul
         {
             var altText = "";
             if (isAlt)
-                altText = "Alt ";
+                altText = "Alt";
 
-            var mTunnelInfo = FindOriginalPrefab("Metro Track");
-            CreatePrefab($"{alias}Metro Station Track {altText}Ground", "Train Station Track", SetupMetroTrack(isAlt).Apply(mTunnelInfo).Chain(SetupStationTrack()).Chain(p =>
+            var mTunnelInfo = FindOriginalNetInfo("Metro Track");
+            CreateNetInfo($"{alias}Metro Station Track {altText}Ground", "Train Station Track", SetupMetroTrack(isAlt).Apply(mTunnelInfo).Chain(SetupStationTrack()).Chain(p =>
             {
-                CreatePrefab($"{alias}Metro Station Track {altText}Elevated", "Train Station Track",
+                CreateNetInfo($"{alias}Metro Station Track {altText}Elevated", "Train Station Track",
                     SetupMetroTrack(isAlt).Apply(mTunnelInfo).Chain(p1 => p.GetComponent<TrainTrackAI>().m_elevatedInfo = p1).Chain(SetupStationTrack()).Chain(SetupElevatedStationTrack()));
-                CreatePrefab($"{alias}Metro Station Track {altText}Tunnel", "Train Station Track",
+                CreateNetInfo($"{alias}Metro Station Track {altText}Tunnel", "Train Station Track",
                     SetupMetroTrack(isAlt).Apply(mTunnelInfo).Chain(p2 => p.GetComponent<TrainTrackAI>().m_tunnelInfo = p2).Chain(SetupStationTrack()).Chain(SetupTunnelStationTrack()));
             }));
+        }
+
+        private void CreatePillarPrefab(string alias, bool isAlt = false)
+        {
+            var altText = "";
+            if (isAlt)
+                altText = "Alt ";
+
+            var mRailPillarInfo = FindOriginalBuildingInfo("RailwayElevatedPillar");
+            CreateBuildingInfo($"{alias}Metro Elevated Pillar{altText}", "RailwayElevatedPillar", SetupPillar());
+            CreateBuildingInfo($"{alias}Metro Bridge Pillar{altText}", "RailwayBridgePillar", SetupPillar());
+        }
+
+        private static Action<BuildingInfo> SetupPillar()
+        {
+            return prefab =>
+            {
+                prefab.m_collisionHeight = -1;
+            };
         }
         public static Action<NetInfo> SetupElevatedStationTrack()
         {
@@ -162,18 +184,18 @@ namespace MetroOverhaul
 
                     prefab.m_segments = new[] { segment0, segment1 };
                     prefab.m_nodes = new[] { node0, node1, node2, node3 };
-               }
+                }
                 else
                 {
                     prefab.m_clipTerrain = false;
-                } 
+                }
             };
         }
 
         private static Action<NetInfo, NetInfo> SetupMetroTrack(bool isAlt = false)
         {
-            var elevatedInfo = FindOriginalPrefab("Basic Road Elevated");
-            var metroInfo = FindOriginalPrefab("Metro Track");
+            var elevatedInfo = FindOriginalNetInfo("Basic Road Elevated");
+            var metroInfo = FindOriginalNetInfo("Metro Track");
             NetInfo trainTrackInfo = null;
             var version = NetInfoVersion.Ground;
             return (prefab, metroTunnel) =>
@@ -201,13 +223,21 @@ namespace MetroOverhaul
                     case "Tunnel":
                         version = NetInfoVersion.Tunnel;
                         prefab.m_pavementWidth = 4.8f;
-                        trainTrackInfo = FindOriginalPrefab("Train Track");
+                        trainTrackInfo = FindOriginalNetInfo("Train Track");
                         prefab.m_halfWidth = 7.5f;
                         break;
                 }
+                if (prefabNameParts.First() == "Steel")
+                {
+                    SetupSteelMesh.Setup12mSteelMesh(prefab, version, elevatedInfo, trainTrackInfo, isAlt);
+                    SetupSteelTexture.Setup12mSteelTexture(prefab, version, isAlt);
+                }
+                else
+                {
+                    SetupMesh.Setup12mMesh(prefab, version, elevatedInfo, trainTrackInfo, isAlt);
+                    SetupTexture.Setup12mTexture(prefab, version, isAlt);
+                }
 
-                SetupMesh.Setup12mMesh(prefab, version, elevatedInfo, trainTrackInfo, isAlt);
-                SetupTexture.Setup12mTexture(prefab, version, isAlt);
 
                 var milestone = metroTunnel.GetComponent<MetroTrackAI>().m_createPassMilestone;
                 PrefabCollection<VehicleInfo>.FindLoaded("Metro").m_class =
@@ -241,6 +271,7 @@ namespace MetroOverhaul
                 prefab.m_createGravel = false;
                 prefab.m_createPavement = false;
                 prefab.m_isCustomContent = true;
+                prefab.m_flatJunctions = false;
 
 
                 var speedLimit = metroTunnel.m_lanes.First(l => l.m_vehicleType != VehicleInfo.VehicleType.None).m_speedLimit;
@@ -266,9 +297,9 @@ namespace MetroOverhaul
         {
             return (newPrefab, originalPrefabName) =>
             {
-                var originalPrefab = FindOriginalPrefab(originalPrefabName);
-                var trainTrackTunnel = FindOriginalPrefab("Train Track Tunnel");
-                var metroTrack = FindOriginalPrefab("Metro Track");
+                var originalPrefab = FindOriginalNetInfo(originalPrefabName);
+                var trainTrackTunnel = FindOriginalNetInfo("Train Track Tunnel");
+                var metroTrack = FindOriginalNetInfo("Metro Track");
 
                 var constructionCost = originalPrefab.GetComponent<PlayerNetAI>().m_constructionCost *
                                             metroTrack.GetComponent<PlayerNetAI>().m_constructionCost /

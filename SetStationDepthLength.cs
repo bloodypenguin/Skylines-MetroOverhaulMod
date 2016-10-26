@@ -64,10 +64,10 @@ namespace MetroOverhaul
                     if (thePath.m_nodes.All(n => n.y < 0) && thePath != lowestHighPath)
                     {
                         thePath.DipPath(offsetDepthDist);
-                        //if (thePath.m_netInfo.name != "Metro Station Track")
-                        //{
+                        if (thePath.m_netInfo.name != "Metro Station Track")
+                        {
                             thePath.GenPathCurve();
-                        //}
+                        }
                     }
                     else
                     {
@@ -97,7 +97,7 @@ namespace MetroOverhaul
                     newCurveTargets.Add(new Vector3());
                 //if (curveOff == 0)
                 //{
-                    newCurveTargets[0] = (thepath.m_nodes.First() + thepath.m_nodes.Last()) / 2;
+                newCurveTargets[0] = (thepath.m_nodes.First() + thepath.m_nodes.Last()) / 2;
                 //}
                 //else
                 //{
@@ -129,7 +129,7 @@ namespace MetroOverhaul
             var newZ = 0.0f; //currCoords.z + dir.x;
             var newX = 0.0f;// currCoords.x - dir.z;
             for (var j = 0; j < steps; j++)
-            { 
+            {
                 //multiplier *= -1;
                 newZ = currCoords.z + dir.x;//
                 newX = currCoords.x - dir.z;//
@@ -163,7 +163,7 @@ namespace MetroOverhaul
                     || (path.m_nodes.First().z == path.m_curveTargets.FirstOrDefault().z && path.m_nodes.Last().x == path.m_curveTargets.FirstOrDefault().x);
                 float offCoeff = length / trackDistance;
 
-                float param = 0;
+                //float param = 0;
                 if (curveIsOriginal)
                 {
                     for (var i = 0; i < path.m_nodes.Length; i++)
@@ -174,22 +174,6 @@ namespace MetroOverhaul
                     }
                     path.GenPathCurve();
                 }
-                else
-                {
-                    path.GenPathCurve(1);
-                }
-                //else
-                //{
-                //    if(path.m_nodes.Count() == 2)
-                //    {
-                //        var firstNode = path.m_nodes.First();
-                //        var lastNode = path.m_nodes.Last();
-                //        var hi = new Vector3(firstNode.x + lastNode.x, (firstNode.y + lastNode.y) / 2, firstNode.z + lastNode.z);
-
-                //    }
-                //    param = offCoeff;
-                //}
-                
             }
         }
     }
