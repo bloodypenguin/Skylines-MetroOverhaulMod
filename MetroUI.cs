@@ -40,7 +40,7 @@ namespace UIMod
                 {
                     return;
                 }
-                else if (bInfo != null && bInfo.IsStation())
+                else if (bInfo != null && bInfo.IsUndergroundMetroStation())
                 {
                     Activate(bInfo);
                 }
@@ -307,7 +307,7 @@ namespace UIMod
 
         private void Activate(BuildingInfo bInfo)
         {
-            if (bInfo != null && bInfo.IsStation())
+            if (bInfo != null && bInfo.IsUndergroundMetroStation())
             {
                 m_activated = true;
                 m_currentBuilding = bInfo;
