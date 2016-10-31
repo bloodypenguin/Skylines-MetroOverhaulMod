@@ -181,6 +181,11 @@ namespace MetroOverhaul
                         .SetMeshes
                             (@"Meshes\Ground_Station_Pavement.obj",
                             @"Meshes\Ground_NoBar_Pavement_LOD.obj");
+                    node0
+                        .SetMeshes
+                        (@"Meshes\Ground_NoBar_Node_Pavement.obj",
+                        @"Meshes\Ground_NoBar_Node_Pavement_LOD.obj")
+                        .SetConsistentUVs(true);
 
                     prefab.m_segments = new[] { segment0, segment1 };
                     prefab.m_nodes = new[] { node0, node1, node2, node3 };
