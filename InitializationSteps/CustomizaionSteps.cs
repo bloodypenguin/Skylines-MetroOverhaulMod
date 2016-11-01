@@ -14,7 +14,7 @@ namespace MetroOverhaul.InitializationSteps
             prefab.m_pavementWidth = 4.8f;
         }
 
-        public static void CommonCustomizationAlt(NetInfo prefab, NetInfoVersion version)
+        public static void CommonCustomizationNoBar(NetInfo prefab, NetInfoVersion version)  //TODO(earalov): do we need to customize slope version too?
         {
             if (version != NetInfoVersion.Ground)
             {

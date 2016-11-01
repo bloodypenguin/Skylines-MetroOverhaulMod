@@ -6,8 +6,6 @@ namespace MetroOverhaul.InitializationSteps
     public static class SetupSteelMesh
     {
 
-
-
         public static void Setup12mSteelMesh(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
         {
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
@@ -253,7 +251,7 @@ namespace MetroOverhaul.InitializationSteps
         }
 
         //mind changed indices! (after Setup12mSteelMesh)
-        public static void Setup12mSteelMeshNonAlt(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo)
+        public static void Setup12mSteelMeshBar(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo)
         {
             if (version != NetInfoVersion.Ground)
             {
@@ -274,9 +272,9 @@ namespace MetroOverhaul.InitializationSteps
         }
 
         //mind changed indices! (after Setup12mSteelMesh)
-        public static void Setup12mSteelMeshAlt(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
+        public static void Setup12mSteelMeshNoBar(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
         {
-            if (version != NetInfoVersion.Ground)
+            if (version != NetInfoVersion.Ground) //TODO(earalov): do we need to customize slope version too?
             {
                 return;
             }

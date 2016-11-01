@@ -190,6 +190,17 @@ namespace MetroOverhaul.InitializationSteps
                         var node0 = info.m_nodes[0];
                         var node1 = info.m_nodes[0].ShallowClone();
                         var node2 = trainTrackInfo.m_nodes[1].ShallowClone();
+                        segment1
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            (@"Meshes\Tunnel_Pavement.obj",
+                                @"Meshes\Tunnel_Pavement_LOD.obj")
+                            .SetConsistentUVs();
+                        node1
+                            .SetMeshes
+                            (@"Meshes\Tunnel_Node_Pavement.obj",
+                                @"Meshes\Tunnel_Node_Pavement_LOD.obj")
+                            .SetConsistentUVs();
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes
@@ -211,102 +222,49 @@ namespace MetroOverhaul.InitializationSteps
         }
 
         //mind changed segment and node indices! (after Setup12mMesh)
-        public static void Setup12mMeshNonAlt(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo)
+        public static void Setup12mMeshBar(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo)
         {
 
-            switch (version)
+            if (version != NetInfoVersion.Ground)
             {
-                case NetInfoVersion.Ground:
-                    {
-                        var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
-                        var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
-
-                        var segment0 = info.m_segments[0];
-                        var node0 = info.m_nodes[0];
-                        var node2 = info.m_nodes[2];
-                        segment0.m_material = elevatedMaterial;
-                        segment0.m_lodMaterial = elevatedLODMaterial;
-                        node0.m_material = elevatedMaterial;
-                        node2.m_material = elevatedMaterial;
-                        //segment1.m_material = railMaterial;
-                        //node1.m_material = railMaterial;
-                        break;
-                    }
-                case NetInfoVersion.Tunnel:
-                    {
-                        var segment1 = info.m_segments[1];
-                        var node1 = info.m_nodes[1];
-                        segment1
-                            .SetFlagsDefault()
-                            .SetMeshes
-                            (@"Meshes\Tunnel_Pavement.obj",
-                                @"Meshes\Tunnel_Pavement_LOD.obj")
-                            .SetConsistentUVs();
-                        node1
-                            .SetMeshes
-                            (@"Meshes\Tunnel_Node_Pavement.obj",
-                                @"Meshes\Tunnel_Node_Pavement_LOD.obj")
-                            .SetConsistentUVs();
-                        break;
-                    }
-
+                return;
             }
+            var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
+            var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
+
+            var segment0 = info.m_segments[0];
+            var node0 = info.m_nodes[0];
+            var node2 = info.m_nodes[2];
+            segment0.m_material = elevatedMaterial;
+            segment0.m_lodMaterial = elevatedLODMaterial;
+            node0.m_material = elevatedMaterial;
+            node2.m_material = elevatedMaterial;
+            //segment1.m_material = railMaterial;
+            //node1.m_material = railMaterial;
         }
 
         //mind changed segment and node indices! (after Setup12mMesh)
-        public static void Setup12mMeshAlt(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
+        public static void Setup12mMeshNoBar(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
         {
-            var trainTrackMaterial = trainTrackInfo.m_segments[0].m_material;
-            var trainTrackLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
-            switch (version)
+            if (version != NetInfoVersion.Ground) //TODO(earalov): do we need to customize slope version too?
             {
-                case NetInfoVersion.Ground:
-                    {
-                        var segment0 = info.m_segments[0];
-                        var node0 = info.m_nodes[0];
-                        segment0
-                            .SetFlagsDefault()
-                            .SetMeshes
-                            (@"Meshes\Ground_NoBar_Pavement.obj",
-                                @"Meshes\Ground_NoBar_Pavement_LOD.obj");
-
-                        node0
-                            .SetMeshes
-                            (@"Meshes\Ground_NoBar_Node_Pavement.obj",
-                                @"Meshes\Ground_NoBar_Node_Pavement_LOD.obj")
-                            .SetConsistentUVs(true);
-                        break;
-                    }
-                case NetInfoVersion.Tunnel:
-                    {
-                        var segment0 = info.m_segments[0];
-                        var segment2 = info.m_segments[2];
-                        var node0 = info.m_nodes[0];
-                        var node2 = info.m_nodes[2];
-                        segment0
-                            .SetFlagsDefault()
-                            .SetMeshes
-                            (@"Meshes\Ground_NoBar_Pavement.obj",
-                                @"Meshes\Ground_NoBar_Pavement_LOD.obj");
-
-                        node0
-                            .SetMeshes
-                            (@"Meshes\Ground_NoBar_Node_Pavement.obj",
-                                @"Meshes\Ground_NoBar_Node_Pavement_LOD.obj")
-                            .SetConsistentUVs(true);
-
-
-                        segment0.m_material = trainTrackMaterial;
-                        segment0.m_lodMaterial = trainTrackLODMaterial;
-                        node2.m_material = trainTrackMaterial;
-
-
-                        info.m_segments = new[] { segment0, segment2 };
-                        info.m_nodes = new[] { node0, node2 };
-                        break;
-                    }
+                return;
             }
+            var segment0 = info.m_segments[0];
+            var node0 = info.m_nodes[0];
+            segment0
+                .SetFlagsDefault()
+                .SetMeshes
+                (@"Meshes\Ground_NoBar_Pavement.obj",
+                    @"Meshes\Ground_NoBar_Pavement_LOD.obj");
+
+            node0
+                .SetMeshes
+                (@"Meshes\Ground_NoBar_Node_Pavement.obj",
+                    @"Meshes\Ground_NoBar_Node_Pavement_LOD.obj")
+                .SetConsistentUVs(true);
         }
+
 
         public static void Setup12mMeshStation(NetInfo prefab, NetInfoVersion version, NetInfo tunnelInfo)
         {

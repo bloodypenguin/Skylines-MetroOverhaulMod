@@ -107,6 +107,11 @@ namespace MetroOverhaul
             _customBuildingInfos.Add(newBuildingInfoName, newPrefab);
         }
 
+        protected NetInfo FindCustomNetInfo(string customNetInfoName)
+        {
+            return _customNetInfos[customNetInfoName];
+        }
+
         protected static NetInfo FindOriginalNetInfo(string originalNetInfoName)
         {
             NetInfo foundNetInfo;

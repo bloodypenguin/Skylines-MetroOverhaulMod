@@ -27,9 +27,11 @@ namespace MetroOverhaul
                 ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                     Chain(CustomizaionSteps.CommonConcreteCustomization).
                     Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
-                    Chain(SetupMesh.Setup12mMeshNonAlt, elevatedInfo).
+                    Chain(SetupMesh.Setup12mMeshBar, elevatedInfo).
                     Chain(SetupTexture.Setup12mTexture).
-                    Chain((info, version) => { LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); }); })
+                    Chain((info, version) => { LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); }); }),
+                ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                    Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>>(CreateNonGroundVersions, null)
                 );
             }
             catch (Exception e)
@@ -45,9 +47,11 @@ namespace MetroOverhaul
                     CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
-                        Chain(SetupSteelMesh.Setup12mSteelMeshNonAlt, elevatedInfo).
+                        Chain(SetupSteelMesh.Setup12mSteelMeshBar, elevatedInfo).
                         Chain(SetupSteelTexture.Setup12mSteelTexture).
-                        Chain((info, version) => { LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); }); })
+                        Chain((info, version) => { LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); }); }),
+                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>>(CreateNonGroundVersions, prefabName => "Steel " + prefabName)
                     , prefabName => "Steel " + prefabName
                     );
                 }
@@ -58,46 +62,47 @@ namespace MetroOverhaul
                 }
             }
 
-
-            //TODO(earalov): fix alternative tracks
-            if (OptionsWrapper<Options>.Options.concreteTracksNoBars)
+            if (OptionsWrapper<Options>.Options.concreteTracksNoBar)
             {
                 try
                 {
                     CreateFullPrefab(
                         ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                             Chain(CustomizaionSteps.CommonConcreteCustomization).
-                            Chain(CustomizaionSteps.CommonCustomizationAlt).
+                            Chain(CustomizaionSteps.CommonCustomizationNoBar).
                             Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
-                            Chain(SetupMesh.Setup12mMeshAlt, elevatedInfo, trainTrackInfo).
-                            Chain(SetupTexture.Setup12mTexture)
-                        , prefabName => prefabName + "Alt"
+                            Chain(SetupMesh.Setup12mMeshNoBar, elevatedInfo, trainTrackInfo).
+                            Chain(SetupTexture.Setup12mTexture),
+                        ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                            Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>>(LinkToNonGroundVersions, null)
+                        , prefabName => prefabName + " NoBar"
                         );
                 }
                 catch (Exception e)
                 {
-                    UnityEngine.Debug.LogError("Exception happened when setting up alt. concrete tracks");
+                    UnityEngine.Debug.LogError("Exception happened when setting up nobar concrete tracks");
                     UnityEngine.Debug.LogException(e);
                 }
             }
 
-            //TODO(earalov): fix alternative tracks
-            if (OptionsWrapper<Options>.Options.steelTracksNoBars)
+            if (OptionsWrapper<Options>.Options.steelTracksNoBar)
             {
                 try
                 {
                     CreateFullPrefab(
                         ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                            Chain(CustomizaionSteps.CommonCustomizationAlt).
+                            Chain(CustomizaionSteps.CommonCustomizationNoBar).
                             Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
-                            Chain(SetupSteelMesh.Setup12mSteelMeshAlt, elevatedInfo, trainTrackInfo).
-                            Chain(SetupSteelTexture.Setup12mSteelTexture)
-                        , prefabName => "Steel " + prefabName + "Alt"
+                            Chain(SetupSteelMesh.Setup12mSteelMeshNoBar, elevatedInfo, trainTrackInfo).
+                            Chain(SetupSteelTexture.Setup12mSteelTexture),
+                        ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                            Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>>(LinkToNonGroundVersions, prefabName => "Steel " + prefabName)
+                        , prefabName => "Steel " + prefabName + " NoBar"
                         );
                 }
                 catch (Exception e)
                 {
-                    UnityEngine.Debug.LogError("Exception happened when setting up alt. steel tracks");
+                    UnityEngine.Debug.LogError("Exception happened when setting up nobar steel tracks");
                     UnityEngine.Debug.LogException(e);
                 }
             }
@@ -132,7 +137,9 @@ namespace MetroOverhaul
         }
 
 
-        protected void CreateFullPrefab(Action<NetInfo, NetInfoVersion> customizationStep, Func<string, string> nameModifier = null)
+        protected void CreateFullPrefab(Action<NetInfo, NetInfoVersion> customizationStep, 
+            Action<NetInfo, Action<NetInfo, NetInfoVersion>> setupOtherVersionsStep, 
+            Func<string, string> nameModifier = null)
         {
             if (nameModifier == null)
             {
@@ -144,40 +151,60 @@ namespace MetroOverhaul
                 Chain(SetCosts, "Train Track").
                 Chain(p =>
                 {
-                    CreateNetInfo(nameModifier.Invoke("Metro Track Bridge"), "Train Track Bridge",
-                        ActionExtensions.BeginChain<NetInfo>().
-                        Chain(SetupMetroTrackMeta).
-                        Chain(CommonSteps.SetBridge, p).
-                        Chain(SetCosts, "Train Track Bridge").
-                        Chain(SetupTrackModel, customizationStep)
-                    );
-                    CreateNetInfo(nameModifier.Invoke("Metro Track Elevated"), "Train Track Elevated",
-                        ActionExtensions.BeginChain<NetInfo>().
-                        Chain(SetupMetroTrackMeta).
-                        Chain(CommonSteps.SetElevated, p).
-                        Chain(SetCosts, "Train Track Elevated").
-                        Chain(SetupTrackModel, customizationStep)
-                    );
-                    CreateNetInfo(nameModifier.Invoke("Metro Track Slope"), "Train Track Slope",
-                        ActionExtensions.BeginChain<NetInfo>().
-                        Chain(SetupMetroTrackMeta).
-                        Chain(CommonSteps.SetSlope, p).
-                        Chain(SetCosts, "Train Track Slope").
-                        Chain(SetupTrackModel, customizationStep)
-                    );
-                    CreateNetInfo(nameModifier.Invoke("Metro Track Tunnel"), "Train Track Tunnel",
-                        ActionExtensions.BeginChain<NetInfo>().
-                        Chain(SetupMetroTrackMeta).
-                        Chain(CommonSteps.SetTunnel, p).
-                        Chain(SetCosts, "Train Track Tunnel").
-                        Chain(SetupTrackModel, customizationStep)
-                    );
-                    //TODO(earalov): why can't we just set needed meshes etc. for vanilla track?
+                    setupOtherVersionsStep(p, customizationStep);
                     p.GetComponent<TrainTrackAI>().m_connectedElevatedInfo = null;
                     p.GetComponent<TrainTrackAI>().m_connectedInfo = null;
                 }).
                 Chain(SetupTrackModel, customizationStep));
+        }
 
+        protected void LinkToNonGroundVersions(NetInfo p, Action<NetInfo, NetInfoVersion> customizationStep, Func<string, string> nameModifier = null)
+        {
+            if (nameModifier == null)
+            {
+                nameModifier = s => s;
+            }
+            CommonSteps.SetElevated(FindCustomNetInfo(nameModifier.Invoke("Metro Track Elevated")), p);
+            CommonSteps.SetBridge(FindCustomNetInfo(nameModifier.Invoke("Metro Track Bridge")), p);
+            CommonSteps.SetSlope(FindCustomNetInfo(nameModifier.Invoke("Metro Track Slope")), p);
+            CommonSteps.SetTunnel(FindCustomNetInfo(nameModifier.Invoke("Metro Track Tunnel")), p);
+        }
+
+
+        private void CreateNonGroundVersions(NetInfo p, Action<NetInfo, NetInfoVersion> customizationStep, Func<string, string> nameModifier = null)
+        {
+            if (nameModifier == null)
+            {
+                nameModifier = s => s;
+            }
+            CreateNetInfo(nameModifier.Invoke("Metro Track Bridge"), "Train Track Bridge",
+                ActionExtensions.BeginChain<NetInfo>().
+                    Chain(SetupMetroTrackMeta).
+                    Chain(CommonSteps.SetBridge, p).
+                    Chain(SetCosts, "Train Track Bridge").
+                    Chain(SetupTrackModel, customizationStep)
+                );
+            CreateNetInfo(nameModifier.Invoke("Metro Track Elevated"), "Train Track Elevated",
+                ActionExtensions.BeginChain<NetInfo>().
+                    Chain(SetupMetroTrackMeta).
+                    Chain(CommonSteps.SetElevated, p).
+                    Chain(SetCosts, "Train Track Elevated").
+                    Chain(SetupTrackModel, customizationStep)
+                );
+            CreateNetInfo(nameModifier.Invoke("Metro Track Slope"), "Train Track Slope",
+                ActionExtensions.BeginChain<NetInfo>().
+                    Chain(SetupMetroTrackMeta).
+                    Chain(CommonSteps.SetSlope, p).
+                    Chain(SetCosts, "Train Track Slope").
+                    Chain(SetupTrackModel, customizationStep)
+                );
+            CreateNetInfo(nameModifier.Invoke("Metro Track Tunnel"), "Train Track Tunnel", //TODO(earalov): why can't we just set needed meshes etc. for vanilla track?
+                ActionExtensions.BeginChain<NetInfo>().
+                    Chain(SetupMetroTrackMeta).
+                    Chain(CommonSteps.SetTunnel, p).
+                    Chain(SetCosts, "Train Track Tunnel").
+                    Chain(SetupTrackModel, customizationStep)
+                );
         }
 
         private void CreateFullStationPrefab(Action<NetInfo, NetInfoVersion> customizationStep, Func<string, string> nameModifier = null)

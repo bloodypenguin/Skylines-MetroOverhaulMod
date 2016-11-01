@@ -10,16 +10,16 @@ namespace MetroOverhaul
         public Options()
         {
             steelTracks = false;
-            steelTracksNoBars = false;
-            concreteTracksNoBars = false;
+            steelTracksNoBar = false;
+            concreteTracksNoBar = false;
         }
 
         [Checkbox("Steel tracks", null, null, WIP)]
         public bool steelTracks { set; get; }
-        [Checkbox("Steel tracks (no bars)", null, null, WIP)]
-        public bool steelTracksNoBars { set; get; }
-        [Checkbox("Concrete tracks (no bars)", null, null, WIP)]
-        public bool concreteTracksNoBars { set; get; }
+        [Checkbox("Steel tracks (no bar)", null, null, WIP)]
+        public bool steelTracksNoBar { set; get; }
+        [Checkbox("Concrete tracks (no bar)", null, null, WIP)]
+        public bool concreteTracksNoBar { set; get; }
 
         [XmlIgnore]
         public string FileName => "CSL-MetroOverhaul.xml";
