@@ -217,8 +217,12 @@ namespace MetroOverhaul
                         break;
                     case "Slope":
                         version = NetInfoVersion.Slope;
-                        prefab.m_halfWidth = 7.5f;
-                        prefab.m_pavementWidth = 4.8f;
+                        if (prefabNameParts.First() != "Steel")
+                        {
+                            prefab.m_halfWidth = 7.5f;
+                            prefab.m_pavementWidth = 4.8f;
+                        }
+
                         break;
                     case "Tunnel":
                         version = NetInfoVersion.Tunnel;
@@ -271,7 +275,6 @@ namespace MetroOverhaul
                 prefab.m_createGravel = false;
                 prefab.m_createPavement = false;
                 prefab.m_isCustomContent = true;
-                prefab.m_flatJunctions = false;
 
 
                 var speedLimit = metroTunnel.m_lanes.First(l => l.m_vehicleType != VehicleInfo.VehicleType.None).m_speedLimit;

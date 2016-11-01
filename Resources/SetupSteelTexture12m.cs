@@ -147,57 +147,57 @@ namespace MetroOverhaul.SetupPrefab
                         }
                         break;
                     }
-                //case NetInfoVersion.Slope:
-                //case NetInfoVersion.Tunnel:
-                //    {
-                //        for (var i = 0; i < info.m_segments.Length; i++)
-                //        {
-                //            if (info.m_segments[i].m_mesh.name.Contains("Pavement_Steel"))
-                //            {
-                //                info.m_segments[i].SetTextures(
-                //                    new TextureSet
-                //                        (@"Textures\Tunnel_Segment_Pavement_Steel__MainTex.png",
-                //                        @"Textures\Elevated_Segment_Pavement_Steel__AlphaMap.png",
-                //                        @"Textures\Tunnel_Segment_Pavement_Steel__XYSMap.png"),
-                //                    new LODTextureSet
-                //                        (@"Textures\Tunnel_Segment_Pavement_Steel__MainTex_LOD.png",
-                //                        @"Textures\Elevated_Segment_Pavement_Steel__AlphaMap_LOD.png",
-                //                        @"Textures\Tunnel_Segment_Pavement_Steel__XYSMap_LOD.png"));
-                //            }
-                //            else
-                //            {
-                //                info.m_segments[i].SetTextures(
-                //                    new TextureSet
-                //                        (@"Textures\Ground_Segment_Rail__MainTex.png",
-                //                        @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                //                        @"Textures\Ground_Segment_Rail__XYSMap.png"));
-                //            }
-                //        }
-                //        for (var i = 0; i < info.m_nodes.Length; i++)
-                //        {
-                //            if (info.m_nodes[i].m_mesh.name.Contains("Node_Pavement_Steel"))
-                //            {
-                //                info.m_nodes[i].SetTextures(
-                //                    new TextureSet
-                //                        (@"Textures\Tunnel_Node_Pavement_Steel__MainTex.png",
-                //                        @"Textures\Elevated_Node_Pavement_Steel__AlphaMap.png",
-                //                        @"Textures\Tunnel_Segment_Pavement_Steel__XYSMap.png"),
-                //                    new LODTextureSet
-                //                        (@"Textures\Tunnel_Node_Pavement_Steel__MainTex_LOD.png",
-                //                        @"Textures\Elevated_Node_Pavement_Steel__AlphaMap_LOD.png",
-                //                        @"Textures\Tunnel_Segment_Pavement_Steel__XYSMap_LOD.png"));
-                //        }
-                //            else
-                //            {
-                //                info.m_nodes[i].SetTextures(
-                //                    new TextureSet
-                //                        (@"Textures\Ground_Segment_Rail__MainTex.png",
-                //                        @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                //                        @"Textures\Ground_Segment_Rail__XYSMap.png"));
-                //            }
-                //        }
-                //        break;
-                //    }
+                case NetInfoVersion.Slope:
+                    //case NetInfoVersion.Tunnel:
+                    {
+                        for (var i = 0; i < info.m_segments.Length; i++)
+                        {
+                            if (info.m_segments[i].m_mesh.name.Contains("Pavement_Steel"))
+                            {
+                                info.m_segments[i].SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Tunnel_Segment_Pavement_Steel__MainTex.png",
+                                        @"Textures\Elevated_Segment_Pavement_Steel__AlphaMap.png",
+                                        @"Textures\Tunnel_Segment_Pavement_Steel__XYSMap.png"),
+                                    new LODTextureSet
+                                        (@"Textures\Tunnel_Segment_Pavement_Steel__MainTex_LOD.png",
+                                        @"Textures\Elevated_Segment_Pavement_Steel__AlphaMap_LOD.png",
+                                        @"Textures\Tunnel_Segment_Pavement_Steel__XYSMap_LOD.png"));
+                            }
+                            else
+                            {
+                                info.m_segments[i].SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                                        @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                            }
+                        }
+                        for (var i = 0; i < info.m_nodes.Length; i++)
+                        {
+                            if (info.m_nodes[i].m_mesh.name.Contains("Node_Pavement_Steel"))
+                            {
+                                info.m_nodes[i].SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Tunnel_Node_Pavement_Steel__MainTex.png",
+                                        @"Textures\Elevated_Node_Pavement_Steel__AlphaMap.png",
+                                        @"Textures\Tunnel_Segment_Pavement_Steel__XYSMap.png"),
+                                    new LODTextureSet
+                                        (@"Textures\Tunnel_Node_Pavement_Steel__MainTex_LOD.png",
+                                        @"Textures\Elevated_Node_Pavement_Steel__AlphaMap_LOD.png",
+                                        @"Textures\Tunnel_Segment_Pavement_Steel__XYSMap_LOD.png"));
+                            }
+                            else
+                            {
+                                info.m_nodes[i].SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                                        @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                            }
+                        }
+                        break;
+                    }
             }
         }
     }
