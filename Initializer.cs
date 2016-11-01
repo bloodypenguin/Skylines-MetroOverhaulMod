@@ -81,19 +81,34 @@ namespace MetroOverhaul
             {
                 nameModifier = s => s;
             }
-            CreateNetInfo(nameModifier.Invoke("Metro Track Ground"), "Train Track", SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(p =>
-            {
-                CreateNetInfo(nameModifier.Invoke("Metro Track Bridge"), "Train Track Bridge",
-                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(CommonSteps.SetBridge(p)).Chain(SetCosts("Train Track Bridge")));
-                CreateNetInfo(nameModifier.Invoke("Metro Track Elevated"), "Train Track Elevated",
-                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(CommonSteps.SetElevated(p)).Chain(SetCosts("Train Track Elevated")));
-                CreateNetInfo(nameModifier.Invoke("Metro Track Slope"), "Train Track Slope",
-                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(CommonSteps.SetSlope(p)).Chain(SetCosts("Train Track Slope")));
-                CreateNetInfo(nameModifier.Invoke("Metro Track Tunnel"), "Train Track Tunnel",
-                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(CommonSteps.SetTunnel(p)).Chain(SetCosts("Train Track Tunnel"))); //TODO(earalov): why can't we just set needed meshes etc. for vanilla track?
-                p.GetComponent<TrainTrackAI>().m_connectedElevatedInfo = null;
-                p.GetComponent<TrainTrackAI>().m_connectedInfo = null;
-            }).Chain(SetCosts("Train Track")));
+            CreateNetInfo(nameModifier.Invoke("Metro Track Ground"), "Train Track",
+                SetupMetroTrackMeta().
+                Chain(SetupTrackModel(customizationStep)).
+                Chain(p =>
+                {
+                    CreateNetInfo(nameModifier.Invoke("Metro Track Bridge"), "Train Track Bridge",
+                        SetupMetroTrackMeta().
+                        Chain(SetupTrackModel(customizationStep)).
+                        Chain(CommonSteps.SetBridge(p)).Chain(SetCosts("Train Track Bridge")));
+                    CreateNetInfo(nameModifier.Invoke("Metro Track Elevated"), "Train Track Elevated",
+                        SetupMetroTrackMeta().
+                        Chain(SetupTrackModel(customizationStep)).
+                        Chain(CommonSteps.SetElevated(p)).
+                        Chain(SetCosts("Train Track Elevated")));
+                    CreateNetInfo(nameModifier.Invoke("Metro Track Slope"), "Train Track Slope",
+                        SetupMetroTrackMeta().
+                        Chain(SetupTrackModel(customizationStep)).
+                        Chain(CommonSteps.SetSlope(p)).
+                        Chain(SetCosts("Train Track Slope")));
+                    CreateNetInfo(nameModifier.Invoke("Metro Track Tunnel"), "Train Track Tunnel",
+                        SetupMetroTrackMeta().
+                        Chain(SetupTrackModel(customizationStep)).
+                        Chain(CommonSteps.SetTunnel(p)).
+                        Chain(SetCosts("Train Track Tunnel"))); //TODO(earalov): why can't we just set needed meshes etc. for vanilla track?
+                    p.GetComponent<TrainTrackAI>().m_connectedElevatedInfo = null;
+                    p.GetComponent<TrainTrackAI>().m_connectedInfo = null;
+                }).
+                Chain(SetCosts("Train Track")));
         }
 
         private void CreateFullStationPrefab(Action<NetInfo, NetInfoVersion> customizationStep = null, Func<string, string> nameModifier = null)
@@ -102,15 +117,33 @@ namespace MetroOverhaul
             {
                 nameModifier = s => s;
             }
-            CreateNetInfo(nameModifier.Invoke("Metro Station Track Ground"), "Train Station Track", SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(SetupStationTrack).Chain(p =>
-            {
-                CreateNetInfo(nameModifier.Invoke("Metro Station Track Elevated"), "Train Station Track",
-                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(CommonSteps.SetElevated(p)).Chain(SetupStationTrack).Chain(SetupElevatedStationTrack));
-                CreateNetInfo(nameModifier.Invoke("Metro Station Track Tunnel"), "Train Station Track",
-                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(CommonSteps.SetTunnel(p)).Chain(SetupStationTrack).Chain(SetupTunnelStationTrack));
-                CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Train Station Track",
-                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(SetupStationTrack).Chain(SetupSunkenStationTrack));
-            }));
+            CreateNetInfo(nameModifier.Invoke("Metro Station Track Ground"), "Train Station Track",
+                SetupMetroTrackMeta().
+                Chain(SetupTrackModel(customizationStep)).
+                Chain(SetupStationTrack).
+                Chain(SetupMesh.Setup12mMeshStationGround).
+                Chain(p =>
+                {
+                    CreateNetInfo(nameModifier.Invoke("Metro Station Track Elevated"), "Train Station Track",
+                        SetupMetroTrackMeta().
+                        Chain(SetupTrackModel(customizationStep)).
+                        Chain(CommonSteps.SetElevated(p)).
+                        Chain(SetupStationTrack).
+                        Chain(SetupElevatedStationTrack).
+                        Chain(SetupMesh.Setup12mMeshStationElevated));
+                    CreateNetInfo(nameModifier.Invoke("Metro Station Track Tunnel"), "Train Station Track",
+                        SetupMetroTrackMeta().
+                        Chain(SetupTrackModel(customizationStep)).
+                        Chain(CommonSteps.SetTunnel(p)).
+                        Chain(SetupStationTrack).
+                        Chain(SetupTunnelStationTrack));
+                    CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Train Station Track",
+                        SetupMetroTrackMeta().
+                        Chain(SetupTrackModel(customizationStep)).
+                        Chain(SetupStationTrack).
+                        Chain(SetupMesh.Setup12mMeshStationGround).
+                        Chain(SetupSunkenStationTrack));
+                }));
         }
 
         private void CreatePillarPrefab(Func<string, string> nameModifier = null)
@@ -132,22 +165,6 @@ namespace MetroOverhaul
         {
             var trackAi = prefab.GetComponent<TrainTrackAI>();
             trackAi.m_elevatedInfo = prefab;
-            var segment0 = prefab.m_segments[0].ShallowClone();
-            var segment1 = prefab.m_segments[1];
-            var node0 = prefab.m_nodes[0].ShallowClone();
-            var node1 = prefab.m_nodes[1];
-
-            segment0
-                .SetMeshes
-                    (@"Meshes\Elevated_Station_Pavement.obj",
-                    @"Meshes\Elevated_Station_Pavement_LOD.obj");
-            node0
-                .SetMeshes
-                    (@"Meshes\Elevated_Station_Node_Pavement.obj",
-                    @"Meshes\Elevated_Node_Pavement_LOD.obj");
-
-            prefab.m_segments = new[] { segment0, segment1 };
-            prefab.m_nodes = new[] { node0, node1 };
         }
 
         public static void SetupSunkenStationTrack(NetInfo prefab)
@@ -169,25 +186,9 @@ namespace MetroOverhaul
             prefab.m_lowerTerrain = false;
             prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels; ;
             var tunnelInfo = PrefabCollection<NetInfo>.FindLoaded("Train Track Tunnel");
-            var segment0 = tunnelInfo.m_segments[0];
-            var segment1 = prefab.m_segments[1].ShallowClone();
-            var segment2 = prefab.m_segments[2];
-            var node0 = tunnelInfo.m_nodes[0];
-            var node1 = prefab.m_nodes[1].ShallowClone();
-            var node2 = prefab.m_nodes[2];
-
-            segment1
-                .SetMeshes
-                (@"Meshes\Tunnel_Station_Pavement.obj",
-                @"Meshes\Ground_NoBar_Pavement_LOD.obj");
-            node1
-                .SetMeshes
-                (@"Meshes\Tunnel_Station_Node_Pavement.obj",
-                @"Meshes\Tunnel_Node_Pavement_LOD.obj");
-            prefab.m_segments = new[] { segment0, segment1, segment2 };
-            prefab.m_nodes = new[] { node0, node1, node2 };
-
+            SetupMesh.Setup12mMeshStationTunnel(prefab, tunnelInfo);
         }
+
         public static void SetupStationTrack(NetInfo prefab)
         {
             prefab.m_followTerrain = false;
@@ -206,25 +207,6 @@ namespace MetroOverhaul
             {
                 prefab.m_lowerTerrain = false;
                 prefab.m_clipTerrain = true;
-                var segment0 = prefab.m_segments[0].ShallowClone(); ;
-                var segment1 = prefab.m_segments[1];
-                var node0 = prefab.m_nodes[0].ShallowClone(); ;
-                var node1 = prefab.m_nodes[1];
-                var node2 = prefab.m_nodes[2];
-                var node3 = prefab.m_nodes[3];
-
-                segment0
-                    .SetMeshes
-                        (@"Meshes\Ground_Station_Pavement.obj",
-                        @"Meshes\Ground_NoBar_Pavement_LOD.obj");
-                node0
-                    .SetMeshes
-                    (@"Meshes\Ground_NoBar_Node_Pavement.obj",
-                    @"Meshes\Ground_NoBar_Node_Pavement_LOD.obj")
-                    .SetConsistentUVs(true);
-
-                prefab.m_segments = new[] { segment0, segment1 };
-                prefab.m_nodes = new[] { node0, node1, node2, node3 };
             }
             else
             {
@@ -352,6 +334,5 @@ namespace MetroOverhaul
 
             };
         }
-
     }
 }

@@ -216,7 +216,7 @@ namespace MetroOverhaul.InitializationSteps
 
         }
 
-        //mind changed segment and node indices!
+        //mind changed segment and node indices! (after Setup12mMesh)
         public static void Setup12mMeshNonAlt(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo)
         {
 
@@ -261,7 +261,7 @@ namespace MetroOverhaul.InitializationSteps
             }
         }
 
-        //mind changed segment and node indices!
+        //mind changed segment and node indices! (after Setup12mMesh)
         public static void Setup12mMeshAlt(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
         {
             var trainTrackMaterial = trainTrackInfo?.m_segments[0].m_material;
@@ -316,6 +316,72 @@ namespace MetroOverhaul.InitializationSteps
                         break;
                     }
             }
+        }
+
+        public static void Setup12mMeshStationElevated(NetInfo prefab)
+        {
+            var segment0 = prefab.m_segments[0].ShallowClone();
+            var segment1 = prefab.m_segments[1];
+            var node0 = prefab.m_nodes[0].ShallowClone();
+            var node1 = prefab.m_nodes[1];
+
+            segment0
+                .SetMeshes
+                (@"Meshes\Elevated_Station_Pavement.obj",
+                    @"Meshes\Elevated_Station_Pavement_LOD.obj");
+            node0
+                .SetMeshes
+                (@"Meshes\Elevated_Station_Node_Pavement.obj",
+                    @"Meshes\Elevated_Node_Pavement_LOD.obj");
+
+            prefab.m_segments = new[] { segment0, segment1 };
+            prefab.m_nodes = new[] { node0, node1 };
+        }
+
+        public static void Setup12mMeshStationTunnel(NetInfo prefab, NetInfo tunnelInfo)
+        {
+            var segment0 = tunnelInfo.m_segments[0];
+            var segment1 = prefab.m_segments[1].ShallowClone();
+            var segment2 = prefab.m_segments[2];
+            var node0 = tunnelInfo.m_nodes[0];
+            var node1 = prefab.m_nodes[1].ShallowClone();
+            var node2 = prefab.m_nodes[2];
+
+            segment1
+                .SetMeshes
+                (@"Meshes\Tunnel_Station_Pavement.obj",
+                    @"Meshes\Ground_NoBar_Pavement_LOD.obj");
+            node1
+                .SetMeshes
+                (@"Meshes\Tunnel_Station_Node_Pavement.obj",
+                    @"Meshes\Tunnel_Node_Pavement_LOD.obj");
+            prefab.m_segments = new[] { segment0, segment1, segment2 };
+            prefab.m_nodes = new[] { node0, node1, node2 };
+        }
+
+        public static void Setup12mMeshStationGround(NetInfo prefab)
+        {
+            var segment0 = prefab.m_segments[0].ShallowClone();
+            ;
+            var segment1 = prefab.m_segments[1];
+            var node0 = prefab.m_nodes[0].ShallowClone();
+            ;
+            var node1 = prefab.m_nodes[1];
+            var node2 = prefab.m_nodes[2];
+            var node3 = prefab.m_nodes[3];
+
+            segment0
+                .SetMeshes
+                (@"Meshes\Ground_Station_Pavement.obj",
+                    @"Meshes\Ground_NoBar_Pavement_LOD.obj");
+            node0
+                .SetMeshes
+                (@"Meshes\Ground_NoBar_Node_Pavement.obj",
+                    @"Meshes\Ground_NoBar_Node_Pavement_LOD.obj")
+                .SetConsistentUVs(true);
+
+            prefab.m_segments = new[] { segment0, segment1 };
+            prefab.m_nodes = new[] { node0, node1, node2, node3 };
         }
     }
 }
