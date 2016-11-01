@@ -256,7 +256,7 @@ namespace MetroOverhaul.InitializationSteps
 
         }
 
-        //mind changed indices!
+        //mind changed indices! (after Setup12mSteelMesh)
         public static void Setup12mSteelMeshNonAlt(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo)
         {
             if (version != NetInfoVersion.Ground)
@@ -280,7 +280,7 @@ namespace MetroOverhaul.InitializationSteps
             }
         }
 
-        //mind changed indices!
+        //mind changed indices! (after Setup12mSteelMesh)
         public static void Setup12mSteelMeshAlt(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
         {
             if (version != NetInfoVersion.Ground)
