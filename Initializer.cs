@@ -16,7 +16,8 @@ namespace MetroOverhaul
 
             CreateFullPrefab(
                 ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                Chain(CommonConcreteCustomization, elevatedInfo, trainTrackInfo).
+                Chain(CommonConcreteCustomization).
+                Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
                 Chain(SetupMesh.Setup12mMeshNonAlt, elevatedInfo).
                 Chain(SetupTexture.Setup12mTexture)
             );
@@ -30,16 +31,17 @@ namespace MetroOverhaul
 
             CreateFullPrefab(
                 ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                Chain(CommonConcreteCustomization, elevatedInfo, trainTrackInfo).
+                Chain(CommonConcreteCustomization).
                 Chain(CommonCustomizationAlt).
+                Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
                 Chain(SetupMesh.Setup12mMeshAlt, elevatedInfo, trainTrackInfo).
                 Chain(SetupTexture.Setup12mTexture)
                 , prefabName => prefabName + "Alt"
             );
             CreateFullPrefab(
                 ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
                 Chain(CommonCustomizationAlt).
+                Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
                 Chain(SetupSteelMesh.Setup12mSteelMeshAlt, elevatedInfo, trainTrackInfo).
                 Chain(SetupSteelTexture.Setup12mSteelTexture)
                 , prefabName => "Steel " + prefabName + "Alt"
@@ -47,7 +49,8 @@ namespace MetroOverhaul
 
             CreateFullStationPrefab(
                 ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                Chain(CommonConcreteCustomization, elevatedInfo, trainTrackInfo).
+                Chain(CommonConcreteCustomization).
+                Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
                 Chain(SetupMesh.Setup12mMeshNonAlt, elevatedInfo).
                 Chain(SetupTexture.Setup12mTexture)
             );
@@ -56,14 +59,13 @@ namespace MetroOverhaul
             CreatePillarPrefab();
         }
 
-        private static void CommonConcreteCustomization(NetInfo prefab, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
+        private static void CommonConcreteCustomization(NetInfo prefab, NetInfoVersion version)
         {
             if (version == NetInfoVersion.Slope)
             {
                 prefab.m_halfWidth = 7.5f;
                 prefab.m_pavementWidth = 4.8f;
             }
-            SetupMesh.Setup12mMesh(prefab, version, elevatedInfo, trainTrackInfo);
         }
 
         private static void CommonCustomizationAlt(NetInfo prefab, NetInfoVersion version)
