@@ -19,8 +19,17 @@ namespace MetroOverhaul
             return arg =>
             {
                 action1.Invoke(arg);
-                action2.Invoke(arg);
+                action2?.Invoke(arg);
             };
-        } 
+        }
+
+        public static Action<T1, T2> Chain<T1, T2>(this Action<T1, T2> action1, Action<T1, T2> action2)
+        {
+            return (arg1, arg2) =>
+            {
+                action1.Invoke(arg1, arg2);
+                action2?.Invoke(arg1, arg2);
+            };
+        }
     }
 }

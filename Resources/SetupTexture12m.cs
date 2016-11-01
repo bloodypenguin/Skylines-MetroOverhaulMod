@@ -10,7 +10,7 @@ namespace MetroOverhaul.SetupPrefab
 {
     class SetupTexture
     {
-        public static void Setup12mTexture(NetInfo info, NetInfoVersion version, bool isAlt = false)
+        public static void Setup12mTexture(NetInfo info, NetInfoVersion version)
         {
             switch (version)
             {
