@@ -4,6 +4,11 @@ namespace MetroOverhaul
 {
     public static class ActionExtensions
     {
+        public static Action<T1> BeginChain<T1>()
+        {
+            return arg1 => { };
+        }
+
         public static Action<T1, T2> BeginChain<T1, T2>()
         {
             return (arg1, arg2) => { };

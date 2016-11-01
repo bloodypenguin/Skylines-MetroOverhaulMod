@@ -84,33 +84,45 @@ namespace MetroOverhaul
                 nameModifier = s => s;
             }
             CreateNetInfo(nameModifier.Invoke("Metro Track Ground"), "Train Track",
-                SetupMetroTrackMeta().
-                Chain(SetupTrackModel, customizationStep).
+                ActionExtensions.BeginChain<NetInfo>().
+                Chain(SetupMetroTrackMeta).
+                Chain(SetCosts, "Train Track").
                 Chain(p =>
                 {
                     CreateNetInfo(nameModifier.Invoke("Metro Track Bridge"), "Train Track Bridge",
-                        SetupMetroTrackMeta().
-                        Chain(SetupTrackModel, customizationStep).
-                        Chain(CommonSteps.SetBridge, p).Chain(SetCosts("Train Track Bridge")));
+                        ActionExtensions.BeginChain<NetInfo>().
+                        Chain(SetupMetroTrackMeta).
+                        Chain(CommonSteps.SetBridge, p).
+                        Chain(SetCosts, "Train Track Bridge").
+                        Chain(SetupTrackModel, customizationStep)
+                    );
                     CreateNetInfo(nameModifier.Invoke("Metro Track Elevated"), "Train Track Elevated",
-                        SetupMetroTrackMeta().
-                        Chain(SetupTrackModel, customizationStep).
+                        ActionExtensions.BeginChain<NetInfo>().
+                        Chain(SetupMetroTrackMeta).
                         Chain(CommonSteps.SetElevated, p).
-                        Chain(SetCosts("Train Track Elevated")));
+                        Chain(SetCosts, "Train Track Elevated").
+                        Chain(SetupTrackModel, customizationStep)
+                    );
                     CreateNetInfo(nameModifier.Invoke("Metro Track Slope"), "Train Track Slope",
-                        SetupMetroTrackMeta().
-                        Chain(SetupTrackModel, customizationStep).
+                        ActionExtensions.BeginChain<NetInfo>().
+                        Chain(SetupMetroTrackMeta).
                         Chain(CommonSteps.SetSlope, p).
-                        Chain(SetCosts("Train Track Slope")));
+                        Chain(SetCosts, "Train Track Slope").
+                        Chain(SetupTrackModel, customizationStep)
+                    );
                     CreateNetInfo(nameModifier.Invoke("Metro Track Tunnel"), "Train Track Tunnel",
-                        SetupMetroTrackMeta().
-                        Chain(SetupTrackModel, customizationStep).
+                        ActionExtensions.BeginChain<NetInfo>().
+                        Chain(SetupMetroTrackMeta).
                         Chain(CommonSteps.SetTunnel, p).
-                        Chain(SetCosts("Train Track Tunnel"))); //TODO(earalov): why can't we just set needed meshes etc. for vanilla track?
+                        Chain(SetCosts, "Train Track Tunnel").
+                        Chain(SetupTrackModel, customizationStep)
+                    );
+                    //TODO(earalov): why can't we just set needed meshes etc. for vanilla track?
                     p.GetComponent<TrainTrackAI>().m_connectedElevatedInfo = null;
                     p.GetComponent<TrainTrackAI>().m_connectedInfo = null;
                 }).
-                Chain(SetCosts("Train Track")));
+                Chain(SetupTrackModel, customizationStep));
+
         }
 
         private void CreateFullStationPrefab(Action<NetInfo, NetInfoVersion> customizationStep = null, Func<string, string> nameModifier = null)
@@ -120,32 +132,40 @@ namespace MetroOverhaul
                 nameModifier = s => s;
             }
             CreateNetInfo(nameModifier.Invoke("Metro Station Track Ground"), "Train Station Track",
-                SetupMetroTrackMeta().
-                Chain(SetupTrackModel, customizationStep).
+                ActionExtensions.BeginChain<NetInfo>().
+                Chain(SetupMetroTrackMeta).
                 Chain(SetupStationTrack).
                 Chain(SetupMesh.Setup12mMeshStationGround).
                 Chain(p =>
                 {
                     CreateNetInfo(nameModifier.Invoke("Metro Station Track Elevated"), "Train Station Track",
-                        SetupMetroTrackMeta().
-                        Chain(SetupTrackModel, customizationStep).
+                        ActionExtensions.BeginChain<NetInfo>().
+                        Chain(SetupMetroTrackMeta).
                         Chain(CommonSteps.SetElevated, p).
                         Chain(SetupStationTrack).
                         Chain(SetupElevatedStationTrack).
-                        Chain(SetupMesh.Setup12mMeshStationElevated));
+                        Chain(SetupMesh.Setup12mMeshStationElevated).
+                        Chain(SetupTrackModel, customizationStep)
+                    );
                     CreateNetInfo(nameModifier.Invoke("Metro Station Track Tunnel"), "Train Station Track",
-                        SetupMetroTrackMeta().
-                        Chain(SetupTrackModel, customizationStep).
+                        ActionExtensions.BeginChain<NetInfo>().
+                        Chain(SetupMetroTrackMeta).
                         Chain(CommonSteps.SetTunnel, p).
                         Chain(SetupStationTrack).
-                        Chain(SetupTunnelStationTrack));
+                        Chain(SetupTunnelStationTrack).
+                        Chain(SetupTrackModel, customizationStep)
+                    );
                     CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Train Station Track",
-                        SetupMetroTrackMeta().
-                        Chain(SetupTrackModel, customizationStep).
+                        ActionExtensions.BeginChain<NetInfo>().
+                        Chain(SetupMetroTrackMeta).
                         Chain(SetupStationTrack).
                         Chain(SetupMesh.Setup12mMeshStationGround).
-                        Chain(SetupSunkenStationTrack));
-                }));
+                        Chain(SetupSunkenStationTrack).
+                        Chain(SetupTrackModel, customizationStep)
+                    );
+                }).
+                Chain(SetupTrackModel, customizationStep)
+            );
         }
 
         private void CreatePillarPrefab(Func<string, string> nameModifier = null)
@@ -256,82 +276,75 @@ namespace MetroOverhaul
             customizationStep.Invoke(prefab, version);
         }
 
-        private static Action<NetInfo> SetupMetroTrackMeta()
+        private static void SetupMetroTrackMeta(NetInfo prefab)
         {
-            return prefab =>
+            var vanillaMetroTrack = FindOriginalNetInfo("Metro Track");
+            var milestone = vanillaMetroTrack.GetComponent<MetroTrackAI>().m_createPassMilestone;
+            PrefabCollection<VehicleInfo>.FindLoaded("Metro").m_class =
+                ScriptableObject.CreateInstance<ItemClass>();
+            prefab.GetComponent<TrainTrackBaseAI>().m_createPassMilestone = milestone;
+            prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
+            prefab.m_class.m_subService = ItemClass.SubService.PublicTransportMetro;
+            prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
+            prefab.m_class.m_service = ItemClass.Service.PublicTransport;
+            prefab.m_class.m_level = ItemClass.Level.Level1;
+            prefab.m_UIPriority = vanillaMetroTrack.m_UIPriority;
+            prefab.SetUICategory("PublicTransportMetro");
+            if (prefab.name.Contains("Tunnel"))
             {
-                var vanillaMetroTrack = FindOriginalNetInfo("Metro Track");
-                var milestone = vanillaMetroTrack.GetComponent<MetroTrackAI>().m_createPassMilestone;
-                PrefabCollection<VehicleInfo>.FindLoaded("Metro").m_class =
-                    ScriptableObject.CreateInstance<ItemClass>();
-                prefab.GetComponent<TrainTrackBaseAI>().m_createPassMilestone = milestone;
-                prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
-                prefab.m_class.m_subService = ItemClass.SubService.PublicTransportMetro;
                 prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
-                prefab.m_class.m_service = ItemClass.Service.PublicTransport;
-                prefab.m_class.m_level = ItemClass.Level.Level1;
-                prefab.m_UIPriority = vanillaMetroTrack.m_UIPriority;
-                prefab.SetUICategory("PublicTransportMetro");
-                if (prefab.name.Contains("Tunnel"))
+                prefab.m_setVehicleFlags = Vehicle.Flags.Transition | Vehicle.Flags.Underground;
+                prefab.m_setCitizenFlags = CitizenInstance.Flags.Transition | CitizenInstance.Flags.Underground;
+            }
+            else
+            {
+                prefab.m_class.m_layer = ItemClass.Layer.Default;
+            }
+            prefab.m_class.hideFlags = HideFlags.None;
+            prefab.m_class.name = prefab.name;
+            prefab.m_maxBuildAngle = 90;
+            prefab.m_maxTurnAngleCos = Mathf.Cos(prefab.m_maxBuildAngle);
+            prefab.m_maxTurnAngle = 60;
+            prefab.m_maxTurnAngleCos = Mathf.Cos(prefab.m_maxTurnAngle);
+            prefab.m_averageVehicleLaneSpeed = vanillaMetroTrack.m_averageVehicleLaneSpeed;
+            prefab.m_UnlockMilestone = vanillaMetroTrack.m_UnlockMilestone;
+            prefab.m_createGravel = false;
+            prefab.m_createPavement = false;
+            prefab.m_isCustomContent = true;
+
+
+            var speedLimit = vanillaMetroTrack.m_lanes.First(l => l.m_vehicleType != VehicleInfo.VehicleType.None).m_speedLimit;
+
+            foreach (var lane in prefab.m_lanes)
+            {
+                if (lane.m_vehicleType == VehicleInfo.VehicleType.None)
                 {
-                    prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
-                    prefab.m_setVehicleFlags = Vehicle.Flags.Transition | Vehicle.Flags.Underground;
-                    prefab.m_setCitizenFlags = CitizenInstance.Flags.Transition | CitizenInstance.Flags.Underground;
+                    lane.m_stopType = VehicleInfo.VehicleType.Metro;
                 }
                 else
                 {
-                    prefab.m_class.m_layer = ItemClass.Layer.Default;
+                    lane.m_vehicleType = VehicleInfo.VehicleType.Metro;
+                    lane.m_speedLimit = speedLimit;
                 }
-                prefab.m_class.hideFlags = HideFlags.None;
-                prefab.m_class.name = prefab.name;
-                prefab.m_maxBuildAngle = 90;
-                prefab.m_maxTurnAngleCos = Mathf.Cos(prefab.m_maxBuildAngle);
-                prefab.m_maxTurnAngle = 60;
-                prefab.m_maxTurnAngleCos = Mathf.Cos(prefab.m_maxTurnAngle);
-                prefab.m_averageVehicleLaneSpeed = vanillaMetroTrack.m_averageVehicleLaneSpeed;
-                prefab.m_UnlockMilestone = vanillaMetroTrack.m_UnlockMilestone;
-                prefab.m_createGravel = false;
-                prefab.m_createPavement = false;
-                prefab.m_isCustomContent = true;
+            }
 
-
-                var speedLimit = vanillaMetroTrack.m_lanes.First(l => l.m_vehicleType != VehicleInfo.VehicleType.None).m_speedLimit;
-
-                foreach (var lane in prefab.m_lanes)
-                {
-                    if (lane.m_vehicleType == VehicleInfo.VehicleType.None)
-                    {
-                        lane.m_stopType = VehicleInfo.VehicleType.Metro;
-                    }
-                    else
-                    {
-                        lane.m_vehicleType = VehicleInfo.VehicleType.Metro;
-                        lane.m_speedLimit = speedLimit;
-                    }
-                }
-
-                Modifiers.RemoveElectricityPoles(prefab);
-            };
+            Modifiers.RemoveElectricityPoles(prefab);
         }
 
-        private static Action<NetInfo> SetCosts(string originalPrefabName)
+        private static void SetCosts(PrefabInfo newPrefab, string originalPrefabName)
         {
-            return newPrefab =>
-            {
-                var originalPrefab = FindOriginalNetInfo(originalPrefabName);
-                var trainTrackTunnel = FindOriginalNetInfo("Train Track Tunnel");
-                var metroTrack = FindOriginalNetInfo("Metro Track");
+            var originalPrefab = FindOriginalNetInfo(originalPrefabName);
+            var trainTrackTunnel = FindOriginalNetInfo("Train Track Tunnel");
+            var metroTrack = FindOriginalNetInfo("Metro Track");
 
-                var constructionCost = originalPrefab.GetComponent<PlayerNetAI>().m_constructionCost *
-                                            metroTrack.GetComponent<PlayerNetAI>().m_constructionCost /
-                                            trainTrackTunnel.GetComponent<PlayerNetAI>().m_constructionCost;
-                newPrefab.GetComponent<PlayerNetAI>().m_constructionCost = constructionCost;
-                var maintenanceCost = originalPrefab.GetComponent<PlayerNetAI>().m_maintenanceCost *
-                            metroTrack.GetComponent<PlayerNetAI>().m_maintenanceCost /
-                            trainTrackTunnel.GetComponent<PlayerNetAI>().m_maintenanceCost;
-                newPrefab.GetComponent<PlayerNetAI>().m_maintenanceCost = maintenanceCost;
-
-            };
+            var constructionCost = originalPrefab.GetComponent<PlayerNetAI>().m_constructionCost *
+                                        metroTrack.GetComponent<PlayerNetAI>().m_constructionCost /
+                                        trainTrackTunnel.GetComponent<PlayerNetAI>().m_constructionCost;
+            newPrefab.GetComponent<PlayerNetAI>().m_constructionCost = constructionCost;
+            var maintenanceCost = originalPrefab.GetComponent<PlayerNetAI>().m_maintenanceCost *
+                        metroTrack.GetComponent<PlayerNetAI>().m_maintenanceCost /
+                        trainTrackTunnel.GetComponent<PlayerNetAI>().m_maintenanceCost;
+            newPrefab.GetComponent<PlayerNetAI>().m_maintenanceCost = maintenanceCost;
         }
     }
 }
