@@ -95,17 +95,9 @@ namespace MetroOverhaul
                     newCurveTargets.AddRange(thepath.m_curveTargets);
                 else
                     newCurveTargets.Add(new Vector3());
-                //if (curveOff == 0)
-                //{
+
                 newCurveTargets[0] = (thepath.m_nodes.First() + thepath.m_nodes.Last()) / 2;
-                //}
-                //else
-                //{
-                //    var multiplierX = (-1 * newCurveTargets[0].x) / Math.Abs(newCurveTargets[0].x);
-                //    var multiplierZ = (-1 * newCurveTargets[0].z) / Math.Abs(newCurveTargets[0].z);
-                //    var valY = (thepath.m_nodes.First().y + thepath.m_nodes.Last().y) / 2;
-                //    newCurveTargets[0] = new Vector3() { x = 0, y = valY, z = 0 };
-                //}
+
                 thepath.m_curveTargets = newCurveTargets.ToArray();
             }
         }

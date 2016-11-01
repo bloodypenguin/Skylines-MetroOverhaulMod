@@ -164,7 +164,6 @@ namespace MetroOverhaul
                         if (elevatedPillarInfo != null && bridgeAI != null)
                         {
                             bridgeAI.m_bridgePillarInfo = elevatedPillarInfo;
-                            //bridgeAI.m_bridgePillarOffset = -2;
                         }
                         break;
                     }
