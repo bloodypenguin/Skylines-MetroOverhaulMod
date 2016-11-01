@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
+using MetroOverhaul.InitializationSteps;
 using UnityEngine;
-using MetroOverhaul.SetupPrefab;
 using MetroOverhaul.NEXT;
 using MetroOverhaul.NEXT.Extensions;
 
@@ -11,44 +11,59 @@ namespace MetroOverhaul
     {
         protected override void InitializeImpl()
         {
-            CreateFullPrefab(CommonConcreteCustomization().Chain(ConcreteCustomizationNonAlt));
-            CreateFullPrefab(CommonSteelCustomiazation().Chain(SteelCustomizationNonAlt), prefabName => "Steel " + prefabName);
+            var trainTrackInfo = FindOriginalNetInfo("Train Track");
+            var elevatedInfo = FindOriginalNetInfo("Basic Road Elevated");
 
-            CreateFullPrefab(CommonConcreteCustomization().Chain(CommonCustomizationAlt).Chain(ConcreteCustomizationAlt), prefabName => prefabName + "Alt");
-            CreateFullPrefab(CommonSteelCustomiazation().Chain(CommonCustomizationAlt).Chain(SteelCustomizationAlt), prefabName => "Steel " + prefabName + "Alt");
+            CreateFullPrefab(
+                ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                Chain(CommonConcreteCustomization, elevatedInfo, trainTrackInfo).
+                Chain(SetupMesh.Setup12mMeshNonAlt, elevatedInfo).
+                Chain(SetupTexture.Setup12mTexture)
+            );
+            CreateFullPrefab(
+                ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
+                Chain(SetupSteelMesh.Setup12mSteelMeshNonAlt, elevatedInfo).
+                Chain(SetupSteelTexture.Setup12mSteelTexture)
+                , prefabName => "Steel " + prefabName
+            );
 
-            CreateFullStationPrefab(CommonConcreteCustomization().Chain(ConcreteCustomizationNonAlt));
+            CreateFullPrefab(
+                ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                Chain(CommonConcreteCustomization, elevatedInfo, trainTrackInfo).
+                Chain(CommonCustomizationAlt).
+                Chain(SetupMesh.Setup12mMeshAlt, elevatedInfo, trainTrackInfo).
+                Chain(SetupTexture.Setup12mTexture)
+                , prefabName => prefabName + "Alt"
+            );
+            CreateFullPrefab(
+                ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
+                Chain(CommonCustomizationAlt).
+                Chain(SetupSteelMesh.Setup12mSteelMeshAlt, elevatedInfo, trainTrackInfo).
+                Chain(SetupSteelTexture.Setup12mSteelTexture)
+                , prefabName => "Steel " + prefabName + "Alt"
+            );
+
+            CreateFullStationPrefab(
+                ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                Chain(CommonConcreteCustomization, elevatedInfo, trainTrackInfo).
+                Chain(SetupMesh.Setup12mMeshNonAlt, elevatedInfo).
+                Chain(SetupTexture.Setup12mTexture)
+            );
 
             CreatePillarPrefab(prefabName => "Steel " + prefabName);
             CreatePillarPrefab();
         }
 
-        private static Action<NetInfo, NetInfoVersion> CommonSteelCustomiazation()
+        private static void CommonConcreteCustomization(NetInfo prefab, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
         {
-            return (prefab, version) =>
+            if (version == NetInfoVersion.Slope)
             {
-                var trainTrackInfo = FindOriginalNetInfo("Train Track");
-                var elevatedInfo = FindOriginalNetInfo("Basic Road Elevated");
-                SetupSteelMesh.Setup12mSteelMesh(prefab, version, elevatedInfo, trainTrackInfo);
-                SetupSteelTexture.Setup12mSteelTexture(prefab, version);
-            };
-        }
-
-        private static Action<NetInfo, NetInfoVersion> CommonConcreteCustomization()
-        {
-            return (prefab, version) =>
-            {
-                var trainTrackInfo = FindOriginalNetInfo("Train Track");
-                var elevatedInfo = FindOriginalNetInfo("Basic Road Elevated");
-
-                if (version == NetInfoVersion.Slope)
-                {
-                    prefab.m_halfWidth = 7.5f;
-                    prefab.m_pavementWidth = 4.8f;
-                }
-                SetupMesh.Setup12mMesh(prefab, version, elevatedInfo, trainTrackInfo);
-                SetupTexture.Setup12mTexture(prefab, version);
-            };
+                prefab.m_halfWidth = 7.5f;
+                prefab.m_pavementWidth = 4.8f;
+            }
+            SetupMesh.Setup12mMesh(prefab, version, elevatedInfo, trainTrackInfo);
         }
 
         private static void CommonCustomizationAlt(NetInfo prefab, NetInfoVersion version)
@@ -60,49 +75,22 @@ namespace MetroOverhaul
             prefab.m_halfWidth = 5;
         }
 
-
-        private static void ConcreteCustomizationAlt(NetInfo prefab, NetInfoVersion version)
-        {
-            var trainTrackInfo = FindOriginalNetInfo("Train Track");
-            var elevatedInfo = FindOriginalNetInfo("Basic Road Elevated");
-            SetupMesh.Setup12mMeshAlt(prefab, version, elevatedInfo, trainTrackInfo);
-        }
-
-        private static void ConcreteCustomizationNonAlt(NetInfo prefab, NetInfoVersion version)
-        {
-            var elevatedInfo = FindOriginalNetInfo("Basic Road Elevated");
-            SetupMesh.Setup12mMeshNonAlt(prefab, version, elevatedInfo);
-        }
-
-        private static void SteelCustomizationAlt(NetInfo prefab, NetInfoVersion version)
-        {
-            var trainTrackInfo = FindOriginalNetInfo("Train Track");
-            var elevatedInfo = FindOriginalNetInfo("Basic Road Elevated");
-            SetupSteelMesh.Setup12mSteelMeshAlt(prefab, version, elevatedInfo, trainTrackInfo);
-        }
-
-        private static void SteelCustomizationNonAlt(NetInfo prefab, NetInfoVersion version)
-        {
-            var elevatedInfo = FindOriginalNetInfo("Basic Road Elevated");
-            SetupSteelMesh.Setup12mSteelMeshNonAlt(prefab, version, elevatedInfo);
-        }
-
         protected void CreateFullPrefab(Action<NetInfo, NetInfoVersion> customizationStep = null, Func<string, string> nameModifier = null)
         {
             if (nameModifier == null)
             {
                 nameModifier = s => s;
             }
-            CreateNetInfo(nameModifier.Invoke("Metro Track Ground"), "Train Track", SetupMetroTrackMeta().Chain(p =>
+            CreateNetInfo(nameModifier.Invoke("Metro Track Ground"), "Train Track", SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(p =>
             {
                 CreateNetInfo(nameModifier.Invoke("Metro Track Bridge"), "Train Track Bridge",
-                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(SetBridge(p)).Chain(SetCosts("Train Track Bridge")));
+                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(CommonSteps.SetBridge(p)).Chain(SetCosts("Train Track Bridge")));
                 CreateNetInfo(nameModifier.Invoke("Metro Track Elevated"), "Train Track Elevated",
-                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(SetElevated(p)).Chain(SetCosts("Train Track Elevated")));
+                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(CommonSteps.SetElevated(p)).Chain(SetCosts("Train Track Elevated")));
                 CreateNetInfo(nameModifier.Invoke("Metro Track Slope"), "Train Track Slope",
-                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(SetSlope(p)).Chain(SetCosts("Train Track Slope")));
+                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(CommonSteps.SetSlope(p)).Chain(SetCosts("Train Track Slope")));
                 CreateNetInfo(nameModifier.Invoke("Metro Track Tunnel"), "Train Track Tunnel",
-                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(SetTunnel(p)).Chain(SetCosts("Train Track Tunnel"))); //TODO(earalov): why can't we just set needed meshes etc. for vanilla track?
+                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(CommonSteps.SetTunnel(p)).Chain(SetCosts("Train Track Tunnel"))); //TODO(earalov): why can't we just set needed meshes etc. for vanilla track?
                 p.GetComponent<TrainTrackAI>().m_connectedElevatedInfo = null;
                 p.GetComponent<TrainTrackAI>().m_connectedInfo = null;
             }).Chain(SetCosts("Train Track")));
@@ -117,9 +105,9 @@ namespace MetroOverhaul
             CreateNetInfo(nameModifier.Invoke("Metro Station Track Ground"), "Train Station Track", SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(SetupStationTrack).Chain(p =>
             {
                 CreateNetInfo(nameModifier.Invoke("Metro Station Track Elevated"), "Train Station Track",
-                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(SetElevated(p)).Chain(SetupStationTrack).Chain(SetupElevatedStationTrack));
+                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(CommonSteps.SetElevated(p)).Chain(SetupStationTrack).Chain(SetupElevatedStationTrack));
                 CreateNetInfo(nameModifier.Invoke("Metro Station Track Tunnel"), "Train Station Track",
-                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(SetTunnel(p)).Chain(SetupStationTrack).Chain(SetupTunnelStationTrack));
+                    SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(CommonSteps.SetTunnel(p)).Chain(SetupStationTrack).Chain(SetupTunnelStationTrack));
                 CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Train Station Track",
                     SetupMetroTrackMeta().Chain(SetupTrackModel(customizationStep)).Chain(SetupStationTrack).Chain(SetupSunkenStationTrack));
             }));
@@ -365,24 +353,5 @@ namespace MetroOverhaul
             };
         }
 
-        private static Action<NetInfo> SetTunnel(Component p)
-        {
-            return p4 => p.GetComponent<TrainTrackAI>().m_tunnelInfo = p4;
-        }
-
-        private static Action<NetInfo> SetSlope(Component p)
-        {
-            return p3 => p.GetComponent<TrainTrackAI>().m_slopeInfo = p3;
-        }
-
-        private static Action<NetInfo> SetElevated(Component p)
-        {
-            return p2 => p.GetComponent<TrainTrackAI>().m_elevatedInfo = p2;
-        }
-
-        private static Action<NetInfo> SetBridge(Component p)
-        {
-            return p1 => p.GetComponent<TrainTrackAI>().m_bridgeInfo = p1;
-        }
     }
 }

@@ -42,6 +42,7 @@
     <Compile Include="ActionExtensions.cs" />
     <Compile Include="Detours\DepotAIDetour.cs" />
     <Compile Include="Detours\MetroTrainAIDetour.cs" />
+    <Compile Include="InitializationSteps\CommonSteps.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="Loading.cs" />
     <Compile Include="LoadingExtension.cs" />
@@ -91,10 +92,10 @@
     <Compile Include="Redirection\RedirectReverseAttribute.cs" />
     <Compile Include="Redirection\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Tuple.cs" />
-    <Compile Include="Resources\SetupSteelMesh12m.cs" />
-    <Compile Include="Resources\SetupMesh12m.cs" />
-    <Compile Include="Resources\SetupSteelTexture12m.cs" />
-    <Compile Include="Resources\SetupTexture12m.cs" />
+    <Compile Include="InitializationSteps\SetupSteelMesh12m.cs" />
+    <Compile Include="InitializationSteps\SetupMesh12m.cs" />
+    <Compile Include="InitializationSteps\SetupSteelTexture12m.cs" />
+    <Compile Include="InitializationSteps\SetupTexture12m.cs" />
     <Compile Include="MetroUI.cs" />
     <Compile Include="SetStationDepthLength.cs" />
     <Compile Include="Util.cs" />

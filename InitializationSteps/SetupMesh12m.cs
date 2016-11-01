@@ -1,16 +1,12 @@
 ﻿using MetroOverhaul.NEXT;
 using MetroOverhaul.NEXT.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace MetroOverhaul.SetupPrefab
+namespace MetroOverhaul.InitializationSteps
 {
-    public class SetupMesh
+    public static class SetupMesh
     {
-        public static void Setup12mMesh(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo = null,
-            NetInfo trainTrackInfo = null)
+        public static void Setup12mMesh(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo,
+            NetInfo trainTrackInfo)
         {
             var elevatedMaterial = elevatedInfo?.m_segments[0].m_material;
             var elevatedLODMaterial = elevatedInfo?.m_segments[0].m_lodMaterial;
@@ -221,7 +217,7 @@ namespace MetroOverhaul.SetupPrefab
         }
 
         //mind changed segment and node indices!
-        public static void Setup12mMeshNonAlt(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo = null)
+        public static void Setup12mMeshNonAlt(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo)
         {
 
             switch (version)
@@ -266,8 +262,7 @@ namespace MetroOverhaul.SetupPrefab
         }
 
         //mind changed segment and node indices!
-        public static void Setup12mMeshAlt(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo = null,
-            NetInfo trainTrackInfo = null)
+        public static void Setup12mMeshAlt(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
         {
             var trainTrackMaterial = trainTrackInfo?.m_segments[0].m_material;
             var trainTrackLODMaterial = elevatedInfo?.m_segments[0].m_lodMaterial;
