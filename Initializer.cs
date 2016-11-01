@@ -4,6 +4,7 @@ using MetroOverhaul.InitializationSteps;
 using UnityEngine;
 using MetroOverhaul.NEXT;
 using MetroOverhaul.NEXT.Extensions;
+using MetroOverhaul.OptionsFramework;
 
 namespace MetroOverhaul
 {
@@ -20,7 +21,9 @@ namespace MetroOverhaul
             var trainTrackInfo = FindOriginalNetInfo("Train Track");
             var elevatedInfo = FindOriginalNetInfo("Basic Road Elevated");
             var tunnelInfo = FindOriginalNetInfo("Train Track Tunnel");
-            CreateFullPrefab(
+            try
+            {
+                CreateFullPrefab(
                 ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                     Chain(CustomizaionSteps.CommonConcreteCustomization).
                     Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
@@ -28,39 +31,91 @@ namespace MetroOverhaul
                     Chain(SetupTexture.Setup12mTexture).
                     Chain((info, version) => { LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); }); })
                 );
-            CreateFullPrefab(
-                ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                    Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
-                    Chain(SetupSteelMesh.Setup12mSteelMeshNonAlt, elevatedInfo).
-                    Chain(SetupSteelTexture.Setup12mSteelTexture).
-                    Chain((info, version) => { LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); }); })
-                , prefabName => "Steel " + prefabName
-                );
-            //TODO(earalov): provide alternative tracks
-            //            CreateFullPrefab(
-            //                ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-            //                Chain(CustomizaionSteps.CommonConcreteCustomization).
-            //                Chain(CustomizaionSteps.CommonCustomizationAlt).
-            //                Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
-            //                Chain(SetupMesh.Setup12mMeshAlt, elevatedInfo, trainTrackInfo).
-            //                Chain(SetupTexture.Setup12mTexture)
-            //                , prefabName => prefabName + "Alt"
-            //            );
-            //            CreateFullPrefab(
-            //                ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-            //                Chain(CustomizaionSteps.CommonCustomizationAlt).
-            //                Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
-            //                Chain(SetupSteelMesh.Setup12mSteelMeshAlt, elevatedInfo, trainTrackInfo).
-            //                Chain(SetupSteelTexture.Setup12mSteelTexture)
-            //                , prefabName => "Steel " + prefabName + "Alt"
-            //            );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Exception happened when setting up concrete tracks");
+                UnityEngine.Debug.LogException(e);
+            }
 
-            CreateFullStationPrefab(
+            if (OptionsWrapper<Options>.Options.steelTracks)
+            {
+                try
+                {
+                    CreateFullPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
+                        Chain(SetupSteelMesh.Setup12mSteelMeshNonAlt, elevatedInfo).
+                        Chain(SetupSteelTexture.Setup12mSteelTexture).
+                        Chain((info, version) => { LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); }); })
+                    , prefabName => "Steel " + prefabName
+                    );
+                }
+                catch (Exception e)
+                {
+                    UnityEngine.Debug.LogError("Exception happened when setting up steel tracks");
+                    UnityEngine.Debug.LogException(e);
+                }
+            }
+
+
+            //TODO(earalov): fix alternative tracks
+            if (OptionsWrapper<Options>.Options.concreteTracksNoBars)
+            {
+                try
+                {
+                    CreateFullPrefab(
+                        ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                            Chain(CustomizaionSteps.CommonConcreteCustomization).
+                            Chain(CustomizaionSteps.CommonCustomizationAlt).
+                            Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
+                            Chain(SetupMesh.Setup12mMeshAlt, elevatedInfo, trainTrackInfo).
+                            Chain(SetupTexture.Setup12mTexture)
+                        , prefabName => prefabName + "Alt"
+                        );
+                }
+                catch (Exception e)
+                {
+                    UnityEngine.Debug.LogError("Exception happened when setting up alt. concrete tracks");
+                    UnityEngine.Debug.LogException(e);
+                }
+            }
+
+            //TODO(earalov): fix alternative tracks
+            if (OptionsWrapper<Options>.Options.steelTracksNoBars)
+            {
+                try
+                {
+                    CreateFullPrefab(
+                        ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                            Chain(CustomizaionSteps.CommonCustomizationAlt).
+                            Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
+                            Chain(SetupSteelMesh.Setup12mSteelMeshAlt, elevatedInfo, trainTrackInfo).
+                            Chain(SetupSteelTexture.Setup12mSteelTexture)
+                        , prefabName => "Steel " + prefabName + "Alt"
+                        );
+                }
+                catch (Exception e)
+                {
+                    UnityEngine.Debug.LogError("Exception happened when setting up alt. steel tracks");
+                    UnityEngine.Debug.LogException(e);
+                }
+            }
+
+            try
+            {
+                CreateFullStationPrefab(
                 ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                     Chain(CustomizaionSteps.CommonConcreteCustomization).
                     Chain(SetupMesh.Setup12mMeshStation, tunnelInfo).
                     Chain(SetupTexture.Setup12mTexture)
                 );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Exception happened when setting up concrete station tracks");
+                UnityEngine.Debug.LogException(e);
+            }
         }
 
         private void CreatePillars()
