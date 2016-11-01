@@ -10,10 +10,10 @@ namespace MetroOverhaul.InitializationSteps
 
         public static void Setup12mSteelMesh(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
         {
-            var elevatedMaterial = elevatedInfo?.m_segments[0].m_material;
-            var elevatedLODMaterial = elevatedInfo?.m_segments[0].m_lodMaterial;
-            var trainTrackMaterial = trainTrackInfo?.m_segments[0].m_material;
-            var trainTrackLODMaterial = elevatedInfo?.m_segments[0].m_lodMaterial;
+            var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
+            var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
+            var trainTrackMaterial = trainTrackInfo.m_segments[0].m_material;
+            var trainTrackLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
             switch (version)
             {
                 case NetInfoVersion.Ground:
@@ -89,12 +89,9 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                             (@"Meshes\Elevated_Rail_Steel.obj");
 
-                        if (elevatedMaterial != null)
-                        {
-                            segment0.m_material = elevatedMaterial;
-                            segment0.m_lodMaterial = elevatedLODMaterial;
-                            node0.m_material = elevatedMaterial;
-                        }
+                        segment0.m_material = elevatedMaterial;
+                        segment0.m_lodMaterial = elevatedLODMaterial;
+                        node0.m_material = elevatedMaterial;
 
                         info.m_segments = new[] { segment0, segment1 };
                         info.m_nodes = new[] { node0, node1, node3 };
@@ -175,12 +172,11 @@ namespace MetroOverhaul.InitializationSteps
                             (@"Meshes\Tunnel_Node_Pavement_Steel.obj",
                                 @"Meshes\Tunnel_Node_Pavement_LOD.obj")
                             .SetConsistentUVs();
-                        if (elevatedMaterial != null)
-                        {
-                            segment3.m_material = elevatedMaterial;
-                            node3.m_material = elevatedMaterial;
-                            node5.m_material = elevatedMaterial;
-                        }
+
+                        segment3.m_material = elevatedMaterial;
+                        node3.m_material = elevatedMaterial;
+                        node5.m_material = elevatedMaterial;
+
                         info.m_segments = new[] { segment0, segment1, segment3 };
                         info.m_nodes = new[] { node0, node1, node3, node4, node5 };
                         break;
@@ -269,15 +265,12 @@ namespace MetroOverhaul.InitializationSteps
 
             var elevatedMaterial = elevatedInfo?.m_segments[0].m_material;
             var elevatedLODMaterial = elevatedInfo?.m_segments[0].m_lodMaterial;
-            if (elevatedMaterial != null && !info.name.Contains("Station"))
-            {
-                segment0.m_material = elevatedMaterial;
-                segment0.m_lodMaterial = elevatedLODMaterial;
-                node0.m_material = elevatedMaterial;
-                node2.m_material = elevatedMaterial;
-                //segment1.m_material = railMaterial;
-                //node1.m_material = railMaterial;
-            }
+            segment0.m_material = elevatedMaterial;
+            segment0.m_lodMaterial = elevatedLODMaterial;
+            node0.m_material = elevatedMaterial;
+            node2.m_material = elevatedMaterial;
+            //segment1.m_material = railMaterial;
+            //node1.m_material = railMaterial;
         }
 
         //mind changed indices! (after Setup12mSteelMesh)

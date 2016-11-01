@@ -30,30 +30,28 @@ namespace MetroOverhaul
                 Chain(SetupSteelTexture.Setup12mSteelTexture)
                 , prefabName => "Steel " + prefabName
             );
-
-            CreateFullPrefab(
-                ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                Chain(CustomizaionSteps.CommonConcreteCustomization).
-                Chain(CustomizaionSteps.CommonCustomizationAlt).
-                Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
-                Chain(SetupMesh.Setup12mMeshAlt, elevatedInfo, trainTrackInfo).
-                Chain(SetupTexture.Setup12mTexture)
-                , prefabName => prefabName + "Alt"
-            );
-            CreateFullPrefab(
-                ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                Chain(CustomizaionSteps.CommonCustomizationAlt).
-                Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
-                Chain(SetupSteelMesh.Setup12mSteelMeshAlt, elevatedInfo, trainTrackInfo).
-                Chain(SetupSteelTexture.Setup12mSteelTexture)
-                , prefabName => "Steel " + prefabName + "Alt"
-            );
+//
+//            CreateFullPrefab(
+//                ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+//                Chain(CustomizaionSteps.CommonConcreteCustomization).
+//                Chain(CustomizaionSteps.CommonCustomizationAlt).
+//                Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
+//                Chain(SetupMesh.Setup12mMeshAlt, elevatedInfo, trainTrackInfo).
+//                Chain(SetupTexture.Setup12mTexture)
+//                , prefabName => prefabName + "Alt"
+//            );
+//            CreateFullPrefab(
+//                ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+//                Chain(CustomizaionSteps.CommonCustomizationAlt).
+//                Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
+//                Chain(SetupSteelMesh.Setup12mSteelMeshAlt, elevatedInfo, trainTrackInfo).
+//                Chain(SetupSteelTexture.Setup12mSteelTexture)
+//                , prefabName => "Steel " + prefabName + "Alt"
+//            );
 
             CreateFullStationPrefab(
                 ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                 Chain(CustomizaionSteps.CommonConcreteCustomization).
-                Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
-                Chain(SetupMesh.Setup12mMeshNonAlt, elevatedInfo).
                 Chain(SetupMesh.Setup12mMeshStation, tunnelInfo).
                 Chain(SetupTexture.Setup12mTexture)
             );
