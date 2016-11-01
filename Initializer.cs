@@ -11,57 +11,73 @@ namespace MetroOverhaul
     {
         protected override void InitializeImpl()
         {
+            CreatePillars();
+            CreateTracks();
+        }
+
+        private void CreateTracks()
+        {
             var trainTrackInfo = FindOriginalNetInfo("Train Track");
             var elevatedInfo = FindOriginalNetInfo("Basic Road Elevated");
             var tunnelInfo = FindOriginalNetInfo("Train Track Tunnel");
-
-
             CreateFullPrefab(
                 ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                Chain(CustomizaionSteps.CommonConcreteCustomization).
-                Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
-                Chain(SetupMesh.Setup12mMeshNonAlt, elevatedInfo).
-                Chain(SetupTexture.Setup12mTexture)
-            );
+                    Chain(CustomizaionSteps.CommonConcreteCustomization).
+                    Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
+                    Chain(SetupMesh.Setup12mMeshNonAlt, elevatedInfo).
+                    Chain(SetupTexture.Setup12mTexture).
+                    Chain((info, version) => { LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); }); })
+                );
             CreateFullPrefab(
                 ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
-                Chain(SetupSteelMesh.Setup12mSteelMeshNonAlt, elevatedInfo).
-                Chain(SetupSteelTexture.Setup12mSteelTexture)
+                    Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
+                    Chain(SetupSteelMesh.Setup12mSteelMeshNonAlt, elevatedInfo).
+                    Chain(SetupSteelTexture.Setup12mSteelTexture).
+                    Chain((info, version) => { LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); }); })
                 , prefabName => "Steel " + prefabName
-            );
-//
-//            CreateFullPrefab(
-//                ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                Chain(CustomizaionSteps.CommonConcreteCustomization).
-//                Chain(CustomizaionSteps.CommonCustomizationAlt).
-//                Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
-//                Chain(SetupMesh.Setup12mMeshAlt, elevatedInfo, trainTrackInfo).
-//                Chain(SetupTexture.Setup12mTexture)
-//                , prefabName => prefabName + "Alt"
-//            );
-//            CreateFullPrefab(
-//                ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                Chain(CustomizaionSteps.CommonCustomizationAlt).
-//                Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
-//                Chain(SetupSteelMesh.Setup12mSteelMeshAlt, elevatedInfo, trainTrackInfo).
-//                Chain(SetupSteelTexture.Setup12mSteelTexture)
-//                , prefabName => "Steel " + prefabName + "Alt"
-//            );
+                );
+            //TODO(earalov): provide alternative tracks
+            //            CreateFullPrefab(
+            //                ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+            //                Chain(CustomizaionSteps.CommonConcreteCustomization).
+            //                Chain(CustomizaionSteps.CommonCustomizationAlt).
+            //                Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
+            //                Chain(SetupMesh.Setup12mMeshAlt, elevatedInfo, trainTrackInfo).
+            //                Chain(SetupTexture.Setup12mTexture)
+            //                , prefabName => prefabName + "Alt"
+            //            );
+            //            CreateFullPrefab(
+            //                ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+            //                Chain(CustomizaionSteps.CommonCustomizationAlt).
+            //                Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
+            //                Chain(SetupSteelMesh.Setup12mSteelMeshAlt, elevatedInfo, trainTrackInfo).
+            //                Chain(SetupSteelTexture.Setup12mSteelTexture)
+            //                , prefabName => "Steel " + prefabName + "Alt"
+            //            );
 
             CreateFullStationPrefab(
                 ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                Chain(CustomizaionSteps.CommonConcreteCustomization).
-                Chain(SetupMesh.Setup12mMeshStation, tunnelInfo).
-                Chain(SetupTexture.Setup12mTexture)
-            );
+                    Chain(CustomizaionSteps.CommonConcreteCustomization).
+                    Chain(SetupMesh.Setup12mMeshStation, tunnelInfo).
+                    Chain(SetupTexture.Setup12mTexture)
+                );
+        }
 
-            CreatePillarPrefab(prefabName => "Steel " + prefabName);
-            CreatePillarPrefab();
+        private void CreatePillars()
+        {
+            CreatePillarPrefab( //TODO(earalov): learn how to do that earlier. It's too late when level is already loaded
+                pillar => { LoadingExtension.EnqueueLateBuildUpAction(() => { SetupElevatedPillar.SetMeshAndTexture(pillar); }); },
+                pillar => { LoadingExtension.EnqueueLateBuildUpAction(() => { SetupBridgePillar.SetMeshAndTexture(pillar); }); }
+                );
+            CreatePillarPrefab( //TODO(earalov): learn how to do that earlier. It's too late when level is already loaded
+                pillar => { LoadingExtension.EnqueueLateBuildUpAction(() => { SetupSteelElevatedPillar.SetMeshAndTexture(pillar); }); },
+                pillar => { LoadingExtension.EnqueueLateBuildUpAction(() => { SetupSteelBridgePillar.SetMeshAndTexture(pillar); }); },
+                prefabName => "Steel " + prefabName
+                );
         }
 
 
-        protected void CreateFullPrefab(Action<NetInfo, NetInfoVersion> customizationStep = null, Func<string, string> nameModifier = null)
+        protected void CreateFullPrefab(Action<NetInfo, NetInfoVersion> customizationStep, Func<string, string> nameModifier = null)
         {
             if (nameModifier == null)
             {
@@ -109,7 +125,7 @@ namespace MetroOverhaul
 
         }
 
-        private void CreateFullStationPrefab(Action<NetInfo, NetInfoVersion> customizationStep = null, Func<string, string> nameModifier = null)
+        private void CreateFullStationPrefab(Action<NetInfo, NetInfoVersion> customizationStep, Func<string, string> nameModifier = null)
         {
             if (nameModifier == null)
             {
@@ -121,6 +137,7 @@ namespace MetroOverhaul
                 Chain(SetupStationTrack).
                 Chain(p =>
                 {
+                    //TODO(earalov): provide a track with narrow ped. lanes for Mr.Maison's stations
                     CreateNetInfo(nameModifier.Invoke("Metro Station Track Elevated"), "Train Station Track",
                         ActionExtensions.BeginChain<NetInfo>().
                         Chain(SetupMetroTrackMeta).
@@ -149,14 +166,23 @@ namespace MetroOverhaul
             );
         }
 
-        private void CreatePillarPrefab(Func<string, string> nameModifier = null)
+        private void CreatePillarPrefab(Action<BuildingInfo> customizationStepElevated, Action<BuildingInfo> customizationStepBridge,
+            Func<string, string> nameModifier = null)
         {
             if (nameModifier == null)
             {
                 nameModifier = s => s;
             }
-            CreateBuildingInfo(nameModifier.Invoke("Metro Elevated Pillar"), "RailwayElevatedPillar", SetupPillar);
-            CreateBuildingInfo(nameModifier.Invoke("Metro Bridge Pillar"), "RailwayBridgePillar", SetupPillar);
+            CreateBuildingInfo(nameModifier.Invoke("Metro Elevated Pillar"), "RailwayElevatedPillar",
+                ActionExtensions.BeginChain<BuildingInfo>()
+                .Chain(SetupPillar)
+                .Chain(customizationStepElevated)
+            );
+            CreateBuildingInfo(nameModifier.Invoke("Metro Bridge Pillar"), "RailwayBridgePillar",
+                ActionExtensions.BeginChain<BuildingInfo>()
+                .Chain(SetupPillar)
+                .Chain(customizationStepBridge)
+            );
         }
 
         private static void SetupPillar(BuildingInfo prefab)
