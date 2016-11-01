@@ -39,9 +39,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AbstractInitializer.cs" />
-    <Compile Include="ActionExtensions.cs" />
+    <Compile Include="Extensions\ActionExtensions.cs" />
     <Compile Include="Detours\DepotAIDetour.cs" />
     <Compile Include="Detours\MetroTrainAIDetour.cs" />
+    <Compile Include="InitializationSteps\LateBuildUpSteel.cs" />
+    <Compile Include="InitializationSteps\LateBuildUp.cs" />
+    <Compile Include="InitializationSteps\SetupBridgePillar.cs" />
+    <Compile Include="InitializationSteps\SetupSteelBridgePillar.cs" />
+    <Compile Include="InitializationSteps\SetupSteelElevatedPillar.cs" />
+    <Compile Include="InitializationSteps\CommonSteps.cs" />
+    <Compile Include="InitializationSteps\CustomizaionSteps.cs" />
+    <Compile Include="InitializationSteps\SetupElevatedPillar.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="Loading.cs" />
     <Compile Include="LoadingExtension.cs" />
@@ -83,6 +91,16 @@
     <Compile Include="NEXT\Texturing\TextureBlender.cs" />
     <Compile Include="NEXT\Texturing\TextureHelper.cs" />
     <Compile Include="NEXT\Texturing\TextureSet.cs" />
+    <Compile Include="Options.cs" />
+    <Compile Include="OptionsFramework\AbstractOptionsAttribute.cs" />
+    <Compile Include="OptionsFramework\CheckboxAttribute.cs" />
+    <Compile Include="OptionsFramework\DropDownAttribute.cs" />
+    <Compile Include="OptionsFramework\IModOptions.cs" />
+    <Compile Include="OptionsFramework\IModOptionsExtension.cs" />
+    <Compile Include="OptionsFramework\OptionsWrapper.cs" />
+    <Compile Include="OptionsFramework\TextFieldAttribute.cs" />
+    <Compile Include="OptionsFramework\UIHelperBaseExtension.cs" />
+    <Compile Include="OptionsFramework\Util.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Redirection\RedirectionHelper.cs" />
     <Compile Include="Redirection\RedirectionUtil.cs" />
@@ -91,10 +109,10 @@
     <Compile Include="Redirection\RedirectReverseAttribute.cs" />
     <Compile Include="Redirection\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Tuple.cs" />
-    <Compile Include="Resources\SetupSteelMesh12m.cs" />
-    <Compile Include="Resources\SetupMesh12m.cs" />
-    <Compile Include="Resources\SetupSteelTexture12m.cs" />
-    <Compile Include="Resources\SetupTexture12m.cs" />
+    <Compile Include="InitializationSteps\SetupSteelMesh12m.cs" />
+    <Compile Include="InitializationSteps\SetupMesh12m.cs" />
+    <Compile Include="InitializationSteps\SetupSteelTexture12m.cs" />
+    <Compile Include="InitializationSteps\SetupTexture12m.cs" />
     <Compile Include="MetroUI.cs" />
     <Compile Include="SetStationDepthLength.cs" />
     <Compile Include="Util.cs" />

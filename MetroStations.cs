@@ -9,7 +9,7 @@ namespace MetroOverhaul
     public static class MetroStations
     {
 
-        public static void UpdateMetro(float stationDepthDist = 12, float stationLengthDist = 144)
+        public static void UpdateMetroStation(float stationDepthDist = 12, float stationLengthDist = 144)
         {
             var vanillaMetroTrack = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
             vanillaMetroTrack.m_buildHeight = -12;

@@ -103,9 +103,13 @@ namespace MetroOverhaul
                 Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Couldn't make prefab '{0}'", newBuildingInfoName);
                 return;
             }
-            if (setupAction != null)
-                setupAction.Invoke(newPrefab);
+            setupAction?.Invoke(newPrefab);
             _customBuildingInfos.Add(newBuildingInfoName, newPrefab);
+        }
+
+        protected NetInfo FindCustomNetInfo(string customNetInfoName)
+        {
+            return _customNetInfos[customNetInfoName];
         }
 
         protected static NetInfo FindOriginalNetInfo(string originalNetInfoName)
