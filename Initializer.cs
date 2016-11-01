@@ -60,6 +60,8 @@ namespace MetroOverhaul
                     SetupMetroTrack(isAlt).Apply(mTunnelInfo).Chain(p1 => p.GetComponent<TrainTrackAI>().m_elevatedInfo = p1).Chain(SetupStationTrack()).Chain(SetupElevatedStationTrack()));
                 CreateNetInfo($"{alias}Metro Station Track {altText}Tunnel", "Train Station Track",
                     SetupMetroTrack(isAlt).Apply(mTunnelInfo).Chain(p2 => p.GetComponent<TrainTrackAI>().m_tunnelInfo = p2).Chain(SetupStationTrack()).Chain(SetupTunnelStationTrack()));
+                CreateNetInfo($"{alias}Metro Station Track {altText}Sunken", "Train Station Track",
+                    SetupMetroTrack(isAlt).Apply(mTunnelInfo).Chain(p3 => p.GetComponent<TrainTrackAI>().m_tunnelInfo = p3).Chain(SetupStationTrack()).Chain(SetupSunkenStationTrack()));
             }));
         }
 
