@@ -39,7 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AbstractInitializer.cs" />
-    <Compile Include="ActionExtensions.cs" />
+    <Compile Include="Extensions\ActionExtensions.cs" />
     <Compile Include="Detours\DepotAIDetour.cs" />
     <Compile Include="Detours\MetroTrainAIDetour.cs" />
     <Compile Include="InitializationSteps\CommonSteps.cs" />

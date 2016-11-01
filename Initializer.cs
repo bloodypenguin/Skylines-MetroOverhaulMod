@@ -85,27 +85,27 @@ namespace MetroOverhaul
             }
             CreateNetInfo(nameModifier.Invoke("Metro Track Ground"), "Train Track",
                 SetupMetroTrackMeta().
-                Chain(SetupTrackModel(customizationStep)).
+                Chain(SetupTrackModel, customizationStep).
                 Chain(p =>
                 {
                     CreateNetInfo(nameModifier.Invoke("Metro Track Bridge"), "Train Track Bridge",
                         SetupMetroTrackMeta().
-                        Chain(SetupTrackModel(customizationStep)).
-                        Chain(CommonSteps.SetBridge(p)).Chain(SetCosts("Train Track Bridge")));
+                        Chain(SetupTrackModel, customizationStep).
+                        Chain(CommonSteps.SetBridge, p).Chain(SetCosts("Train Track Bridge")));
                     CreateNetInfo(nameModifier.Invoke("Metro Track Elevated"), "Train Track Elevated",
                         SetupMetroTrackMeta().
-                        Chain(SetupTrackModel(customizationStep)).
-                        Chain(CommonSteps.SetElevated(p)).
+                        Chain(SetupTrackModel, customizationStep).
+                        Chain(CommonSteps.SetElevated, p).
                         Chain(SetCosts("Train Track Elevated")));
                     CreateNetInfo(nameModifier.Invoke("Metro Track Slope"), "Train Track Slope",
                         SetupMetroTrackMeta().
-                        Chain(SetupTrackModel(customizationStep)).
-                        Chain(CommonSteps.SetSlope(p)).
+                        Chain(SetupTrackModel, customizationStep).
+                        Chain(CommonSteps.SetSlope, p).
                         Chain(SetCosts("Train Track Slope")));
                     CreateNetInfo(nameModifier.Invoke("Metro Track Tunnel"), "Train Track Tunnel",
                         SetupMetroTrackMeta().
-                        Chain(SetupTrackModel(customizationStep)).
-                        Chain(CommonSteps.SetTunnel(p)).
+                        Chain(SetupTrackModel, customizationStep).
+                        Chain(CommonSteps.SetTunnel, p).
                         Chain(SetCosts("Train Track Tunnel"))); //TODO(earalov): why can't we just set needed meshes etc. for vanilla track?
                     p.GetComponent<TrainTrackAI>().m_connectedElevatedInfo = null;
                     p.GetComponent<TrainTrackAI>().m_connectedInfo = null;
@@ -121,27 +121,27 @@ namespace MetroOverhaul
             }
             CreateNetInfo(nameModifier.Invoke("Metro Station Track Ground"), "Train Station Track",
                 SetupMetroTrackMeta().
-                Chain(SetupTrackModel(customizationStep)).
+                Chain(SetupTrackModel, customizationStep).
                 Chain(SetupStationTrack).
                 Chain(SetupMesh.Setup12mMeshStationGround).
                 Chain(p =>
                 {
                     CreateNetInfo(nameModifier.Invoke("Metro Station Track Elevated"), "Train Station Track",
                         SetupMetroTrackMeta().
-                        Chain(SetupTrackModel(customizationStep)).
-                        Chain(CommonSteps.SetElevated(p)).
+                        Chain(SetupTrackModel, customizationStep).
+                        Chain(CommonSteps.SetElevated, p).
                         Chain(SetupStationTrack).
                         Chain(SetupElevatedStationTrack).
                         Chain(SetupMesh.Setup12mMeshStationElevated));
                     CreateNetInfo(nameModifier.Invoke("Metro Station Track Tunnel"), "Train Station Track",
                         SetupMetroTrackMeta().
-                        Chain(SetupTrackModel(customizationStep)).
-                        Chain(CommonSteps.SetTunnel(p)).
+                        Chain(SetupTrackModel, customizationStep).
+                        Chain(CommonSteps.SetTunnel, p).
                         Chain(SetupStationTrack).
                         Chain(SetupTunnelStationTrack));
                     CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Train Station Track",
                         SetupMetroTrackMeta().
-                        Chain(SetupTrackModel(customizationStep)).
+                        Chain(SetupTrackModel, customizationStep).
                         Chain(SetupStationTrack).
                         Chain(SetupMesh.Setup12mMeshStationGround).
                         Chain(SetupSunkenStationTrack));
@@ -216,47 +216,44 @@ namespace MetroOverhaul
             }
         }
 
-        private static Action<NetInfo> SetupTrackModel(Action<NetInfo, NetInfoVersion> customizationStep)
+        private static void SetupTrackModel(NetInfo prefab, Action<NetInfo, NetInfoVersion> customizationStep)
         {
-            return prefab =>
+            const int defaultHalfWidth = 6;
+            const float defaultPavementWidth = 3.5f;
+
+            prefab.m_minHeight = 0;
+
+            var prefabNameParts = prefab.name.Split(' ');
+            NetInfoVersion version;
+            switch (prefabNameParts.Last())
             {
-                const int defaultHalfWidth = 6;
-                const float defaultPavementWidth = 3.5f;
-
-                prefab.m_minHeight = 0;
-
-                var prefabNameParts = prefab.name.Split(' ');
-                NetInfoVersion version;
-                switch (prefabNameParts.Last())
-                {
-                    case "Elevated":
-                        version = NetInfoVersion.Elevated;
-                        prefab.m_halfWidth = defaultHalfWidth;
-                        prefab.m_pavementWidth = 3;
-                        break;
-                    case "Bridge":
-                        version = NetInfoVersion.Bridge;
-                        prefab.m_halfWidth = 5.9999f;
-                        prefab.m_pavementWidth = 3;
-                        break;
-                    case "Slope":
-                        version = NetInfoVersion.Slope;
-                        prefab.m_halfWidth = defaultHalfWidth;
-                        prefab.m_pavementWidth = defaultPavementWidth;
-                        break;
-                    case "Tunnel":
-                        version = NetInfoVersion.Tunnel;
-                        prefab.m_pavementWidth = 4.8f;
-                        prefab.m_halfWidth = 7.5f;
-                        break;
-                    default:
-                        version = NetInfoVersion.Ground;
-                        prefab.m_halfWidth = defaultHalfWidth;
-                        prefab.m_pavementWidth = defaultPavementWidth;
-                        break;
-                }
-                customizationStep.Invoke(prefab, version);
-            };
+                case "Elevated":
+                    version = NetInfoVersion.Elevated;
+                    prefab.m_halfWidth = defaultHalfWidth;
+                    prefab.m_pavementWidth = 3;
+                    break;
+                case "Bridge":
+                    version = NetInfoVersion.Bridge;
+                    prefab.m_halfWidth = 5.9999f;
+                    prefab.m_pavementWidth = 3;
+                    break;
+                case "Slope":
+                    version = NetInfoVersion.Slope;
+                    prefab.m_halfWidth = defaultHalfWidth;
+                    prefab.m_pavementWidth = defaultPavementWidth;
+                    break;
+                case "Tunnel":
+                    version = NetInfoVersion.Tunnel;
+                    prefab.m_pavementWidth = 4.8f;
+                    prefab.m_halfWidth = 7.5f;
+                    break;
+                default:
+                    version = NetInfoVersion.Ground;
+                    prefab.m_halfWidth = defaultHalfWidth;
+                    prefab.m_pavementWidth = defaultPavementWidth;
+                    break;
+            }
+            customizationStep.Invoke(prefab, version);
         }
 
         private static Action<NetInfo> SetupMetroTrackMeta()
