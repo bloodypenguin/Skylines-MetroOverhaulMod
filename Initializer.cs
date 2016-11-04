@@ -15,8 +15,6 @@ namespace MetroOverhaul
         {
             CreatePillars();
             CreateTracks();
-            var metroTrackInfo = FindOriginalNetInfo("Metro Track");
-            SetCosts(metroTrackInfo, NetInfoVersion.Tunnel);
         }
 
         private void CreateTracks()
@@ -365,8 +363,6 @@ namespace MetroOverhaul
         {
             var vanillaMetroTrack = FindOriginalNetInfo("Metro Track");
             var milestone = vanillaMetroTrack.GetComponent<MetroTrackAI>().m_createPassMilestone;
-            PrefabCollection<VehicleInfo>.FindLoaded("Metro").m_class =
-                ScriptableObject.CreateInstance<ItemClass>();
             prefab.GetComponent<TrainTrackBaseAI>().m_createPassMilestone = milestone;
             prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
             prefab.m_class.m_subService = ItemClass.SubService.PublicTransportMetro;

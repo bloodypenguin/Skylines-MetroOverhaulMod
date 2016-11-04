@@ -5,6 +5,7 @@ using MetroOverhaul;
 using UnityEngine;
 using ColossalFramework.Threading;
 using System.Reflection;
+using MetroOverhaul.Extensions;
 
 namespace UIMod
 {
