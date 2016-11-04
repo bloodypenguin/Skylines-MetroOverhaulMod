@@ -319,39 +319,56 @@ namespace MetroOverhaul
             }
         }
 
+        public static NetInfoVersion DetectVersion(NetInfo info)
+        {
+            if (info.name.Contains("Elevated"))
+            {
+                return NetInfoVersion.Elevated;
+            }
+            else if(info.name.Contains("Bridge"))
+            {
+                return NetInfoVersion.Bridge;
+            }
+            else if (info.name.Contains("Slope"))
+            {
+                return NetInfoVersion.Slope;
+            }
+            else if (info.name.Contains("Tunnel"))
+            {
+                return NetInfoVersion.Tunnel;
+            }
+            else
+            {
+                return NetInfoVersion.Ground;
+            }
+        }
+
         private static void SetupTrackModel(NetInfo prefab, Action<NetInfo, NetInfoVersion> customizationStep)
         {
             const int defaultHalfWidth = 6;
             const float defaultPavementWidth = 3.5f;
 
-            prefab.m_minHeight = 0;
-
-            var prefabNameParts = prefab.name.Split(' ');
-            NetInfoVersion version;
-            switch (prefabNameParts.Last())
+            prefab.m_minHeight = 0; //TODO(earalov): is that minHeight correct for all types of tracks?
+            var version = DetectVersion(prefab);
+            switch (version)
             {
-                case "Elevated":
-                    version = NetInfoVersion.Elevated;
+                case NetInfoVersion.Elevated:
                     prefab.m_halfWidth = defaultHalfWidth;
                     prefab.m_pavementWidth = 3;
                     break;
-                case "Bridge":
-                    version = NetInfoVersion.Bridge;
+                case NetInfoVersion.Bridge:
                     prefab.m_halfWidth = 5.9999f;
                     prefab.m_pavementWidth = 3;
                     break;
-                case "Slope":
-                    version = NetInfoVersion.Slope;
+                case NetInfoVersion.Slope:
                     prefab.m_halfWidth = defaultHalfWidth;
                     prefab.m_pavementWidth = defaultPavementWidth;
                     break;
-                case "Tunnel":
-                    version = NetInfoVersion.Tunnel;
+                case NetInfoVersion.Tunnel:
                     prefab.m_pavementWidth = 4.8f;
                     prefab.m_halfWidth = 7.5f;
                     break;
-                default:
-                    version = NetInfoVersion.Ground;
+                case NetInfoVersion.Ground:
                     prefab.m_halfWidth = defaultHalfWidth;
                     prefab.m_pavementWidth = defaultPavementWidth;
                     break;
@@ -419,6 +436,13 @@ namespace MetroOverhaul
             var baseMaintenanceCost = trainTrackInfo.GetComponent<PlayerNetAI>().m_maintenanceCost;
             var newAi = newPrefab.GetComponent<PlayerNetAI>();
 
+            var multiplier = GetCostMultiplier(version);
+            newAi.m_constructionCost = (int) (baseConstructionCost * multiplier);
+            newAi.m_maintenanceCost = (int)(baseMaintenanceCost * multiplier);
+        }
+
+        public static float GetCostMultiplier(NetInfoVersion version)
+        {
             float multiplier;
             switch (version)
             {
@@ -436,8 +460,7 @@ namespace MetroOverhaul
                     multiplier = 1f;
                     break;
             }
-            newAi.m_constructionCost = (int) (baseConstructionCost * multiplier);
-            newAi.m_maintenanceCost = (int)(baseMaintenanceCost * multiplier);
+            return multiplier;
         }
     }
 }

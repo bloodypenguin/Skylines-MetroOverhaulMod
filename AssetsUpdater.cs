@@ -16,7 +16,19 @@ namespace MetroOverhaul
 
         private static void UpdateTrainTracks()
         {
-            //TODO(earalov): set proper costs for train tracks
+            foreach (var netInfo in Object.FindObjectsOfType<NetInfo>())
+            {
+                if (netInfo.m_class.m_service != ItemClass.Service.PublicTransport ||
+                    netInfo.m_class.m_subService != ItemClass.SubService.PublicTransportTrain)
+                {
+                    continue;
+                }
+                var version = Initializer.DetectVersion(netInfo);
+                var multiplier = (version == NetInfoVersion.Tunnel || version == NetInfoVersion.Slope || version == NetInfoVersion.Elevated || version == NetInfoVersion.Bridge)? 1.5f : 1.0f;
+                var trainTrackInfo = PrefabCollection<NetInfo>.FindLoaded("Train Track");
+
+                //TODO(earalov): patch costs
+            }
         }
 
         private static void UpdateVanillaMetroTracks()
