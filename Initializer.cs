@@ -277,7 +277,6 @@ namespace MetroOverhaul
             {
                 prefab.m_lowerTerrain = false;
                 prefab.m_clipTerrain = true;
-                prefab.m_createPavement = true;
             }
             else
             {
