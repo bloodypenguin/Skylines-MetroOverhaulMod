@@ -1,4 +1,5 @@
 ﻿using MetroOverhaul.NEXT;
+using System;
 
 namespace MetroOverhaul.InitializationSteps
 {
@@ -10,24 +11,43 @@ namespace MetroOverhaul.InitializationSteps
             {
                 case NetInfoVersion.Elevated:
                     {
-                        var elevatedPillarInfo = PrefabCollection<BuildingInfo>.FindLoaded("Metro Elevated Pillar");
-                        var bridgeAI = prefab.GetComponent<TrainTrackBridgeAI>();
-                        if (elevatedPillarInfo != null && bridgeAI != null)
+                        var epPropInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("MetroElevatedPillar")}.MetroElevatedPillar_Data");
+
+                        if (epPropInfo == null)
                         {
-                            bridgeAI.m_bridgePillarInfo = elevatedPillarInfo;
+
+                            throw new Exception($"{prefab.name}: MetroElevatedPillar not found!");
+                        }
+
+                        if (epPropInfo != null)
+                        {
+                            var bridgeAI = prefab.GetComponent<TrainTrackBridgeAI>();
+                            if (bridgeAI != null)
+                            {
+                                bridgeAI.m_bridgePillarInfo = epPropInfo;
+                                bridgeAI.m_bridgePillarOffset = 1;
+                            }
                         }
                         break;
                     }
                 case NetInfoVersion.Bridge:
+                    var bpPropInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("MetroBridgePillar")}.MetroBridgePillar_Data");
+
+                    if (bpPropInfo == null)
                     {
-                        var bridgePillarInfo = PrefabCollection<BuildingInfo>.FindLoaded("Metro Bridge Pillar");
-                        var bridgeAI = prefab.GetComponent<TrainTrackBridgeAI>();
-                        if (bridgePillarInfo != null && bridgeAI != null)
-                        {
-                            bridgeAI.m_bridgePillarInfo = bridgePillarInfo;
-                        }
-                        break;
+
+                        throw new Exception($"{prefab.name}: MetroBridgePillar not found!");
                     }
+
+                    if (bpPropInfo != null)
+                    {
+                        var bridgeAI = prefab.GetComponent<TrainTrackBridgeAI>();
+                        if (bridgeAI != null)
+                        {
+                            bridgeAI.m_bridgePillarInfo = bpPropInfo;
+                        }
+                    }
+                    break;
             }
         }
 

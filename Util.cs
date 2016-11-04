@@ -8,6 +8,7 @@ using ICities;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using static ColossalFramework.Plugins.PluginManager;
+using ColossalFramework.Steamworks;
 
 namespace MetroOverhaul
 {
@@ -31,7 +32,15 @@ namespace MetroOverhaul
         {
             return type.GetAllFieldsFromType().Where(p => p.Name == name).FirstOrDefault();
         }
-
+        public static string PackageName(string assetName)
+        {
+            var publishedFileID = PluginInfo.publishedFileID.ToString();
+            if (publishedFileID.Equals(PublishedFileId.invalid.ToString()))
+            {
+                return assetName;
+            }
+            return publishedFileID;
+        }
         public static T ClonePrefab<T>(T originalPrefab, string newName, Transform parentTransform) where T:PrefabInfo
         {
             var instance = Object.Instantiate(originalPrefab.gameObject);

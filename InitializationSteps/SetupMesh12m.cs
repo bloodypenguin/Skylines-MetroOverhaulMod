@@ -30,8 +30,7 @@ namespace MetroOverhaul.InitializationSteps
                         node0
                             .SetMeshes
                             (@"Meshes\Ground_Node_Pavement.obj",
-                                @"Meshes\Ground_Node_Pavement_LOD.obj")
-                            .SetConsistentUVs(true);
+                                @"Meshes\Ground_Node_Pavement_LOD.obj");
 
 
                         segment1
@@ -55,6 +54,10 @@ namespace MetroOverhaul.InitializationSteps
                         node1.m_flagsForbidden = NetNode.Flags.LevelCrossing;
                         node3.m_flagsRequired = NetNode.Flags.LevelCrossing;
 
+                        segment0.m_material = elevatedMaterial;
+                        segment0.m_lodMaterial = elevatedLODMaterial;
+                        node0.m_material = elevatedMaterial;
+                        node0.m_lodMaterial = elevatedLODMaterial;
                         //
 
                         info.m_segments = new[] { segment0, segment1 };
@@ -94,7 +97,6 @@ namespace MetroOverhaul.InitializationSteps
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
-
 
                         info.m_segments = new[] { segment0, segment1 };
                         info.m_nodes = new[] { node0, node1, node3 };
@@ -239,8 +241,6 @@ namespace MetroOverhaul.InitializationSteps
             segment0.m_lodMaterial = elevatedLODMaterial;
             node0.m_material = elevatedMaterial;
             node2.m_material = elevatedMaterial;
-            //segment1.m_material = railMaterial;
-            //node1.m_material = railMaterial;
         }
 
         //mind changed segment and node indices! (after Setup12mMesh)
@@ -318,18 +318,37 @@ namespace MetroOverhaul.InitializationSteps
                         var node0 = prefab.m_nodes[0].ShallowClone();
                         var node1 = prefab.m_nodes[1];
                         var node2 = prefab.m_nodes[2];
-                        var node3 = prefab.m_nodes[3];
+                        var node3 = prefab.m_nodes[1].ShallowClone();
 
                         segment0
                             .SetMeshes
                             (@"Meshes\Ground_Station_Pavement.obj",
                                 @"Meshes\Ground_NoBar_Pavement_LOD.obj");
+                        segment1
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            (@"Meshes\Ground_Rail.obj")
+                            .SetConsistentUVs();
                         node0
                             .SetMeshes
                             (@"Meshes\Ground_NoBar_Node_Pavement.obj",
-                                @"Meshes\Ground_NoBar_Node_Pavement_LOD.obj")
-                            .SetConsistentUVs(true);
+                                @"Meshes\Ground_NoBar_Node_Pavement_LOD.obj");
+                        node1
+                            .SetMeshes
+                            (@"Meshes\Elevated_Station_Rail_Node.obj")
+                            .SetConsistentUVs();
+                        node2
+                            .SetMeshes
+                            (@"Meshes\Ground_Level_Crossing.obj")
+                            .SetConsistentUVs();
+                        node3
+                            .SetMeshes
+                            (@"Meshes\Ground_Level_Crossing_Rail_Station.obj")
+                            .SetConsistentUVs();
 
+                        node1.m_flagsForbidden = NetNode.Flags.LevelCrossing;
+                        node2.m_flagsRequired = NetNode.Flags.LevelCrossing;
+                        node3.m_flagsRequired = NetNode.Flags.LevelCrossing;
                         prefab.m_segments = new[] { segment0, segment1 };
                         prefab.m_nodes = new[] { node0, node1, node2, node3 };
                         break;

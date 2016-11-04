@@ -12,7 +12,6 @@ namespace MetroOverhaul
     {
         protected override void InitializeImpl()
         {
-            CreatePillars();
             CreateTracks();
         }
 
@@ -122,20 +121,6 @@ namespace MetroOverhaul
                 UnityEngine.Debug.LogException(e);
             }
         }
-
-        private void CreatePillars()
-        {
-            CreatePillarPrefab( //TODO(earalov): learn how to do that earlier. It's too late when level is already loaded
-                pillar => { LoadingExtension.EnqueueLateBuildUpAction(() => { SetupElevatedPillar.SetMeshAndTexture(pillar); }); },
-                pillar => { LoadingExtension.EnqueueLateBuildUpAction(() => { SetupBridgePillar.SetMeshAndTexture(pillar); }); }
-                );
-            CreatePillarPrefab( //TODO(earalov): learn how to do that earlier. It's too late when level is already loaded
-                pillar => { LoadingExtension.EnqueueLateBuildUpAction(() => { SetupSteelElevatedPillar.SetMeshAndTexture(pillar); }); },
-                pillar => { LoadingExtension.EnqueueLateBuildUpAction(() => { SetupSteelBridgePillar.SetMeshAndTexture(pillar); }); },
-                prefabName => "Steel " + prefabName
-                );
-        }
-
 
         protected void CreateFullPrefab(Action<NetInfo, NetInfoVersion> customizationStep, 
             Action<NetInfo, Action<NetInfo, NetInfoVersion>> setupOtherVersionsStep, 
@@ -248,30 +233,6 @@ namespace MetroOverhaul
             );
         }
 
-        private void CreatePillarPrefab(Action<BuildingInfo> customizationStepElevated, Action<BuildingInfo> customizationStepBridge,
-            Func<string, string> nameModifier = null)
-        {
-            if (nameModifier == null)
-            {
-                nameModifier = s => s;
-            }
-            CreateBuildingInfo(nameModifier.Invoke("Metro Elevated Pillar"), "RailwayElevatedPillar",
-                ActionExtensions.BeginChain<BuildingInfo>()
-                .Chain(SetupPillar)
-                .Chain(customizationStepElevated)
-            );
-            CreateBuildingInfo(nameModifier.Invoke("Metro Bridge Pillar"), "RailwayBridgePillar",
-                ActionExtensions.BeginChain<BuildingInfo>()
-                .Chain(SetupPillar)
-                .Chain(customizationStepBridge)
-            );
-        }
-
-        private static void SetupPillar(BuildingInfo prefab)
-        {
-            prefab.m_collisionHeight = -1;
-        }
-
         public static void SetupElevatedStationTrack(NetInfo prefab)
         {
             var trackAi = prefab.GetComponent<TrainTrackAI>();
@@ -316,6 +277,7 @@ namespace MetroOverhaul
             {
                 prefab.m_lowerTerrain = false;
                 prefab.m_clipTerrain = true;
+                prefab.m_createPavement = true;
             }
             else
             {
