@@ -248,7 +248,7 @@ namespace MetroOverhaul
             originalAi.GetNoiseAccumulation(out noiseAccumulation, out noiseRadius);
             if (originalAi is TrainTrackTunnelAI || version == NetInfoVersion.Tunnel)
             {
-                if (originalAi is TrainTrackTunnelAI)
+                if (originalAi is TrainTrackTunnelAI && version == NetInfoVersion.Slope)
                 {
                     GameObject.DestroyImmediate(originalAi);
                     var ai = prefab.gameObject.AddComponent<TrainTrackTunnelAIMetro>();
