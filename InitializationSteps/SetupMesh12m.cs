@@ -58,6 +58,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
+                        node2.m_lodMaterial = elevatedLODMaterial;
                         //
 
                         info.m_segments = new[] { segment0, segment1 };

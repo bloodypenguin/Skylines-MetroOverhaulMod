@@ -81,7 +81,7 @@ namespace MetroOverhaul
             {
                 LateBuildUpQueue.Dequeue().Invoke();
             }
-            MetroStations.UpdateMetroStation(0, 0);
+            MetroStations.UpdateMetroStation();
             DespawnVanillaMetro();
             UpdateEffect();
         }
