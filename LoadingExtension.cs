@@ -5,6 +5,7 @@ using MetroOverhaul.Redirection;
 using MetroOverhaul.NEXT;
 using System;
 using System.Collections.Generic;
+using MetroOverhaul.OptionsFramework;
 using UnityEngine;
 
 namespace MetroOverhaul
@@ -28,7 +29,14 @@ namespace MetroOverhaul
                 Container = new GameObject("MetroOverhaul").AddComponent<Initializer>();
             }
             Redirector<DepotAIDetour>.Deploy();
-            //Redirector<MetroTrainAIDetour>.Deploy(); //don't deploy this! For some reason that causes citizens not boarding trains
+            if (OptionsWrapper<Options>.Options.improvedMetroTrainAi)
+            {
+                Redirector<MetroTrainAIDetour>.Deploy();
+            }
+            if (OptionsWrapper<Options>.Options.improvedPassengerTrainAi)
+            {
+                Redirector<PassengerTrainAIDetour>.Deploy();
+            }
         }
 
         public static void EnqueueLateBuildUpAction(Action action)
@@ -75,6 +83,7 @@ namespace MetroOverhaul
             Container = null;
             Redirector<DepotAIDetour>.Revert();
             Redirector<MetroTrainAI>.Revert();
+            Redirector<PassengerTrainAIDetour>.Revert();
         }
 
         public override void OnLevelLoaded(LoadMode mode)

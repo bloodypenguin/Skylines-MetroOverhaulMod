@@ -11,7 +11,7 @@ namespace MetroOverhaul
             UpdateVanillaMetroTracks();
             UpdateMetroStations();
             UpdateTrainTracks();
-            UpdateMetroTrains();
+            UpdateMetroTrainEffects();
         }
 
         private static void UpdateTrainTracks()
@@ -63,15 +63,16 @@ namespace MetroOverhaul
             }
         }
 
-        private static void UpdateMetroTrains()
+        //this method is supposed to be called before level loading
+        public static void PreventVanillaMetroTrainSpawning()
         {
             var metro = PrefabCollection<VehicleInfo>.FindLoaded("Metro");
             metro.m_class = ScriptableObject.CreateInstance<ItemClass>();
-            UpdateMetroTrainEffects(metro);
         }
 
-        private static void UpdateMetroTrainEffects(VehicleInfo vanillaMetro)
+        private static void UpdateMetroTrainEffects()
         {
+            var vanillaMetro = PrefabCollection<VehicleInfo>.FindLoaded("Metro");
             var arriveEffect = ((MetroTrainAI)vanillaMetro.m_vehicleAI).m_arriveEffect;
             for (uint i = 0; i < PrefabCollection<VehicleInfo>.LoadedCount(); i++)
             {

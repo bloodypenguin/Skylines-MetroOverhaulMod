@@ -14,6 +14,7 @@ namespace MetroOverhaul
         protected override void InitializeImpl()
         {
             CreateTracks();
+            AssetsUpdater.PreventVanillaMetroTrainSpawning();
         }
 
         private void CreateTracks()
