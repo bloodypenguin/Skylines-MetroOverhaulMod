@@ -1,4 +1,6 @@
-﻿using MetroOverhaul.Extensions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using MetroOverhaul.Extensions;
 using MetroOverhaul.NEXT;
 using UnityEngine;
 
@@ -9,27 +11,58 @@ namespace MetroOverhaul
         public void UpdateExistingAssets()
         {
             UpdateVanillaMetroTracks();
-            UpdateMetroStations();
             UpdateTrainTracks();
+
+            UpdateMetroStations();
             UpdateMetroTrainEffects();
         }
 
         private static void UpdateTrainTracks()
         {
-            foreach (var netInfo in Object.FindObjectsOfType<NetInfo>())
+            var vanillaTracksNames = new[] { "Train Track", "Train Track Elevated", "Train Track Bridge", "Train Track Slope", "Train Track Tunnel" };
+            var vanillaTracksCosts = vanillaTracksNames.ToDictionary(Initializer.DetectVersion, GetTrackCost);
+            var toGroundMultipliers = vanillaTracksCosts.ToDictionary(keyValue => keyValue.Key,
+                keyValue => keyValue.Value == vanillaTracksCosts[NetInfoVersion.Ground] ? 1f : keyValue.Value / (float)vanillaTracksCosts[NetInfoVersion.Ground]);
+
+            var baseMultiplier = GetTrackCost("Metro Track Ground") / (float)GetTrackCost("Train Track");
+            for (ushort i = 0; i < PrefabCollection<NetInfo>.LoadedCount(); i++)
             {
-                if (netInfo.m_class.m_service != ItemClass.Service.PublicTransport ||
-                    netInfo.m_class.m_subService != ItemClass.SubService.PublicTransportTrain)
+                var netInfo = PrefabCollection<NetInfo>.GetLoaded(i);
+                var ai = netInfo?.m_netAI as PlayerNetAI;
+                if (ai == null || netInfo.m_class.m_service != ItemClass.Service.PublicTransport || netInfo.m_class.m_subService != ItemClass.SubService.PublicTransportTrain)
                 {
                     continue;
                 }
-                var version = Initializer.DetectVersion(netInfo);
-                var multiplier = (version == NetInfoVersion.Tunnel || version == NetInfoVersion.Slope || version == NetInfoVersion.Elevated || version == NetInfoVersion.Bridge)? 1.5f : 1.0f;
-                var trainTrackInfo = PrefabCollection<NetInfo>.FindLoaded("Train Track");
-
-                //TODO(earalov): patch costs
+                var version = Initializer.DetectVersion(netInfo.name);
+                var wasCost = GetTrackCost(netInfo);
+                if (wasCost == 0)
+                {
+                    continue;
+                }
+                var newCost = wasCost / toGroundMultipliers[version] *
+                                     Initializer.GetCostMultiplier(version) * GetAdditionalCostMultiplier(version) * baseMultiplier;
+                UnityEngine.Debug.Log($"Updating asset {netInfo.name} cost. Was cost: {wasCost}. New cost: {newCost}");
+                ai.m_constructionCost = (int)newCost;
+                ai.m_maintenanceCost = (int)(newCost / 10f);
             }
         }
+
+        private static float GetAdditionalCostMultiplier(NetInfoVersion version)
+        {
+            return (version == NetInfoVersion.Tunnel || version == NetInfoVersion.Slope || version == NetInfoVersion.Elevated || version == NetInfoVersion.Bridge) ? 1.5f : 1.0f;
+        }
+
+        private static int GetTrackCost(string prefabName)
+        {
+            var netInfo = PrefabCollection<NetInfo>.FindLoaded(prefabName);
+            return GetTrackCost(netInfo);
+        }
+
+        private static int GetTrackCost(NetInfo netInfo)
+        {
+            return ((PlayerNetAI)netInfo.m_netAI).m_constructionCost;
+        }
+
 
         private static void UpdateVanillaMetroTracks()
         {

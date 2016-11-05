@@ -124,8 +124,8 @@ namespace MetroOverhaul
             }
         }
 
-        protected void CreateFullPrefab(Action<NetInfo, NetInfoVersion> customizationStep, 
-            Action<NetInfo, Action<NetInfo, NetInfoVersion>> setupOtherVersionsStep, 
+        protected void CreateFullPrefab(Action<NetInfo, NetInfoVersion> customizationStep,
+            Action<NetInfo, Action<NetInfo, NetInfoVersion>> setupOtherVersionsStep,
             Func<string, string> nameModifier = null)
         {
             if (nameModifier == null)
@@ -281,28 +281,21 @@ namespace MetroOverhaul
             }
         }
 
-        public static NetInfoVersion DetectVersion(NetInfo info)
+        public static NetInfoVersion DetectVersion(string infoName)
         {
-            if (info.name.Contains("Elevated"))
+            if (infoName.Contains("Elevated"))
             {
                 return NetInfoVersion.Elevated;
             }
-            else if(info.name.Contains("Bridge"))
+            if (infoName.Contains("Bridge"))
             {
                 return NetInfoVersion.Bridge;
             }
-            else if (info.name.Contains("Slope"))
+            if (infoName.Contains("Slope"))
             {
                 return NetInfoVersion.Slope;
             }
-            else if (info.name.Contains("Tunnel"))
-            {
-                return NetInfoVersion.Tunnel;
-            }
-            else
-            {
-                return NetInfoVersion.Ground;
-            }
+            return infoName.Contains("Tunnel") ? NetInfoVersion.Tunnel : NetInfoVersion.Ground;
         }
 
         private static void SetupTrackModel(NetInfo prefab, Action<NetInfo, NetInfoVersion> customizationStep)
@@ -311,7 +304,7 @@ namespace MetroOverhaul
             const float defaultPavementWidth = 3.5f;
 
             prefab.m_minHeight = 0; //TODO(earalov): is that minHeight correct for all types of tracks?
-            var version = DetectVersion(prefab);
+            var version = DetectVersion(prefab.name);
             switch (version)
             {
                 case NetInfoVersion.Elevated:
@@ -393,13 +386,13 @@ namespace MetroOverhaul
 
         public static void SetCosts(PrefabInfo newPrefab, NetInfoVersion version)
         {
-            var trainTrackInfo = FindOriginalNetInfo("Train Track");
-            var baseConstructionCost = trainTrackInfo.GetComponent<PlayerNetAI>().m_constructionCost;
-            var baseMaintenanceCost = trainTrackInfo.GetComponent<PlayerNetAI>().m_maintenanceCost;
+            var metroTrackInfo = FindOriginalNetInfo("Metro Track");
+            var baseConstructionCost = metroTrackInfo.GetComponent<PlayerNetAI>().m_constructionCost;
+            var baseMaintenanceCost = metroTrackInfo.GetComponent<PlayerNetAI>().m_maintenanceCost;
             var newAi = newPrefab.GetComponent<PlayerNetAI>();
 
             var multiplier = GetCostMultiplier(version);
-            newAi.m_constructionCost = (int) (baseConstructionCost * multiplier);
+            newAi.m_constructionCost = (int)(baseConstructionCost * multiplier);
             newAi.m_maintenanceCost = (int)(baseMaintenanceCost * multiplier);
         }
 
@@ -412,7 +405,7 @@ namespace MetroOverhaul
                     multiplier = 3f;
                     break;
                 case NetInfoVersion.Bridge:
-                    multiplier = 3f;
+                    multiplier = 4.5f;
                     break;
                 case NetInfoVersion.Tunnel:
                 case NetInfoVersion.Slope:
