@@ -142,7 +142,7 @@ namespace MetroOverhaul
                 replacements?.TryGetValue(NetInfoVersion.Ground, out replaces);
                 groundVersion = CreateNetInfo(nameModifier.Invoke("Metro Track Ground"), "Train Track",
                     ActionExtensions.BeginChain<NetInfo>().
-                        Chain(SetupMetroTrackMeta).
+                        Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
                         Chain(p =>
                         {
                             setupOtherVersionsStep?.Invoke(p, customizationStep);
@@ -162,7 +162,7 @@ namespace MetroOverhaul
                 replacements?.TryGetValue(version, out replaces);
                 CreateNetInfo(nameModifier.Invoke("Metro Track " + version), "Train Track " + version,
                     ActionExtensions.BeginChain<NetInfo>().
-                        Chain(SetupMetroTrackMeta).
+                        Chain(SetupMetroTrackMeta, version).
                         Chain(CommonSteps.SetVersion, groundVersion, version).
                         Chain(SetupTrackModel, customizationStep.Chain(SetCosts)), replaces
                     );
@@ -195,14 +195,14 @@ namespace MetroOverhaul
             }
             CreateNetInfo(nameModifier.Invoke("Metro Station Track Ground"), "Train Station Track",
                 ActionExtensions.BeginChain<NetInfo>().
-                Chain(SetupMetroTrackMeta).
+                Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
                 Chain(SetupStationTrack).
                 Chain(p =>
                 {
                     //TODO(earalov): provide a track with narrow ped. lanes for Mr.Maison's stations
                     CreateNetInfo(nameModifier.Invoke("Metro Station Track Elevated"), "Train Station Track",
                         ActionExtensions.BeginChain<NetInfo>().
-                        Chain(SetupMetroTrackMeta).
+                        Chain(SetupMetroTrackMeta, NetInfoVersion.Elevated).
                         Chain(CommonSteps.SetVersion, p, NetInfoVersion.Elevated).
                         Chain(SetupStationTrack).
                         Chain(SetupElevatedStationTrack).
@@ -210,7 +210,7 @@ namespace MetroOverhaul
                     );
                     CreateNetInfo(nameModifier.Invoke("Metro Station Track Tunnel"), "Train Station Track",
                         ActionExtensions.BeginChain<NetInfo>().
-                        Chain(SetupMetroTrackMeta).
+                        Chain(SetupMetroTrackMeta, NetInfoVersion.Tunnel).
                         Chain(CommonSteps.SetVersion, p, NetInfoVersion.Tunnel).
                         Chain(SetupStationTrack).
                         Chain(SetupTunnelStationTrack).
@@ -219,7 +219,7 @@ namespace MetroOverhaul
                     );
                     CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Train Station Track",
                         ActionExtensions.BeginChain<NetInfo>().
-                        Chain(SetupMetroTrackMeta).
+                        Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
                         Chain(SetupStationTrack).
                         Chain(SetupSunkenStationTrack).
                         Chain(SetupTrackModel, customizationStep)
@@ -330,7 +330,7 @@ namespace MetroOverhaul
             customizationStep.Invoke(prefab, version);
         }
 
-        private static void SetupMetroTrackMeta(NetInfo prefab)
+        private static void SetupMetroTrackMeta(NetInfo prefab, NetInfoVersion version)
         {
             var vanillaMetroTrack = FindOriginalNetInfo("Metro Track");
             var milestone = vanillaMetroTrack.GetComponent<MetroTrackAI>().m_createPassMilestone;
@@ -342,7 +342,7 @@ namespace MetroOverhaul
             prefab.m_class.m_level = ItemClass.Level.Level1;
             prefab.m_UIPriority = vanillaMetroTrack.m_UIPriority;
             prefab.SetUICategory("PublicTransportMetro");
-            if (prefab.name.Contains("Tunnel"))
+            if (version == NetInfoVersion.Tunnel)
             {
                 prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
                 prefab.m_setVehicleFlags = Vehicle.Flags.Transition | Vehicle.Flags.Underground;
