@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using ColossalFramework;
+using ColossalFramework.Globalization;
 using MetroOverhaul.InitializationSteps;
 using UnityEngine;
 using MetroOverhaul.NEXT;
@@ -28,6 +31,7 @@ namespace MetroOverhaul
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizaionSteps.CommonConcreteCustomization).
+                        Chain(CustomizaionSteps.ReplaceTrackIcon).
                         Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
                         Chain(SetupMesh.Setup12mMeshBar, elevatedInfo).
                         Chain(SetupTexture.Setup12mTexture).
@@ -390,8 +394,7 @@ namespace MetroOverhaul
             prefab.m_UnlockMilestone = vanillaMetroTrack.m_UnlockMilestone;
             prefab.m_createGravel = false;
             prefab.m_createPavement = false;
-            //prefab.m_isCustomContent = true; //this line is responsible for moving tracks to the end of the list and that's not what we're interested in
-
+            prefab.m_isCustomContent = true; //this line is responsible for moving tracks to the end of the list and that's not what we're interested in  
 
             var speedLimit = vanillaMetroTrack.m_lanes.First(l => l.m_vehicleType != VehicleInfo.VehicleType.None).m_speedLimit;
 
