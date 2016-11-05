@@ -14,8 +14,8 @@ namespace MetroOverhaul
             steelTracks = false;
             steelTracksNoBar = false;
             concreteTracksNoBar = false;
-            improvedPassengerTrainAi = true;
-            improvedMetroTrainAi = true;
+            improvedPassengerTrainAi = false;
+            improvedMetroTrainAi = false;
         }
 
         [Checkbox("Improved PassengerTrainAI (Should allow trains returning to depots)", nameof(PassengerTrainAIDetour), nameof(PassengerTrainAIDetour.ChangeDeployState), EXPERIMENT)]
