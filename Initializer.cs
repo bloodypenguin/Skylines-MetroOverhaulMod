@@ -333,8 +333,8 @@ namespace MetroOverhaul
         private static void SetupMetroTrackMeta(NetInfo prefab, NetInfoVersion version)
         {
             var vanillaMetroTrack = FindOriginalNetInfo("Metro Track");
-            var milestone = vanillaMetroTrack.GetComponent<MetroTrackAI>().m_createPassMilestone;
-            prefab.GetComponent<TrainTrackBaseAI>().m_createPassMilestone = milestone;
+            var milestone = vanillaMetroTrack.GetComponent<PlayerNetAI>().m_createPassMilestone;
+            prefab.GetComponent<PlayerNetAI>().m_createPassMilestone = milestone;
             prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
             prefab.m_class.m_subService = ItemClass.SubService.PublicTransportMetro;
             prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
