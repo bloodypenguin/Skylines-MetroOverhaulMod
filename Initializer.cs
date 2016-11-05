@@ -51,7 +51,7 @@ namespace MetroOverhaul
                             Chain(SetupSteelMesh.Setup12mSteelMeshBar, elevatedInfo).
                             Chain(SetupSteelTexture.Setup12mSteelTexture).
                             Chain((info, version) => { LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); }); }),
-                        NetInfoVersion.All, null , prefabName => "Steel " + prefabName
+                        NetInfoVersion.All, null, prefabName => "Steel " + prefabName
                     );
                 }
                 catch (Exception e)
@@ -142,6 +142,7 @@ namespace MetroOverhaul
                 replacements?.TryGetValue(NetInfoVersion.Ground, out replaces);
                 groundVersion = CreateNetInfo(nameModifier.Invoke("Metro Track Ground"), "Train Track",
                     ActionExtensions.BeginChain<NetInfo>().
+                        Chain(ReplaceAI, NetInfoVersion.Ground).
                         Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
                         Chain(p =>
                         {
@@ -162,6 +163,7 @@ namespace MetroOverhaul
                 replacements?.TryGetValue(version, out replaces);
                 CreateNetInfo(nameModifier.Invoke("Metro Track " + version), "Train Track " + version,
                     ActionExtensions.BeginChain<NetInfo>().
+                        Chain(ReplaceAI, version).
                         Chain(SetupMetroTrackMeta, version).
                         Chain(CommonSteps.SetVersion, groundVersion, version).
                         Chain(SetupTrackModel, customizationStep.Chain(SetCosts)), replaces
@@ -195,6 +197,7 @@ namespace MetroOverhaul
             }
             CreateNetInfo(nameModifier.Invoke("Metro Station Track Ground"), "Train Station Track",
                 ActionExtensions.BeginChain<NetInfo>().
+                Chain(ReplaceAI, NetInfoVersion.Ground).
                 Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
                 Chain(SetupStationTrack, NetInfoVersion.Ground).
                 Chain(p =>
@@ -202,6 +205,7 @@ namespace MetroOverhaul
                     //TODO(earalov): provide a track with narrow ped. lanes for Mr.Maison's stations
                     CreateNetInfo(nameModifier.Invoke("Metro Station Track Elevated"), "Train Station Track",
                         ActionExtensions.BeginChain<NetInfo>().
+                        Chain(ReplaceAI, NetInfoVersion.Elevated).
                         Chain(SetupMetroTrackMeta, NetInfoVersion.Elevated).
                         Chain(CommonSteps.SetVersion, p, NetInfoVersion.Elevated).
                         Chain(SetupStationTrack, NetInfoVersion.Elevated).
@@ -210,6 +214,7 @@ namespace MetroOverhaul
                     );
                     CreateNetInfo(nameModifier.Invoke("Metro Station Track Tunnel"), "Train Station Track",
                         ActionExtensions.BeginChain<NetInfo>().
+                        Chain(ReplaceAI, NetInfoVersion.Tunnel).
                         Chain(SetupMetroTrackMeta, NetInfoVersion.Tunnel).
                         Chain(CommonSteps.SetVersion, p, NetInfoVersion.Tunnel).
                         Chain(SetupStationTrack, NetInfoVersion.Tunnel).
@@ -217,8 +222,9 @@ namespace MetroOverhaul
                         Chain(SetupTrackModel, customizationStep),
                         tunnelReplaces
                     );
-                    CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Train Station Track",
+                    CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Train Station Track", //TODO(earalov): test. check if AI to be replaced with MetroTrackAI
                         ActionExtensions.BeginChain<NetInfo>().
+                        Chain(ReplaceAI, NetInfoVersion.Ground).
                         Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
                         Chain(SetupStationTrack, NetInfoVersion.Ground).
                         Chain(SetupSunkenStationTrack).
@@ -229,16 +235,41 @@ namespace MetroOverhaul
             );
         }
 
+        private static void ReplaceAI(NetInfo prefab, NetInfoVersion version)
+        {
+            var originalAi = prefab.GetComponent<PlayerNetAI>(); //milestone, construction and maintenance costs to be overriden later
+            var canModify = originalAi.CanModify();
+            int noiseAccumulation;
+            float noiseRadius;
+            originalAi.GetNoiseAccumulation(out noiseAccumulation, out noiseRadius);
+            if (originalAi is TrainTrackTunnelAI || version == NetInfoVersion.Tunnel)
+            {
+                GameObject.DestroyImmediate(originalAi);
+                var ai = prefab.gameObject.AddComponent<TrainTrackTunnelAIMetro>();
+                ai.m_canModify = canModify;
+                ai.m_noiseAccumulation = noiseAccumulation;
+                ai.m_noiseRadius = noiseRadius;
+                ai.m_info = prefab;
+                prefab.m_netAI = ai;
+            }
+            else if (!(originalAi is TrainTrackBridgeAI) && (version == NetInfoVersion.Bridge || version == NetInfoVersion.Elevated))
+            {
+                GameObject.DestroyImmediate(originalAi);
+                var ai = prefab.gameObject.AddComponent<TrainTrackBridgeAI>();
+                ai.m_canModify = canModify;
+                ai.m_noiseAccumulation = noiseAccumulation;
+                ai.m_noiseRadius = noiseRadius;
+                ai.m_info = prefab;
+                prefab.m_netAI = ai;
+            }
+        }
+
         public static void SetupElevatedStationTrack(NetInfo prefab)
         {
-            var trackAi = prefab.GetComponent<TrainTrackAI>();
-            trackAi.m_elevatedInfo = prefab;
         }
 
         public static void SetupSunkenStationTrack(NetInfo prefab)
         {
-            var trackAi = prefab.GetComponent<TrainTrackAI>();
-            trackAi.m_tunnelInfo = prefab;
             prefab.m_maxHeight = -1;
             prefab.m_minHeight = -3;
             prefab.m_lowerTerrain = false;
@@ -247,12 +278,10 @@ namespace MetroOverhaul
 
         public static void SetupTunnelStationTrack(NetInfo prefab)
         {
-            var trackAi = prefab.GetComponent<TrainTrackAI>();
-            trackAi.m_tunnelInfo = prefab;
             prefab.m_maxHeight = -1;
             prefab.m_minHeight = -5;
             prefab.m_lowerTerrain = false;
-            prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels; ;
+            prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
         }
 
         public static void SetupStationTrack(NetInfo prefab, NetInfoVersion version)

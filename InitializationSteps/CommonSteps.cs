@@ -12,23 +12,24 @@ namespace MetroOverhaul.InitializationSteps
 
         public static void SetVersion(NetInfo versionedPrefab, NetInfo prefab, NetInfoVersion version)
         {
-            if (prefab == null)
+            var trainTrackAi = prefab?.GetComponent<TrainTrackAI>();
+            if (trainTrackAi == null)
             {
                 return;
             }
             switch (version)
             {
                 case NetInfoVersion.Tunnel:
-                    prefab.GetComponent<TrainTrackAI>().m_tunnelInfo = versionedPrefab;
+                    trainTrackAi.m_tunnelInfo = versionedPrefab;
                     break;
                 case NetInfoVersion.Slope:
-                    prefab.GetComponent<TrainTrackAI>().m_slopeInfo = versionedPrefab;
+                    trainTrackAi.m_slopeInfo = versionedPrefab;
                     break;
                 case NetInfoVersion.Bridge:
-                    prefab.GetComponent<TrainTrackAI>().m_bridgeInfo = versionedPrefab;
+                    trainTrackAi.m_bridgeInfo = versionedPrefab;
                     break;
                 case NetInfoVersion.Elevated:
-                    prefab.GetComponent<TrainTrackAI>().m_elevatedInfo = versionedPrefab;
+                    trainTrackAi.m_elevatedInfo = versionedPrefab;
                     break;
             }
         }
