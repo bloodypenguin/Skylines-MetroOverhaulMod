@@ -1,4 +1,5 @@
 ﻿using System.Xml.Serialization;
+using MetroOverhaul.Detours;
 using MetroOverhaul.OptionsFramework;
 
 namespace MetroOverhaul
@@ -13,13 +14,13 @@ namespace MetroOverhaul
             steelTracks = false;
             steelTracksNoBar = false;
             concreteTracksNoBar = false;
-            improvedPassengerTrainAi = false;
-            improvedMetroTrainAi = false;
+            improvedPassengerTrainAi = true;
+            improvedMetroTrainAi = true;
         }
 
-        [Checkbox("Improved PassengerTrainAI (Should allow trains returning to depots)", null, null, EXPERIMENT)]
+        [Checkbox("Improved PassengerTrainAI (Should allow trains returning to depots)", nameof(PassengerTrainAIDetour), nameof(PassengerTrainAIDetour.ChangeDeployState), EXPERIMENT)]
         public bool improvedPassengerTrainAi { set; get; }
-        [Checkbox("Improved MetroTrainAI (So far causes citizens not boarding trains)", null, null, EXPERIMENT)]
+        [Checkbox("Improved MetroTrainAI (Should allow trains to properly spawn at surface)", nameof(MetroTrainAIDetour), nameof(MetroTrainAIDetour.ChangeDeployState), EXPERIMENT)]
         public bool improvedMetroTrainAi { set; get; }
         [Checkbox("Steel tracks", null, null, WIP)]
         public bool steelTracks { set; get; }

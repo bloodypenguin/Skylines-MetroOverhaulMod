@@ -5,6 +5,18 @@ namespace MetroOverhaul.Detours
     [TargetType(typeof(MetroTrainAI))]
     public class MetroTrainAIDetour : PassengerTrainAI
     {
+        public static void ChangeDeployState(bool state)
+        {
+            if (state)
+            {
+                Redirector<MetroTrainAIDetour>.Deploy();
+            }
+            else
+            {
+                Redirector<MetroTrainAIDetour>.Revert();
+            }
+        }
+
         [RedirectMethod]
         public override void CreateVehicle(ushort vehicleID, ref Vehicle data)
         {
