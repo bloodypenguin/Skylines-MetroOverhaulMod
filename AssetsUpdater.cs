@@ -10,7 +10,7 @@ namespace MetroOverhaul
     {
         public void UpdateExistingAssets()
         {
-            UpdateVanillaMetroTracks();
+            UpdateVanillaMetroStation();
             UpdateTrainTracks();
 
             UpdateMetroStations();
@@ -63,16 +63,21 @@ namespace MetroOverhaul
             return ((PlayerNetAI)netInfo.m_netAI).m_constructionCost;
         }
 
-
-        private static void UpdateVanillaMetroTracks()
+        private static void UpdateVanillaMetroStation()
         {
-            var vanillaMetroTrack = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
-            vanillaMetroTrack.m_buildHeight = -12;
-            Initializer.SetCosts(vanillaMetroTrack, NetInfoVersion.Tunnel);
-            var vanillaMetroStationTrack = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track");
-            vanillaMetroStationTrack.m_buildHeight = -12;
-            vanillaMetroStationTrack.m_maxHeight = -1;
-            vanillaMetroStationTrack.m_minHeight = -36;
+            var vanillaMetroStation = PrefabCollection<BuildingInfo>.FindLoaded("Metro Entrance");
+            foreach (var path in vanillaMetroStation.m_paths)
+            {
+                if (path == null || path.m_netInfo == null)
+                {
+                    continue;
+                }
+                if (path.m_netInfo.IsUndergroundMetroStationTrack())
+                {
+                    path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel");
+                }
+            }
+
         }
 
         private static void UpdateMetroStations()
