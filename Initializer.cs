@@ -196,7 +196,7 @@ namespace MetroOverhaul
             CreateNetInfo(nameModifier.Invoke("Metro Station Track Ground"), "Train Station Track",
                 ActionExtensions.BeginChain<NetInfo>().
                 Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
-                Chain(SetupStationTrack).
+                Chain(SetupStationTrack, NetInfoVersion.Ground).
                 Chain(p =>
                 {
                     //TODO(earalov): provide a track with narrow ped. lanes for Mr.Maison's stations
@@ -204,7 +204,7 @@ namespace MetroOverhaul
                         ActionExtensions.BeginChain<NetInfo>().
                         Chain(SetupMetroTrackMeta, NetInfoVersion.Elevated).
                         Chain(CommonSteps.SetVersion, p, NetInfoVersion.Elevated).
-                        Chain(SetupStationTrack).
+                        Chain(SetupStationTrack, NetInfoVersion.Elevated).
                         Chain(SetupElevatedStationTrack).
                         Chain(SetupTrackModel, customizationStep)
                     );
@@ -212,7 +212,7 @@ namespace MetroOverhaul
                         ActionExtensions.BeginChain<NetInfo>().
                         Chain(SetupMetroTrackMeta, NetInfoVersion.Tunnel).
                         Chain(CommonSteps.SetVersion, p, NetInfoVersion.Tunnel).
-                        Chain(SetupStationTrack).
+                        Chain(SetupStationTrack, NetInfoVersion.Tunnel).
                         Chain(SetupTunnelStationTrack).
                         Chain(SetupTrackModel, customizationStep),
                         tunnelReplaces
@@ -220,7 +220,7 @@ namespace MetroOverhaul
                     CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Train Station Track",
                         ActionExtensions.BeginChain<NetInfo>().
                         Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
-                        Chain(SetupStationTrack).
+                        Chain(SetupStationTrack, NetInfoVersion.Ground).
                         Chain(SetupSunkenStationTrack).
                         Chain(SetupTrackModel, customizationStep)
                     );
@@ -255,7 +255,7 @@ namespace MetroOverhaul
             prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels; ;
         }
 
-        public static void SetupStationTrack(NetInfo prefab)
+        public static void SetupStationTrack(NetInfo prefab, NetInfoVersion version)
         {
             prefab.m_followTerrain = false;
             prefab.m_flattenTerrain = false;
@@ -268,8 +268,7 @@ namespace MetroOverhaul
             prefab.m_useFixedHeight = true;
             prefab.m_availableIn = ItemClass.Availability.Game;
             prefab.m_intersectClass = null;
-            var prefabNameParts = prefab.name.Split(' ');
-            if (prefabNameParts.Last() == "Ground")
+            if (version == NetInfoVersion.Ground)
             {
                 prefab.m_lowerTerrain = false;
                 prefab.m_clipTerrain = true;
