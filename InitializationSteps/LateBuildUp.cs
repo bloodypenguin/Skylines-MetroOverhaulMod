@@ -25,7 +25,7 @@ namespace MetroOverhaul.InitializationSteps
                             if (bridgeAI != null)
                             {
                                 bridgeAI.m_bridgePillarInfo = epPropInfo;
-                                bridgeAI.m_bridgePillarOffset = 1;
+                                //bridgeAI.m_bridgePillarOffset = 2;
                             }
                         }
                         break;

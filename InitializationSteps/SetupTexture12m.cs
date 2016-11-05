@@ -64,7 +64,11 @@ namespace MetroOverhaul.InitializationSteps
                                     new TextureSet
                                         (@"Textures\Ground_Level_Crossing__MainTex.png",
                                             @"Textures\Ground_Level_Crossing__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                                            @"Textures\Ground_Segment_Rail__XYSMap.png"),
+                                    new LODTextureSet
+                                        (@"Textures\Ground_Level_Crossing__MainTex_LOD.png",
+                                            @"Textures\Ground_Level_Crossing__AlphaMap_LOD.png",
+                                            @"Textures\Ground_Segment_Pavement__XYSMap_LOD.png"));
                             }
                             else
                             {
@@ -84,7 +88,7 @@ namespace MetroOverhaul.InitializationSteps
                         {
                             if (segment.m_mesh.name.Contains("Pavement"))
                             {
-                                var isElevated = segment.m_mesh.name.Contains("Elevated_Pavement");
+                                var isElevated = segment.m_mesh.name.Contains("Elevated");
 
                                 segment.SetTextures(
                                     new TextureSet
@@ -108,29 +112,32 @@ namespace MetroOverhaul.InitializationSteps
                         }
                         foreach (var node in info.m_nodes)
                         {
-                            if (node.m_mesh.name.Contains("Elevated_Node_Pavement"))
+                            if (node.m_mesh.name.Contains("Pavement"))
                             {
-                                node.SetTextures(
-                                    new TextureSet
-                                        (@"Textures\Elevated_Node_Pavement__MainTex.png",
-                                            @"Textures\Elevated_Node_Pavement__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Pavement__XYSMap.png"),
-                                    new LODTextureSet
-                                        (@"Textures\Elevated_Node_Pavement__MainTex_LOD.png",
-                                            @"Textures\Elevated_Node_Pavement__AlphaMap_LOD.png",
-                                            @"Textures\Ground_Segment_Pavement__XYSMap_LOD.png"));
-                            }
-                            else if (node.m_mesh.name.Contains("Bridge_Node_Pavement"))
-                            {
-                                node.SetTextures(
-                                    new TextureSet
-                                        (@"Textures\Bridge_Node_Pavement__MainTex.png",
-                                            @"Textures\Elevated_Node_Pavement__AlphaMap.png",
-                                            @"Textures\Bridge_Node_Pavement__XYSMap.png"),
-                                    new LODTextureSet
-                                        (@"Textures\Bridge_Node_Pavement__MainTex_LOD.png",
-                                            @"Textures\Elevated_Node_Pavement__AlphaMap_LOD.png",
-                                            @"Textures\Bridge_Node_Pavement__XYSMap_LOD.png"));
+                                if (node.m_mesh.name.Contains("Elevated"))
+                                {
+                                    node.SetTextures(
+                                        new TextureSet
+                                            (@"Textures\Elevated_Node_Pavement__MainTex.png",
+                                                @"Textures\Elevated_Node_Pavement__AlphaMap.png",
+                                                @"Textures\Ground_Segment_Pavement__XYSMap.png"),
+                                        new LODTextureSet
+                                            (@"Textures\Elevated_Node_Pavement__MainTex_LOD.png",
+                                                @"Textures\Elevated_Node_Pavement__AlphaMap_LOD.png",
+                                                @"Textures\Ground_Segment_Pavement__XYSMap_LOD.png"));
+                                }
+                                else if (node.m_mesh.name.Contains("Bridge"))
+                                {
+                                    node.SetTextures(
+                                        new TextureSet
+                                            (@"Textures\Bridge_Node_Pavement__MainTex.png",
+                                                @"Textures\Elevated_Node_Pavement__AlphaMap.png",
+                                                @"Textures\Bridge_Node_Pavement__XYSMap.png"),
+                                        new LODTextureSet
+                                            (@"Textures\Bridge_Node_Pavement__MainTex_LOD.png",
+                                                @"Textures\Elevated_Node_Pavement__AlphaMap_LOD.png",
+                                                @"Textures\Bridge_Node_Pavement__XYSMap_LOD.png"));
+                                }
                             }
                             else
                             {
