@@ -10,24 +10,28 @@ namespace MetroOverhaul.InitializationSteps
     public static class CommonSteps
     {
 
-        public static void SetTunnel(NetInfo p4, NetInfo p)
+        public static void SetVersion(NetInfo versionedPrefab, NetInfo prefab, NetInfoVersion version)
         {
-            p.GetComponent<TrainTrackAI>().m_tunnelInfo = p4;
-        }
-
-        public static void SetSlope(NetInfo p3, NetInfo p)
-        {
-            p.GetComponent<TrainTrackAI>().m_slopeInfo = p3;
-        }
-
-        public static void SetElevated(NetInfo p2, NetInfo p)
-        {
-            p.GetComponent<TrainTrackAI>().m_elevatedInfo = p2;
-        }
-
-        public static void SetBridge(NetInfo p1, NetInfo p)
-        {
-            p.GetComponent<TrainTrackAI>().m_bridgeInfo = p1;
+            var trainTrackAi = prefab?.GetComponent<TrainTrackAI>();
+            if (trainTrackAi == null)
+            {
+                return;
+            }
+            switch (version)
+            {
+                case NetInfoVersion.Tunnel:
+                    trainTrackAi.m_tunnelInfo = versionedPrefab;
+                    break;
+                case NetInfoVersion.Slope:
+                    trainTrackAi.m_slopeInfo = versionedPrefab;
+                    break;
+                case NetInfoVersion.Bridge:
+                    trainTrackAi.m_bridgeInfo = versionedPrefab;
+                    break;
+                case NetInfoVersion.Elevated:
+                    trainTrackAi.m_elevatedInfo = versionedPrefab;
+                    break;
+            }
         }
     }
 }

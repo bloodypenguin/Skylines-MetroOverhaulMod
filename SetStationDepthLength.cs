@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MetroOverhaul.Extensions;
 using UnityEngine;
 
 namespace MetroOverhaul
@@ -26,7 +27,7 @@ namespace MetroOverhaul
                 }
                 pathList0 = info.m_paths.ToList();
                 pairs.AddRange(pathList0.SelectMany(p => p.m_nodes).GroupBy(n => n).Where(grp => grp.Count() > 1).Select(grp => grp.Key).ToList()); //revisit
-                linkedStationTracks = pathList0.Where(p => p.m_nodes.Any(n => pairs.Contains(n)) && p.m_netInfo.name == "Metro Station Track").ToList();
+                linkedStationTracks = pathList0.Where(p => p.m_nodes.Any(n => pairs.Contains(n)) && p.m_netInfo.IsUndergroundMetroStationTrack()).ToList();
                 float lowestHigh = 0;
                 var lowestHighPath = pathList0.FirstOrDefault(p => p.m_nodes.Any(n => n.y >= 0) && p.m_nodes.Any(nd => nd.y < 0));
                 if (lowestHighPath == null)
@@ -43,7 +44,7 @@ namespace MetroOverhaul
                     if (thePath.m_nodes.All(n => n.y < 0))
                     {
                         var highestNode = thePath.m_nodes.OrderBy(n => n.y).LastOrDefault().y;
-                        if (thePath.m_netInfo.name == "Metro Station Track")
+                        if (thePath.m_netInfo.IsUndergroundMetroStationTrack())
                         {
                             highestLowStation = Math.Max(highestNode, highestLowStation);
                             thePath.GenStationTrack(linkedStationTracks, stationLengthDist);
@@ -64,7 +65,7 @@ namespace MetroOverhaul
                     if (thePath.m_nodes.All(n => n.y < 0) && thePath != lowestHighPath)
                     {
                         thePath.DipPath(offsetDepthDist);
-                        if (thePath.m_netInfo.name != "Metro Station Track")
+                        if (!thePath.m_netInfo.IsUndergroundMetroStationTrack())
                         {
                             thePath.GenPathCurve();
                         }

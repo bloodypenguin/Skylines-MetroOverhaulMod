@@ -5,6 +5,7 @@ using MetroOverhaul.Redirection;
 using MetroOverhaul.NEXT;
 using System;
 using System.Collections.Generic;
+using MetroOverhaul.OptionsFramework;
 using UnityEngine;
 
 namespace MetroOverhaul
@@ -12,6 +13,7 @@ namespace MetroOverhaul
     public class LoadingExtension : LoadingExtensionBase
     {
         public static Initializer Container;
+        private static AssetsUpdater _updater;
         public static bool Done { get; private set; } // Only one Assets installation throughout the application
 
         private static readonly Queue<Action> LateBuildUpQueue = new Queue<Action>();
@@ -19,6 +21,7 @@ namespace MetroOverhaul
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
+            _updater = null;
             LateBuildUpQueue.Clear();
             InstallAssets();
             if (Container == null)
@@ -26,7 +29,14 @@ namespace MetroOverhaul
                 Container = new GameObject("MetroOverhaul").AddComponent<Initializer>();
             }
             Redirector<DepotAIDetour>.Deploy();
-            //Redirector<MetroTrainAIDetour>.Deploy(); //don't deploy this! For some reason that causes citizens not boarding trains
+            if (OptionsWrapper<Options>.Options.improvedMetroTrainAi)
+            {
+                Redirector<MetroTrainAIDetour>.Deploy();
+            }
+            if (OptionsWrapper<Options>.Options.improvedPassengerTrainAi)
+            {
+                Redirector<PassengerTrainAIDetour>.Deploy();
+            }
         }
 
         public static void EnqueueLateBuildUpAction(Action action)
@@ -64,6 +74,7 @@ namespace MetroOverhaul
         public override void OnReleased()
         {
             base.OnReleased();
+            _updater = null;
             if (Container == null)
             {
                 return;
@@ -72,6 +83,7 @@ namespace MetroOverhaul
             Container = null;
             Redirector<DepotAIDetour>.Revert();
             Redirector<MetroTrainAI>.Revert();
+            Redirector<PassengerTrainAIDetour>.Revert();
         }
 
         public override void OnLevelLoaded(LoadMode mode)
@@ -81,45 +93,33 @@ namespace MetroOverhaul
             {
                 LateBuildUpQueue.Dequeue().Invoke();
             }
-            MetroStations.UpdateMetroStation();
+            if (_updater == null)
+            {
+                _updater = new AssetsUpdater();
+                _updater.UpdateExistingAssets();
+            }
             DespawnVanillaMetro();
-            UpdateEffect();
         }
 
         private static void DespawnVanillaMetro()
         {
-            var vehicles = Singleton<VehicleManager>.instance.m_vehicles;
-            for (ushort i = 0; i < vehicles.m_size; i++)
+            SimulationManager.instance.AddAction(() =>
             {
-                var vehicle = vehicles.m_buffer[i];
-                if (vehicle.m_flags == ~Vehicle.Flags.All || vehicle.Info == null)
+                var vehicles = Singleton<VehicleManager>.instance.m_vehicles;
+                for (ushort i = 0; i < vehicles.m_size; i++)
                 {
-                    continue;
+                    var vehicle = vehicles.m_buffer[i];
+                    if (vehicle.m_flags == ~Vehicle.Flags.All || vehicle.Info == null)
+                    {
+                        continue;
+                    }
+                    if (vehicle.Info.name == "Metro")
+                    {
+                        Singleton<VehicleManager>.instance.ReleaseVehicle(i);
+                    }
                 }
-                if (vehicle.Info.name == "Metro")
-                {
-                    Singleton<VehicleManager>.instance.ReleaseVehicle(i);
-                }
-            }
+            });
+
         }
-
-        private static void UpdateEffect()
-        {
-            var metro = PrefabCollection<VehicleInfo>.FindLoaded("Metro");
-            var arriveEffect = ((MetroTrainAI)metro.m_vehicleAI).m_arriveEffect;
-            for (uint i = 0; i < PrefabCollection<VehicleInfo>.LoadedCount(); i++)
-            {
-                var info = PrefabCollection<VehicleInfo>.GetLoaded(i);
-                var metroTrainAI = info?.m_vehicleAI as MetroTrainAI;
-                if (metroTrainAI == null)
-                {
-                    continue;
-                }
-                info.m_effects = metro.m_effects;
-                metroTrainAI.m_arriveEffect = arriveEffect;
-            }
-        }
-
-
     }
 }

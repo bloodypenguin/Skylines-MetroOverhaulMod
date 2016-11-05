@@ -8,15 +8,16 @@ namespace MetroOverhaul.NEXT
     [Flags]
     public enum NetInfoVersion
     {
-        Ground = 0, //By default
-        Elevated = 1,
-        Bridge = 2,
-        Tunnel = 4,
-        Slope = 8,
-        All = 15,
-        GroundGrass = 16,
-        GroundTrees = 32,
-        AllWithDecoration = 63,
+        None = 0,
+        Ground = 1, //By default
+        Elevated = 2,
+        Bridge = 4,
+        Tunnel = 8,
+        Slope = 16,
+        All = 31,
+        GroundGrass = 32,
+        GroundTrees = 64,
+        AllWithDecoration = 127,
     }
 
     public static class NetInfoVersionExtensions

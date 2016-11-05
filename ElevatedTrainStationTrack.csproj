@@ -39,9 +39,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AbstractInitializer.cs" />
+    <Compile Include="AssetsUpdater.cs" />
+    <Compile Include="Detours\PassengerTrainAIDetour.cs" />
     <Compile Include="Extensions\ActionExtensions.cs" />
     <Compile Include="Detours\DepotAIDetour.cs" />
     <Compile Include="Detours\MetroTrainAIDetour.cs" />
+    <Compile Include="Extensions\NetInfoExtensions.cs" />
+    <Compile Include="TrainTrackTunnelAIMetro.cs" />
     <Compile Include="InitializationSteps\LateBuildUpSteel.cs" />
     <Compile Include="InitializationSteps\LateBuildUp.cs" />
     <Compile Include="InitializationSteps\CommonSteps.cs" />
@@ -49,7 +53,7 @@
     <Compile Include="Initializer.cs" />
     <Compile Include="Loading.cs" />
     <Compile Include="LoadingExtension.cs" />
-    <Compile Include="MetroStations.cs" />
+    <Compile Include="Extensions\BuildingInfoExtensions.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Modifiers.cs" />
     <Compile Include="NEXT\AssetManager.cs" />
