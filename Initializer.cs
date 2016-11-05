@@ -248,13 +248,25 @@ namespace MetroOverhaul
             originalAi.GetNoiseAccumulation(out noiseAccumulation, out noiseRadius);
             if (originalAi is TrainTrackTunnelAI || version == NetInfoVersion.Tunnel)
             {
-                GameObject.DestroyImmediate(originalAi);
-                var ai = prefab.gameObject.AddComponent<TrainTrackTunnelAIMetro>();
-                ai.m_canModify = canModify;
-                ai.m_noiseAccumulation = noiseAccumulation;
-                ai.m_noiseRadius = noiseRadius;
-                ai.m_info = prefab;
-                prefab.m_netAI = ai;
+                if (originalAi is TrainTrackTunnelAI)
+                {
+                    GameObject.DestroyImmediate(originalAi);
+                    var ai = prefab.gameObject.AddComponent<TrainTrackTunnelAIMetro>();
+                    ai.m_canModify = canModify;
+                    ai.m_noiseAccumulation = noiseAccumulation;
+                    ai.m_noiseRadius = noiseRadius;
+                    ai.m_info = prefab;
+                    prefab.m_netAI = ai;
+                }
+                else
+                {
+                    GameObject.DestroyImmediate(originalAi);
+                    var ai = prefab.gameObject.AddComponent<MetroTrackAI>();
+                    ai.m_info = prefab;
+                    ai.m_transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Train");
+                    prefab.m_netAI = ai;
+                }
+
             }
             else if (!(originalAi is TrainTrackBridgeAI) && (version == NetInfoVersion.Bridge || version == NetInfoVersion.Elevated))
             {
