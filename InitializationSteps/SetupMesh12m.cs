@@ -97,7 +97,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
-
+                        node0.m_lodMaterial = elevatedLODMaterial;
                         info.m_segments = new[] { segment0, segment1 };
                         info.m_nodes = new[] { node0, node1, node3 };
                         break;
@@ -134,9 +134,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
-                        //segment1.m_material = railMaterial;
-                        //node1.m_material = railMaterial;
-
+                        node0.m_lodMaterial = elevatedLODMaterial;
 
                         info.m_segments = new[] { segment0, segment1 };
                         info.m_nodes = new[] { node0, node1, node3 };
@@ -145,11 +143,11 @@ namespace MetroOverhaul.InitializationSteps
                 case NetInfoVersion.Slope:
                     {
                         var segment0 = info.m_segments[0];
-                        var segment1 = info.m_segments[1];
-                        var segment3 = info.m_segments[3];
+                        var segment1 = info.m_segments[1].ShallowClone();
+                        var segment3 = info.m_segments[3].ShallowClone();
                         var node0 = info.m_nodes[0];
-                        var node1 = info.m_nodes[1];
-                        var node3 = info.m_nodes[3];
+                        var node1 = info.m_nodes[1].ShallowClone();
+                        var node3 = info.m_nodes[3].ShallowClone();
                         var node4 = info.m_nodes[4];
                         var node5 = info.m_nodes[0].ShallowClone();
 
@@ -177,9 +175,11 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
 
                         segment3.m_material = elevatedMaterial;
+                        segment3.m_lodMaterial = elevatedLODMaterial;
                         node3.m_material = elevatedMaterial;
+                        node3.m_lodMaterial = elevatedLODMaterial;
                         node5.m_material = elevatedMaterial;
-
+                        node5.m_lodMaterial = elevatedLODMaterial;
                         info.m_segments = new[] { segment0, segment1, segment3 };
                         info.m_nodes = new[] { node0, node1, node3, node4, node5 };
                         break;
@@ -212,9 +212,10 @@ namespace MetroOverhaul.InitializationSteps
                             (@"Meshes\Elevated_Rail.obj");
                         segment1.m_material = elevatedMaterial;
                         node1.m_material = elevatedMaterial;
+                        node1.m_lodMaterial = elevatedLODMaterial;
                         segment2.m_material = elevatedMaterial;
                         node2.m_material = elevatedMaterial;
-
+                        node2.m_lodMaterial = elevatedLODMaterial;
                         info.m_segments = new[] { segment0, segment1, segment2 };
                         info.m_nodes = new[] { node0, node1, node2 };
                         break;
@@ -240,7 +241,9 @@ namespace MetroOverhaul.InitializationSteps
             segment0.m_material = elevatedMaterial;
             segment0.m_lodMaterial = elevatedLODMaterial;
             node0.m_material = elevatedMaterial;
+            node0.m_lodMaterial = elevatedLODMaterial;
             node2.m_material = elevatedMaterial;
+            node2.m_lodMaterial = elevatedLODMaterial;
         }
 
         //mind changed segment and node indices! (after Setup12mMesh)
@@ -266,7 +269,7 @@ namespace MetroOverhaul.InitializationSteps
         }
 
 
-        public static void Setup12mMeshStation(NetInfo prefab, NetInfoVersion version, NetInfo elevatedInfo)
+        public static void Setup12mMeshStation(NetInfo prefab, NetInfoVersion version, NetInfo elevatedInfo, NetInfo tunnelInfo)
         {
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
             var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
@@ -350,6 +353,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
+                        node0.m_lodMaterial = elevatedLODMaterial;
 
                         prefab.m_segments = new[] { segment0, segment1 };
                         prefab.m_nodes = new[] { node0, node1 };
@@ -357,12 +361,12 @@ namespace MetroOverhaul.InitializationSteps
                     }
                 case NetInfoVersion.Tunnel:
                     {
-                        var segment0 = prefab.m_segments[0];
-                        var segment1 = prefab.m_segments[1].ShallowClone();
-                        var segment2 = prefab.m_segments[2].ShallowClone();
+                        var segment0 = prefab.m_segments[0];    
+                        var segment1 = prefab.m_segments[0].ShallowClone();
+                        var segment2 = prefab.m_segments[1].ShallowClone();
                         var node0 = prefab.m_nodes[0];
-                        var node1 = prefab.m_nodes[1].ShallowClone();
-                        var node2 = prefab.m_nodes[2];
+                        var node1 = prefab.m_nodes[0].ShallowClone();
+                        var node2 = prefab.m_nodes[1].ShallowClone();
 
                         segment1
                             .SetMeshes
@@ -381,6 +385,12 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                             (@"Meshes\Elevated_Station_Rail_Node.obj")
                             .SetConsistentUVs();
+
+                        segment0.m_material = tunnelInfo.m_segments[0].m_material;
+                        segment0.m_lodMaterial = tunnelInfo.m_segments[0].m_lodMaterial;
+                        node0.m_material = tunnelInfo.m_nodes[0].m_material;
+                        node0.m_lodMaterial = tunnelInfo.m_nodes[0].m_lodMaterial;
+
                         prefab.m_segments = new[] { segment0, segment1, segment2 };
                         prefab.m_nodes = new[] { node0, node1, node2 };
                         break;

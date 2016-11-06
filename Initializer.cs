@@ -119,7 +119,7 @@ namespace MetroOverhaul
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizaionSteps.CommonConcreteCustomization).
-                        Chain(SetupMesh.Setup12mMeshStation, tunnelInfo).
+                        Chain(SetupMesh.Setup12mMeshStation, elevatedInfo, tunnelInfo).
                         Chain(SetupTexture.Setup12mTexture), null, "Metro Station Track"
                 );
             }
