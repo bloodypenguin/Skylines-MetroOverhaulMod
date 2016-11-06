@@ -27,7 +27,7 @@ namespace MetroOverhaul
 
             var allowChangeDepth =
                 info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.name.Contains("Pedestrian Connection")) > 0 &&
-                info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack()) == 1;
+                info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack()) == 1; //TODO(earalov): don't allow to change depth if no ped. paths above metro tracks
 
             if (allowChangeDepth)
             {
@@ -189,20 +189,14 @@ namespace MetroOverhaul
             {
                 return;
             }
-            var totalX = Math.Abs(beginning.x - end.x);
-            var totalZ = Math.Abs(beginning.z - end.z);
-            var originalLength = (float)Math.Sqrt(Math.Pow(totalX, 2) + Math.Pow(totalZ, 2));
-            var scalingCoefficient = newLength / originalLength;
-
             for (var i = 0; i < path.m_nodes.Length; i++)
             {
-                var multiplierX = path.m_nodes[i].x / Mathf.Abs(path.m_nodes[i].x);
-                var multiplierZ = path.m_nodes[i].z / Mathf.Abs(path.m_nodes[i].z);
+                var toStart = Vector3.Distance(path.m_nodes[i], middle);
                 path.m_nodes[i] = new Vector3
                 {
-                    x = path.m_nodes[i].x + (0.5f * multiplierX * (scalingCoefficient - 1) * totalX),
-                    y = path.m_nodes[i].y,
-                    z = path.m_nodes[i].z + (0.5f * multiplierZ * (scalingCoefficient - 1) * totalZ)
+                    x = middle.x + newLength * 0.5f * (path.m_nodes[i].x - middle.x) / toStart,
+                    y = middle.y + newLength * 0.5f * (path.m_nodes[i].y - middle.y) / toStart,
+                    z = middle.z + newLength * 0.5f * (path.m_nodes[i].z - middle.z) / toStart
                 };
             }
             SetCurveTargets(path);
