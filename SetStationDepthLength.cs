@@ -51,55 +51,49 @@ namespace MetroOverhaul
 
             var highestLow = float.MinValue;
             var highestLowStation = float.MinValue;
-            var pathList1 = new List<BuildingInfo.PathInfo>();  //TODO(earalov): give meaningful name!
             foreach (var path in info.m_paths)
             {
                 path.m_forbidLaneConnection = null;
-                if (path.m_nodes.All(n => n.y < 0))
+                if (!path.m_nodes.All(n => n.y < 0))
                 {
-                    var highestNode = path.m_nodes.OrderBy(n => n.y).LastOrDefault().y;
-                    if (path.m_netInfo.IsUndergroundMetroStationTrack())
+                    continue;
+                }
+                var highestNode = path.m_nodes.OrderBy(n => n.y).LastOrDefault().y;
+                if (path.m_netInfo.IsUndergroundMetroStationTrack())
+                {
+                    highestLowStation = Math.Max(highestNode, highestLowStation);
+                    if (!linkedStationTracks.Contains(path))
                     {
-                        highestLowStation = Math.Max(highestNode, highestLowStation);
-                        if (!linkedStationTracks.Contains(path))
-                        {
-                            GenStationTrack(path, targetStationTrackLength);
-                        }
-                    }
-                    else if (IsPathGenerated(path))
-                    {
-                        highestLow = Math.Max(highestNode, highestLow);
+                        ChangePathsLength(path, targetStationTrackLength);
                     }
                 }
-                pathList1.Add(path);
+                else if (IsPathGenerated(path))
+                {
+                    highestLow = Math.Max(highestNode, highestLow);
+                }
             }
-            pathList1.RemoveAll(IsPathGenerated);
+            info.m_paths = info.m_paths.Where(p => !IsPathGenerated(p)).ToArray();
 
             if (!allowChangeDepth)
             {
-                info.m_paths = pathList1.ToArray();
                 return;
             }
             var offsetDepthDist = targetDepth + highestLowStation;
             var stepDepthDist = targetDepth + lowestHigh;
-            var pathList2 = new List<BuildingInfo.PathInfo>(); //TODO(earalov): give meaningful name!
-            foreach (var path in pathList1)
+            var updatedPaths = new List<BuildingInfo.PathInfo>();
+            foreach (var path in info.m_paths)
             {
                 if (path.m_nodes.All(n => n.y < 0) && path != lowestHighPath)
                 {
                     DipPath(path, offsetDepthDist);
-                    if (!path.m_netInfo.IsUndergroundMetroStationTrack())
-                    {
-                        GenPathCurve(path);
-                    }
                 }
                 else
                 {
-                    pathList2.AddRange(lowestHighPath.GenSteps(stepDepthDist));
+                    updatedPaths.AddRange(lowestHighPath.GenSteps(stepDepthDist));
                 }
-                pathList2.Add(path);
+                updatedPaths.Add(path);
             }
-            info.m_paths = pathList2.ToArray();
+            info.m_paths = updatedPaths.ToArray();
 
         }
 
@@ -107,25 +101,23 @@ namespace MetroOverhaul
         {
             for (var i = 0; i < path.m_nodes.Length; i++)
             {
-                path.m_nodes[i] = new Vector3 { x = path.m_nodes[i].x, y = path.m_nodes[i].y - depthOffsetDist, z = path.m_nodes[i].z };
+                path.m_nodes[i] = new Vector3(path.m_nodes[i].x, path.m_nodes[i].y - depthOffsetDist, path.m_nodes[i].z);
+            }
+            for (var i = 0; i < path.m_curveTargets.Length; i++)
+            {
+                path.m_curveTargets[i] = new Vector3(path.m_curveTargets[i].x, path.m_curveTargets[i].y - depthOffsetDist, path.m_curveTargets[i].z);
             }
         }
 
-        //TODO(earalov): curveOff is unused. Looks suspicious. Are we able to handle curved paths at all?
-        private static void GenPathCurve(BuildingInfo.PathInfo path, float curveOff = 0)
+        
+        private static void SetCurveTargets(BuildingInfo.PathInfo path)
         {
-            if (path.m_nodes.Length <= 1)
+            if (path.m_nodes.Length < 2)
             {
                 return;
             }
-            var newCurveTargets = new List<Vector3>();
-            if (path.m_curveTargets.Length > 0)
-                newCurveTargets.AddRange(path.m_curveTargets);
-            else
-                newCurveTargets.Add(new Vector3());
-
-            newCurveTargets[0] = (path.m_nodes.First() + path.m_nodes.Last()) / 2;
-
+            var newCurveTargets = path.m_curveTargets.Length > 0 ? path.m_curveTargets : new[] { Vector3.zero};
+            newCurveTargets[0] = (path.m_nodes.First() + path.m_nodes.Last()) / 2; //TODO(earalov): Is this approrriate when path has multiple curve targets?
             path.m_curveTargets = newCurveTargets.ToArray();
         }
 
@@ -153,7 +145,7 @@ namespace MetroOverhaul
                 var newNodes = new[] { lastCoords, currCoords };
                 newPath = newPath.ShallowClone();
                 newPath.m_nodes = newNodes;
-                GenPathCurve(newPath);
+                SetCurveTargets(newPath);
                 pathList.Add(newPath);
                 dir.x = Math.Min(currCoords.x - lastCoords.x, 8);
                 dir.y = currCoords.y - lastCoords.y;
@@ -162,7 +154,7 @@ namespace MetroOverhaul
             return pathList;
         }
 
-        private static void GenStationTrack(BuildingInfo.PathInfo path, float length)
+        private static void ChangePathsLength(BuildingInfo.PathInfo path, float length)
         {
             var totalX = Math.Abs(path.m_nodes.First().x - path.m_nodes.Last().x);
             var totalZ = Math.Abs(path.m_nodes.First().z - path.m_nodes.Last().z);
@@ -185,7 +177,7 @@ namespace MetroOverhaul
                 var multiplierZ = path.m_nodes[i].z / Mathf.Abs(path.m_nodes[i].z);
                 path.m_nodes[i] = new Vector3() { x = path.m_nodes[i].x + (0.5f * multiplierX * (offCoeff - 1) * totalX), y = path.m_nodes[i].y, z = path.m_nodes[i].z + (0.5f * multiplierZ * (offCoeff - 1) * totalZ) };
             }
-            GenPathCurve(path);
+            SetCurveTargets(path);
         }
 
         private static bool IsPathGenerated(BuildingInfo.PathInfo path)
