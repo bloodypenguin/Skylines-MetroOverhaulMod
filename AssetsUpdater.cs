@@ -65,10 +65,15 @@ namespace MetroOverhaul
 
         private static void UpdateVanillaMetroStation()
         {
-            var vanillaMetroStation = PrefabCollection<BuildingInfo>.FindLoaded("Metro Entrance");
+            SetupNewTunnelTrack(PrefabCollection<BuildingInfo>.FindLoaded("Metro Entrance"));
+            SetupNewTunnelTrack(PrefabCollection<BuildingInfo>.FindLoaded("Integrated Metro Station"));
+        }
+
+        private static void SetupNewTunnelTrack(BuildingInfo vanillaMetroStation)
+        {
             foreach (var path in vanillaMetroStation.m_paths)
             {
-                if (path == null || path.m_netInfo == null)
+                if (path?.m_netInfo == null)
                 {
                     continue;
                 }
@@ -77,7 +82,6 @@ namespace MetroOverhaul
                     path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel");
                 }
             }
-
         }
 
         private static void UpdateMetroStations()

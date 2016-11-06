@@ -38,20 +38,45 @@ namespace UIMod
         public static MetroStationCustomizer instance;
         public override void Update()
         {
-            if (m_buildingTool == null)
+            if (m_buildingTool == null) { 
                 return;
+            }
             try
             {
-                BuildingInfo bInfo = m_buildingTool.enabled ? m_buildingTool.m_prefab : null;
-                if (bInfo == m_currentBuilding)
+                var toolInfo = m_buildingTool.enabled ? m_buildingTool.m_prefab : null;
+                if (toolInfo == m_currentBuilding)
                 {
                     return;
                 }
-                else if (bInfo != null && bInfo.IsUndergroundMetroStation())
+                BuildingInfo finalInfo = null;
+                if (toolInfo != null)
+                {
+                    if (toolInfo.IsUndergroundMetroStation())
+                    {
+                        finalInfo = toolInfo;
+                    }
+                    else if(toolInfo.m_subBuildings != null)
+                    {
+                        foreach (var subInfo in toolInfo.m_subBuildings)
+                        {
+                            if (subInfo.m_buildingInfo == null || !subInfo.m_buildingInfo.IsUndergroundMetroStation())
+                            {
+                                continue;
+                            }
+                            finalInfo = subInfo.m_buildingInfo;
+                            break;
+                        }
+                    }
+                }
+                if (finalInfo == m_currentBuilding)
+                {
+                    return;
+                }
+                if (finalInfo != null)
                 {
                     m_setDepth = MIN_DEPTH;
                     m_setLength = MIN_LENGTH;
-                    Activate(bInfo);
+                    Activate(finalInfo);
                 }
                 else
                 {

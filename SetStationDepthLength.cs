@@ -14,27 +14,25 @@ namespace MetroOverhaul
         {
             if (stationDepthDist > 0 && stationLengthDist > 0)
             {
-                var pathList0 = new List<BuildingInfo.PathInfo>();
                 var pathList1 = new List<BuildingInfo.PathInfo>();
                 var pathList2 = new List<BuildingInfo.PathInfo>();
-                var linkedStationTracks = new List<BuildingInfo.PathInfo>();
                 var pairs = new List<Vector3>();
-                var buildingAI = info.GetComponent<TransportStationAI>();
+                var buildingAI = info.GetComponent<DepotAI>();
                 if (buildingAI != null)
                 {
                     buildingAI.m_spawnPosition.y = -stationDepthDist;
                     buildingAI.m_spawnTarget.y = -stationDepthDist;
                 }
-                pathList0 = info.m_paths.ToList();
+                var pathList0 = info.m_paths.ToList();
                 pairs.AddRange(pathList0.SelectMany(p => p.m_nodes).GroupBy(n => n).Where(grp => grp.Count() > 1).Select(grp => grp.Key).ToList()); //revisit
-                linkedStationTracks = pathList0.Where(p => p.m_nodes.Any(n => pairs.Contains(n)) && p.m_netInfo.IsUndergroundMetroStationTrack()).ToList();
+                var linkedStationTracks = pathList0.Where(p => p.m_nodes.Any(n => pairs.Contains(n)) && p.m_netInfo.IsUndergroundMetroStationTrack()).ToList();
                 float lowestHigh = 0;
-                var lowestHighPath = pathList0.FirstOrDefault(p => p.m_nodes.Any(n => n.y >= 0) && p.m_nodes.Any(nd => nd.y < 0));
-                if (lowestHighPath == null)
+                var lowestHighPath = pathList0.FirstOrDefault(p => p.m_nodes.Any(n => n.y >= 0) && p.m_nodes.Any(nd => nd.y < 0)) ??
+                                     pathList0.Where(p => p.m_netInfo.name == "Pedestrian Connection Surface").OrderByDescending(p => p.m_nodes[0].y).FirstOrDefault(); //TODO(earalov): What if author used "Pedestrian Connection" instead of "Pedestrian Connection Surface"?
+                if (lowestHighPath != null)
                 {
-                    lowestHighPath = pathList0.Where(p => p.m_netInfo.name == "Pedestrian Connection Surface").OrderByDescending(p => p.m_nodes[0].y).FirstOrDefault();
-                }
-                lowestHigh = lowestHighPath.m_nodes.OrderBy(n => n.y).FirstOrDefault().y;
+                    lowestHigh = lowestHighPath.m_nodes.OrderBy(n => n.y).FirstOrDefault().y;
+                } //TODO(earalov): properly handle integrated metro station (it has no own networks)
                 float highestLow = float.MinValue;
                 float highestLowStation = float.MinValue;
                 for (int i = 0; i < pathList0.Count(); i++)
