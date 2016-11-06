@@ -89,7 +89,7 @@ namespace MetroOverhaul
                 }
                 else
                 {
-                    updatedPaths.AddRange(lowestHighPath.GenSteps(stepDepthDist));
+                    updatedPaths.AddRange(GenerateSteps(lowestHighPath, stepDepthDist));
                 }
                 updatedPaths.Add(path);
             }
@@ -121,7 +121,7 @@ namespace MetroOverhaul
             path.m_curveTargets = newCurveTargets.ToArray();
         }
 
-        private static IEnumerable<BuildingInfo.PathInfo> GenSteps(this BuildingInfo.PathInfo path, float depth)
+        private static IEnumerable<BuildingInfo.PathInfo> GenerateSteps(BuildingInfo.PathInfo path, float depth)
         {
             var pathList = new List<BuildingInfo.PathInfo>();
             var lastCoords = path.m_nodes.OrderBy(n => n.z).FirstOrDefault();
