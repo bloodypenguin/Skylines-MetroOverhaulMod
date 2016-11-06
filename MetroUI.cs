@@ -345,7 +345,7 @@ namespace UIMod
 
         private void DoStationMechanics()
         {
-            m_currentBuilding.SetStation(m_setDepth, m_setLength);
+            SetStationDepthLength.ModifyStation(m_currentBuilding, m_setDepth, m_setLength);
         }
     }
 }

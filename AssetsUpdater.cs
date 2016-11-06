@@ -99,15 +99,11 @@ namespace MetroOverhaul
                 {
                     var transportStationAi = (TransportStationAI) info.m_buildingAI;
                     transportStationAi.m_maxVehicleCount = 0;
-                }
-                else
-                {
                     if (!OptionsWrapper<Options>.Options.metroUi)
                     {
-                        info.SetStation(12, 144);
+                        SetStationDepthLength.ModifyStation(info, 12, 144);
                     }
                 }
-
                 info.m_UnlockMilestone = vanillaMetroStation.m_UnlockMilestone;
                 ((DepotAI)info.m_buildingAI).m_createPassMilestone = ((DepotAI)vanillaMetroStation.m_buildingAI).m_createPassMilestone;
 
