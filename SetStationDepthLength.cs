@@ -124,9 +124,18 @@ namespace MetroOverhaul
             {
                 return;
             }
-            var newCurveTargets = path.m_curveTargets.Length > 0 ? path.m_curveTargets : new[] { Vector3.zero };
-            newCurveTargets[0] = (path.m_nodes.First() + path.m_nodes.Last()) / 2; //TODO(earalov): Is this approrriate when path has multiple curve targets?
-            path.m_curveTargets = newCurveTargets;
+            var newCurveTargets = new List<Vector3>();
+            if (path.m_curveTargets.Length > 0)
+                newCurveTargets.AddRange(path.m_curveTargets);
+            else
+                newCurveTargets.Add(new Vector3());
+            newCurveTargets[0] = GetMiddle(path);
+            path.m_curveTargets = newCurveTargets.ToArray();
+        }
+
+        private static Vector3 GetMiddle(BuildingInfo.PathInfo path)
+        {
+            return (path.m_nodes.First() + path.m_nodes.Last()) / 2;
         }
 
         private static IEnumerable<BuildingInfo.PathInfo> GenerateSteps(BuildingInfo.PathInfo path, float depth)
@@ -175,7 +184,7 @@ namespace MetroOverhaul
             }
             var beginning = path.m_nodes.First();
             var end = path.m_nodes.Last();
-            var middle = (beginning + end) / 2;
+            var middle = GetMiddle(path);
             if (path.m_curveTargets.Length > 1 || (path.m_curveTargets.Length == 1 && Vector3.Distance(middle, path.m_curveTargets.FirstOrDefault()) > 0.1))
             {
                 return;
