@@ -108,5 +108,10 @@ namespace MetroOverhaul
 
             }
         }
+
+        public static bool IsGameMode()
+        {
+            return ToolManager.instance.m_properties.m_mode == ItemClass.Availability.Game;
+        }
     }
 }

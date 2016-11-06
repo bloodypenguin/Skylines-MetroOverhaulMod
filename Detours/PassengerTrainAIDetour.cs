@@ -11,6 +11,11 @@ namespace MetroOverhaul.Detours
 
         public static void ChangeDeployState(bool state)
         {
+            if (!Util.IsGameMode())
+            {
+                return;
+            }
+
             if (state)
             {
                 Redirector<PassengerTrainAIDetour>.Deploy();
