@@ -86,7 +86,7 @@ namespace MetroOverhaul
             var updatedPaths = new List<BuildingInfo.PathInfo>();
             foreach (var path in info.m_paths)
             {
-                if (path.m_nodes.All(n => n.y < 0) && path != lowestHighPath)
+                if (AllNodesUnderGround(path) && path != lowestHighPath)
                 {
                     DipPath(path, offsetDepthDist);
                 }
@@ -131,11 +131,6 @@ namespace MetroOverhaul
                 newCurveTargets.Add(new Vector3());
             newCurveTargets[0] = GetMiddle(path);
             path.m_curveTargets = newCurveTargets.ToArray();
-        }
-
-        private static Vector3 GetMiddle(BuildingInfo.PathInfo path)
-        {
-            return (path.m_nodes.First() + path.m_nodes.Last()) / 2;
         }
 
         private static IEnumerable<BuildingInfo.PathInfo> GenerateSteps(BuildingInfo.PathInfo path, float depth)
@@ -202,33 +197,50 @@ namespace MetroOverhaul
             SetCurveTargets(path);
             var newBeginning = path.m_nodes.First();
             var newEnd = path.m_nodes.Last();
-            ChangeConnectedPathsLength(assetPaths, beginning, newBeginning - beginning, processedConnectedPaths);
-            ChangeConnectedPathsLength(assetPaths, end, newEnd - end, processedConnectedPaths);
+            ChangeConnectedPaths(assetPaths, beginning, newBeginning - beginning, processedConnectedPaths);
+            ChangeConnectedPaths(assetPaths, end, newEnd - end, processedConnectedPaths);
 
         }
 
-        private static void ChangeConnectedPathsLength(IList<BuildingInfo.PathInfo> assetPaths, Vector3 nodePoint, Vector3 delta, ICollection<int> processedPaths)
+        private static void ChangeConnectedPaths(IList<BuildingInfo.PathInfo> assetPaths, Vector3 nodePoint, Vector3 delta, ICollection<int> processedConnectedPaths)
         {
             for (var pathIndex = 0; pathIndex < assetPaths.Count; pathIndex++)
             {
                 var path = assetPaths[pathIndex];
-                if (path.m_netInfo == null || path.m_netInfo.IsUndergroundMetroStationTrack())
+                if (path?.m_netInfo == null || path.m_netInfo.IsUndergroundMetroStationTrack())
                 {
-                    processedPaths.Add(pathIndex);
+                    processedConnectedPaths.Add(pathIndex);
                     continue;
                 }
-                if (processedPaths.Contains(pathIndex) || !path.m_nodes.Where(n => n == nodePoint).Any())
+                if (processedConnectedPaths.Contains(pathIndex) || !path.m_nodes.Where(n => n == nodePoint).Any())
                 {
                     continue;
                 }
                 var beginning = path.m_nodes.First();
                 var end = path.m_nodes.Last();
                 ShiftPath(path, delta);
-                processedPaths.Add(pathIndex);
+                processedConnectedPaths.Add(pathIndex);
+                if (path.m_netInfo.m_netAI.IsUnderground())
+                {
+                    for (var i = 0; i < path.m_nodes.Length; i++)
+                    {
+                        if (!(path.m_nodes[i].y > -12f) || path.m_nodes[i] == nodePoint)
+                        {
+                            continue;
+                        }
+                        path.m_nodes[i] = new Vector3
+                        {
+                            x = path.m_nodes[i].x,
+                            y = -12f,
+                            z = path.m_nodes[i].z
+                        };
+                        SetCurveTargets(path);
+                    }
+                }
                 var newBeginning = path.m_nodes.First();
                 var newEnd = path.m_nodes.Last();
-                ChangeConnectedPathsLength(assetPaths, beginning, newBeginning - beginning, processedPaths);
-                ChangeConnectedPathsLength(assetPaths, end, newEnd - end, processedPaths);
+                ChangeConnectedPaths(assetPaths, beginning, newBeginning - beginning, processedConnectedPaths);
+                ChangeConnectedPaths(assetPaths, end, newEnd - end, processedConnectedPaths);
             }
         }
 
@@ -252,6 +264,16 @@ namespace MetroOverhaul
                     .ToArray(); //revisit
             return info.m_paths.Where(p => p.m_nodes.Any(n => pairs.Contains(n)) && p.m_netInfo.IsUndergroundMetroStationTrack())
                     .ToArray();
+        }
+
+        private static Vector3 GetMiddle(BuildingInfo.PathInfo path)
+        {
+            return (path.m_nodes.First() + path.m_nodes.Last()) / 2;
+        }
+
+        private static bool AllNodesUnderGround(BuildingInfo.PathInfo path)
+        {
+            return path.m_nodes.All(n => n.y < 0);
         }
     }
 }
