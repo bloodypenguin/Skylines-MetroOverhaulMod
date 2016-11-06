@@ -51,8 +51,10 @@ namespace MetroOverhaul
 
             var highestLow = float.MinValue;
             var highestLowStation = float.MinValue;
-            foreach (var path in info.m_paths)
+            var processedConnectedPaths = new List<int>();
+            for (var index = 0; index < info.m_paths.Length; index++)
             {
+                var path = info.m_paths[index];
                 path.m_forbidLaneConnection = null;
                 if (!path.m_nodes.All(n => n.y < 0))
                 {
@@ -64,7 +66,7 @@ namespace MetroOverhaul
                     highestLowStation = Math.Max(highestNode, highestLowStation);
                     if (!linkedStationTracks.Contains(path))
                     {
-                        ChangePathsLength(path, targetStationTrackLength);
+                        ChangeStationTrackLength(info.m_paths, index, targetStationTrackLength, processedConnectedPaths);
                     }
                 }
                 else if (IsPathGenerated(path))
@@ -99,24 +101,29 @@ namespace MetroOverhaul
 
         private static void DipPath(BuildingInfo.PathInfo path, float depthOffsetDist)
         {
+            ShiftPath(path, new Vector3(0, -depthOffsetDist, 0));
+        }
+
+        private static void ShiftPath(BuildingInfo.PathInfo path, Vector3 offset)
+        {
             for (var i = 0; i < path.m_nodes.Length; i++)
             {
-                path.m_nodes[i] = new Vector3(path.m_nodes[i].x, path.m_nodes[i].y - depthOffsetDist, path.m_nodes[i].z);
+                path.m_nodes[i] = path.m_nodes[i] + offset;
             }
             for (var i = 0; i < path.m_curveTargets.Length; i++)
             {
-                path.m_curveTargets[i] = new Vector3(path.m_curveTargets[i].x, path.m_curveTargets[i].y - depthOffsetDist, path.m_curveTargets[i].z);
+                path.m_curveTargets[i] = path.m_nodes[i] + offset;
             }
         }
 
-        
+
         private static void SetCurveTargets(BuildingInfo.PathInfo path)
         {
             if (path.m_nodes.Length < 2)
             {
                 return;
             }
-            var newCurveTargets = path.m_curveTargets.Length > 0 ? path.m_curveTargets : new[] { Vector3.zero};
+            var newCurveTargets = path.m_curveTargets.Length > 0 ? path.m_curveTargets : new[] { Vector3.zero };
             newCurveTargets[0] = (path.m_nodes.First() + path.m_nodes.Last()) / 2; //TODO(earalov): Is this approrriate when path has multiple curve targets?
             path.m_curveTargets = newCurveTargets.ToArray();
         }
@@ -154,30 +161,71 @@ namespace MetroOverhaul
             return pathList;
         }
 
-        private static void ChangePathsLength(BuildingInfo.PathInfo path, float length)
+        private static void ChangeStationTrackLength(IList<BuildingInfo.PathInfo> assetPaths, int pathIndex, float newLength, ICollection<int> processedConnectedPaths)
         {
-            var totalX = Math.Abs(path.m_nodes.First().x - path.m_nodes.Last().x);
-            var totalZ = Math.Abs(path.m_nodes.First().z - path.m_nodes.Last().z);
-            var trackDistance = (float)Math.Pow((Math.Pow(totalX, 2) + Math.Pow(totalZ, 2)), 0.5);
-
-            var curveIsOriginal = path.m_curveTargets.FirstOrDefault() == (path.m_nodes.First() + path.m_nodes.Last()) / 2;
-            //TODO(earalov): the following variable is unused. Looks suspicious
-            var curveIsRightAngle = (Math.Abs(path.m_nodes.First().x - path.m_curveTargets.FirstOrDefault().x) < TOLERANCE && Math.Abs(path.m_nodes.Last().z - path.m_curveTargets.FirstOrDefault().z) < TOLERANCE)
-                                || (Math.Abs(path.m_nodes.First().z - path.m_curveTargets.FirstOrDefault().z) < TOLERANCE && Math.Abs(path.m_nodes.Last().x - path.m_curveTargets.FirstOrDefault().x) < TOLERANCE);
-
-            var offCoeff = length / trackDistance;
-
-            if (!curveIsOriginal)
+            var path = assetPaths[pathIndex];
+            if (path.m_netInfo == null || !path.m_netInfo.IsUndergroundMetroStationTrack() || IsPathGenerated(path) || processedConnectedPaths.Contains(pathIndex))
             {
                 return;
             }
+            if (path.m_nodes.Length < 2)
+            {
+                return;
+            }
+            var begining = path.m_nodes.First();
+            var end = path.m_nodes.Last();
+            var middle = (begining + end) / 2;
+            if (path.m_curveTargets.Length > 1 || (path.m_curveTargets.Length == 1 && Vector3.Distance(middle, path.m_curveTargets.FirstOrDefault()) > 0.1))
+            {
+                return;
+            }
+            var totalX = Math.Abs(begining.x - end.x);
+            var totalZ = Math.Abs(begining.z - end.z);
+            var originalLength = (float)Math.Sqrt(Math.Pow(totalX, 2) + Math.Pow(totalZ, 2));
+            var scalingCoefficient = newLength / originalLength;
+
             for (var i = 0; i < path.m_nodes.Length; i++)
             {
                 var multiplierX = path.m_nodes[i].x / Mathf.Abs(path.m_nodes[i].x);
                 var multiplierZ = path.m_nodes[i].z / Mathf.Abs(path.m_nodes[i].z);
-                path.m_nodes[i] = new Vector3() { x = path.m_nodes[i].x + (0.5f * multiplierX * (offCoeff - 1) * totalX), y = path.m_nodes[i].y, z = path.m_nodes[i].z + (0.5f * multiplierZ * (offCoeff - 1) * totalZ) };
+                path.m_nodes[i] = new Vector3
+                {
+                    x = path.m_nodes[i].x + (0.5f * multiplierX * (scalingCoefficient - 1) * totalX),
+                    y = path.m_nodes[i].y,
+                    z = path.m_nodes[i].z + (0.5f * multiplierZ * (scalingCoefficient - 1) * totalZ)
+                };
             }
             SetCurveTargets(path);
+            var newBegining = path.m_nodes.First();
+            var newEnd = path.m_nodes.Last();
+            ChangeConnectedPathsLength(assetPaths, begining, newBegining - begining, processedConnectedPaths);
+            ChangeConnectedPathsLength(assetPaths, end, newEnd - end, processedConnectedPaths);
+
+        }
+
+        private static void ChangeConnectedPathsLength(IList<BuildingInfo.PathInfo> assetPaths, Vector3 nodePoint, Vector3 delta, ICollection<int> processedPaths)
+        {
+            for (var pathIndex = 0; pathIndex < assetPaths.Count; pathIndex++)
+            {
+                var path = assetPaths[pathIndex];
+                if (path.m_netInfo == null || path.m_netInfo.IsUndergroundMetroStationTrack() || IsPathGenerated(path))
+                {
+                    processedPaths.Add(pathIndex);
+                    continue;
+                }
+                if (processedPaths.Contains(pathIndex) || !path.m_nodes.Where(n => n == nodePoint).Any())
+                {
+                    continue;
+                }
+                var begining = path.m_nodes.First();
+                var end = path.m_nodes.Last();
+                ShiftPath(path, delta);
+                processedPaths.Add(pathIndex);
+                var newBegining = path.m_nodes.First();
+                var newEnd = path.m_nodes.Last();
+                ChangeConnectedPathsLength(assetPaths, begining, newBegining - begining, processedPaths);
+                ChangeConnectedPathsLength(assetPaths, end, newEnd - end, processedPaths);
+            }
         }
 
         private static bool IsPathGenerated(BuildingInfo.PathInfo path)
