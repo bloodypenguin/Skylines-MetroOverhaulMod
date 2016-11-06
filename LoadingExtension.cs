@@ -98,10 +98,10 @@ namespace MetroOverhaul
             if (_updater == null)
             {
                 _updater = new AssetsUpdater();
-                _updater.UpdateExistingAssets();
+                _updater.UpdateExistingAssets(mode);
             }
             DespawnVanillaMetro();
-            if (OptionsWrapper<Options>.Options.metroUi)
+            if (mode != LoadMode.NewAsset && mode != LoadMode.NewAsset && OptionsWrapper<Options>.Options.metroUi)
             {
                 UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizer));
             }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ICities;
 using MetroOverhaul.Extensions;
 using MetroOverhaul.NEXT;
 using MetroOverhaul.OptionsFramework;
@@ -9,12 +10,13 @@ namespace MetroOverhaul
 {
     public class AssetsUpdater
     {
-        public void UpdateExistingAssets()
+
+        public void UpdateExistingAssets(LoadMode mode)
         {
             UpdateVanillaMetroStation();
             UpdateTrainTracks();
 
-            UpdateMetroStations();
+            UpdateMetroStations(mode);
             UpdateMetroTrainEffects();
         }
 
@@ -85,7 +87,7 @@ namespace MetroOverhaul
             }
         }
 
-        private static void UpdateMetroStations()
+        private static void UpdateMetroStations(LoadMode mode)
         {
             var vanillaMetroStation = PrefabCollection<BuildingInfo>.FindLoaded("Metro Entrance");
 
@@ -95,11 +97,12 @@ namespace MetroOverhaul
                 {
                     continue;
                 }
+
                 if (info.m_buildingAI.GetType() != typeof(DepotAI))
                 {
-                    var transportStationAi = (TransportStationAI) info.m_buildingAI;
+                    var transportStationAi = (TransportStationAI)info.m_buildingAI;
                     transportStationAi.m_maxVehicleCount = 0;
-                    if (!OptionsWrapper<Options>.Options.metroUi)
+                    if (mode != LoadMode.NewAsset && mode != LoadMode.NewAsset && !OptionsWrapper<Options>.Options.metroUi)
                     {
                         SetStationDepthLength.ModifyStation(info, 12, 144);
                     }
