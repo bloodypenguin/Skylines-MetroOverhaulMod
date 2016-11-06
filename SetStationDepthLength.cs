@@ -10,7 +10,8 @@ namespace MetroOverhaul
 {
     public static class SetStationDepthLength
     {
-        private const float TOLERANCE = 0.0001f;
+        private static float GENERATED_PATH_MARKER = 0.09999f; //regular paths have snapping distance of 0.1f. This way we differentiate
+        private const float TOLERANCE = 0.000001f; //equals 1/10 of difference between 0.1f and GENERATED_PATH_MARKER
 
         public static void ModifyStation(BuildingInfo info, float targetDepth, float targetStationTrackLength)
         {
@@ -26,7 +27,6 @@ namespace MetroOverhaul
                 info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.name.Contains("Pedestrian Connection")) > 0 &&
                 info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack()) == 1;
 
-            var pairs = new List<Vector3>();
             if (allowChangeDepth)
             {
                 var buildingAI = info.GetComponent<DepotAI>();
@@ -39,8 +39,6 @@ namespace MetroOverhaul
             }
 
 
-            pairs.AddRange(info.m_paths.SelectMany(p => p.m_nodes).GroupBy(n => n).Where(grp => grp.Count() > 1).Select(grp => grp.Key).ToList()); //revisit
-            var linkedStationTracks = info.m_paths.Where(p => p.m_nodes.Any(n => pairs.Contains(n)) && p.m_netInfo.IsUndergroundMetroStationTrack()).ToList();
             float lowestHigh = 0;
             var lowestHighPath = info.m_paths.FirstOrDefault(p => p.m_nodes.Any(n => n.y >= 0) && p.m_nodes.Any(nd => nd.y < 0)) ??
                                  info.m_paths.Where(p => p.m_netInfo.name == "Pedestrian Connection Surface").OrderByDescending(p => p.m_nodes[0].y).FirstOrDefault(); //TODO(earalov): What if author used "Pedestrian Connection" instead of "Pedestrian Connection Surface"?
@@ -48,6 +46,9 @@ namespace MetroOverhaul
             {
                 lowestHigh = lowestHighPath.m_nodes.OrderBy(n => n.y).FirstOrDefault().y;
             } //TODO(earalov): properly handle integrated metro station (it has no own networks)
+
+            var linkedStationTracks = GetInterlinkedStationTracks(info);
+
             var highestLow = float.MinValue;
             var highestLowStation = float.MinValue;
             var pathList1 = new List<BuildingInfo.PathInfo>();  //TODO(earalov): give meaningful name!
@@ -60,16 +61,19 @@ namespace MetroOverhaul
                     if (path.m_netInfo.IsUndergroundMetroStationTrack())
                     {
                         highestLowStation = Math.Max(highestNode, highestLowStation);
-                        GenStationTrack(path, linkedStationTracks, targetStationTrackLength);
+                        if (!linkedStationTracks.Contains(path))
+                        {
+                            GenStationTrack(path, targetStationTrackLength);
+                        }
                     }
-                    else if (Math.Abs(path.m_maxSnapDistance - 1f) > TOLERANCE)
+                    else if (IsPathGenerated(path))
                     {
                         highestLow = Math.Max(highestNode, highestLow);
                     }
                 }
                 pathList1.Add(path);
             }
-            pathList1.RemoveAll(p => Math.Abs(p.m_maxSnapDistance - 1f) < TOLERANCE);
+            pathList1.RemoveAll(IsPathGenerated);
 
             if (!allowChangeDepth)
             {
@@ -98,6 +102,7 @@ namespace MetroOverhaul
             info.m_paths = pathList2.ToArray();
 
         }
+
         private static void DipPath(BuildingInfo.PathInfo path, float depthOffsetDist)
         {
             for (var i = 0; i < path.m_nodes.Length; i++)
@@ -131,7 +136,7 @@ namespace MetroOverhaul
             var currCoords = path.m_nodes.OrderBy(n => n.z).LastOrDefault();
             var dir = new Vector3();
             var newPath = path.ShallowClone();
-            newPath.m_maxSnapDistance = .09999f;
+            MarkPathGenerated(newPath);
             newPath.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Pedestrian Connection Underground");
             var steps = (float)Math.Floor(depth / 4) * 2;
             var stepDepth = depth / steps;
@@ -157,12 +162,8 @@ namespace MetroOverhaul
             return pathList;
         }
 
-        private static void GenStationTrack(BuildingInfo.PathInfo path, ICollection<BuildingInfo.PathInfo> linkedStationTracks, float length)
+        private static void GenStationTrack(BuildingInfo.PathInfo path, float length)
         {
-            if (linkedStationTracks.Contains(path))
-            {
-                return;
-            }
             var totalX = Math.Abs(path.m_nodes.First().x - path.m_nodes.Last().x);
             var totalZ = Math.Abs(path.m_nodes.First().z - path.m_nodes.Last().z);
             var trackDistance = (float)Math.Pow((Math.Pow(totalX, 2) + Math.Pow(totalZ, 2)), 0.5);
@@ -185,6 +186,28 @@ namespace MetroOverhaul
                 path.m_nodes[i] = new Vector3() { x = path.m_nodes[i].x + (0.5f * multiplierX * (offCoeff - 1) * totalX), y = path.m_nodes[i].y, z = path.m_nodes[i].z + (0.5f * multiplierZ * (offCoeff - 1) * totalZ) };
             }
             GenPathCurve(path);
+        }
+
+        private static bool IsPathGenerated(BuildingInfo.PathInfo path)
+        {
+            return Math.Abs(path.m_maxSnapDistance - GENERATED_PATH_MARKER) > TOLERANCE;
+        }
+
+        private static void MarkPathGenerated(BuildingInfo.PathInfo newPath)
+        {
+            newPath.m_maxSnapDistance = GENERATED_PATH_MARKER;
+        }
+
+        private static BuildingInfo.PathInfo[] GetInterlinkedStationTracks(BuildingInfo info)
+        {
+            var pairs =
+                info.m_paths.SelectMany(p => p.m_nodes)
+                    .GroupBy(n => n)
+                    .Where(grp => grp.Count() > 1)
+                    .Select(grp => grp.Key)
+                    .ToArray(); //revisit
+            return info.m_paths.Where(p => p.m_nodes.Any(n => pairs.Contains(n)) && p.m_netInfo.IsUndergroundMetroStationTrack())
+                    .ToArray();
         }
     }
 }
