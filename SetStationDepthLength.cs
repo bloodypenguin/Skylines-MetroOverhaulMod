@@ -23,6 +23,8 @@ namespace MetroOverhaul
             {
                 return;
             }
+            info.m_paths = info.m_paths.Where(p => !IsPathGenerated(p)).ToArray();
+
             var allowChangeDepth =
                 info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.name.Contains("Pedestrian Connection")) > 0 &&
                 info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack()) == 1;
@@ -69,12 +71,11 @@ namespace MetroOverhaul
                         ChangeStationTrackLength(info.m_paths, index, targetStationTrackLength, processedConnectedPaths);
                     }
                 }
-                else if (IsPathGenerated(path))
+                else
                 {
                     highestLow = Math.Max(highestNode, highestLow);
                 }
             }
-            info.m_paths = info.m_paths.Where(p => !IsPathGenerated(p)).ToArray();
 
             if (!allowChangeDepth)
             {
@@ -112,7 +113,7 @@ namespace MetroOverhaul
             }
             for (var i = 0; i < path.m_curveTargets.Length; i++)
             {
-                path.m_curveTargets[i] = path.m_nodes[i] + offset;
+                path.m_curveTargets[i] = path.m_curveTargets[i] + offset;
             }
         }
 
@@ -125,7 +126,7 @@ namespace MetroOverhaul
             }
             var newCurveTargets = path.m_curveTargets.Length > 0 ? path.m_curveTargets : new[] { Vector3.zero };
             newCurveTargets[0] = (path.m_nodes.First() + path.m_nodes.Last()) / 2; //TODO(earalov): Is this approrriate when path has multiple curve targets?
-            path.m_curveTargets = newCurveTargets.ToArray();
+            path.m_curveTargets = newCurveTargets;
         }
 
         private static IEnumerable<BuildingInfo.PathInfo> GenerateSteps(BuildingInfo.PathInfo path, float depth)
@@ -164,7 +165,7 @@ namespace MetroOverhaul
         private static void ChangeStationTrackLength(IList<BuildingInfo.PathInfo> assetPaths, int pathIndex, float newLength, ICollection<int> processedConnectedPaths)
         {
             var path = assetPaths[pathIndex];
-            if (path.m_netInfo == null || !path.m_netInfo.IsUndergroundMetroStationTrack() || IsPathGenerated(path) || processedConnectedPaths.Contains(pathIndex))
+            if (path.m_netInfo == null || !path.m_netInfo.IsUndergroundMetroStationTrack() || processedConnectedPaths.Contains(pathIndex))
             {
                 return;
             }
@@ -172,15 +173,15 @@ namespace MetroOverhaul
             {
                 return;
             }
-            var begining = path.m_nodes.First();
+            var beginning = path.m_nodes.First();
             var end = path.m_nodes.Last();
-            var middle = (begining + end) / 2;
+            var middle = (beginning + end) / 2;
             if (path.m_curveTargets.Length > 1 || (path.m_curveTargets.Length == 1 && Vector3.Distance(middle, path.m_curveTargets.FirstOrDefault()) > 0.1))
             {
                 return;
             }
-            var totalX = Math.Abs(begining.x - end.x);
-            var totalZ = Math.Abs(begining.z - end.z);
+            var totalX = Math.Abs(beginning.x - end.x);
+            var totalZ = Math.Abs(beginning.z - end.z);
             var originalLength = (float)Math.Sqrt(Math.Pow(totalX, 2) + Math.Pow(totalZ, 2));
             var scalingCoefficient = newLength / originalLength;
 
@@ -196,9 +197,9 @@ namespace MetroOverhaul
                 };
             }
             SetCurveTargets(path);
-            var newBegining = path.m_nodes.First();
+            var newBeginning = path.m_nodes.First();
             var newEnd = path.m_nodes.Last();
-            ChangeConnectedPathsLength(assetPaths, begining, newBegining - begining, processedConnectedPaths);
+            ChangeConnectedPathsLength(assetPaths, beginning, newBeginning - beginning, processedConnectedPaths);
             ChangeConnectedPathsLength(assetPaths, end, newEnd - end, processedConnectedPaths);
 
         }
@@ -208,7 +209,7 @@ namespace MetroOverhaul
             for (var pathIndex = 0; pathIndex < assetPaths.Count; pathIndex++)
             {
                 var path = assetPaths[pathIndex];
-                if (path.m_netInfo == null || path.m_netInfo.IsUndergroundMetroStationTrack() || IsPathGenerated(path))
+                if (path.m_netInfo == null || path.m_netInfo.IsUndergroundMetroStationTrack())
                 {
                     processedPaths.Add(pathIndex);
                     continue;
@@ -217,20 +218,20 @@ namespace MetroOverhaul
                 {
                     continue;
                 }
-                var begining = path.m_nodes.First();
+                var beginning = path.m_nodes.First();
                 var end = path.m_nodes.Last();
                 ShiftPath(path, delta);
                 processedPaths.Add(pathIndex);
-                var newBegining = path.m_nodes.First();
+                var newBeginning = path.m_nodes.First();
                 var newEnd = path.m_nodes.Last();
-                ChangeConnectedPathsLength(assetPaths, begining, newBegining - begining, processedPaths);
+                ChangeConnectedPathsLength(assetPaths, beginning, newBeginning - beginning, processedPaths);
                 ChangeConnectedPathsLength(assetPaths, end, newEnd - end, processedPaths);
             }
         }
 
         private static bool IsPathGenerated(BuildingInfo.PathInfo path)
         {
-            return Math.Abs(path.m_maxSnapDistance - GENERATED_PATH_MARKER) > TOLERANCE;
+            return Math.Abs(path.m_maxSnapDistance - GENERATED_PATH_MARKER) < TOLERANCE;
         }
 
         private static void MarkPathGenerated(BuildingInfo.PathInfo newPath)
