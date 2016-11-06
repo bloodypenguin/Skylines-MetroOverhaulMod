@@ -14,13 +14,15 @@ namespace MetroOverhaul
             steelTracks = false;
             steelTracksNoBar = false;
             concreteTracksNoBar = false;
-            improvedPassengerTrainAi = false;
-            improvedMetroTrainAi = false;
+            improvedPassengerTrainAi = true;
+            improvedMetroTrainAi = true;
+            metroUi = true;
         }
-
-        [Checkbox("Improved PassengerTrainAI (Should allow trains returning to depots)", nameof(PassengerTrainAIDetour), nameof(PassengerTrainAIDetour.ChangeDeployState), EXPERIMENT)]
+        [Checkbox("Metro track customization UI (requires reloading from main menu)", null, null, EXPERIMENT)]
+        public bool metroUi { set; get; }
+        [Checkbox("Improved PassengerTrainAI (Allows trains to return to depots)", nameof(PassengerTrainAIDetour), nameof(PassengerTrainAIDetour.ChangeDeployState), EXPERIMENT)]
         public bool improvedPassengerTrainAi { set; get; }
-        [Checkbox("Improved MetroTrainAI (Should allow trains to properly spawn at surface)", nameof(MetroTrainAIDetour), nameof(MetroTrainAIDetour.ChangeDeployState), EXPERIMENT)]
+        [Checkbox("Improved MetroTrainAI (Allows trains to properly spawn at surface)", nameof(MetroTrainAIDetour), nameof(MetroTrainAIDetour.ChangeDeployState), EXPERIMENT)]
         public bool improvedMetroTrainAi { set; get; }
         [Checkbox("Steel tracks", null, null, WIP)]
         public bool steelTracks { set; get; }

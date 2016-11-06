@@ -5,7 +5,9 @@ using MetroOverhaul.Redirection;
 using MetroOverhaul.NEXT;
 using System;
 using System.Collections.Generic;
+using ColossalFramework.UI;
 using MetroOverhaul.OptionsFramework;
+using UIMod;
 using UnityEngine;
 
 namespace MetroOverhaul
@@ -99,6 +101,10 @@ namespace MetroOverhaul
                 _updater.UpdateExistingAssets();
             }
             DespawnVanillaMetro();
+            if (OptionsWrapper<Options>.Options.metroUi)
+            {
+                UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizer));
+            }
         }
 
         private static void DespawnVanillaMetro()

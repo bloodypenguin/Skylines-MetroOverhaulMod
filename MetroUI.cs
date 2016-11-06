@@ -9,13 +9,6 @@ using MetroOverhaul.Extensions;
 
 namespace UIMod
 {
-    public class MetroUILoader : LoadingExtensionBase
-    {
-        public override void OnLevelLoaded(LoadMode mode)
-        {
-            UIComponent uic = UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizer));
-        }
-    }
     public class MetroStationCustomizer : UIPanel
     {
         private const int MAX_DEPTH = 36;

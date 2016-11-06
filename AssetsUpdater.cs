@@ -2,6 +2,7 @@
 using System.Linq;
 using MetroOverhaul.Extensions;
 using MetroOverhaul.NEXT;
+using MetroOverhaul.OptionsFramework;
 using UnityEngine;
 
 namespace MetroOverhaul
@@ -96,12 +97,21 @@ namespace MetroOverhaul
                 }
                 if (info.m_buildingAI.GetType() != typeof(DepotAI))
                 {
-                    var transportStationAi = (TransportStationAI)info.m_buildingAI;
+                    var transportStationAi = (TransportStationAI) info.m_buildingAI;
                     transportStationAi.m_maxVehicleCount = 0;
+                }
+                else
+                {
+                    if (!OptionsWrapper<Options>.Options.metroUi)
+                    {
+                        info.SetStation(12, 144);
+                    }
                 }
 
                 info.m_UnlockMilestone = vanillaMetroStation.m_UnlockMilestone;
                 ((DepotAI)info.m_buildingAI).m_createPassMilestone = ((DepotAI)vanillaMetroStation.m_buildingAI).m_createPassMilestone;
+
+
             }
         }
 
