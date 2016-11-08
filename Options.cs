@@ -6,9 +6,9 @@ namespace MetroOverhaul
 {
     public class Options : IModOptions
     {
+#if DEBUG
         private const string WIP = "WIP features";
-        private const string EXPERIMENT = "Experimental features";
-
+#endif
         public Options()
         {
 #if DEBUG
@@ -20,11 +20,11 @@ namespace MetroOverhaul
             improvedMetroTrainAi = true;
             metroUi = true;
         }
-        [Checkbox("Metro track customization UI (requires reloading from main menu)", null, null, EXPERIMENT)]
+        [Checkbox("Metro track customization UI (requires reloading from main menu)")]
         public bool metroUi { set; get; }
-        [Checkbox("Improved PassengerTrainAI (Allows trains to return to depots)", nameof(PassengerTrainAIDetour), nameof(PassengerTrainAIDetour.ChangeDeployState), EXPERIMENT)]
+        [Checkbox("Improved PassengerTrainAI (Allows trains to return to depots)", nameof(PassengerTrainAIDetour), nameof(PassengerTrainAIDetour.ChangeDeployState))]
         public bool improvedPassengerTrainAi { set; get; }
-        [Checkbox("Improved MetroTrainAI (Allows trains to properly spawn at surface)", nameof(MetroTrainAIDetour), nameof(MetroTrainAIDetour.ChangeDeployState), EXPERIMENT)]
+        [Checkbox("Improved MetroTrainAI (Allows trains to properly spawn at surface)", nameof(MetroTrainAIDetour), nameof(MetroTrainAIDetour.ChangeDeployState))]
         public bool improvedMetroTrainAi { set; get; }
 #if DEBUG
         [Checkbox("Steel tracks", null, null, WIP)]
