@@ -1,0 +1,20 @@
+1. Build in RELEASE configuration to prevent WIP features getting into release
+2. Don't forget to put pillars to staging area
+3. Remove m100, mrmaison's depot and badpeanut's stations from staging area
+4. Contact MrMaison to publish his depot right after release (don't make mod public before he does)
+5. Contact bsquiklehausen, JSF-1 and AleX_BY to publish their MOM-exclusive trains
+6. In description:
+ - Link to MrMaison's depot
+ - Link to Train Converter and Transport Line Rendering Fix and outline why they're super needed
+ - Link to BadPeanut's WIP exclusive metro stations (GitHub links - stations are in Assets folder)
+ - Mention that this mod is compatible with majority of existing metro stations
+ - Mention that European Main Station's integrated metro station support is in progress (it's supported but Move It is required to move outer tracks ends under ground)
+ - Mention that if Metro UI is disabled, track length for existing metro stations will be set to 144 and depth to -12
+ - Mention that a metro depot is now required for trains to spawn
+ - Mention that this mod rebalances costs of metro tracks and train tracks
+ - Mention that a feature of rebalancing stations costs is planned
+ - Mention that it's better to delete existing IPT and AVO configs to prevent nasty surprises
+ - Mention that it's better to bulldoze existing metro and local train lines to prevent nasty surprises
+7. Add pinned discussion with the list of MOM exclusive assets
+
+
