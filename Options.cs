@@ -11,9 +11,11 @@ namespace MetroOverhaul
 
         public Options()
         {
+#if DEBUG
             steelTracks = false;
             steelTracksNoBar = false;
             concreteTracksNoBar = false;
+#endif
             improvedPassengerTrainAi = true;
             improvedMetroTrainAi = true;
             metroUi = true;
@@ -24,13 +26,14 @@ namespace MetroOverhaul
         public bool improvedPassengerTrainAi { set; get; }
         [Checkbox("Improved MetroTrainAI (Allows trains to properly spawn at surface)", nameof(MetroTrainAIDetour), nameof(MetroTrainAIDetour.ChangeDeployState), EXPERIMENT)]
         public bool improvedMetroTrainAi { set; get; }
+#if DEBUG
         [Checkbox("Steel tracks", null, null, WIP)]
         public bool steelTracks { set; get; }
         [Checkbox("Steel tracks (no bar)", null, null, WIP)]
         public bool steelTracksNoBar { set; get; }
         [Checkbox("Concrete tracks (no bar)", null, null, WIP)]
         public bool concreteTracksNoBar { set; get; }
-
+#endif
         [XmlIgnore]
         public string FileName => "CSL-MetroOverhaul.xml";
     }

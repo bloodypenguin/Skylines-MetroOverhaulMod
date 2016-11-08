@@ -44,7 +44,7 @@ namespace MetroOverhaul
                 UnityEngine.Debug.LogError("Exception happened when setting up concrete tracks");
                 UnityEngine.Debug.LogException(e);
             }
-
+#if DEBUG
             if (OptionsWrapper<Options>.Options.steelTracks)
             {
                 try
@@ -113,7 +113,7 @@ namespace MetroOverhaul
                     UnityEngine.Debug.LogException(e);
                 }
             }
-
+#endif
             try
             {
                 CreateFullStationPrefab(
