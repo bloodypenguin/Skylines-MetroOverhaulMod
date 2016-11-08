@@ -15,6 +15,13 @@
  - Mention that a feature of rebalancing stations costs is planned
  - Mention that it's better to delete existing IPT and AVO configs to prevent nasty surprises
  - Mention that it's better to bulldoze existing metro and local train lines to prevent nasty surprises
+ - Mention that IPT was updated to be compatible with MOM and that it allows to select depots like for buses and trams
 7. Add pinned discussion with the list of MOM exclusive assets
+8. Add BloodyPenguin as contributor
+9. If you're not against it, add BloodyPenguin's donation snippet to description:
+
+		[url=https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=aei.omsk%40gmail%2ecom&lc=US&item_name=BloodyPenguin&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted][img]https://www.paypalobjects.com/webstatic/en_US/btn/btn_donate_pp_142x27.png[/img][/url]
+		You don't have a PayPal account? You can use link in 'Don't have a PayPal account?' section at the bottom of donation page to donate using your credit card information.
+
 
 
