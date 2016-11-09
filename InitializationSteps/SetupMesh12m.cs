@@ -371,7 +371,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment1
                             .SetMeshes
                             (@"Meshes\Tunnel_Station_Pavement.obj",
-                                @"Meshes\Ground_NoBar_Pavement_LOD.obj");
+                                @"Meshes\Tunnel_Pavement_LOD.obj");
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes

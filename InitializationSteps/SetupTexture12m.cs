@@ -155,7 +155,19 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         foreach (var segment in info.m_segments)
                         {
-                            if (segment.m_mesh.name.Contains("Pavement"))
+                            if (segment.m_mesh.name.Contains("Station"))
+                            {
+                                segment.SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Tunnel_Station_Segment_Pavement__MainTex.png",
+                                            @"Textures\Elevated_Segment_Pavement__AlphaMap.png",
+                                            @"Textures\Tunnel_Station_Segment_Pavement__XYSMap.png"),
+                                    new LODTextureSet
+                                        (@"Textures\Tunnel_Station_Segment_Pavement__MainTex_LOD.png",
+                                            @"Textures\Elevated_Segment_Pavement__AlphaMap_LOD.png",
+                                            @"Textures\Tunnel_Station_Segment_Pavement__XYSMap_LOD.png"));
+                            }
+                            else if (segment.m_mesh.name.Contains("Pavement"))
                             {
                                 segment.SetTextures(
                                     new TextureSet

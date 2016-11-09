@@ -297,6 +297,7 @@ namespace MetroOverhaul
             prefab.m_maxHeight = -1;
             prefab.m_minHeight = -5;
             prefab.m_lowerTerrain = false;
+            prefab.m_halfWidth = 8;
             prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
         }
 
