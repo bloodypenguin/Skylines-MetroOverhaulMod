@@ -25,30 +25,6 @@ namespace MetroOverhaul
             }
             info.m_paths = info.m_paths.Where(p => !IsPathGenerated(p)).ToArray();
 
-            var allowChangeDepth =
-                info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.name.Contains("Pedestrian Connection")) > 0 &&
-                info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack()) == 1; //TODO(earalov): don't allow to change depth if no ped. paths above metro tracks
-
-            if (allowChangeDepth)
-            {
-                var buildingAI = info.GetComponent<DepotAI>();
-                if (buildingAI != null)
-                {
-                    //TODO(earalov): add support for multi track stations (they have multiple spawn points). Also note that different tracks may have different initial depth
-                    buildingAI.m_spawnPosition = new Vector3(buildingAI.m_spawnPosition.x, -targetDepth, buildingAI.m_spawnPosition.z);
-                    buildingAI.m_spawnTarget = new Vector3(buildingAI.m_spawnPosition.x, -targetDepth, buildingAI.m_spawnPosition.z);
-                }
-            }
-
-
-            float lowestHigh = 0;
-            var lowestHighPath = info.m_paths.FirstOrDefault(p => p.m_nodes.Any(n => n.y >= 0) && p.m_nodes.Any(nd => nd.y < 0)) ??
-                                 info.m_paths.Where(p => p.m_netInfo.name == "Pedestrian Connection Surface").OrderByDescending(p => p.m_nodes[0].y).FirstOrDefault(); //TODO(earalov): What if author used "Pedestrian Connection" instead of "Pedestrian Connection Surface"?
-            if (lowestHighPath != null)
-            {
-                lowestHigh = lowestHighPath.m_nodes.OrderBy(n => n.y).FirstOrDefault().y;
-            } //TODO(earalov): properly handle integrated metro station (it has no own networks)
-
             var linkedStationTracks = GetInterlinkedStationTracks(info);
 
             var highestLow = float.MinValue;
@@ -57,7 +33,7 @@ namespace MetroOverhaul
             for (var index = 0; index < info.m_paths.Length; index++)
             {
                 var path = info.m_paths[index];
-                path.m_forbidLaneConnection = null;
+                path.m_forbidLaneConnection = null; //TODO(earalov): what is this for?
                 if (!path.m_nodes.All(n => n.y < 0))
                 {
                     continue;
@@ -77,11 +53,30 @@ namespace MetroOverhaul
                 }
             }
 
+            var allowChangeDepth =
+                info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.name.Contains("Pedestrian Connection")) > 0 &&
+                info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack()) == 1; //TODO(earalov): don't allow to change depth if no ped. paths above metro tracks
             if (!allowChangeDepth)
             {
                 return;
             }
+            var buildingAI = info.GetComponent<DepotAI>();
+            if (buildingAI != null)
+            {
+                //TODO(earalov): add support for multi track stations (they have multiple spawn points). Also note that different tracks may have different initial depth
+                buildingAI.m_spawnPosition = new Vector3(buildingAI.m_spawnPosition.x, -targetDepth, buildingAI.m_spawnPosition.z);
+                buildingAI.m_spawnTarget = new Vector3(buildingAI.m_spawnPosition.x, -targetDepth, buildingAI.m_spawnPosition.z);
+            }
+
             var offsetDepthDist = targetDepth + highestLowStation;
+
+            float lowestHigh = 0;
+            var lowestHighPath = info.m_paths.FirstOrDefault(p => p.m_nodes.Any(n => n.y >= 0) && p.m_nodes.Any(nd => nd.y < 0)) ??
+                                 info.m_paths.Where(p => p.m_netInfo.name == "Pedestrian Connection Surface").OrderByDescending(p => p.m_nodes[0].y).FirstOrDefault(); //TODO(earalov): What if author used "Pedestrian Connection" instead of "Pedestrian Connection Surface"?
+            if (lowestHighPath != null)
+            {
+                lowestHigh = lowestHighPath.m_nodes.OrderBy(n => n.y).FirstOrDefault().y;
+            } //TODO(earalov): properly handle integrated metro station (it has no own networks)
             var stepDepthDist = targetDepth + lowestHigh;
             var updatedPaths = new List<BuildingInfo.PathInfo>();
             foreach (var path in info.m_paths)

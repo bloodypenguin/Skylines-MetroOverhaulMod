@@ -31,7 +31,8 @@ namespace UIMod
         public static MetroStationCustomizer instance;
         public override void Update()
         {
-            if (m_buildingTool == null) { 
+            if (m_buildingTool == null)
+            {
                 return;
             }
             try
@@ -48,7 +49,7 @@ namespace UIMod
                     {
                         finalInfo = toolInfo;
                     }
-                    else if(toolInfo.m_subBuildings != null)
+                    else if (toolInfo.m_subBuildings != null)
                     {
                         foreach (var subInfo in toolInfo.m_subBuildings)
                         {
@@ -76,10 +77,9 @@ namespace UIMod
                     Deactivate();
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Next.Debug.Log("Update Failed");
-                Next.Debug.Error(ex);
+                UnityEngine.Debug.LogException(e);
                 Deactivate();
             }
 
@@ -89,7 +89,9 @@ namespace UIMod
             m_buildingTool = FindObjectOfType<BuildingTool>();
             if (m_buildingTool == null)
             {
+#if DEBUG
                 Next.Debug.Log("BuildingTool Not Found");
+#endif
                 enabled = false;
                 return;
             }
@@ -97,14 +99,18 @@ namespace UIMod
             m_bulldozeTool = FindObjectOfType<BulldozeTool>();
             if (m_bulldozeTool == null)
             {
+#if DEBUG
                 Next.Debug.Log("BulldozeTool Not Found");
+#endif
                 enabled = false;
                 return;
             }
             m_netTool = FindObjectOfType<NetTool>();
             if (m_netTool == null)
             {
+#if DEBUG
                 Next.Debug.Log("NetTool Not Found");
+#endif
                 enabled = false;
                 return;
             }
@@ -115,7 +121,9 @@ namespace UIMod
             }
             catch
             {
+#if DEBUG
                 Next.Debug.Log("Upgrade button template not found");
+#endif
             }
 
             CreateUI();
@@ -123,7 +131,9 @@ namespace UIMod
 
         private void CreateUI()
         {
+#if DEBUG
             Next.Debug.Log("MOM GUI Created");
+#endif
             Action stationMechanicsTask = DoStationMechanics;
             Task t = Task.Create(stationMechanicsTask);
 

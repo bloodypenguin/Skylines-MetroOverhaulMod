@@ -100,7 +100,7 @@ namespace MetroOverhaul
                 _updater = new AssetsUpdater();
                 _updater.UpdateExistingAssets(mode);
             }
-            DespawnVanillaMetro();
+            SimulationManager.instance.AddAction(DespawnVanillaMetro);
             if (mode != LoadMode.NewAsset && mode != LoadMode.NewAsset && OptionsWrapper<Options>.Options.metroUi)
             {
                 UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizer));
@@ -109,23 +109,19 @@ namespace MetroOverhaul
 
         private static void DespawnVanillaMetro()
         {
-            SimulationManager.instance.AddAction(() =>
+            var vehicles = Singleton<VehicleManager>.instance.m_vehicles;
+            for (ushort i = 0; i < vehicles.m_size; i++)
             {
-                var vehicles = Singleton<VehicleManager>.instance.m_vehicles;
-                for (ushort i = 0; i < vehicles.m_size; i++)
+                var vehicle = vehicles.m_buffer[i];
+                if (vehicle.m_flags == ~Vehicle.Flags.All || vehicle.Info == null)
                 {
-                    var vehicle = vehicles.m_buffer[i];
-                    if (vehicle.m_flags == ~Vehicle.Flags.All || vehicle.Info == null)
-                    {
-                        continue;
-                    }
-                    if (vehicle.Info.name == "Metro")
-                    {
-                        Singleton<VehicleManager>.instance.ReleaseVehicle(i);
-                    }
+                    continue;
                 }
-            });
-
+                if (vehicle.Info.name == "Metro")
+                {
+                    Singleton<VehicleManager>.instance.ReleaseVehicle(i);
+                }
+            }
         }
     }
 }
