@@ -34,7 +34,7 @@ namespace MetroOverhaul
             {
                 var path = info.m_paths[index];
                 path.m_forbidLaneConnection = null; //TODO(earalov): what is this for?
-                if (!path.m_nodes.All(n => n.y < 0))
+                if (path.m_netInfo?.m_netAI == null || (!path.m_netInfo.m_netAI.IsUnderground() && !path.m_nodes.All(n => n.y < 0)))
                 {
                     continue;
                 }
@@ -252,13 +252,12 @@ namespace MetroOverhaul
         private static BuildingInfo.PathInfo[] GetInterlinkedStationTracks(BuildingInfo info)
         {
             var pairs =
-                info.m_paths.SelectMany(p => p.m_nodes)
+                info.m_paths.Where(p => p.m_netInfo.IsUndergroundMetroStationTrack()).SelectMany(p => p.m_nodes)
                     .GroupBy(n => n)
                     .Where(grp => grp.Count() > 1)
                     .Select(grp => grp.Key)
-                    .ToArray(); //revisit
-            return info.m_paths.Where(p => p.m_nodes.Any(n => pairs.Contains(n)) && p.m_netInfo.IsUndergroundMetroStationTrack())
                     .ToArray();
+            return info.m_paths.Where(p => p.m_nodes.Any(n => pairs.Contains(n))).ToArray();
         }
 
         private static Vector3 GetMiddle(BuildingInfo.PathInfo path)
