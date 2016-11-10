@@ -257,7 +257,7 @@ namespace MetroOverhaul
                     .Where(grp => grp.Count() > 1)
                     .Select(grp => grp.Key)
                     .ToArray();
-            return info.m_paths.Where(p => p.m_nodes.Any(n => pairs.Contains(n))).ToArray();
+            return info.m_paths.Where(p => p.m_netInfo.IsUndergroundMetroStationTrack() &&  p.m_nodes.Any(n => pairs.Contains(n))).ToArray();
         }
 
         private static Vector3 GetMiddle(BuildingInfo.PathInfo path)
