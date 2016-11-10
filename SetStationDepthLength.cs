@@ -182,7 +182,7 @@ namespace MetroOverhaul
         private static void ChangeStationTrackLength(IList<BuildingInfo.PathInfo> assetPaths, int pathIndex, float newLength, ICollection<int> processedConnectedPaths)
         {
             var path = assetPaths[pathIndex];
-            if (path.m_netInfo == null || !path.m_netInfo.IsUndergroundMetroStationTrack() || processedConnectedPaths.Contains(pathIndex))
+            if (path.m_netInfo == null || !path.m_netInfo.IsUndergroundMetroStationTrack())
             {
                 return;
             }
@@ -224,7 +224,6 @@ namespace MetroOverhaul
                 var path = assetPaths[pathIndex];
                 if (path?.m_netInfo == null || path.m_netInfo.IsUndergroundMetroStationTrack())
                 {
-                    processedConnectedPaths.Add(pathIndex);
                     continue;
                 }
                 if (processedConnectedPaths.Contains(pathIndex) || !path.m_nodes.Where(n => n == nodePoint).Any())
