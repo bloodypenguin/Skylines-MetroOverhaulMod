@@ -239,6 +239,10 @@ namespace MetroOverhaul
             {
                 length += Vector3.Distance(path.m_nodes[i], path.m_nodes[i - 1]);
             }
+            if (Math.Abs(length) < TOLERANCE)
+            {
+                return;
+            }
             var coefficient = Math.Abs(newLength / length);
             for (var i = 0; i < path.m_nodes.Length; i++)
             {
@@ -258,10 +262,10 @@ namespace MetroOverhaul
                     z = middle.z + (path.m_curveTargets[i].z - middle.z) * coefficient,
                 };
             }
-
-            UnityEngine.Debug.LogError("path " + pathIndex + " resized! Type: " + path.m_netInfo.name);
             var newBeginning = path.m_nodes.First();
             var newEnd = path.m_nodes.Last();
+           // UnityEngine.Debug.Log($"station track {beginning}-{end} resized tp {newBeginning}-{newEnd}");
+
             ChangeConnectedPaths(assetPaths, beginning, newBeginning - beginning, processedConnectedPaths);
             ChangeConnectedPaths(assetPaths, end, newEnd - end, processedConnectedPaths);
 
@@ -282,13 +286,11 @@ namespace MetroOverhaul
                 }
                 var beginning = path.m_nodes.First();
                 var end = path.m_nodes.Last();
-                ShiftPath(path, delta);
-                processedConnectedPaths.Add(pathIndex);
                 if (path.m_netInfo.m_netAI.IsUnderground())
                 {
                     for (var i = 0; i < path.m_nodes.Length; i++)
                     {
-                        if (!(path.m_nodes[i].y > -12f) || path.m_nodes[i] == nodePoint)
+                        if (path.m_nodes[i].y <= -12f || path.m_nodes[i] == nodePoint)
                         {
                             continue;
                         }
@@ -301,8 +303,12 @@ namespace MetroOverhaul
                         SetCurveTargets(path);
                     }
                 }
+                ShiftPath(path, delta);
+                processedConnectedPaths.Add(pathIndex);
                 var newBeginning = path.m_nodes.First();
                 var newEnd = path.m_nodes.Last();
+                //UnityEngine.Debug.Log($"connected path {beginning}-{end} resized tp {newBeginning}-{newEnd}. name={path.m_netInfo.name}");
+
                 ChangeConnectedPaths(assetPaths, beginning, newBeginning - beginning, processedConnectedPaths);
                 ChangeConnectedPaths(assetPaths, end, newEnd - end, processedConnectedPaths);
             }
