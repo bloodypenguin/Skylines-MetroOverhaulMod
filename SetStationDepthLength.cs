@@ -23,16 +23,19 @@ namespace MetroOverhaul
             {
                 return;
             }
-            info.m_paths = info.m_paths.Where(p => !IsPathGenerated(p)).ToArray();
+            CleanUpPaths(info);
             ResizeUndergroundStationTracks(info, targetStationTrackLength);
-            var allowChangeDepth =
-                info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.name.Contains("Pedestrian Connection")) > 0; //TODO(earalov): don't allow to change depth if no ped. paths above metro tracks
-            if (allowChangeDepth)
-            {
-                ChangeStationDepth(info, targetDepth);
-            }
+            ChangeStationDepth(info, targetDepth);
             RecalculateSpawnPoints(info);
+        }
 
+        private static void CleanUpPaths(BuildingInfo info)
+        {
+            info.m_paths = info.m_paths.Where(p => !IsPathGenerated(p)).ToArray();
+            foreach (var path in info.m_paths)
+            {
+                path.m_forbidLaneConnection = null;
+            }
         }
 
         private static void RecalculateSpawnPoints(BuildingInfo info)
@@ -97,11 +100,16 @@ namespace MetroOverhaul
 
         private static void ChangeStationDepth(BuildingInfo info, float targetDepth)
         {
+            if (info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.name == "Pedestrian Connection Surface") < 1)
+            {
+                return;
+            }
+
             var highestLow = float.MinValue;
             var highestLowStation = float.MinValue;
             foreach (var path in info.m_paths)
             {
-                path.m_forbidLaneConnection = null; //TODO(earalov): what is this for?
+
                 if (path.m_netInfo?.m_netAI == null || !path.m_nodes.All(n => n.y < 0))
                 {
                     continue;
