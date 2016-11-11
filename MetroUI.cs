@@ -68,8 +68,6 @@ namespace UIMod
                 }
                 if (finalInfo != null)
                 {
-                    m_setDepth = MIN_DEPTH;
-                    m_setLength = MIN_LENGTH;
                     Activate(finalInfo);
                 }
                 else
@@ -127,6 +125,8 @@ namespace UIMod
             }
 
             CreateUI();
+            m_setDepth = MIN_DEPTH;
+            m_setLength = MIN_LENGTH;
         }
 
         private void CreateUI()
