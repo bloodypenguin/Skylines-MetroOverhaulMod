@@ -11,12 +11,8 @@ namespace UIMod
 {
     public class MetroStationCustomizer : UIPanel
     {
-        private const int MAX_DEPTH = 36;
-        private const int MIN_DEPTH = 12;
-        private const int INT_DEPTH = 3;
-        private const int MAX_LENGTH = 144;
-        private const int MIN_LENGTH = 88;
-        private const int INT_LENGTH = 8;
+        private const int DEPTH_STEP = 3;
+        private const int LENGTH_STEP = 8;
         private float m_setDepth;
         private float m_setLength;
         private bool m_valueChanged = false;
@@ -125,8 +121,8 @@ namespace UIMod
             }
 
             CreateUI();
-            m_setDepth = MIN_DEPTH;
-            m_setLength = MIN_LENGTH;
+            m_setDepth = SetStationDepthLength.MIN_DEPTH;
+            m_setLength = SetStationDepthLength.MIN_LENGTH;
         }
 
         private void CreateUI()
@@ -183,9 +179,9 @@ namespace UIMod
 
             UISlider lengthSlider = lengthSliderLeftPanel.AddUIComponent<UISlider>();
             lengthSlider.name = "Length Slider";
-            lengthSlider.maxValue = MAX_LENGTH;
-            lengthSlider.minValue = MIN_LENGTH;
-            lengthSlider.stepSize = INT_LENGTH;
+            lengthSlider.maxValue = SetStationDepthLength.MAX_LENGTH;
+            lengthSlider.minValue = SetStationDepthLength.MIN_LENGTH;
+            lengthSlider.stepSize = LENGTH_STEP;
             lengthSlider.relativePosition = new Vector2(0, 0);
             lengthSlider.size = lengthSliderLeftPanel.size;
             lengthSlider.eventValueChanged += (c, v) =>
@@ -193,7 +189,7 @@ namespace UIMod
                 if (m_lengthTextbox.text != v.ToString())
                 {
                     m_valueChanged = true;
-                    if (v > MIN_LENGTH)
+                    if (v > SetStationDepthLength.MIN_LENGTH)
                     {
                         m_lengthTextbox.text = v.ToString();
                         m_setLength = v;
@@ -201,7 +197,7 @@ namespace UIMod
                     else
                     {
                         m_lengthTextbox.text = "Default";
-                        m_setLength = MIN_LENGTH;
+                        m_setLength = SetStationDepthLength.MIN_LENGTH;
                     }
                 }
             };
@@ -244,9 +240,9 @@ namespace UIMod
                 }
                 else
                 {
-                    m_setLength = MIN_LENGTH;
-                    if (lengthSlider.value != MIN_LENGTH)
-                        lengthSlider.value = MIN_LENGTH;
+                    m_setLength = SetStationDepthLength.MIN_LENGTH;
+                    if (lengthSlider.value != SetStationDepthLength.MIN_LENGTH)
+                        lengthSlider.value = SetStationDepthLength.MIN_LENGTH;
                 }
             };
 
@@ -265,9 +261,9 @@ namespace UIMod
 
             UISlider depthSlider = depthSliderLeftPanel.AddUIComponent<UISlider>();
             depthSlider.name = "depth Slider";
-            depthSlider.maxValue = MAX_DEPTH;
-            depthSlider.minValue = MIN_DEPTH;
-            depthSlider.stepSize = INT_DEPTH;
+            depthSlider.maxValue = SetStationDepthLength.MAX_DEPTH;
+            depthSlider.minValue = SetStationDepthLength.MIN_DEPTH;
+            depthSlider.stepSize = DEPTH_STEP;
             depthSlider.relativePosition = new Vector2(0, 0);
             depthSlider.size = depthSliderLeftPanel.size;
             depthSlider.eventValueChanged += (c, v) =>
@@ -276,7 +272,7 @@ namespace UIMod
                 if (m_depthTextbox.text != v.ToString())
                 {
                     m_valueChanged = true;
-                    if (v > MIN_DEPTH)
+                    if (v > SetStationDepthLength.MIN_DEPTH)
                     {
                         m_depthTextbox.text = v.ToString();
                         m_setDepth = v;
@@ -284,7 +280,7 @@ namespace UIMod
                     else
                     {
                         m_depthTextbox.text = "Default";
-                        m_setDepth = MIN_DEPTH;
+                        m_setDepth = SetStationDepthLength.MIN_DEPTH;
                     }
                 }
             };
@@ -328,9 +324,9 @@ namespace UIMod
                 }
                 else
                 {
-                    m_setDepth = MIN_DEPTH;
-                    if (depthSlider.value != MIN_DEPTH)
-                        depthSlider.value = MIN_DEPTH;
+                    m_setDepth = SetStationDepthLength.MIN_DEPTH;
+                    if (depthSlider.value != SetStationDepthLength.MIN_DEPTH)
+                        depthSlider.value = SetStationDepthLength.MIN_DEPTH;
                 }
             };
         }

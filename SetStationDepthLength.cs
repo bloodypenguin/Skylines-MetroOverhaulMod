@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using MetroOverhaul.Extensions;
 using UnityEngine;
@@ -10,6 +11,11 @@ namespace MetroOverhaul
 {
     public static class SetStationDepthLength
     {
+        public const int MAX_DEPTH = 36;
+        public const int MIN_DEPTH = 12;
+        public const int MAX_LENGTH = 144;
+        public const int MIN_LENGTH = 88;
+
         private static float GENERATED_PATH_MARKER = 0.09999f; //regular paths have snapping distance of 0.1f. This way we differentiate
         private const float TOLERANCE = 0.000001f; //equals 1/10 of difference between 0.1f and GENERATED_PATH_MARKER
 
@@ -25,8 +31,57 @@ namespace MetroOverhaul
             }
             CleanUpPaths(info);
             ResizeUndergroundStationTracks(info, targetStationTrackLength);
-            ChangeStationDepth(info, targetDepth);
+            if (!ChangeStationDepth(info, targetDepth))
+            {
+                BendStationTracks(info, targetDepth); //works for European Main Station!
+            }
             RecalculateSpawnPoints(info);
+        }
+
+        private static void BendStationTracks(BuildingInfo info, float targetDepth)
+        {
+            var processedConnectedPaths = new List<int>();
+            for (var index = 0; index < info.m_paths.Length; index++)
+            {
+                var path = info.m_paths[index];
+                if (!path.m_netInfo.IsUndergroundMetroStationTrack())
+                {
+                    continue;
+                }
+                BendStationTrack(info.m_paths, index, targetDepth, processedConnectedPaths);
+            }
+        }
+
+        private static void BendStationTrack(BuildingInfo.PathInfo[] assetPaths, int pathIndex, float targetDepth, List<int> processedConnectedPaths)
+        {
+            var path = assetPaths[pathIndex];
+            if (path.m_netInfo == null || !path.m_netInfo.IsUndergroundMetroStationTrack())
+            {
+                return;
+            }
+            if (path.m_nodes.Length < 2)
+            {
+                return;
+            }
+            var beginning = path.m_nodes.First();
+            var end = path.m_nodes.Last();
+            path.m_nodes[0] = new Vector3
+            {
+                x = path.m_nodes[0].x,
+                y = -MIN_DEPTH,
+                z = path.m_nodes[0].z,
+            };
+            path.m_nodes[path.m_nodes.Length - 1] = new Vector3
+            {
+                x = path.m_nodes[path.m_nodes.Length - 1].x,
+                y = -MIN_DEPTH,
+                z = path.m_nodes[path.m_nodes.Length - 1].z,
+            };
+            var newBeginning = path.m_nodes.First();
+            var newEnd = path.m_nodes.Last();
+
+            ChangeConnectedPaths(assetPaths, beginning, newBeginning - beginning, processedConnectedPaths);
+            ChangeConnectedPaths(assetPaths, end, newEnd - end, processedConnectedPaths);
         }
 
         private static void CleanUpPaths(BuildingInfo info)
@@ -98,11 +153,11 @@ namespace MetroOverhaul
             }
         }
 
-        private static void ChangeStationDepth(BuildingInfo info, float targetDepth)
+        private static bool ChangeStationDepth(BuildingInfo info, float targetDepth)
         {
             if (info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.name == "Pedestrian Connection Surface") < 1)
             {
-                return;
+                return false;
             }
 
             var highestLow = float.MinValue;
@@ -152,6 +207,7 @@ namespace MetroOverhaul
                 updatedPaths.Add(path);
             }
             info.m_paths = updatedPaths.ToArray();
+            return true;
         }
 
         private static void DipPath(BuildingInfo.PathInfo path, float depthOffsetDist)
@@ -264,7 +320,6 @@ namespace MetroOverhaul
             }
             var newBeginning = path.m_nodes.First();
             var newEnd = path.m_nodes.Last();
-           // UnityEngine.Debug.Log($"station track {beginning}-{end} resized tp {newBeginning}-{newEnd}");
 
             ChangeConnectedPaths(assetPaths, beginning, newBeginning - beginning, processedConnectedPaths);
             ChangeConnectedPaths(assetPaths, end, newEnd - end, processedConnectedPaths);
@@ -297,7 +352,7 @@ namespace MetroOverhaul
                         path.m_nodes[i] = new Vector3
                         {
                             x = path.m_nodes[i].x,
-                            y = -12f,
+                            y = -MIN_DEPTH,
                             z = path.m_nodes[i].z
                         };
                         SetCurveTargets(path);
@@ -307,7 +362,6 @@ namespace MetroOverhaul
                 processedConnectedPaths.Add(pathIndex);
                 var newBeginning = path.m_nodes.First();
                 var newEnd = path.m_nodes.Last();
-                //UnityEngine.Debug.Log($"connected path {beginning}-{end} resized tp {newBeginning}-{newEnd}. name={path.m_netInfo.name}");
 
                 ChangeConnectedPaths(assetPaths, beginning, newBeginning - beginning, processedConnectedPaths);
                 ChangeConnectedPaths(assetPaths, end, newEnd - end, processedConnectedPaths);
