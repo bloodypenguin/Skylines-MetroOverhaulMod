@@ -26,13 +26,55 @@ namespace MetroOverhaul
             info.m_paths = info.m_paths.Where(p => !IsPathGenerated(p)).ToArray();
             ResizeUndergroundStationTracks(info, targetStationTrackLength);
             var allowChangeDepth =
-                info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.name.Contains("Pedestrian Connection")) > 0 &&
-                info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack()) == 1; //TODO(earalov): don't allow to change depth if no ped. paths above metro tracks
-            if (!allowChangeDepth)
+                info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.name.Contains("Pedestrian Connection")) > 0; //TODO(earalov): don't allow to change depth if no ped. paths above metro tracks
+            if (allowChangeDepth)
+            {
+                ChangeStationDepth(info, targetDepth);
+            }
+            RecalculateSpawnPoints(info);
+
+        }
+
+        private static void RecalculateSpawnPoints(BuildingInfo info)
+        {
+            var buildingAI = info.GetComponent<DepotAI>();
+            var spawnPoints = new List<Vector3>();
+            if (buildingAI == null)
             {
                 return;
             }
-            ChangeStationDepth(info, targetDepth);
+            spawnPoints.AddRange(from path in info.m_paths
+                                 where path.m_netInfo.IsUndergroundMetroStationTrack()
+                                 select GetMiddle(path));
+            switch (spawnPoints.Count)
+            {
+                case 0:
+                    buildingAI.m_spawnPosition = Vector3.zero;
+                    buildingAI.m_spawnTarget = Vector3.zero;
+                    buildingAI.m_spawnPoints = new DepotAI.SpawnPoint[] { };
+                    break;
+                case 1:
+                    buildingAI.m_spawnPosition = spawnPoints[0];
+                    buildingAI.m_spawnTarget = spawnPoints[0];
+                    buildingAI.m_spawnPoints = new[]
+                    {
+                        new DepotAI.SpawnPoint
+                        {
+                            m_position =  spawnPoints[0],
+                            m_target =  spawnPoints[0]
+                        }
+                    };
+                    break;
+                default:
+                    buildingAI.m_spawnPosition = Vector3.zero;
+                    buildingAI.m_spawnTarget = Vector3.zero;
+                    buildingAI.m_spawnPoints = spawnPoints.Select(p => new DepotAI.SpawnPoint
+                    {
+                        m_position = p,
+                        m_target = p
+                    }).ToArray();
+                    break;
+            }
         }
 
         private static void ResizeUndergroundStationTracks(BuildingInfo info, float targetStationTrackLength)
@@ -74,15 +116,6 @@ namespace MetroOverhaul
                     highestLow = Math.Max(highestNode, highestLow);
                 }
             }
-            var buildingAI = info.GetComponent<DepotAI>();
-            if (buildingAI != null)
-            {
-                //TODO(earalov): add support for multi track stations (they have multiple spawn points). Also note that different tracks may have different initial depth
-                buildingAI.m_spawnPosition = new Vector3(buildingAI.m_spawnPosition.x, -targetDepth,
-                    buildingAI.m_spawnPosition.z);
-                buildingAI.m_spawnTarget = new Vector3(buildingAI.m_spawnPosition.x, -targetDepth, buildingAI.m_spawnPosition.z);
-            }
-
             var offsetDepthDist = targetDepth + highestLowStation;
 
             float lowestHigh = 0;
@@ -91,7 +124,7 @@ namespace MetroOverhaul
                 info.m_paths.Where(p => p.m_netInfo.name == "Pedestrian Connection Surface")
                     .OrderByDescending(p => p.m_nodes[0].y)
                     .FirstOrDefault();
-                //TODO(earalov): What if author used "Pedestrian Connection" instead of "Pedestrian Connection Surface"?
+            //TODO(earalov): What if author used "Pedestrian Connection" instead of "Pedestrian Connection Surface"?
             if (lowestHighPath != null)
             {
                 lowestHigh = lowestHighPath.m_nodes.OrderBy(n => n.y).FirstOrDefault().y;
@@ -208,7 +241,7 @@ namespace MetroOverhaul
                     z = middle.z + newLength * 0.5f * (path.m_nodes[i].z - middle.z) / toStart
                 };
             }
-            UnityEngine.Debug.LogError("path " + pathIndex + " resized! Type: "+path.m_netInfo.name);
+            UnityEngine.Debug.LogError("path " + pathIndex + " resized! Type: " + path.m_netInfo.name);
             SetCurveTargets(path);
             var newBeginning = path.m_nodes.First();
             var newEnd = path.m_nodes.Last();
@@ -276,7 +309,7 @@ namespace MetroOverhaul
                     .Where(grp => grp.Count() > 1)
                     .Select(grp => grp.Key)
                     .ToArray();
-            return info.m_paths.Where(p => p.m_netInfo.IsUndergroundMetroStationTrack() &&  p.m_nodes.Any(n => pairs.Contains(n))).ToArray();
+            return info.m_paths.Where(p => p.m_netInfo.IsUndergroundMetroStationTrack() && p.m_nodes.Any(n => pairs.Contains(n))).ToArray();
         }
 
         private static Vector3 GetMiddle(BuildingInfo.PathInfo path)
