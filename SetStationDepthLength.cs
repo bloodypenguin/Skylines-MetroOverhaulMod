@@ -24,35 +24,7 @@ namespace MetroOverhaul
                 return;
             }
             info.m_paths = info.m_paths.Where(p => !IsPathGenerated(p)).ToArray();
-
-            var linkedStationTracks = GetInterlinkedStationTracks(info);
-
-            var highestLow = float.MinValue;
-            var highestLowStation = float.MinValue;
-            var processedConnectedPaths = new List<int>();
-            for (var index = 0; index < info.m_paths.Length; index++)
-            {
-                var path = info.m_paths[index];
-                path.m_forbidLaneConnection = null; //TODO(earalov): what is this for?
-                if (!path.m_nodes.All(n => n.y < 0))
-                {
-                    continue;
-                }
-                var highestNode = path.m_nodes.OrderBy(n => n.y).LastOrDefault().y;
-                if (path.m_netInfo.IsUndergroundMetroStationTrack())
-                {
-                    highestLowStation = Math.Max(highestNode, highestLowStation);
-                    if (!linkedStationTracks.Contains(path))
-                    {
-                        ChangeStationTrackLength(info.m_paths, index, targetStationTrackLength, processedConnectedPaths);
-                    }
-                }
-                else
-                {
-                    highestLow = Math.Max(highestNode, highestLow);
-                }
-            }
-
+            ResizeUndergroundStationTracks(info, targetStationTrackLength);
             var allowChangeDepth =
                 info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.name.Contains("Pedestrian Connection")) > 0 &&
                 info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack()) == 1; //TODO(earalov): don't allow to change depth if no ped. paths above metro tracks
@@ -60,19 +32,66 @@ namespace MetroOverhaul
             {
                 return;
             }
+            ChangeStationDepth(info, targetDepth);
+        }
+
+        private static void ResizeUndergroundStationTracks(BuildingInfo info, float targetStationTrackLength)
+        {
+            var linkedStationTracks = GetInterlinkedStationTracks(info);
+            var processedConnectedPaths = new List<int>();
+            for (var index = 0; index < info.m_paths.Length; index++)
+            {
+                var path = info.m_paths[index];
+                if (!path.m_netInfo.IsUndergroundMetroStationTrack())
+                {
+                    continue;
+                }
+                if (!linkedStationTracks.Contains(path))
+                {
+                    ChangeStationTrackLength(info.m_paths, index, targetStationTrackLength, processedConnectedPaths);
+                }
+            }
+        }
+
+        private static void ChangeStationDepth(BuildingInfo info, float targetDepth)
+        {
+            var highestLow = float.MinValue;
+            var highestLowStation = float.MinValue;
+            foreach (var path in info.m_paths)
+            {
+                path.m_forbidLaneConnection = null; //TODO(earalov): what is this for?
+                if (path.m_netInfo?.m_netAI == null || !path.m_nodes.All(n => n.y < 0))
+                {
+                    continue;
+                }
+                var highestNode = path.m_nodes.OrderBy(n => n.y).LastOrDefault().y;
+                if (path.m_netInfo.IsUndergroundMetroStationTrack())
+                {
+                    highestLowStation = Math.Max(highestNode, highestLowStation);
+                }
+                else
+                {
+                    highestLow = Math.Max(highestNode, highestLow);
+                }
+            }
             var buildingAI = info.GetComponent<DepotAI>();
             if (buildingAI != null)
             {
                 //TODO(earalov): add support for multi track stations (they have multiple spawn points). Also note that different tracks may have different initial depth
-                buildingAI.m_spawnPosition = new Vector3(buildingAI.m_spawnPosition.x, -targetDepth, buildingAI.m_spawnPosition.z);
+                buildingAI.m_spawnPosition = new Vector3(buildingAI.m_spawnPosition.x, -targetDepth,
+                    buildingAI.m_spawnPosition.z);
                 buildingAI.m_spawnTarget = new Vector3(buildingAI.m_spawnPosition.x, -targetDepth, buildingAI.m_spawnPosition.z);
             }
 
             var offsetDepthDist = targetDepth + highestLowStation;
 
             float lowestHigh = 0;
-            var lowestHighPath = info.m_paths.FirstOrDefault(p => p.m_nodes.Any(n => n.y >= 0) && p.m_nodes.Any(nd => nd.y < 0)) ??
-                                 info.m_paths.Where(p => p.m_netInfo.name == "Pedestrian Connection Surface").OrderByDescending(p => p.m_nodes[0].y).FirstOrDefault(); //TODO(earalov): What if author used "Pedestrian Connection" instead of "Pedestrian Connection Surface"?
+            var lowestHighPath =
+                info.m_paths.FirstOrDefault(p => p.m_nodes.Any(n => n.y >= 0) && p.m_nodes.Any(nd => nd.y < 0)) ??
+                info.m_paths.Where(p => p.m_netInfo.name == "Pedestrian Connection Surface")
+                    .OrderByDescending(p => p.m_nodes[0].y)
+                    .FirstOrDefault();
+                //TODO(earalov): What if author used "Pedestrian Connection" instead of "Pedestrian Connection Surface"?
             if (lowestHighPath != null)
             {
                 lowestHigh = lowestHighPath.m_nodes.OrderBy(n => n.y).FirstOrDefault().y;
@@ -92,7 +111,6 @@ namespace MetroOverhaul
                 updatedPaths.Add(path);
             }
             info.m_paths = updatedPaths.ToArray();
-
         }
 
         private static void DipPath(BuildingInfo.PathInfo path, float depthOffsetDist)
@@ -164,7 +182,7 @@ namespace MetroOverhaul
         private static void ChangeStationTrackLength(IList<BuildingInfo.PathInfo> assetPaths, int pathIndex, float newLength, ICollection<int> processedConnectedPaths)
         {
             var path = assetPaths[pathIndex];
-            if (path.m_netInfo == null || !path.m_netInfo.IsUndergroundMetroStationTrack() || processedConnectedPaths.Contains(pathIndex))
+            if (path.m_netInfo == null || !path.m_netInfo.IsUndergroundMetroStationTrack())
             {
                 return;
             }
@@ -177,6 +195,7 @@ namespace MetroOverhaul
             var middle = GetMiddle(path);
             if (path.m_curveTargets.Length > 1 || (path.m_curveTargets.Length == 1 && Vector3.Distance(middle, path.m_curveTargets.FirstOrDefault()) > 0.1))
             {
+                UnityEngine.Debug.LogError("path " + pathIndex + " not resized! Too many curve points or a curve point is offset too much. Type: " + path.m_netInfo.name);
                 return;
             }
             for (var i = 0; i < path.m_nodes.Length; i++)
@@ -189,6 +208,7 @@ namespace MetroOverhaul
                     z = middle.z + newLength * 0.5f * (path.m_nodes[i].z - middle.z) / toStart
                 };
             }
+            UnityEngine.Debug.LogError("path " + pathIndex + " resized! Type: "+path.m_netInfo.name);
             SetCurveTargets(path);
             var newBeginning = path.m_nodes.First();
             var newEnd = path.m_nodes.Last();
@@ -204,7 +224,6 @@ namespace MetroOverhaul
                 var path = assetPaths[pathIndex];
                 if (path?.m_netInfo == null || path.m_netInfo.IsUndergroundMetroStationTrack())
                 {
-                    processedConnectedPaths.Add(pathIndex);
                     continue;
                 }
                 if (processedConnectedPaths.Contains(pathIndex) || !path.m_nodes.Where(n => n == nodePoint).Any())
@@ -252,13 +271,12 @@ namespace MetroOverhaul
         private static BuildingInfo.PathInfo[] GetInterlinkedStationTracks(BuildingInfo info)
         {
             var pairs =
-                info.m_paths.SelectMany(p => p.m_nodes)
+                info.m_paths.Where(p => p.m_netInfo.IsUndergroundMetroStationTrack()).SelectMany(p => p.m_nodes)
                     .GroupBy(n => n)
                     .Where(grp => grp.Count() > 1)
                     .Select(grp => grp.Key)
-                    .ToArray(); //revisit
-            return info.m_paths.Where(p => p.m_nodes.Any(n => pairs.Contains(n)) && p.m_netInfo.IsUndergroundMetroStationTrack())
                     .ToArray();
+            return info.m_paths.Where(p => p.m_netInfo.IsUndergroundMetroStationTrack() &&  p.m_nodes.Any(n => pairs.Contains(n))).ToArray();
         }
 
         private static Vector3 GetMiddle(BuildingInfo.PathInfo path)
