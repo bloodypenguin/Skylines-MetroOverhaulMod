@@ -273,6 +273,8 @@ namespace MetroOverhaul.InitializationSteps
         {
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
             var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
+            var tunnelMaterial = tunnelInfo.m_segments[0].m_material;
+            var tunnelLODMaterial = tunnelInfo.m_segments[0].m_lodMaterial;
             switch (version)
             {
                 case NetInfoVersion.Ground:
@@ -371,7 +373,8 @@ namespace MetroOverhaul.InitializationSteps
                         segment1
                             .SetMeshes
                             (@"Meshes\Tunnel_Station_Pavement.obj",
-                                @"Meshes\Tunnel_Pavement_LOD.obj");
+                                @"Meshes\Tunnel_Pavement_LOD.obj")
+                                .SetConsistentUVs();
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes
@@ -386,8 +389,10 @@ namespace MetroOverhaul.InitializationSteps
                             (@"Meshes\Elevated_Station_Rail_Node.obj")
                             .SetConsistentUVs();
 
-                        segment0.m_material = tunnelInfo.m_segments[0].m_material;
-                        segment0.m_lodMaterial = tunnelInfo.m_segments[0].m_lodMaterial;
+                        segment0.m_material = tunnelMaterial;
+                        segment0.m_lodMaterial = tunnelLODMaterial;
+                        segment1.m_material = elevatedMaterial;
+                        segment1.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = tunnelInfo.m_nodes[0].m_material;
                         node0.m_lodMaterial = tunnelInfo.m_nodes[0].m_lodMaterial;
 

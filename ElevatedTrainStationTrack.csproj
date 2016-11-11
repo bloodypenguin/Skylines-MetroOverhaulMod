@@ -587,10 +587,16 @@
     <Content Include="Resources\Textures\Tunnel_Segment_Pavement__XYSMap_LOD.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Textures\Tunnel_Station_Segment_MainTex.png">
+    <Content Include="Resources\Textures\Tunnel_Station_Segment_Pavement__MainTex.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Textures\Tunnel_Station_Segment_XYSMap.png">
+    <Content Include="Resources\Textures\Tunnel_Station_Segment_Pavement__MainTex_LOD.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Textures\Tunnel_Station_Segment_Pavement__XYSMap.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Textures\Tunnel_Station_Segment_Pavement__XYSMap_LOD.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

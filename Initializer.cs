@@ -365,7 +365,7 @@ namespace MetroOverhaul
                     break;
                 case NetInfoVersion.Tunnel:
                     prefab.m_pavementWidth = 4.8f;
-                    prefab.m_halfWidth = 7.5f;
+                    prefab.m_halfWidth = prefab.name.Contains("Station") ? 8 : 6f;
                     break;
                 case NetInfoVersion.Ground:
                     prefab.m_halfWidth = defaultHalfWidth;
