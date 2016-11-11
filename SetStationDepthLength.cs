@@ -226,23 +226,32 @@ namespace MetroOverhaul
             var beginning = path.m_nodes.First();
             var end = path.m_nodes.Last();
             var middle = GetMiddle(path);
-            if (path.m_curveTargets.Length > 1 || (path.m_curveTargets.Length == 1 && Vector3.Distance(middle, path.m_curveTargets.FirstOrDefault()) > 0.1))
+            var length = 0.0f;
+            for (var i = 1; i < path.m_nodes.Length; i++)
             {
-                UnityEngine.Debug.LogError("path " + pathIndex + " not resized! Too many curve points or a curve point is offset too much. Type: " + path.m_netInfo.name);
-                return;
+                length += Vector3.Distance(path.m_nodes[i], path.m_nodes[i - 1]);
             }
+            var coefficient = Math.Abs(newLength / length);
             for (var i = 0; i < path.m_nodes.Length; i++)
             {
-                var toStart = Vector3.Distance(path.m_nodes[i], middle);
                 path.m_nodes[i] = new Vector3
                 {
-                    x = middle.x + newLength * 0.5f * (path.m_nodes[i].x - middle.x) / toStart,
-                    y = middle.y + newLength * 0.5f * (path.m_nodes[i].y - middle.y) / toStart,
-                    z = middle.z + newLength * 0.5f * (path.m_nodes[i].z - middle.z) / toStart
+                    x = middle.x + (path.m_nodes[i].x - middle.x) * coefficient,
+                    y = middle.y + (path.m_nodes[i].y - middle.y) * coefficient,
+                    z = middle.z + (path.m_nodes[i].z - middle.z) * coefficient,
                 };
             }
+            for (var i = 0; i < path.m_curveTargets.Length; i++)
+            {
+                path.m_curveTargets[i] = new Vector3
+                {
+                    x = middle.x + (path.m_curveTargets[i].x - middle.x) * coefficient,
+                    y = middle.y + (path.m_curveTargets[i].y - middle.y) * coefficient,
+                    z = middle.z + (path.m_curveTargets[i].z - middle.z) * coefficient,
+                };
+            }
+
             UnityEngine.Debug.LogError("path " + pathIndex + " resized! Type: " + path.m_netInfo.name);
-            SetCurveTargets(path);
             var newBeginning = path.m_nodes.First();
             var newEnd = path.m_nodes.Last();
             ChangeConnectedPaths(assetPaths, beginning, newBeginning - beginning, processedConnectedPaths);
