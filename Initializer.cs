@@ -344,32 +344,29 @@ namespace MetroOverhaul
 
         private static void SetupTrackModel(NetInfo prefab, Action<NetInfo, NetInfoVersion> customizationStep)
         {
-            const int defaultHalfWidth = 6;
-            const float defaultPavementWidth = 3.5f;
-
             prefab.m_minHeight = 0; //TODO(earalov): is that minHeight correct for all types of tracks?
             var version = DetectVersion(prefab.name);
             switch (version)
             {
                 case NetInfoVersion.Elevated:
-                    prefab.m_halfWidth = defaultHalfWidth;
-                    prefab.m_pavementWidth = 3;
+                    prefab.m_halfWidth = 5;
+                    prefab.m_pavementWidth = 1.5f;
                     break;
                 case NetInfoVersion.Bridge:
-                    prefab.m_halfWidth = 5.9999f;
-                    prefab.m_pavementWidth = 3;
+                    prefab.m_halfWidth = 4.9999f;
+                    prefab.m_pavementWidth = 1.5f;
                     break;
                 case NetInfoVersion.Slope:
-                    prefab.m_halfWidth = defaultHalfWidth;
-                    prefab.m_pavementWidth = defaultPavementWidth;
+                    prefab.m_halfWidth = 6.5f;
+                    prefab.m_pavementWidth = 3f;
                     break;
                 case NetInfoVersion.Tunnel:
-                    prefab.m_pavementWidth = 4.8f;
-                    prefab.m_halfWidth = prefab.name.Contains("Station") ? 8 : 6f;
+                    prefab.m_pavementWidth = 2.5f;
+                    prefab.m_halfWidth = prefab.name.Contains("Station") ? 8 : 6f; //TODO: Why is SetupTunnelStationTrack called before this? 
                     break;
                 case NetInfoVersion.Ground:
-                    prefab.m_halfWidth = defaultHalfWidth;
-                    prefab.m_pavementWidth = defaultPavementWidth;
+                    prefab.m_halfWidth = 5;
+                    prefab.m_pavementWidth = 2.5f;
                     break;
             }
             customizationStep.Invoke(prefab, version);

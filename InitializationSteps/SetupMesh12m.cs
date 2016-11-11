@@ -170,7 +170,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
                         node5
                             .SetMeshes
-                            (@"Meshes\Tunnel_Node_Pavement.obj",
+                            (@"Meshes\Slope_U_Node_Pavement.obj",
                                 @"Meshes\Tunnel_Node_Pavement_LOD.obj")
                             .SetConsistentUVs();
 
@@ -395,6 +395,8 @@ namespace MetroOverhaul.InitializationSteps
                         segment1.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = tunnelInfo.m_nodes[0].m_material;
                         node0.m_lodMaterial = tunnelInfo.m_nodes[0].m_lodMaterial;
+                        node1.m_material = elevatedMaterial;
+                        node1.m_lodMaterial = elevatedLODMaterial;
 
                         prefab.m_segments = new[] { segment0, segment1, segment2 };
                         prefab.m_nodes = new[] { node0, node1, node2 };
