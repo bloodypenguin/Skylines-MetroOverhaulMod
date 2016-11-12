@@ -228,7 +228,7 @@ namespace MetroOverhaul
                     );
                     CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Train Station Track", //TODO(earalov): test. check if AI to be replaced with MetroTrackAI
                         ActionExtensions.BeginChain<NetInfo>().
-                        Chain(ReplaceAI, NetInfoVersion.Ground).
+                        Chain(ReplaceAI, NetInfoVersion.Tunnel).
                         Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
                         Chain(SetupStationTrack, NetInfoVersion.Ground).
                         Chain(SetupSunkenStationTrack).
