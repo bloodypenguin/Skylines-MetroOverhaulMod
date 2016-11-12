@@ -4,7 +4,7 @@ using MetroOverhaul.NEXT.Extensions;
 
 namespace MetroOverhaul.InitializationSteps
 {
-    public static class CustomizaionSteps
+    public static class CustomizationSteps
     {
         public static void CommonConcreteCustomization(NetInfo prefab, NetInfoVersion version)
         {
@@ -13,7 +13,32 @@ namespace MetroOverhaul.InitializationSteps
         public static void CommonCustomizationNoBar(NetInfo prefab, NetInfoVersion version)  //TODO(earalov): do we need to customize slope version too?
         {
         }
-
+        public static void SetStandardTrackWidths(NetInfo prefab, NetInfoVersion version)
+        {
+            switch (version)
+            {
+                case NetInfoVersion.Elevated:
+                    prefab.m_halfWidth = 5;
+                    prefab.m_pavementWidth = 1.5f;
+                    break;
+                case NetInfoVersion.Bridge:
+                    prefab.m_halfWidth = 4.9999f;
+                    prefab.m_pavementWidth = 1.5f;
+                    break;
+                case NetInfoVersion.Slope:
+                    prefab.m_halfWidth = 6.5f;
+                    prefab.m_pavementWidth = 3f;
+                    break;
+                case NetInfoVersion.Tunnel:
+                    prefab.m_pavementWidth = 2.5f;
+                    prefab.m_halfWidth = 6;
+                    break;
+                case NetInfoVersion.Ground:
+                    prefab.m_halfWidth = 5;
+                    prefab.m_pavementWidth = 2.5f;
+                    break;
+            }
+        }
         public static void ReplaceTrackIcon(NetInfo prefab, NetInfoVersion version)
         {
             if (version != NetInfoVersion.Ground)

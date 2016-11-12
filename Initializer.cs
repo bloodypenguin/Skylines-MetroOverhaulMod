@@ -30,8 +30,9 @@ namespace MetroOverhaul
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                        Chain(CustomizaionSteps.CommonConcreteCustomization).
-                        Chain(CustomizaionSteps.ReplaceTrackIcon).
+                        Chain(CustomizationSteps.CommonConcreteCustomization).
+                        Chain(CustomizationSteps.SetStandardTrackWidths).
+                        Chain(CustomizationSteps.ReplaceTrackIcon).
                         Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
                         Chain(SetupMesh.Setup12mMeshBar, elevatedInfo).
                         Chain(SetupTexture.Setup12mTexture).
@@ -51,6 +52,7 @@ namespace MetroOverhaul
                 {
                     CreateFullPrefab(
                         ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                            Chain(CustomizationSteps.SetStandardTrackWidths).
                             Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
                             Chain(SetupSteelMesh.Setup12mSteelMeshBar, elevatedInfo).
                             Chain(SetupSteelTexture.Setup12mSteelTexture).
@@ -71,8 +73,9 @@ namespace MetroOverhaul
                 {
                     CreateFullPrefab(
                         ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                            Chain(CustomizaionSteps.CommonConcreteCustomization).
-                            Chain(CustomizaionSteps.CommonCustomizationNoBar).
+                            Chain(CustomizationSteps.CommonConcreteCustomization).
+                            Chain(CustomizationSteps.CommonCustomizationNoBar).
+                            Chain(CustomizationSteps.SetStandardTrackWidths).
                             Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
                             Chain(SetupMesh.Setup12mMeshNoBar, elevatedInfo, trainTrackInfo).
                             Chain(SetupTexture.Setup12mTexture),
@@ -96,7 +99,8 @@ namespace MetroOverhaul
                 {
                     CreateFullPrefab(
                         ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                            Chain(CustomizaionSteps.CommonCustomizationNoBar).
+                            Chain(CustomizationSteps.CommonCustomizationNoBar).
+                            Chain(CustomizationSteps.SetStandardTrackWidths).
                             Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, trainTrackInfo).
                             Chain(SetupSteelMesh.Setup12mSteelMeshNoBar, elevatedInfo, trainTrackInfo).
                             Chain(SetupSteelTexture.Setup12mSteelTexture),
@@ -118,7 +122,7 @@ namespace MetroOverhaul
             {
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                        Chain(CustomizaionSteps.CommonConcreteCustomization).
+                        Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(SetupMesh.Setup12mMeshStation, elevatedInfo, tunnelInfo).
                         Chain(SetupTexture.Setup12mTexture), null, "Metro Station Track"
                 );
@@ -204,6 +208,7 @@ namespace MetroOverhaul
                 Chain(ReplaceAI, NetInfoVersion.Ground).
                 Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
                 Chain(SetupStationTrack, NetInfoVersion.Ground).
+                Chain(CustomizationSteps.SetStandardTrackWidths, NetInfoVersion.Ground).
                 Chain(p =>
                 {
                     //TODO(earalov): provide a track with narrow ped. lanes for Mr.Maison's stations
@@ -214,6 +219,7 @@ namespace MetroOverhaul
                         Chain(CommonSteps.SetVersion, p, NetInfoVersion.Elevated).
                         Chain(SetupStationTrack, NetInfoVersion.Elevated).
                         Chain(SetupElevatedStationTrack).
+                        Chain(CustomizationSteps.SetStandardTrackWidths, NetInfoVersion.Elevated).
                         Chain(SetupTrackModel, customizationStep)
                     );
                     CreateNetInfo(nameModifier.Invoke("Metro Station Track Tunnel"), "Train Station Track",
@@ -297,6 +303,7 @@ namespace MetroOverhaul
             prefab.m_maxHeight = -1;
             prefab.m_minHeight = -5;
             prefab.m_lowerTerrain = false;
+            prefab.m_pavementWidth = 2.5f;
             prefab.m_halfWidth = 8;
             prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
         }
@@ -346,31 +353,10 @@ namespace MetroOverhaul
         {
             prefab.m_minHeight = 0; //TODO(earalov): is that minHeight correct for all types of tracks?
             var version = DetectVersion(prefab.name);
-            switch (version)
-            {
-                case NetInfoVersion.Elevated:
-                    prefab.m_halfWidth = 5;
-                    prefab.m_pavementWidth = 1.5f;
-                    break;
-                case NetInfoVersion.Bridge:
-                    prefab.m_halfWidth = 4.9999f;
-                    prefab.m_pavementWidth = 1.5f;
-                    break;
-                case NetInfoVersion.Slope:
-                    prefab.m_halfWidth = 6.5f;
-                    prefab.m_pavementWidth = 3f;
-                    break;
-                case NetInfoVersion.Tunnel:
-                    prefab.m_pavementWidth = 2.5f;
-                    prefab.m_halfWidth = prefab.name.Contains("Station") ? 8 : 6f; //TODO: Why is SetupTunnelStationTrack called before this? 
-                    break;
-                case NetInfoVersion.Ground:
-                    prefab.m_halfWidth = 5;
-                    prefab.m_pavementWidth = 2.5f;
-                    break;
-            }
+
             customizationStep.Invoke(prefab, version);
         }
+
 
         private static void SetupMetroTrackMeta(NetInfo prefab, NetInfoVersion version)
         {

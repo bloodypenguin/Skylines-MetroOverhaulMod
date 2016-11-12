@@ -49,7 +49,7 @@
     <Compile Include="InitializationSteps\LateBuildUpSteel.cs" />
     <Compile Include="InitializationSteps\LateBuildUp.cs" />
     <Compile Include="InitializationSteps\CommonSteps.cs" />
-    <Compile Include="InitializationSteps\CustomizaionSteps.cs" />
+    <Compile Include="InitializationSteps\CustomizationSteps.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="Loading.cs" />
     <Compile Include="LoadingExtension.cs" />
