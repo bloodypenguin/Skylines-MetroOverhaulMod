@@ -190,7 +190,27 @@ namespace MetroOverhaul.InitializationSteps
                         }
                         foreach (var node in info.m_nodes)
                         {
-                            if (node.m_mesh.name.Contains("Node_Pavement"))
+                            if (node.m_mesh.name.Contains("Rail"))
+                            {
+                                node.SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                            }
+                            else if (node.m_mesh.name.Contains("Station"))
+                            {
+                                node.SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Tunnel_Station_Node_Pavement__MainTex.png",
+                                            @"Textures\Elevated_Segment_Pavement__AlphaMap.png",
+                                            @"Textures\Tunnel_Station_Segment_Pavement__XYSMap.png"),
+                                    new LODTextureSet
+                                        (@"Textures\Tunnel_Station_Segment_Pavement__MainTex_LOD.png",
+                                            @"Textures\Elevated_Segment_Pavement__AlphaMap_LOD.png",
+                                            @"Textures\Tunnel_Station_Segment_Pavement__XYSMap_LOD.png"));
+                            }
+                            else if (node.m_mesh.name.Contains("Node_Pavement"))
                             {
                                 node.SetTextures(
                                     new TextureSet
@@ -201,14 +221,6 @@ namespace MetroOverhaul.InitializationSteps
                                         (@"Textures\Tunnel_Node_Pavement__MainTex_LOD.png",
                                             @"Textures\Elevated_Node_Pavement__AlphaMap_LOD.png",
                                             @"Textures\Tunnel_Segment_Pavement__XYSMap_LOD.png"));
-                            }
-                            else
-                            {
-                                node.SetTextures(
-                                    new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
-                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
                             }
                         }
                         break;

@@ -383,7 +383,8 @@ namespace MetroOverhaul.InitializationSteps
                         node1
                             .SetMeshes
                             (@"Meshes\Tunnel_Station_Node_Pavement.obj",
-                                @"Meshes\Tunnel_Node_Pavement_LOD.obj");
+                                @"Meshes\Tunnel_Node_Pavement_LOD.obj")
+                                .SetConsistentUVs();
                         node2
                             .SetMeshes
                             (@"Meshes\Elevated_Station_Rail_Node.obj")

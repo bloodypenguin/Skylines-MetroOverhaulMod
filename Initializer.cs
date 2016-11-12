@@ -30,7 +30,7 @@ namespace MetroOverhaul
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                        Chain(CustomizationSteps.CommonConcreteCustomization).
+                        Chain(CustomizationSteps.AddConcreteProps).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
                         Chain(CustomizationSteps.ReplaceTrackIcon).
                         Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
@@ -73,7 +73,7 @@ namespace MetroOverhaul
                 {
                     CreateFullPrefab(
                         ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                            Chain(CustomizationSteps.CommonConcreteCustomization).
+                            Chain(CustomizationSteps.AddConcreteProps).
                             Chain(CustomizationSteps.CommonCustomizationNoBar).
                             Chain(CustomizationSteps.SetStandardTrackWidths).
                             Chain(SetupMesh.Setup12mMesh, elevatedInfo, trainTrackInfo).
@@ -122,7 +122,7 @@ namespace MetroOverhaul
             {
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                        Chain(CustomizationSteps.CommonConcreteCustomization).
+                        Chain(CustomizationSteps.AddConcreteStationProps).
                         Chain(SetupMesh.Setup12mMeshStation, elevatedInfo, tunnelInfo).
                         Chain(SetupTexture.Setup12mTexture), null, "Metro Station Track"
                 );
@@ -303,7 +303,7 @@ namespace MetroOverhaul
             prefab.m_maxHeight = -1;
             prefab.m_minHeight = -5;
             prefab.m_lowerTerrain = false;
-            prefab.m_pavementWidth = 2.5f;
+            prefab.m_pavementWidth = 4.5f;
             prefab.m_halfWidth = 8;
             prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
         }
