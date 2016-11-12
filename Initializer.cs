@@ -219,6 +219,7 @@ namespace MetroOverhaul
                         Chain(CommonSteps.SetVersion, p, NetInfoVersion.Elevated).
                         Chain(SetupStationTrack, NetInfoVersion.Elevated).
                         Chain(SetupElevatedStationTrack).
+                        Chain(Modifiers.MakePedestrianLanesNarrow).
                         Chain(CustomizationSteps.SetStandardTrackWidths, NetInfoVersion.Elevated).
                         Chain(SetupTrackModel, customizationStep)
                     );
@@ -229,12 +230,13 @@ namespace MetroOverhaul
                         Chain(CommonSteps.SetVersion, p, NetInfoVersion.Tunnel).
                         Chain(SetupStationTrack, NetInfoVersion.Tunnel).
                         Chain(SetupTunnelStationTrack).
+                        Chain(Modifiers.MakePedestrianLanesNarrow).
                         Chain(SetupTrackModel, customizationStep),
                         tunnelReplaces
                     );
                     CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Train Station Track", //TODO(earalov): test. check if AI to be replaced with MetroTrackAI
                         ActionExtensions.BeginChain<NetInfo>().
-                        Chain(ReplaceAI, NetInfoVersion.Ground).
+                        Chain(ReplaceAI, NetInfoVersion.Tunnel).
                         Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
                         Chain(SetupStationTrack, NetInfoVersion.Ground).
                         Chain(SetupSunkenStationTrack).
