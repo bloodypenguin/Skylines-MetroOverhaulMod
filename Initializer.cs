@@ -214,6 +214,7 @@ namespace MetroOverhaul
                         Chain(CommonSteps.SetVersion, p, NetInfoVersion.Elevated).
                         Chain(SetupStationTrack, NetInfoVersion.Elevated).
                         Chain(SetupElevatedStationTrack).
+                        Chain(Modifiers.MakePedestrianLanesNarrow).
                         Chain(SetupTrackModel, customizationStep)
                     );
                     CreateNetInfo(nameModifier.Invoke("Metro Station Track Tunnel"), "Train Station Track",
@@ -223,6 +224,7 @@ namespace MetroOverhaul
                         Chain(CommonSteps.SetVersion, p, NetInfoVersion.Tunnel).
                         Chain(SetupStationTrack, NetInfoVersion.Tunnel).
                         Chain(SetupTunnelStationTrack).
+                        Chain(Modifiers.MakePedestrianLanesNarrow).
                         Chain(SetupTrackModel, customizationStep),
                         tunnelReplaces
                     );
