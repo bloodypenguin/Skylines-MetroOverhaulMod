@@ -1,10 +1,11 @@
-﻿using System.Xml.Serialization;
+﻿
 using MetroOverhaul.Detours;
-using MetroOverhaul.OptionsFramework;
+using MetroOverhaul.OptionsFramework.Attibutes;
 
 namespace MetroOverhaul
 {
-    public class Options : IModOptions
+    [Options("MetroOverhaul")]
+    public class Options
     {
 #if DEBUG
         private const string WIP = "WIP features";
@@ -34,7 +35,5 @@ namespace MetroOverhaul
         [Checkbox("Concrete tracks (no bar)", null, null, WIP)]
         public bool concreteTracksNoBar { set; get; }
 #endif
-        [XmlIgnore]
-        public string FileName => "CSL-MetroOverhaul.xml";
     }
 }

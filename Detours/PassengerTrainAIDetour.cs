@@ -1,6 +1,7 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Math;
 using MetroOverhaul.Redirection;
+using MetroOverhaul.Redirection.Attributes;
 using UnityEngine;
 
 namespace MetroOverhaul.Detours

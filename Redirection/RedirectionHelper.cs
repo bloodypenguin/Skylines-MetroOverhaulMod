@@ -61,20 +61,14 @@ namespace MetroOverhaul.Redirection
         /// </summary>
         /// <param name="site"></param>
         /// <param name="target"></param>
-        private static RedirectCallsState PatchJumpTo(IntPtr site, IntPtr target)
+        public static RedirectCallsState PatchJumpTo(IntPtr site, IntPtr target)
         {
-            RedirectCallsState state = new RedirectCallsState();
-
+            RedirectCallsState state;
             // R11 is volatile.
             unsafe
             {
                 byte* sitePtr = (byte*)site.ToPointer();
-                state.a = *sitePtr;
-                state.b = *(sitePtr + 1);
-                state.c = *(sitePtr + 10);
-                state.d = *(sitePtr + 11);
-                state.e = *(sitePtr + 12);
-                state.f = *((ulong*)(sitePtr + 2));
+                state = GetState(sitePtr);
 
                 *sitePtr = 0x49; // mov r11, target
                 *(sitePtr + 1) = 0xBB;
@@ -83,15 +77,30 @@ namespace MetroOverhaul.Redirection
                 *(sitePtr + 11) = 0xFF;
                 *(sitePtr + 12) = 0xE3;
             }
-
             return state;
         }
 
-        private static void RevertJumpTo(IntPtr site, RedirectCallsState state)
+        private static unsafe RedirectCallsState GetState(byte* sitePtr)
         {
+            var state = new RedirectCallsState
+            {
+                a = *sitePtr,
+                b = *(sitePtr + 1),
+                c = *(sitePtr + 10),
+                d = *(sitePtr + 11),
+                e = *(sitePtr + 12),
+                f = *((ulong*) (sitePtr + 2))
+            };
+            return state;
+        }
+
+        public static RedirectCallsState RevertJumpTo(IntPtr site, RedirectCallsState state)
+        {
+            RedirectCallsState detourState;
             unsafe
             {
                 byte* sitePtr = (byte*)site.ToPointer();
+                detourState = GetState(sitePtr);
                 *sitePtr = state.a; // mov r11, target
                 *(sitePtr + 1) = state.b;
                 *((ulong*)(sitePtr + 2)) = state.f;
@@ -99,6 +108,7 @@ namespace MetroOverhaul.Redirection
                 *(sitePtr + 11) = state.d;
                 *(sitePtr + 12) = state.e;
             }
+            return detourState;
         }
 
     }

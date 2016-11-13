@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MetroOverhaul.Redirection
+namespace MetroOverhaul.Redirection.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public class TargetTypeAttribute : Attribute

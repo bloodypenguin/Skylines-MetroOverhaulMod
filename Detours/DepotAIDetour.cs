@@ -1,5 +1,5 @@
 ﻿using ColossalFramework;
-using MetroOverhaul.Redirection;
+using MetroOverhaul.Redirection.Attributes;
 
 namespace MetroOverhaul.Detours
 {
