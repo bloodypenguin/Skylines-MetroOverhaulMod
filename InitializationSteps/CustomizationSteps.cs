@@ -15,7 +15,7 @@ namespace MetroOverhaul.InitializationSteps
             {
                 var lanes = prefab.m_lanes.ToList();
                 var propLane = new NetInfo.Lane();
-                propLane.m_laneProps = new NetLaneProps();
+                propLane.m_laneProps = ScriptableObject.CreateInstance<NetLaneProps>();
                 var propsList = new List<NetLaneProps.Prop>();
                 if (version == NetInfoVersion.Tunnel)
                 {
@@ -32,7 +32,7 @@ namespace MetroOverhaul.InitializationSteps
             var propLanes = prefab.m_lanes.Where(l => l.m_laneType == NetInfo.LaneType.Pedestrian).ToList();
             for (var i = 0; i < propLanes.Count; i++)
             {
-                propLanes[i].m_laneProps = new NetLaneProps();
+                propLanes[i].m_laneProps = ScriptableObject.CreateInstance<NetLaneProps>();
                 var propsList = new List<NetLaneProps.Prop>();
                 if (version == NetInfoVersion.Tunnel)
                 {
