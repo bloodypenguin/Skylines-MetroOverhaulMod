@@ -394,8 +394,8 @@ namespace MetroOverhaul.InitializationSteps
                         segment0.m_lodMaterial = tunnelLODMaterial;
                         segment1.m_material = elevatedMaterial;
                         segment1.m_lodMaterial = elevatedLODMaterial;
-                        node0.m_material = tunnelInfo.m_nodes[0].m_material;
-                        node0.m_lodMaterial = tunnelInfo.m_nodes[0].m_lodMaterial;
+                        node0.m_material = tunnelMaterial;
+                        node0.m_lodMaterial = tunnelLODMaterial;
                         node1.m_material = elevatedMaterial;
                         node1.m_lodMaterial = elevatedLODMaterial;
 
