@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ICities;
 using MetroOverhaul.Extensions;
@@ -13,10 +14,12 @@ namespace MetroOverhaul
 
         public void UpdateExistingAssets(LoadMode mode)
         {
-            UpdateVanillaMetroStation();
+            if (mode == LoadMode.LoadAsset || mode == LoadMode.NewAsset)
+            {
+                return;
+            }
             UpdateTrainTracks();
-
-            UpdateMetroStations(mode);
+            UpdateMetroStationsMeta();
             UpdateMetroTrainEffects();
         }
 
@@ -44,7 +47,9 @@ namespace MetroOverhaul
                 }
                 var newCost = wasCost / toGroundMultipliers[version] *
                                      Initializer.GetCostMultiplier(version) * GetAdditionalCostMultiplier(version) * baseMultiplier;
+#if DEBUG
                 UnityEngine.Debug.Log($"Updating asset {netInfo.name} cost. Was cost: {wasCost}. New cost: {newCost}");
+#endif
                 ai.m_constructionCost = (int)newCost;
                 ai.m_maintenanceCost = (int)(newCost / 10f);
             }
@@ -66,28 +71,79 @@ namespace MetroOverhaul
             return ((PlayerNetAI)netInfo.m_netAI).m_constructionCost;
         }
 
-        private static void UpdateVanillaMetroStation()
+        //this method is supposed to be called from LoadingExtension
+        public static void UpdateBuildingsMetroPaths(LoadMode mode, bool toVanilla = false)
         {
-            SetupNewTunnelTrack(PrefabCollection<BuildingInfo>.FindLoaded("Metro Entrance"));
-            SetupNewTunnelTrack(PrefabCollection<BuildingInfo>.FindLoaded("Integrated Metro Station"));
-        }
-
-        private static void SetupNewTunnelTrack(BuildingInfo vanillaMetroStation)
-        {
-            foreach (var path in vanillaMetroStation.m_paths)
+            if (mode == LoadMode.NewAsset || mode == LoadMode.NewAsset)
             {
-                if (path?.m_netInfo == null)
+                return;
+            }
+            for (uint i = 0; i < PrefabCollection<BuildingInfo>.LoadedCount(); i++)
+            {
+                try
                 {
-                    continue;
+                    var prefab = PrefabCollection<BuildingInfo>.GetPrefab(i);
+                    if (prefab == null)
+                    {
+                        continue;
+                    }
+                    if (!toVanilla)
+                    {
+                        if (!OptionsWrapper<Options>.Options.metroUi)
+                        {
+                            SetStationDepthLength.ModifyStation(prefab, 12, 144);
+                        }
+                    }
+                    SetupTunnelTracks(prefab, toVanilla);
+
                 }
-                if (path.m_netInfo.IsUndergroundMetroStationTrack())
+                catch (Exception e)
                 {
-                    path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel");
+                    UnityEngine.Debug.LogException(e);
                 }
             }
         }
 
-        private static void UpdateMetroStations(LoadMode mode)
+        private static void SetupTunnelTracks(BuildingInfo info, bool toVanilla = false)
+        {
+            if (info?.m_paths == null)
+            {
+                return;
+            }
+            foreach (var path in info.m_paths)
+            {
+                if (path?.m_netInfo?.name == null)
+                {
+                    continue;
+                }
+                if (toVanilla)
+                {
+                    if (path.m_netInfo.name.Contains("Metro Station Track"))
+                    {
+                        path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track");
+                    }
+                    else if (path.m_netInfo.name.Contains("Metro Track"))
+                    {
+                        path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+                    }
+                }
+                else
+                {
+                    if (path.m_netInfo.name == "Metro Station Track")
+                    {
+                        path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel");
+                    }
+                    else if (path.m_netInfo.name == "Metro Track")
+                    {
+                        path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track Tunnel");
+                    }
+                }
+
+
+            }
+        }
+
+        private static void UpdateMetroStationsMeta()
         {
             var vanillaMetroStation = PrefabCollection<BuildingInfo>.FindLoaded("Metro Entrance");
 
@@ -102,10 +158,6 @@ namespace MetroOverhaul
                 {
                     var transportStationAi = (TransportStationAI)info.m_buildingAI;
                     transportStationAi.m_maxVehicleCount = 0;
-                    if (mode != LoadMode.NewAsset && mode != LoadMode.NewAsset && !OptionsWrapper<Options>.Options.metroUi)
-                    {
-                        SetStationDepthLength.ModifyStation(info, 12, 144);
-                    }
                 }
                 info.m_UnlockMilestone = vanillaMetroStation.m_UnlockMilestone;
                 ((DepotAI)info.m_buildingAI).m_createPassMilestone = ((DepotAI)vanillaMetroStation.m_buildingAI).m_createPassMilestone;
@@ -118,7 +170,26 @@ namespace MetroOverhaul
         public static void PreventVanillaMetroTrainSpawning()
         {
             var metro = PrefabCollection<VehicleInfo>.FindLoaded("Metro");
+            if (metro == null)
+            {
+                return;
+            }
             metro.m_class = ScriptableObject.CreateInstance<ItemClass>();
+        }
+
+        //this method is supposed to be called before level loading
+        public static void UpdateVanillaMetroTracks()
+        {
+            var vanillaMetroTrack = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+            if (vanillaMetroTrack != null)
+            {
+                vanillaMetroTrack.m_availableIn = ItemClass.Availability.Editors;
+            }
+            var vanillaMetroStationTrack = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track");
+            if (vanillaMetroStationTrack != null)
+            {
+                vanillaMetroStationTrack.m_availableIn = ItemClass.Availability.Editors;
+            }
         }
 
         private static void UpdateMetroTrainEffects()

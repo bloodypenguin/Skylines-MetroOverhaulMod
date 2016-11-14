@@ -7,9 +7,8 @@ namespace MetroOverhaul
     [Options("MetroOverhaul")]
     public class Options
     {
-#if DEBUG
         private const string WIP = "WIP features";
-#endif
+
         public Options()
         {
 #if DEBUG
@@ -20,6 +19,7 @@ namespace MetroOverhaul
             improvedPassengerTrainAi = true;
             improvedMetroTrainAi = true;
             metroUi = true;
+            replaceExistingNetworks = false;
         }
         [Checkbox("Metro track customization UI (requires reloading from main menu)")]
         public bool metroUi { set; get; }
@@ -27,12 +27,15 @@ namespace MetroOverhaul
         public bool improvedPassengerTrainAi { set; get; }
         [Checkbox("Improved MetroTrainAI (Allows trains to properly spawn at surface)", nameof(MetroTrainAIDetour), nameof(MetroTrainAIDetour.ChangeDeployState))]
         public bool improvedMetroTrainAi { set; get; }
+        [Checkbox("Replace vanilla metro tracks with MOM tracks", WIP)]
+        public bool replaceExistingNetworks { set; get; }
+
 #if DEBUG
-        [Checkbox("Steel tracks", null, null, WIP)]
+        [Checkbox("Steel tracks", WIP)]
         public bool steelTracks { set; get; }
-        [Checkbox("Steel tracks (no bar)", null, null, WIP)]
+        [Checkbox("Steel tracks (no bar)", WIP)]
         public bool steelTracksNoBar { set; get; }
-        [Checkbox("Concrete tracks (no bar)", null, null, WIP)]
+        [Checkbox("Concrete tracks (no bar)", WIP)]
         public bool concreteTracksNoBar { set; get; }
 #endif
     }

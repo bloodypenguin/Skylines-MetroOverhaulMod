@@ -19,6 +19,7 @@ namespace MetroOverhaul
         {
             CreateTracks();
             AssetsUpdater.PreventVanillaMetroTrainSpawning();
+            AssetsUpdater.UpdateVanillaMetroTracks();
         }
 
         private void CreateTracks()
@@ -28,6 +29,7 @@ namespace MetroOverhaul
             var tunnelInfo = FindOriginalNetInfo("Train Track Tunnel");
             try
             {
+                var replacements = OptionsWrapper<Options>.Options.replaceExistingNetworks ? new Dictionary<NetInfoVersion, string> { { NetInfoVersion.Tunnel, "Metro Track" } } : null;
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.AddConcreteProps).
@@ -37,7 +39,7 @@ namespace MetroOverhaul
                         Chain(SetupMesh.Setup12mMeshBar, elevatedInfo).
                         Chain(SetupTexture.Setup12mTexture).
                         Chain((info, version) => { LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); }); }),
-                    NetInfoVersion.All, null, null, new Dictionary<NetInfoVersion, string> { { NetInfoVersion.Tunnel, "Metro Track" } }
+                    NetInfoVersion.All, null, null, replacements
                 );
             }
             catch (Exception e)
@@ -124,7 +126,7 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.AddConcreteStationProps).
                         Chain(SetupMesh.Setup12mMeshStation, elevatedInfo, tunnelInfo).
-                        Chain(SetupTexture.Setup12mTexture), null, "Metro Station Track"
+                        Chain(SetupTexture.Setup12mTexture), null, OptionsWrapper<Options>.Options.replaceExistingNetworks ? "Metro Station Track" : null
                 );
             }
             catch (Exception e)
