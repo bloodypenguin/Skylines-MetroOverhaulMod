@@ -17,11 +17,13 @@ namespace MetroOverhaul.InitializationSteps
                 var propLane = new NetInfo.Lane();
                 propLane.m_laneProps = ScriptableObject.CreateInstance<NetLaneProps>();
                 var propsList = new List<NetLaneProps.Prop>();
-                if (version == NetInfoVersion.Tunnel)
+                var thePropInfo = PrefabCollection<PropInfo>.FindLoaded("Tunnel Light Small Road");
+                if (thePropInfo == null)
                 {
-                    var propName = "Tunnel Light Small Road";
-                    propsList.AddBasicProp(propName, new Vector3(-3.5f, 6, 0), 270);
+                    thePropInfo = PrefabCollection<PropInfo>.FindLoaded("Wall Light White");
                 }
+                
+                propsList.AddBasicProp(thePropInfo, new Vector3(-3.5f, 6, 0), 270);
                 propLane.m_laneProps.m_props = propsList.ToArray();
                 lanes.Add(propLane);
                 prefab.m_lanes = lanes.ToArray();
@@ -36,18 +38,17 @@ namespace MetroOverhaul.InitializationSteps
                 var propsList = new List<NetLaneProps.Prop>();
                 if (version == NetInfoVersion.Tunnel)
                 {
-                    var propName = "Wall Light White";
-                    propsList.AddBasicProp(propName, new Vector3(-1, 6.7f, 0), 90, 10);
+                    var thePropInfo = PrefabCollection<PropInfo>.FindLoaded("Wall Light White");
+                    propsList.AddBasicProp(thePropInfo, new Vector3(-1, 6.7f, 0), 90, 10);
                 }
                 propLanes[i].m_laneProps.m_props = propsList.ToArray();
             }
         }
 
-        private static void AddBasicProp(this List<NetLaneProps.Prop> propList, string propName, Vector3 position, float angle, float repeatDistance = 0)
+        private static void AddBasicProp(this List<NetLaneProps.Prop> propList, PropInfo thePropInfo, Vector3 position, float angle, float repeatDistance = 0)
         {
             var theProp = new NetLaneProps.Prop();
-            var lightPropInfo = PrefabCollection<PropInfo>.FindLoaded(propName);
-            theProp.m_prop = lightPropInfo;
+            theProp.m_prop = thePropInfo;
             theProp.m_position = position;
             theProp.m_repeatDistance = repeatDistance;
             theProp.m_angle = angle;
@@ -62,12 +63,12 @@ namespace MetroOverhaul.InitializationSteps
             switch (version)
             {
                 case NetInfoVersion.Elevated:
-                    prefab.m_halfWidth = 5;
-                    prefab.m_pavementWidth = 1.5f;
+                    prefab.m_halfWidth = 6;
+                    prefab.m_pavementWidth = 2.5f;
                     break;
                 case NetInfoVersion.Bridge:
-                    prefab.m_halfWidth = 4.9999f;
-                    prefab.m_pavementWidth = 1.5f;
+                    prefab.m_halfWidth = 5.9999f;
+                    prefab.m_pavementWidth = 2.5f;
                     break;
                 case NetInfoVersion.Slope:
                     prefab.m_halfWidth = 6.5f;
