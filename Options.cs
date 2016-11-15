@@ -8,7 +8,7 @@ namespace MetroOverhaul
     public class Options
     {
         private const string WIP = "WIP features";
-        private const string STYLES = "Additional tyles";
+        private const string STYLES = "Additional styles";
         public Options()
         {
 #if DEBUG
@@ -26,9 +26,9 @@ namespace MetroOverhaul
 
         [Checkbox("Metro track customization UI (requires reloading from main menu)")]
         public bool metroUi { set; get; }
-        [Checkbox("Improved PassengerTrainAI (Allows trains to return to depots)", nameof(PassengerTrainAIDetour), nameof(PassengerTrainAIDetour.ChangeDeployState))]
+        [Checkbox("Improved PassengerTrainAI (Allows trains to return to depots)", null, nameof(PassengerTrainAIDetour), nameof(PassengerTrainAIDetour.ChangeDeployState))]
         public bool improvedPassengerTrainAi { set; get; }
-        [Checkbox("Improved MetroTrainAI (Allows trains to properly spawn at surface)", nameof(MetroTrainAIDetour), nameof(MetroTrainAIDetour.ChangeDeployState))]
+        [Checkbox("Improved MetroTrainAI (Allows trains to properly spawn at surface)", null, nameof(MetroTrainAIDetour), nameof(MetroTrainAIDetour.ChangeDeployState))]
         public bool improvedMetroTrainAi { set; get; }
         [Checkbox("Replace vanilla metro tracks with MOM tracks", WIP)]
         public bool replaceExistingNetworks { set; get; }
