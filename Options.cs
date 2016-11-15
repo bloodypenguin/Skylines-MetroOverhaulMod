@@ -8,19 +8,22 @@ namespace MetroOverhaul
     public class Options
     {
         private const string WIP = "WIP features";
-
+        private const string STYLES = "Additional tyles";
         public Options()
         {
 #if DEBUG
             steelTracks = false;
             steelTracksNoBar = false;
-            concreteTracksNoBar = false;
 #endif
+            concreteTracksNoBar = true;
             improvedPassengerTrainAi = true;
             improvedMetroTrainAi = true;
             metroUi = true;
             replaceExistingNetworks = false;
         }
+        [Checkbox("Concrete tracks (no fence)", STYLES)]
+        public bool concreteTracksNoBar { set; get; }
+
         [Checkbox("Metro track customization UI (requires reloading from main menu)")]
         public bool metroUi { set; get; }
         [Checkbox("Improved PassengerTrainAI (Allows trains to return to depots)", nameof(PassengerTrainAIDetour), nameof(PassengerTrainAIDetour.ChangeDeployState))]
@@ -31,12 +34,10 @@ namespace MetroOverhaul
         public bool replaceExistingNetworks { set; get; }
 
 #if DEBUG
-        [Checkbox("Steel tracks", WIP)]
+        [Checkbox("Steel tracks", STYLES)]
         public bool steelTracks { set; get; }
-        [Checkbox("Steel tracks (no bar)", WIP)]
+        [Checkbox("Steel tracks (no fence)", STYLES)]
         public bool steelTracksNoBar { set; get; }
-        [Checkbox("Concrete tracks (no bar)", WIP)]
-        public bool concreteTracksNoBar { set; get; }
 #endif
     }
 }

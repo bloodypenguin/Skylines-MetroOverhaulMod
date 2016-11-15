@@ -47,27 +47,6 @@ namespace MetroOverhaul
                 UnityEngine.Debug.LogError("Exception happened when setting up concrete tracks");
                 UnityEngine.Debug.LogException(e);
             }
-#if DEBUG
-            if (OptionsWrapper<Options>.Options.steelTracks)
-            {
-                try
-                {
-                    CreateFullPrefab(
-                        ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                            Chain(CustomizationSteps.SetStandardTrackWidths).
-                            Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, metroInfo).
-                            Chain(SetupSteelMesh.Setup12mSteelMeshBar, elevatedInfo).
-                            Chain(SetupSteelTexture.Setup12mSteelTexture).
-                            Chain((info, version) => { LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); }); }),
-                        NetInfoVersion.All, null, prefabName => "Steel " + prefabName
-                    );
-                }
-                catch (Exception e)
-                {
-                    UnityEngine.Debug.LogError("Exception happened when setting up steel tracks");
-                    UnityEngine.Debug.LogException(e);
-                }
-            }
 
             if (OptionsWrapper<Options>.Options.concreteTracksNoBar)
             {
@@ -91,6 +70,28 @@ namespace MetroOverhaul
                 catch (Exception e)
                 {
                     UnityEngine.Debug.LogError("Exception happened when setting up nobar concrete tracks");
+                    UnityEngine.Debug.LogException(e);
+                }
+            }
+
+#if DEBUG
+            if (OptionsWrapper<Options>.Options.steelTracks)
+            {
+                try
+                {
+                    CreateFullPrefab(
+                        ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                            Chain(CustomizationSteps.SetStandardTrackWidths).
+                            Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, metroInfo).
+                            Chain(SetupSteelMesh.Setup12mSteelMeshBar, elevatedInfo).
+                            Chain(SetupSteelTexture.Setup12mSteelTexture).
+                            Chain((info, version) => { LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); }); }),
+                        NetInfoVersion.All, null, prefabName => "Steel " + prefabName
+                    );
+                }
+                catch (Exception e)
+                {
+                    UnityEngine.Debug.LogError("Exception happened when setting up steel tracks");
                     UnityEngine.Debug.LogException(e);
                 }
             }

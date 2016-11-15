@@ -101,9 +101,13 @@ namespace MetroOverhaul
             }
             AssetsUpdater.UpdateBuildingsMetroPaths(mode, false);
             SimulationManager.instance.AddAction(DespawnVanillaMetro);
-            if (mode != LoadMode.NewAsset && mode != LoadMode.NewAsset && OptionsWrapper<Options>.Options.metroUi)
+            if (mode != LoadMode.NewAsset && mode != LoadMode.NewAsset)
             {
-                UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizerUI));
+                if (OptionsWrapper<Options>.Options.metroUi)
+                {
+                    UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizerUI));
+                }
+                new GameObject("MetroTrackStyleUI").AddComponent<StyleSelectionUI>();
             }
         }
 
@@ -112,6 +116,11 @@ namespace MetroOverhaul
             base.OnLevelUnloading();
             //it appears, the game caches vanilla prefabs even when exiting to main menu, and stations won't load properly on reloading from main menu
             AssetsUpdater.UpdateBuildingsMetroPaths(LoadMode.LoadMap, true);
+            var go = GameObject.Find("MetroTrackStyleUI");
+            if (go != null)
+            {
+                GameObject.Destroy(go);
+            }
         }
 
         private static void DespawnVanillaMetro()
