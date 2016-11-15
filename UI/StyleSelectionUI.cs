@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MetroOverhaul
+namespace MetroOverhaul.UI
 {
     public class StyleSelectionUI : MonoBehaviour
     {
@@ -27,8 +27,8 @@ namespace MetroOverhaul
         {
             concretePrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground");
             concretePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground NoBar");
-            steelPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground");
-            steelPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground NoBar");
+            steelPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground");
+            steelPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground NoBar");
         }
 
         public void Update()

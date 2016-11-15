@@ -4,7 +4,7 @@ using ColossalFramework.UI;
 using MetroOverhaul.Extensions;
 using UnityEngine;
 
-namespace MetroOverhaul
+namespace MetroOverhaul.UI
 {
     public class MetroStationCustomizerUI : UIPanel
     {

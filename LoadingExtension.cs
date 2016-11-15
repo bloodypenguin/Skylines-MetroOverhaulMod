@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using ColossalFramework.UI;
 using MetroOverhaul.OptionsFramework;
+using MetroOverhaul.UI;
 using UnityEngine;
 
 namespace MetroOverhaul
@@ -101,13 +102,16 @@ namespace MetroOverhaul
             }
             AssetsUpdater.UpdateBuildingsMetroPaths(mode, false);
             SimulationManager.instance.AddAction(DespawnVanillaMetro);
-            if (mode != LoadMode.NewAsset && mode != LoadMode.NewAsset)
+            if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame)
             {
+                var gameObject = new GameObject("MetroOverhaulUISetup");
+                gameObject.AddComponent<UpgradeSetup>();
+                gameObject.AddComponent<StyleSelectionUI>();
+
                 if (OptionsWrapper<Options>.Options.metroUi)
                 {
                     UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizerUI));
                 }
-                new GameObject("MetroTrackStyleUI").AddComponent<StyleSelectionUI>();
             }
         }
 
@@ -116,7 +120,7 @@ namespace MetroOverhaul
             base.OnLevelUnloading();
             //it appears, the game caches vanilla prefabs even when exiting to main menu, and stations won't load properly on reloading from main menu
             AssetsUpdater.UpdateBuildingsMetroPaths(LoadMode.LoadMap, true);
-            var go = GameObject.Find("MetroTrackStyleUI");
+            var go = GameObject.Find("MetroOverhaulUISetup");
             if (go != null)
             {
                 GameObject.Destroy(go);
