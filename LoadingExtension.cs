@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using ColossalFramework.UI;
 using MetroOverhaul.OptionsFramework;
-using UIMod;
 using UnityEngine;
 
 namespace MetroOverhaul
@@ -104,7 +103,7 @@ namespace MetroOverhaul
             SimulationManager.instance.AddAction(DespawnVanillaMetro);
             if (mode != LoadMode.NewAsset && mode != LoadMode.NewAsset && OptionsWrapper<Options>.Options.metroUi)
             {
-                UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizer));
+                UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizerUI));
             }
         }
 

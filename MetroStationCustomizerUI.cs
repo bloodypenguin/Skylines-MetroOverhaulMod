@@ -1,15 +1,12 @@
-﻿using ColossalFramework.UI;
-using ICities;
-using System;
-using MetroOverhaul;
-using UnityEngine;
+﻿using System;
 using ColossalFramework.Threading;
-using System.Reflection;
+using ColossalFramework.UI;
 using MetroOverhaul.Extensions;
+using UnityEngine;
 
-namespace UIMod
+namespace MetroOverhaul
 {
-    public class MetroStationCustomizer : UIPanel
+    public class MetroStationCustomizerUI : UIPanel
     {
         private const int DEPTH_STEP = 3;
         private const int LENGTH_STEP = 8;
@@ -24,7 +21,7 @@ namespace UIMod
         private UIButton m_upgradeButtonTemplate;
         private BuildingInfo m_currentBuilding;
         private bool m_activated = false;
-        public static MetroStationCustomizer instance;
+        public static MetroStationCustomizerUI instance;
         public override void Update()
         {
             if (m_buildingTool == null)

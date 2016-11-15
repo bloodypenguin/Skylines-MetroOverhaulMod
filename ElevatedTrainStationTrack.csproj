@@ -117,7 +117,7 @@
     <Compile Include="InitializationSteps\SetupMesh12m.cs" />
     <Compile Include="InitializationSteps\SetupSteelTexture12m.cs" />
     <Compile Include="InitializationSteps\SetupTexture12m.cs" />
-    <Compile Include="MetroUI.cs" />
+    <Compile Include="MetroStationCustomizerUI.cs" />
     <Compile Include="SetStationDepthLength.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
