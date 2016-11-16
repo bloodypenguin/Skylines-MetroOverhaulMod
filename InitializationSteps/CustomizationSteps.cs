@@ -9,39 +9,37 @@ namespace MetroOverhaul.InitializationSteps
 {
     public static class CustomizationSteps
     {
-        public static void AddConcreteProps(NetInfo prefab, NetInfoVersion version)
+        public static void SetupTrackProps(NetInfo prefab, NetInfoVersion version)
         {
-            if (version == NetInfoVersion.Tunnel)
+            if (version != NetInfoVersion.Tunnel)
             {
-                var lanes = prefab.m_lanes.ToList();
-                var propLane = new NetInfo.Lane();
-                propLane.m_laneProps = ScriptableObject.CreateInstance<NetLaneProps>();
-                var propsList = new List<NetLaneProps.Prop>();
-                var thePropInfo = PrefabCollection<PropInfo>.FindLoaded("Tunnel Light Small Road");
-                if (thePropInfo == null)
-                {
-                    thePropInfo = PrefabCollection<PropInfo>.FindLoaded("Wall Light White");
-                }
-                
-                propsList.AddBasicProp(thePropInfo, new Vector3(-3.5f, 6, 0), 270);
-                propLane.m_laneProps.m_props = propsList.ToArray();
-                lanes.Add(propLane);
-                prefab.m_lanes = lanes.ToArray();
+                return;
             }
+            var lanes = prefab.m_lanes.ToList();
+            var propLane = new NetInfo.Lane();
+            propLane.m_laneProps = ScriptableObject.CreateInstance<NetLaneProps>();
+            var propsList = new List<NetLaneProps.Prop>();
+            var thePropInfo = PrefabCollection<PropInfo>.FindLoaded("Tunnel Light Small Road") ??
+                              PrefabCollection<PropInfo>.FindLoaded("Wall Light White");
+
+            propsList.AddBasicProp(thePropInfo, new Vector3(-3.5f, 6, 0), 270);
+            propLane.m_laneProps.m_props = propsList.ToArray();
+            lanes.Add(propLane);
+            prefab.m_lanes = lanes.ToArray();
         }
-        public static void AddConcreteStationProps(NetInfo prefab, NetInfoVersion version)
+        public static void SetupStationProps(NetInfo prefab, NetInfoVersion version)
         {
             var propLanes = prefab.m_lanes.Where(l => l.m_laneType == NetInfo.LaneType.Pedestrian).ToList();
-            for (var i = 0; i < propLanes.Count; i++)
+            foreach (NetInfo.Lane t in propLanes)
             {
-                propLanes[i].m_laneProps = ScriptableObject.CreateInstance<NetLaneProps>();
+                t.m_laneProps = ScriptableObject.CreateInstance<NetLaneProps>();
                 var propsList = new List<NetLaneProps.Prop>();
                 if (version == NetInfoVersion.Tunnel)
                 {
                     var thePropInfo = PrefabCollection<PropInfo>.FindLoaded("Wall Light White");
                     propsList.AddBasicProp(thePropInfo, new Vector3(-1, 6.7f, 0), 90, 10);
                 }
-                propLanes[i].m_laneProps.m_props = propsList.ToArray();
+                t.m_laneProps.m_props = propsList.ToArray();
             }
         }
 
