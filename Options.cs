@@ -14,9 +14,7 @@ namespace MetroOverhaul
         {
 #if DEBUG
             steelTracks = false;
-            steelTracksNoBar = false;
 #endif
-            concreteTracksNoBar = true;
             improvedPassengerTrainAi = true;
             improvedMetroTrainAi = true;
             metroUi = true;
@@ -31,18 +29,12 @@ namespace MetroOverhaul
         [Checkbox("Improved MetroTrainAI (Allows trains to properly spawn at surface)", GENERAL, nameof(MetroTrainAIDetour), nameof(MetroTrainAIDetour.ChangeDeployState))]
         public bool improvedMetroTrainAi { set; get; }
 
-        [Checkbox("Concrete tracks (no fence)", STYLES)]
-        public bool concreteTracksNoBar { set; get; }
-
         [Checkbox("Replace vanilla metro tracks with MOM tracks", WIP)]
         public bool replaceExistingNetworks { set; get; }
 
 #if DEBUG
         [Checkbox("Steel tracks", STYLES)]
         public bool steelTracks { set; get; }
-
-        [Checkbox("Steel tracks (no fence)", STYLES)]
-        public bool steelTracksNoBar { set; get; }
 #endif
     }
 }
