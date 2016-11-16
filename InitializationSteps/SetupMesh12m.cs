@@ -53,13 +53,6 @@ namespace MetroOverhaul.InitializationSteps
                         node1.m_flagsForbidden = NetNode.Flags.LevelCrossing;
                         node3.m_flagsRequired = NetNode.Flags.LevelCrossing;
 
-                        segment0.m_material = elevatedMaterial;
-                        segment0.m_lodMaterial = elevatedLODMaterial;
-                        node0.m_material = elevatedMaterial;
-                        node0.m_lodMaterial = elevatedLODMaterial;
-                        node2.m_lodMaterial = elevatedLODMaterial;
-                        //
-
                         info.m_segments = new[] { segment0, segment1 };
                         info.m_nodes = new[] { node0, node1, node2, node3 };
                         break;

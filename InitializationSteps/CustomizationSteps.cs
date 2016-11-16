@@ -57,6 +57,12 @@ namespace MetroOverhaul.InitializationSteps
 
         public static void CommonCustomizationNoBar(NetInfo prefab, NetInfoVersion version)  //TODO(earalov): do we need to customize slope version too?
         {
+            switch (version)
+            {
+                case NetInfoVersion.Ground:
+                    prefab.m_createGravel = true;
+                    break;
+            }
         }
         public static void SetStandardTrackWidths(NetInfo prefab, NetInfoVersion version)
         {
