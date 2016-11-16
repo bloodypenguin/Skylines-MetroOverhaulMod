@@ -113,7 +113,8 @@ namespace MetroOverhaul
                             Chain(CustomizationSteps.SetStandardTrackWidths).
                             Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, metroInfo).
                             Chain(SetupSteelMesh.Setup12mSteelMeshNoBar, elevatedInfo, metroInfo).
-                            Chain(SetupSteelTexture.Setup12mSteelTexture),
+                            Chain(SetupSteelTexture.Setup12mSteelTexture).
+                            Chain((info, version) => { LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); }); }),
                         NetInfoVersion.Ground | NetInfoVersion.Elevated,
                         ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                             Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(LinkToNonGroundVersions,
