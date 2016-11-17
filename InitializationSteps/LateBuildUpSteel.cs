@@ -1,4 +1,6 @@
-﻿using MetroOverhaul.NEXT;
+﻿using System;
+using MetroOverhaul.NEXT;
+using UnityEngine;
 
 namespace MetroOverhaul.InitializationSteps
 {
@@ -10,22 +12,27 @@ namespace MetroOverhaul.InitializationSteps
             {
                 case NetInfoVersion.Elevated:
                     {
-                        var steelElevatedPillarInfo = PrefabCollection<BuildingInfo>.FindLoaded("Steel Metro Elevated Pillar");
-
+                        var steelElevatedPillarInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("SteelMetroElevatedPillar")}.SteelMetroElevatedPillar_Data");
+                        if (steelElevatedPillarInfo == null)
+                        {
+                            throw new Exception($"{prefab.name}: SteelMetroElevatedPillar not found!");
+                        }
                         var bridgeAI = prefab.GetComponent<TrainTrackBridgeAI>();
-                        if (steelElevatedPillarInfo != null && bridgeAI != null)
+                        if (bridgeAI != null)
                         {
                             bridgeAI.m_bridgePillarInfo = steelElevatedPillarInfo;
-                            bridgeAI.m_bridgePillarOffset = 2;
                         }
                         break;
                     }
                 case NetInfoVersion.Bridge:
                     {
-                        var steelBridgePillarInfo = PrefabCollection<BuildingInfo>.FindLoaded("Steel Metro Bridge Pillar");
-
+                        var steelBridgePillarInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("SteelMetroBridgePillar")}.SteelMetroBridgePillar_Data");
+                        if (steelBridgePillarInfo == null)
+                        {
+                            throw new Exception($"{prefab.name}: SteelMetroBridgePillar not found!");
+                        }
                         var bridgeAI = prefab.GetComponent<TrainTrackBridgeAI>();
-                        if (steelBridgePillarInfo != null && bridgeAI != null)
+                        if (bridgeAI != null)
                         {
                             bridgeAI.m_bridgePillarInfo = steelBridgePillarInfo;
                             bridgeAI.m_middlePillarInfo = steelBridgePillarInfo;
