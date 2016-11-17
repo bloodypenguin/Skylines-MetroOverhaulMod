@@ -470,6 +470,7 @@ namespace MetroOverhaul
             {
                 prefab.m_class.m_layer = ItemClass.Layer.Default;
             }
+            prefab.m_availableIn = ItemClass.Availability.AssetEditor;
             prefab.m_class.hideFlags = HideFlags.None;
             prefab.m_class.name = prefab.name;
             prefab.m_maxBuildAngle = 90;
