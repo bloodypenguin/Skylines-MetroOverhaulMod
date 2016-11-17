@@ -156,6 +156,7 @@
     <None Include="Assets\Maison Metro Depot.crp" />
     <None Include="Assets\MetroBridgePillar.crp" />
     <None Include="Assets\MetroElevatedPillar.crp" />
+    <None Include="Assets\SteelMetroElevatedPillar.crp" />
     <None Include="Resources\Meshes\Bridge_Node_Pavement.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
