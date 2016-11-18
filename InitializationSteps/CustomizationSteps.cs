@@ -100,6 +100,7 @@ namespace MetroOverhaul.InitializationSteps
             prefab.m_InfoTooltipAtlas = metroTrack.m_InfoTooltipAtlas;
             prefab.m_InfoTooltipThumbnail = metroTrack.m_InfoTooltipThumbnail;
             prefab.m_isCustomContent = false;
+            prefab.m_availableIn = ItemClass.Availability.All;
             var locale = LocaleManager.instance.GetLocale();
             var key = new Locale.Key { m_Identifier = "NET_TITLE", m_Key = prefab.name };
             if (!locale.Exists(key))
