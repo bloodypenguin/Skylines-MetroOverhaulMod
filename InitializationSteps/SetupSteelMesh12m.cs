@@ -37,12 +37,12 @@ namespace MetroOverhaul.InitializationSteps
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail_Steel.obj")
+                            (@"Meshes\Rail.obj")
                             .SetConsistentUVs();
 
                         node1
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail_Steel.obj")
+                            (@"Meshes\Boosted_Rail.obj")
                             .SetConsistentUVs();
                         node2
                             .SetMeshes
@@ -64,6 +64,7 @@ namespace MetroOverhaul.InitializationSteps
                         var segment1 = info.m_segments[1];
                         var node0 = info.m_nodes[0];
                         var node1 = info.m_nodes[1];
+                        var node2 = info.m_nodes[0].ShallowClone();
                         var node3 = info.m_nodes[3];
 
                         segment0
@@ -76,7 +77,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail_Steel.obj");
+                            (@"Meshes\Rail.obj");
 
                         node0
                             .SetMeshes
@@ -85,14 +86,19 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
                         node1
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail_Steel.obj");
+                            (@"Meshes\Rail.obj");
+                        node2
+                            .SetMeshes
+                            (@"Meshes\Boosted_Rail_Steel.obj")
+                            .SetConsistentUVs();
 
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
-
+                        node2.m_material = elevatedMaterial;
+                        node2.m_directConnect = true;
                         info.m_segments = new[] { segment0, segment1 };
-                        info.m_nodes = new[] { node0, node1, node3 };
+                        info.m_nodes = new[] { node0, node1, node2, node3 };
                         break;
                     }
                 //case NetInfoVersion.Bridge:
@@ -113,7 +119,7 @@ namespace MetroOverhaul.InitializationSteps
                 //        segment1
                 //            .SetFlagsDefault()
                 //            .SetMeshes
-                //            (@"Meshes\Elevated_Rail_Steel.obj");
+                //            (@"Meshes\Rail.obj");
 
                 //        node0
                 //            .SetMeshes
@@ -122,7 +128,7 @@ namespace MetroOverhaul.InitializationSteps
                 //            .SetConsistentUVs();
                 //        node1
                 //            .SetMeshes
-                //            (@"Meshes\Elevated_Rail_Steel.obj");
+                //            (@"Meshes\Rail.obj");
 
                 //        if (elevatedMaterial != null)
                 //        {
@@ -150,7 +156,7 @@ namespace MetroOverhaul.InitializationSteps
 
                         segment1
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail_Steel.obj");
+                            (@"Meshes\Rail.obj");
                         segment3
                             .SetFlagsDefault()
                             .SetMeshes
@@ -159,7 +165,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
                         node1
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail_Steel.obj");
+                            (@"Meshes\Rail.obj");
                         node3
                             .SetMeshes
                             (@"Meshes\Slope_Node_Pavement_Steel.obj",
@@ -190,10 +196,10 @@ namespace MetroOverhaul.InitializationSteps
                     //        segment2
                     //            .SetFlagsDefault()
                     //            .SetMeshes
-                    //            (@"Meshes\Elevated_Rail_Steel.obj");
+                    //            (@"Meshes\Rail.obj");
                     //        node2
                     //            .SetMeshes
-                    //            (@"Meshes\Elevated_Rail_Steel.obj");
+                    //            (@"Meshes\Rail.obj");
 
                     //        if (isAlt)
                     //        {
@@ -274,22 +280,43 @@ namespace MetroOverhaul.InitializationSteps
         //mind changed indices! (after Setup12mSteelMesh)
         public static void Setup12mSteelMeshNoBar(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
         {
-            if (version != NetInfoVersion.Ground) //TODO(earalov): do we need to customize slope version too?
+            switch (version)
             {
-                return;
+                case NetInfoVersion.Ground:
+                    {
+                        var segment0 = info.m_segments[0];
+                        var node0 = info.m_nodes[0];
+                        segment0
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            (@"Meshes\Ground_NoBar_Pavement_Steel.obj",
+                                @"Meshes\Ground_NoBar_Pavement_LOD.obj");
+                        node0
+                            .SetMeshes
+                            (@"Meshes\Ground_NoBar_Node_Pavement_Steel.obj",
+                                @"Meshes\Ground_NoBar_Node_Pavement_LOD.obj")
+                            .SetConsistentUVs(true);
+                        break;
+                    }
+                case NetInfoVersion.Elevated:
+                    {
+                        var segment0 = info.m_segments[0];
+                        var node0 = info.m_nodes[0];
+                        segment0
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            (@"Meshes\Elevated_NoBar_Pavement_Steel.obj",
+                                @"Meshes\Elevated_Pavement_LOD.obj")
+                                .SetConsistentUVs();
+                        node0
+                            .SetMeshes
+                            (@"Meshes\Elevated_NoBar_Node_Pavement_Steel.obj",
+                                @"Meshes\Elevated_Node_Pavement_LOD.obj")
+                            .SetConsistentUVs(true);
+                        break;
+                    }
             }
-            var segment0 = info.m_segments[0];
-            var node0 = info.m_nodes[0];
-            segment0
-                .SetFlagsDefault()
-                .SetMeshes
-                (@"Meshes\Ground_NoBar_Pavement_Steel.obj",
-                    @"Meshes\Ground_NoBar_Pavement_LOD.obj");
-            node0
-                .SetMeshes
-                (@"Meshes\Ground_NoBar_Node_Pavement_Steel.obj",
-                    @"Meshes\Ground_NoBar_Node_Pavement_LOD.obj")
-                .SetConsistentUVs(true);
+
 
         }
     }

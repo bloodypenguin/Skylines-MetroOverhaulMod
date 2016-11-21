@@ -30,7 +30,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Ground_Rail.obj")
+                            (@"Meshes\Rail.obj")
                             .SetConsistentUVs();
 
                         node0
@@ -39,7 +39,7 @@ namespace MetroOverhaul.InitializationSteps
                                 @"Meshes\Ground_Node_Pavement_LOD.obj");
                         node1
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj")
+                            (@"Meshes\Boosted_Rail.obj")
                             .SetConsistentUVs();
                         node2
                             .SetMeshes
@@ -75,7 +75,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj");
+                            (@"Meshes\Boosted_Rail.obj");
 
                         node0
                             .SetMeshes
@@ -84,7 +84,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
                         node1
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj");
+                            (@"Meshes\Boosted_Rail.obj");
 
 
                         segment0.m_material = elevatedMaterial;
@@ -113,7 +113,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj");
+                            (@"Meshes\Boosted_Rail.obj");
 
                         node0
                             .SetMeshes
@@ -122,7 +122,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
                         node1
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj");
+                            (@"Meshes\Boosted_Rail.obj");
 
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
@@ -148,7 +148,7 @@ namespace MetroOverhaul.InitializationSteps
 
                         segment1
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj")
+                            (@"Meshes\Boosted_Rail.obj")
                             .SetConsistentUVs();
                         segment2
                             .SetFlagsDefault()
@@ -158,7 +158,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
                         node1
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj")
+                            (@"Meshes\Boosted_Rail.obj")
                             .SetConsistentUVs();
                         node2
                             .SetMeshes
@@ -185,7 +185,7 @@ namespace MetroOverhaul.InitializationSteps
                         node6
                             .SetFlags(NetNode.Flags.Underground, NetNode.Flags.None)
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj")
+                            (@"Meshes\Boosted_Rail.obj")
                             .SetConsistentUVs();
 
                         segment2.m_material = elevatedMaterial;
@@ -215,7 +215,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj");
+                            (@"Meshes\Boosted_Rail.obj");
                         node1
                             .SetMeshes
                             (@"Meshes\Tunnel_Node_Pavement.obj",
@@ -223,7 +223,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
                         node2
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj")
+                            (@"Meshes\Boosted_Rail.obj")
                             .SetConsistentUVs();
                         segment1.m_material = elevatedMaterial;
                         segment1.m_lodMaterial = elevatedLODMaterial;
@@ -267,23 +267,44 @@ namespace MetroOverhaul.InitializationSteps
         //mind changed segment and node indices! (after Setup12mMesh)
         public static void Setup12mMeshNoBar(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
         {
-            if (version != NetInfoVersion.Ground) //TODO(earalov): do we need to customize slope version too?
+            switch (version)
             {
-                return;
-            }
-            var segment0 = info.m_segments[0];
-            var node0 = info.m_nodes[0];
-            segment0
-                .SetFlagsDefault()
-                .SetMeshes
-                (@"Meshes\Ground_NoBar_Pavement.obj",
-                    @"Meshes\Ground_NoBar_Pavement_LOD.obj");
+                case NetInfoVersion.Ground:
+                    {
+                        var segment0 = info.m_segments[0];
+                        var node0 = info.m_nodes[0];
+                        segment0
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            (@"Meshes\Ground_NoBar_Pavement.obj",
+                                @"Meshes\Ground_NoBar_Pavement_LOD.obj");
 
-            node0
-                .SetMeshes
-                (@"Meshes\Ground_NoBar_Node_Pavement.obj",
-                    @"Meshes\Ground_NoBar_Node_Pavement_LOD.obj")
-                .SetConsistentUVs(true);
+                        node0
+                            .SetMeshes
+                            (@"Meshes\Ground_NoBar_Node_Pavement.obj",
+                                @"Meshes\Ground_NoBar_Node_Pavement_LOD.obj")
+                            .SetConsistentUVs(true);
+                        break;
+                    }
+                case NetInfoVersion.Elevated:
+                    {
+                        var segment0 = info.m_segments[0];
+                        var node0 = info.m_nodes[0];
+                        segment0
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            (@"Meshes\Elevated_NoBar_Pavement.obj",
+                                @"Meshes\Elevated_Pavement_LOD.obj");
+
+                        node0
+                            .SetMeshes
+                            (@"Meshes\Elevated_NoBar_Node_Pavement.obj",
+                                @"Meshes\Elevated_Node_Pavement_LOD.obj")
+                            .SetConsistentUVs(true);
+                        break;
+                    }
+            }
+
         }
 
 
@@ -309,7 +330,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Ground_Rail.obj")
+                            (@"Meshes\Rail.obj")
                             .SetConsistentUVs();
                         node0
                             .SetMeshes
@@ -357,7 +378,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj")
+                            (@"Meshes\Boosted_Rail.obj")
                             .SetConsistentUVs();
                         node0
                             .SetMeshes
@@ -394,7 +415,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\Elevated_Rail.obj")
+                            (@"Meshes\Boosted_Rail.obj")
                             .SetConsistentUVs();
                         node1
                             .SetMeshes

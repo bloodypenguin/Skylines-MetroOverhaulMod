@@ -77,7 +77,7 @@ namespace MetroOverhaul
                         Chain(SetupMesh.Setup12mMesh, elevatedInfo, metroInfo).
                         Chain(SetupMesh.Setup12mMeshNoBar, elevatedInfo, metroInfo).
                         Chain(SetupTexture.Setup12mTexture),
-                    NetInfoVersion.Ground,
+                    NetInfoVersion.Ground | NetInfoVersion.Elevated,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null,
