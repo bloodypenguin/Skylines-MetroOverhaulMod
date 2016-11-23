@@ -287,6 +287,12 @@
     <None Include="Resources\Meshes\Ground_Pavement_Steel.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\Ground_Station_Node_Pavement_Steel.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\Ground_Station_Pavement_Steel.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\Rail.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -483,7 +489,7 @@
     <Content Include="Resources\Textures\Elevated_Segment_Steel_Rail__XYSMap.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Textures\Elevated_Station_Segment_Pavement__MainTex.png">
+    <Content Include="Resources\Textures\Elevated_Station_Segment_Pavement_Steel__MainTex.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Textures\Ground_Level_Crossing_Rail__MainTex.png">

@@ -67,7 +67,7 @@ namespace MetroOverhaul.InitializationSteps
             switch (version)
             {
                 case NetInfoVersion.Elevated:
-                    prefab.m_halfWidth = 6;
+                    prefab.m_halfWidth = prefab.name.Contains("Steel") ? 6.0001f:6; //Todo make proper enum for the styles
                     prefab.m_pavementWidth = 2.5f;
                     break;
                 case NetInfoVersion.Bridge:
@@ -80,7 +80,7 @@ namespace MetroOverhaul.InitializationSteps
                     break;
                 case NetInfoVersion.Tunnel:
                     prefab.m_pavementWidth = 2.5f;
-                    prefab.m_halfWidth = 6;
+                    prefab.m_halfWidth = prefab.name.Contains("Steel") ? 6.0001f : 6;//Todo make proper enum for the styles
                     break;
                 case NetInfoVersion.Ground:
                     prefab.m_halfWidth = 5;

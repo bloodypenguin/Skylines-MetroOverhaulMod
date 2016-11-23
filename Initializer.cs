@@ -25,12 +25,10 @@ namespace MetroOverhaul
         private void CreateTracks()
         {
             CreateConcreteTracks();
-#if DEBUG
             if (OptionsWrapper<Options>.Options.steelTracks)
             {
                 CreateSteelTracks();
             }
-#endif
         }
 
         #region CONCRETE
@@ -76,7 +74,12 @@ namespace MetroOverhaul
                         Chain(CustomizationSteps.SetStandardTrackWidths).
                         Chain(SetupMesh.Setup12mMesh, elevatedInfo, metroInfo).
                         Chain(SetupMesh.Setup12mMeshNoBar, elevatedInfo, metroInfo).
-                        Chain(SetupTexture.Setup12mTexture),
+                        Chain(SetupTexture.Setup12mTexture).
+                        Chain(
+                            (info, version) =>
+                            {
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                            }),
                     NetInfoVersion.Ground | NetInfoVersion.Elevated,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
@@ -185,9 +188,9 @@ namespace MetroOverhaul
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.SetupStationProps).
-                        Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, metroInfo)
+                        Chain(SetupSteelMesh.Setup12mStationSteelMesh, elevatedInfo, metroInfo)
                         . //TODO(earalov): probably change to station specific method
-                        Chain(SetupSteelMesh.Setup12mSteelMeshNoBar, elevatedInfo, metroStationInfo)
+                        Chain(SetupSteelMesh.Setup12mStationSteelMesh, elevatedInfo, metroStationInfo)
                         . //TODO(earalov): probably change to station specific method
                         Chain(SetupSteelTexture.Setup12mSteelTexture),
                     NetInfoVersion.Ground | NetInfoVersion.Elevated,

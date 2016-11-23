@@ -25,7 +25,6 @@ namespace MetroOverhaul.InitializationSteps
                                         (@"Textures\Ground_Segment_Pavement_Steel__MainTex_LOD.png",
                                             @"Textures\Ground_Segment_Pavement_Steel__AlphaMap_LOD.png",
                                             @"Textures\Ground_Segment_Pavement_Steel__XYSMap_LOD.png"));
-                                        
                             }
                             else
                             {
@@ -82,10 +81,22 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         foreach (var segment in info.m_segments)
                         {
-                            if (segment.m_mesh.name.Contains("Pavement"))
+                            var isElevated = segment.m_mesh.name.Contains("Elevated");
+                            if (segment.m_mesh.name.Contains("Station"))
                             {
-                                var isElevated = segment.m_mesh.name.Contains("Elevated");
-                                    
+                                segment.SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Elevated_Station_Segment_Pavement_Steel__MainTex.png",
+                                            @"Textures\Elevated_Segment_Pavement_Steel__AlphaMap.png",
+                                            @"Textures\Elevated_Segment_Pavement_Steel__XYSMap.png"),
+                                    new LODTextureSet
+                                        (@"Textures\Elevated_Segment_Pavement_Steel__MainTex_LOD.png",
+                                            (isElevated ? @"Textures\Elevated_Segment_Pavement_Steel__AlphaMap_LOD.png"
+                                                : @"Textures\Bridge_Pavement_Steel__AlphaMap_LOD.png"),
+                                            @"Textures\Elevated_Segment_Pavement_Steel__XYSMap_LOD.png"));
+                            }
+                            else if (segment.m_mesh.name.Contains("Pavement"))
+                            {
                                 segment.SetTextures(
                                     new TextureSet
                                         (@"Textures\Elevated_Segment_Pavement_Steel__MainTex.png",

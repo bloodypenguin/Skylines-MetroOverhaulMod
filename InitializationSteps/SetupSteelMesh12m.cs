@@ -316,8 +316,191 @@ namespace MetroOverhaul.InitializationSteps
                         break;
                     }
             }
+        }
+        public static void Setup12mStationSteelMesh(NetInfo prefab, NetInfoVersion version, NetInfo elevatedInfo, NetInfo metroStationInfo)
+        {
+            var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
+            var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
+            switch (version)
+            {
+                case NetInfoVersion.Ground:
+                    {
+                        var segment0 = prefab.m_segments[0].ShallowClone();
+                        var segment1 = prefab.m_segments[1];
+                        var node0 = prefab.m_nodes[0].ShallowClone();
+                        var node1 = prefab.m_nodes[1];
+                        var node2 = prefab.m_nodes[2];
+                        var node3 = prefab.m_nodes[1].ShallowClone();
 
+                        segment0
+                            .SetMeshes
+                            (@"Meshes\Ground_Station_Pavement_Steel.obj",
+                                @"Meshes\Ground_NoBar_Pavement_LOD.obj");
+                        segment1
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            (@"Meshes\Rail.obj")
+                            .SetConsistentUVs();
+                        node0
+                            .SetMeshes
+                            (@"Meshes\Ground_Station_Node_Pavement_Steel.obj",
+                                @"Meshes\Ground_Station_Node_Pavement_LOD.obj");
+                        node1
+                            .SetMeshes
+                            (@"Meshes\Elevated_Station_Rail_Node.obj")
+                            .SetConsistentUVs();
+                        node2
+                            .SetMeshes
+                            (@"Meshes\Ground_Level_Crossing.obj",
+                                @"Meshes\Ground_Level_Crossing_LOD.obj")
+                            .SetConsistentUVs();
+                        node3
+                            .SetMeshes
+                            (@"Meshes\Ground_Level_Crossing_Rail_Station.obj")
+                            .SetConsistentUVs();
 
+                        segment0.m_material = elevatedMaterial;
+                        segment0.m_lodMaterial = elevatedLODMaterial;
+                        node0.m_material = elevatedMaterial;
+                        node0.m_lodMaterial = elevatedLODMaterial;
+                        node2.m_lodMaterial = elevatedLODMaterial;
+
+                        node1.m_flagsForbidden = NetNode.Flags.LevelCrossing;
+                        node2.m_flagsRequired = NetNode.Flags.LevelCrossing;
+                        node3.m_flagsRequired = NetNode.Flags.LevelCrossing;
+
+                        prefab.m_segments = new[] { segment0, segment1 };
+                        prefab.m_nodes = new[] { node0, node1, node2, node3 };
+                        break;
+                    }
+                case NetInfoVersion.Elevated:
+                    {
+                        var segment0 = prefab.m_segments[0].ShallowClone();
+                        var segment1 = prefab.m_segments[1].ShallowClone();
+                        var node0 = prefab.m_nodes[0].ShallowClone();
+                        var node1 = prefab.m_nodes[1].ShallowClone();
+
+                        segment0
+                            .SetMeshes
+                            (@"Meshes\Elevated_Station_Pavement_Steel.obj",
+                                @"Meshes\Elevated_Station_Pavement_LOD.obj");
+                        segment1
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            (@"Meshes\Rail.obj")
+                            .SetConsistentUVs();
+                        node0
+                            .SetMeshes
+                            (@"Meshes\Elevated_Node_Pavement_Steel.obj",
+                                @"Meshes\Elevated_Station_Node_Pavement_LOD.obj")
+                                .SetConsistentUVs();
+                        node1
+                            .SetMeshes
+                            (@"Meshes\Elevated_Station_Rail_Node.obj")
+                            .SetConsistentUVs();
+
+                        segment0.m_material = elevatedMaterial;
+                        segment0.m_lodMaterial = elevatedLODMaterial;
+                        node0.m_material = elevatedMaterial;
+                        node0.m_lodMaterial = elevatedLODMaterial;
+
+                        prefab.m_segments = new[] { segment0, segment1 };
+                        prefab.m_nodes = new[] { node0, node1 };
+                        break;
+                    }
+            }
+        }
+        public static void Setup12mStationSteelMeshNoBar(NetInfo prefab, NetInfoVersion version, NetInfo elevatedInfo, NetInfo metroStationInfo)
+        {
+            var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
+            var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
+            switch (version)
+            {
+                case NetInfoVersion.Ground:
+                    {
+                        var segment0 = prefab.m_segments[0].ShallowClone();
+                        var segment1 = prefab.m_segments[1];
+                        var node0 = prefab.m_nodes[0].ShallowClone();
+                        var node1 = prefab.m_nodes[1];
+                        var node2 = prefab.m_nodes[2];
+                        var node3 = prefab.m_nodes[1].ShallowClone();
+
+                        segment0
+                            .SetMeshes
+                            (@"Meshes\Ground_Station_Pavement_Steel.obj",
+                                @"Meshes\Ground_NoBar_Pavement_LOD.obj");
+                        segment1
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            (@"Meshes\Rail.obj")
+                            .SetConsistentUVs();
+                        node0
+                            .SetMeshes
+                            (@"Meshes\Ground_Nobar_Node_Pavement_Steel.obj",
+                                @"Meshes\Ground_Station_Node_Pavement_LOD.obj");
+                        node1
+                            .SetMeshes
+                            (@"Meshes\Elevated_Station_Rail_Node.obj")
+                            .SetConsistentUVs();
+                        node2
+                            .SetMeshes
+                            (@"Meshes\Ground_Level_Crossing.obj",
+                                @"Meshes\Ground_Level_Crossing_LOD.obj")
+                            .SetConsistentUVs();
+                        node3
+                            .SetMeshes
+                            (@"Meshes\Ground_Level_Crossing_Rail_Station.obj")
+                            .SetConsistentUVs();
+
+                        segment0.m_material = elevatedMaterial;
+                        segment0.m_lodMaterial = elevatedLODMaterial;
+                        node0.m_material = elevatedMaterial;
+                        node0.m_lodMaterial = elevatedLODMaterial;
+                        node2.m_lodMaterial = elevatedLODMaterial;
+
+                        node1.m_flagsForbidden = NetNode.Flags.LevelCrossing;
+                        node2.m_flagsRequired = NetNode.Flags.LevelCrossing;
+                        node3.m_flagsRequired = NetNode.Flags.LevelCrossing;
+
+                        prefab.m_segments = new[] { segment0, segment1 };
+                        prefab.m_nodes = new[] { node0, node1, node2, node3 };
+                        break;
+                    }
+                case NetInfoVersion.Elevated:
+                    {
+                        var segment0 = prefab.m_segments[0].ShallowClone();
+                        var segment1 = prefab.m_segments[1];
+                        var node0 = prefab.m_nodes[0].ShallowClone();
+                        var node1 = prefab.m_nodes[1];
+
+                        segment0
+                            .SetMeshes
+                            (@"Meshes\Elevated_Station_Pavement_Steel.obj",
+                                @"Meshes\Elevated_Station_Pavement_LOD.obj");
+                        segment1
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            (@"Meshes\Boosted_Rail.obj")
+                            .SetConsistentUVs();
+                        node0
+                            .SetMeshes
+                            (@"Meshes\Elevated_Nobar_Station_Node_Pavement_Steel.obj",
+                                @"Meshes\Elevated_Station_Node_Pavement_LOD.obj");
+                        node1
+                            .SetMeshes
+                            (@"Meshes\Elevated_Station_Rail_Node.obj")
+                            .SetConsistentUVs();
+
+                        segment0.m_material = elevatedMaterial;
+                        segment0.m_lodMaterial = elevatedLODMaterial;
+                        node0.m_material = elevatedMaterial;
+                        node0.m_lodMaterial = elevatedLODMaterial;
+
+                        prefab.m_segments = new[] { segment0, segment1 };
+                        prefab.m_nodes = new[] { node0, node1 };
+                        break;
+                    }
+            }
         }
     }
 }
