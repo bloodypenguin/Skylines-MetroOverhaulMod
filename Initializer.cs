@@ -106,7 +106,8 @@ namespace SingleTrainTrack
         {
             return (newPrefab, builder, version) =>
             {
-                newPrefab.m_isCustomContent = true;
+                newPrefab.m_isCustomContent = version != NetInfoVersion.Ground;
+
                 var buildUp = builder.GetType().GetMethod("BuildUp");
                 buildUp.Invoke(builder, new object[] { newPrefab, version });
                 //newPrefab.Setup10mMesh(version);
