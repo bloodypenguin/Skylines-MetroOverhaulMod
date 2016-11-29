@@ -55,7 +55,7 @@ namespace SingleTrainTrack.UI
                     }
                 };
             }
-            catch (Exception e)
+            catch
             {
                 //swallow
             }
