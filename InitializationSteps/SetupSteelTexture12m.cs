@@ -77,36 +77,35 @@ namespace MetroOverhaul.InitializationSteps
                         break;
                     }
                 case NetInfoVersion.Elevated:
-                //case NetInfoVersion.Bridge:
+                case NetInfoVersion.Bridge:
                     {
                         foreach (var segment in info.m_segments)
                         {
-                            var isElevated = segment.m_mesh.name.Contains("Elevated");
+                            var elevatedBridge = segment.m_mesh.name.Contains("Elevated") ? "Elevated" : "Bridge";
                             if (segment.m_mesh.name.Contains("Station"))
                             {
+                               
                                 segment.SetTextures(
                                     new TextureSet
-                                        (@"Textures\Elevated_Station_Segment_Pavement_Steel__MainTex.png",
-                                            @"Textures\Elevated_Segment_Pavement_Steel__AlphaMap.png",
-                                            @"Textures\Elevated_Segment_Pavement_Steel__XYSMap.png"),
+                                        ($@"Textures\{elevatedBridge}_Station_Segment_Pavement_Steel__MainTex.png",
+                                            $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__AlphaMap.png",
+                                            $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__XYSMap.png"),
                                     new LODTextureSet
-                                        (@"Textures\Elevated_Segment_Pavement_Steel__MainTex_LOD.png",
-                                            (isElevated ? @"Textures\Elevated_Segment_Pavement_Steel__AlphaMap_LOD.png"
-                                                : @"Textures\Bridge_Pavement_Steel__AlphaMap_LOD.png"),
-                                            @"Textures\Elevated_Segment_Pavement_Steel__XYSMap_LOD.png"));
+                                        ($@"Textures\{elevatedBridge}_Segment_Pavement_Steel__MainTex_LOD.png",
+                                            $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__AlphaMap_LOD.png",
+                                            $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__XYSMap_LOD.png"));
                             }
                             else if (segment.m_mesh.name.Contains("Pavement"))
                             {
                                 segment.SetTextures(
                                     new TextureSet
-                                        (@"Textures\Elevated_Segment_Pavement_Steel__MainTex.png",
-                                            @"Textures\Elevated_Segment_Pavement_Steel__AlphaMap.png",
-                                            @"Textures\Elevated_Segment_Pavement_Steel__XYSMap.png"),
+                                        ($@"Textures\{elevatedBridge}_Segment_Pavement_Steel__MainTex.png",
+                                            $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__AlphaMap.png",
+                                            $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__XYSMap.png"),
                                     new LODTextureSet
-                                        (@"Textures\Elevated_Segment_Pavement_Steel__MainTex_LOD.png",
-                                            (isElevated?@"Textures\Elevated_Segment_Pavement_Steel__AlphaMap_LOD.png"
-                                                :@"Textures\Bridge_Pavement_Steel__AlphaMap_LOD.png"),
-                                            @"Textures\Elevated_Segment_Pavement_Steel__XYSMap_LOD.png"));
+                                        ($@"Textures\{elevatedBridge}_Segment_Pavement_Steel__MainTex_LOD.png",
+                                            $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__AlphaMap_LOD.png",
+                                            $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__XYSMap_LOD.png"));
                             }
                             else
                             {

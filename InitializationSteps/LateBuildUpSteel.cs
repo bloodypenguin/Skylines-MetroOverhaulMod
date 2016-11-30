@@ -11,6 +11,7 @@ namespace MetroOverhaul.InitializationSteps
             switch (version)
             {
                 case NetInfoVersion.Elevated:
+                case NetInfoVersion.Bridge:
                     {
                         var steelElevatedPillarInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("SteelMetroElevatedPillar")}.SteelMetroElevatedPillar_Data");
                         if (steelElevatedPillarInfo == null)
@@ -25,21 +26,21 @@ namespace MetroOverhaul.InitializationSteps
                         }
                         break;
                     }
-                case NetInfoVersion.Bridge:
-                    {
-                        var steelBridgePillarInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("SteelMetroBridgePillar")}.SteelMetroBridgePillar_Data");
-                        if (steelBridgePillarInfo == null)
-                        {
-                            throw new Exception($"{prefab.name}: SteelMetroBridgePillar not found!");
-                        }
-                        var bridgeAI = prefab.GetComponent<TrainTrackBridgeAI>();
-                        if (bridgeAI != null)
-                        {
-                            bridgeAI.m_bridgePillarInfo = steelBridgePillarInfo;
-                            bridgeAI.m_middlePillarInfo = steelBridgePillarInfo;
-                        }
-                        break;
-                    }
+                //case NetInfoVersion.Bridge:
+                //    {
+                //        var steelBridgePillarInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("SteelMetroBridgePillar")}.SteelMetroBridgePillar_Data");
+                //        if (steelBridgePillarInfo == null)
+                //        {
+                //            throw new Exception($"{prefab.name}: SteelMetroBridgePillar not found!");
+                //        }
+                //        var bridgeAI = prefab.GetComponent<TrainTrackBridgeAI>();
+                //        if (bridgeAI != null)
+                //        {
+                //            bridgeAI.m_bridgePillarInfo = steelBridgePillarInfo;
+                //            bridgeAI.m_middlePillarInfo = steelBridgePillarInfo;
+                //        }
+                //        break;
+                //    }
             }
         }
 

@@ -134,13 +134,13 @@ namespace MetroOverhaul
                             {
                                 LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
                             }),
-                    NetInfoVersion.Ground | NetInfoVersion.Elevated,
+                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge,
                     //TODO(earalov): replace wuth NetInfoVersion.All when tunnel/bridge/slope are ready
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>()
                         . //TODO(earalov): replace wuth null when tunnel/bridge/slope are ready
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null,
-                            NetInfoVersion.Slope | NetInfoVersion.Tunnel | NetInfoVersion.Bridge)
+                            NetInfoVersion.Slope | NetInfoVersion.Tunnel)
                     , prefabName => "Steel " + prefabName
                     );
             }

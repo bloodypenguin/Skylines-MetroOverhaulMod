@@ -133,7 +133,7 @@ namespace MetroOverhaul
             for (ushort i = 0; i < vehicles.m_size; i++)
             {
                 var vehicle = vehicles.m_buffer[i];
-                if (vehicle.m_flags == ~Vehicle.Flags.All || vehicle.Info == null)
+                if (vehicle.m_flags == (Vehicle.Flags)0 || vehicle.Info == null)
                 {
                     continue;
                 }

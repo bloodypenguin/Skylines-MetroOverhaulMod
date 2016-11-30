@@ -32,8 +32,8 @@ namespace MetroOverhaul.Detours
         {
             if ((int)vehicleData.m_leadingVehicle == 0)
             {
-                Vector3 startPos = (vehicleData.m_flags & Vehicle.Flags.Reversed) == ~Vehicle.Flags.All ? (Vector3)vehicleData.m_targetPos0 : (Vector3)Singleton<VehicleManager>.instance.m_vehicles.m_buffer[(int)vehicleData.GetLastVehicle(vehicleID)].m_targetPos0;
-                if ((vehicleData.m_flags & Vehicle.Flags.GoingBack) != ~Vehicle.Flags.All)
+                Vector3 startPos = (vehicleData.m_flags & Vehicle.Flags.Reversed) == (Vehicle.Flags)0 ? (Vector3)vehicleData.m_targetPos0 : (Vector3)Singleton<VehicleManager>.instance.m_vehicles.m_buffer[(int)vehicleData.GetLastVehicle(vehicleID)].m_targetPos0;
+                if ((vehicleData.m_flags & Vehicle.Flags.GoingBack) != (Vehicle.Flags)0)
                 {
                     if ((int)vehicleData.m_sourceBuilding != 0)
                     {
@@ -48,7 +48,7 @@ namespace MetroOverhaul.Detours
                         //end mod
                     }
                 }
-                else if ((vehicleData.m_flags & Vehicle.Flags.DummyTraffic) != ~Vehicle.Flags.All)
+                else if ((vehicleData.m_flags & Vehicle.Flags.DummyTraffic) != (Vehicle.Flags)0)
                 {
                     if ((int)vehicleData.m_targetBuilding != 0)
                     {

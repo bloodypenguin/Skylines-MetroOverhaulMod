@@ -101,48 +101,47 @@ namespace MetroOverhaul.InitializationSteps
                         info.m_nodes = new[] { node0, node1, node2, node3 };
                         break;
                     }
-                //case NetInfoVersion.Bridge:
-                //    {
-                //        var segment0 = info.m_segments[0];
-                //        var segment1 = info.m_segments[1];
-                //        var node0 = info.m_nodes[0];
-                //        var node1 = info.m_nodes[1];
-                //        var node3 = info.m_nodes[3];
+                case NetInfoVersion.Bridge:
+                    {
+                        var segment0 = info.m_segments[0];
+                        var segment1 = info.m_segments[1];
+                        var node0 = info.m_nodes[0];
+                        var node1 = info.m_nodes[1];
+                        var node3 = info.m_nodes[3];
 
-                //        segment0
-                //            .SetFlagsDefault()
-                //            .SetMeshes
-                //            (@"Meshes\Bridge_Pavement_Steel.obj",
-                //            @"Meshes\Bridge_Pavement_LOD.obj")
-                //            .SetConsistentUVs();
+                        segment0
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            (@"Meshes\Bridge_Pavement_Steel.obj") //needlod
+                            .SetConsistentUVs();
 
-                //        segment1
-                //            .SetFlagsDefault()
-                //            .SetMeshes
-                //            (@"Meshes\Rail.obj");
+                        segment1
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            (@"Meshes\Rail.obj");
 
-                //        node0
-                //            .SetMeshes
-                //            (@"Meshes\Bridge_Node_Pavement_Steel.obj",
-                //            @"Meshes\Bridge_Node_Pavement_LOD.obj")
-                //            .SetConsistentUVs();
-                //        node1
-                //            .SetMeshes
-                //            (@"Meshes\Rail.obj");
+                        //node0
+                        //    .SetMeshes
+                        //    (@"Meshes\Bridge_Node_Pavement_Steel.obj",
+                        //    @"Meshes\Bridge_Node_Pavement_LOD.obj")
+                        //    .SetConsistentUVs();
+                        node1
+                            .SetMeshes
+                            (@"Meshes\Rail.obj");
 
-                //        if (elevatedMaterial != null)
-                //        {
-                //            segment0.m_material = elevatedMaterial;
-                //            segment0.m_lodMaterial = elevatedLODMaterial;
-                //            node0.m_material = elevatedMaterial;
-                //            //segment1.m_material = railMaterial;
-                //            //node1.m_material = railMaterial;
-                //        }
+                        if (elevatedMaterial != null)
+                        {
+                            segment0.m_material = elevatedMaterial;
+                            segment0.m_lodMaterial = elevatedLODMaterial;
+                            node0.m_material = elevatedMaterial;
+                            //segment1.m_material = railMaterial;
+                            //node1.m_material = railMaterial;
+                        }
 
-                //        info.m_segments = new[] { segment0, segment1 };
-                //        info.m_nodes = new[] { node0, node1, node3 };
-                //        break;
-                //    }
+                        info.m_segments = new[] { segment0, segment1 };
+                        info.m_nodes = new[] { node0, node1, node3 };
+                        break;
+                    }
                 case NetInfoVersion.Slope:
                     {
                         var segment0 = info.m_segments[0];
