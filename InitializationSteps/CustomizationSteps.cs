@@ -83,7 +83,7 @@ namespace MetroOverhaul.InitializationSteps
                     prefab.m_halfWidth = prefab.name.Contains("Steel") ? 6.0001f : 6;//Todo make proper enum for the styles
                     break;
                 case NetInfoVersion.Ground:
-                    prefab.m_halfWidth = 5;
+                    prefab.m_halfWidth = 6;
                     prefab.m_pavementWidth = 2.5f;
                     break;
             }

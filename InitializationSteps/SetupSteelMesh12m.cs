@@ -120,11 +120,10 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                             (@"Meshes\Rail.obj");
 
-                        //node0
-                        //    .SetMeshes
-                        //    (@"Meshes\Bridge_Node_Pavement_Steel.obj",
-                        //    @"Meshes\Bridge_Node_Pavement_LOD.obj")
-                        //    .SetConsistentUVs();
+                        node0
+                            .SetMeshes
+                            (@"Meshes\Bridge_Node_Pavement_Steel.obj")//needlod
+                            .SetConsistentUVs();
                         node1
                             .SetMeshes
                             (@"Meshes\Rail.obj");
