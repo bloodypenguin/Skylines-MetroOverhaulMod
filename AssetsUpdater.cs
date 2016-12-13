@@ -208,7 +208,7 @@ namespace MetroOverhaul
                 }
                 else
                 {
-                    for (var j = 0; j < info.m_effects.Length; i++)
+                    for (var j = 0; j < info.m_effects.Length; j++)
                     {
                         if (info.m_effects[j].m_effect?.name == "Train Movement")
                         {
