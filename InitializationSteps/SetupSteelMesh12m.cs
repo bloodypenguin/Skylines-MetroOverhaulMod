@@ -142,6 +142,8 @@ namespace MetroOverhaul.InitializationSteps
                             segment0.m_material = elevatedMaterial;
                             segment0.m_lodMaterial = elevatedLODMaterial;
                             node0.m_material = elevatedMaterial;
+                            node0.m_lodMaterial = elevatedLODMaterial;
+                            node2.m_directConnect = true;
                             //segment1.m_material = railMaterial;
                             //node1.m_material = railMaterial;
                         }
@@ -361,6 +363,8 @@ namespace MetroOverhaul.InitializationSteps
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
+                        node0.m_material = elevatedLODMaterial;
+                        node2.m_directConnect = true;
 
                         info.m_segments = new[] { segment0, segment1 };
                         info.m_nodes = new[] { node0, node1,node2 };
@@ -447,12 +451,12 @@ namespace MetroOverhaul.InitializationSteps
                                 .SetConsistentUVs();
                         node1
                             .SetMeshes
-                            (@"Meshes\Rail.obj")
+                            (@"Meshes\Elevated_Station_Rail_Node.obj")
                             .SetConsistentUVs();
 
                         node2
                             .SetMeshes
-                            (@"Meshes\Boosted_Rail_Steel.obj",
+                            (@"Meshes\Boosted_Station_Node_Rail_Steel.obj",
                             @"Meshes\Boosted_Rail_Steel_LOD.obj")
                             .SetConsistentUVs();
                          
@@ -460,6 +464,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
+                        node2.m_directConnect = true;
 
                         prefab.m_segments = new[] { segment0, segment1 };
                         prefab.m_nodes = new[] { node0, node1, node2 };
@@ -550,13 +555,14 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
                         node2
                             .SetMeshes
-                            (@"Meshes\Boosted_Rail_Steel.obj",
+                            (@"Meshes\Boosted_Station_Node_Rail_Steel.obj",
                             @"Meshes\Boosted_Rail_Steel_LOD.obj")
                             .SetConsistentUVs();
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
+                        node2.m_directConnect = true;
 
                         prefab.m_segments = new[] { segment0, segment1 };
                         prefab.m_nodes = new[] { node0, node1 };

@@ -69,9 +69,9 @@ namespace MetroOverhaul.InitializationSteps
                             {
                                 node.SetTextures(
                                     new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        (@"Textures\Ground_Segment_Rail_Steel__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                                            @"Textures\Ground_Segment_Rail_Steel__XYSMap.png"));
                             }
                         }
                         break;
@@ -161,9 +161,9 @@ namespace MetroOverhaul.InitializationSteps
                             {
                                 node.SetTextures(
                                     new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        (@"Textures\Ground_Segment_Rail_Steel__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                                            @"Textures\Ground_Segment_Rail_Steel__XYSMap.png"));
                             }
                         }
                         break;
