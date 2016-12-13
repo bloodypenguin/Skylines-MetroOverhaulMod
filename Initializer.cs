@@ -80,11 +80,11 @@ namespace MetroOverhaul
                             {
                                 LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
                             }),
-                    NetInfoVersion.Ground | NetInfoVersion.Elevated,
+                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null,
-                            NetInfoVersion.Slope | NetInfoVersion.Tunnel | NetInfoVersion.Elevated | NetInfoVersion.Bridge)
+                            NetInfoVersion.Slope | NetInfoVersion.Tunnel)
                     , prefabName => prefabName + " NoBar"
                     );
             }
@@ -165,13 +165,13 @@ namespace MetroOverhaul
                             {
                                 LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
                             }),
-                    NetInfoVersion.Ground | NetInfoVersion.Elevated,
+                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions,
                             null,
                             //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
-                            NetInfoVersion.Slope | NetInfoVersion.Tunnel | NetInfoVersion.Bridge)
+                            NetInfoVersion.Slope | NetInfoVersion.Tunnel)
                     , prefabName => "Steel " + prefabName + " NoBar"
                     );
             }

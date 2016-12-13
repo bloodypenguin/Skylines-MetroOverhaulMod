@@ -128,19 +128,19 @@ namespace MetroOverhaul.InitializationSteps
                                                 @"Textures\Elevated_Node_Pavement_Steel__AlphaMap.png",
                                                 @"Textures\Ground_Segment_Pavement_Steel__XYSMap.png"),
                                         new LODTextureSet
-                                            (@"Textures\Elevated_Node_Pavement_Steel__MainTex_LOD.png",
-                                                @"Textures\Elevated_Node_Pavement_Steel__AlphaMap_LOD.png",
+                                            (@"Textures\Elevated_Segment_Pavement_Steel__MainTex_LOD.png",
+                                                @"Textures\Elevated_Segment_Pavement_Steel__AlphaMap_LOD.png",
                                                 @"Textures\Ground_Segment_Pavement_Steel__XYSMap_LOD.png"));
                                 }
                                 else if (node.m_mesh.name.Contains("Bridge"))
                                 {
                                     node.SetTextures(
                                         new TextureSet
-                                            (@"Textures\Bridge_Node_Pavement_Steel__MainTex.png",
+                                            (@"Textures\Bridge_Segment_Pavement_Steel__MainTex.png",
                                                 @"Textures\Bridge_Segment_Pavement_Steel__AlphaMap.png",
                                                 @"Textures\Bridge_Segment_Pavement_Steel__XYSMap.png"),
                                         new LODTextureSet
-                                            (@"Textures\Bridge_Node_Pavement_Steel__MainTex_LOD.png",
+                                            (@"Textures\Bridge_Segment_Pavement_Steel__MainTex_LOD.png",
                                                 @"Textures\Bridge_Segment_Pavement_Steel__AlphaMap_LOD.png",
                                                 @"Textures\Bridge_Segment_Pavement_Steel__XYSMap_LOD.png"));
                                 }
@@ -151,7 +151,11 @@ namespace MetroOverhaul.InitializationSteps
                                     new TextureSet
                                         (@"Textures\Elevated_Segment_Steel_Rail__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Elevated_Segment_Steel_Rail__XYSMap.png"));
+                                            @"Textures\Elevated_Segment_Steel_Rail__XYSMap.png"),
+                                    new LODTextureSet
+                                        (@"Textures\Elevated_Segment_Steel_Rail__MainTex_LOD.png",
+                                            @"Textures\Ground_Segment_Rail__AlphaMap_LOD.png",
+                                            @"Textures\Elevated_Segment_Steel_Rail__XYSMap_LOD.png"));
                             }
                             else
                             {

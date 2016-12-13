@@ -303,6 +303,23 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs(true);
                         break;
                     }
+                case NetInfoVersion.Bridge:
+                    {
+                        var segment0 = info.m_segments[0];
+                        var node0 = info.m_nodes[0];
+                        segment0
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            (@"Meshes\Bridge_NoBar_Pavement.obj",
+                                @"Meshes\Bridge_Pavement_LOD.obj");
+
+                        node0
+                            .SetMeshes
+                            (@"Meshes\Bridge_NoBar_Node_Pavement.obj",
+                                @"Meshes\Bridge_Node_Pavement_LOD.obj")
+                            .SetConsistentUVs(true);
+                        break;
+                    }
             }
 
         }

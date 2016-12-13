@@ -149,7 +149,7 @@ namespace MetroOverhaul
 
             foreach (var info in Resources.FindObjectsOfTypeAll<BuildingInfo>())
             {
-                if (!info.IsMetroDepot())
+                if (!info.IsMetroDepot() || info.m_buildingAI == null)
                 {
                     continue;
                 }
@@ -161,8 +161,6 @@ namespace MetroOverhaul
                 }
                 info.m_UnlockMilestone = vanillaMetroStation.m_UnlockMilestone;
                 ((DepotAI)info.m_buildingAI).m_createPassMilestone = ((DepotAI)vanillaMetroStation.m_buildingAI).m_createPassMilestone;
-
-
             }
         }
 

@@ -107,7 +107,7 @@ namespace MetroOverhaul.UI
                         showFenceOption = true;
                     }
                 }
-                this.fence = showFenceOption && GUI.Toggle(new Rect(5f, 65f, 140f, 30f), this.fence, "Fenced ground track");
+                this.fence = showFenceOption && GUI.Toggle(new Rect(5f, 65f, 140f, 30f), this.fence, "Fenced track");
                 if (GUI.changed)
                     this.SetNetToolPrefab();
             }
