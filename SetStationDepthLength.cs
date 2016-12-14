@@ -245,15 +245,17 @@ namespace MetroOverhaul
 
         private static IEnumerable<BuildingInfo.PathInfo> GenerateSteps(BuildingInfo.PathInfo path, float depth)
         {
-            var pathList = new List<BuildingInfo.PathInfo>();
-            var lastCoords = path.m_nodes.OrderBy(n => n.z).FirstOrDefault();
-            var currCoords = path.m_nodes.OrderBy(n => n.z).LastOrDefault();
-            var dir = new Vector3();
             var newPath = path.ShallowClone();
+            var pathList = new List<BuildingInfo.PathInfo>();
+            var lastCoords = newPath.m_nodes.OrderBy(n => n.z).FirstOrDefault();
+            var currCoords = newPath.m_nodes.OrderBy(n => n.z).LastOrDefault();
+            var dir = new Vector3();
+            
             MarkPathGenerated(newPath);
-            newPath.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Pedestrian Connection Underground");
-            var steps = (float)Math.Floor(depth / 4) * 2;
-            var stepDepth = depth / steps;
+            newPath.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Pedestrian Connection Underground").ShallowClone();
+            var steps = (float)Math.Floor((depth + 4) / 12) * 4;
+            var stepDepth = 4;
+            var depthLeft = depth;
 
             dir.x = Math.Min(currCoords.x - lastCoords.x, 8);
             dir.y = currCoords.y - lastCoords.y;
@@ -263,7 +265,8 @@ namespace MetroOverhaul
                 var newZ = currCoords.z + dir.x;
                 var newX = currCoords.x - dir.z;
                 lastCoords = currCoords;
-                currCoords = new Vector3() { x = newX, y = currCoords.y - stepDepth, z = newZ };
+                currCoords = new Vector3() { x = newX, y = currCoords.y - Math.Max(0,Math.Min(stepDepth,depthLeft)), z = newZ };
+                depthLeft -= stepDepth;
                 var newNodes = new[] { lastCoords, currCoords };
                 newPath = newPath.ShallowClone();
                 newPath.m_nodes = newNodes;
