@@ -119,7 +119,7 @@
     <Compile Include="InitializationSteps\SetupSteelTexture12m.cs" />
     <Compile Include="InitializationSteps\SetupTexture12m.cs" />
     <Compile Include="UI\MetroStationCustomizerUI.cs" />
-    <Compile Include="SetStationDepthLength.cs" />
+    <Compile Include="SetStationCustomizations.cs" />
     <Compile Include="UI\UpgradeSetup.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>

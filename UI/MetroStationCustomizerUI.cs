@@ -10,11 +10,15 @@ namespace MetroOverhaul.UI
     {
         private const int DEPTH_STEP = 3;
         private const int LENGTH_STEP = 8;
+        private const int ANGLE_STEP = 15;
         private float m_setDepth;
         private float m_setLength;
+        private float m_setAngle;
+        private float m_oldAngle;
         private bool m_valueChanged = false;
         private UITextField m_lengthTextbox = new UITextField();
         private UITextField m_depthTextbox = new UITextField();
+        private UITextField m_angleTextbox = new UITextField();
         private BulldozeTool m_bulldozeTool;
         private BuildingTool m_buildingTool;
         private NetTool m_netTool;
@@ -118,8 +122,10 @@ namespace MetroOverhaul.UI
             }
 
             CreateUI();
-            m_setDepth = SetStationDepthLength.MIN_DEPTH;
-            m_setLength = SetStationDepthLength.MIN_LENGTH;
+            m_setDepth = SetStationCustomizations.MIN_DEPTH;
+            m_setLength = SetStationCustomizations.MIN_LENGTH;
+            m_setAngle = 0;
+            m_oldAngle = 0;
         }
 
         private void CreateUI()
@@ -133,7 +139,7 @@ namespace MetroOverhaul.UI
             backgroundSprite = "GenericPanel";
             color = new Color32(68, 84, 68, 170);
             width = 200;
-            height = 100;
+            height = 140;
             position = Vector2.zero;
             isVisible = false;
             isInteractive = true;
@@ -161,6 +167,12 @@ namespace MetroOverhaul.UI
             depthTitleLabel.height = 10;
             depthTitleLabel.isInteractive = false;
 
+            UILabel angleTitleLabel = AddUIComponent<UILabel>();
+            angleTitleLabel.relativePosition = new Vector3() { x = 8, y = 100, z = 0 };
+            angleTitleLabel.text = "Station Angle";
+            angleTitleLabel.height = 10;
+            angleTitleLabel.isInteractive = false;
+
             UIPanel lengthSliderPanel = AddUIComponent<UIPanel>();
             lengthSliderPanel.atlas = atlas;
             lengthSliderPanel.backgroundSprite = "GenericPanel";
@@ -176,8 +188,8 @@ namespace MetroOverhaul.UI
 
             UISlider lengthSlider = lengthSliderLeftPanel.AddUIComponent<UISlider>();
             lengthSlider.name = "Length Slider";
-            lengthSlider.maxValue = SetStationDepthLength.MAX_LENGTH;
-            lengthSlider.minValue = SetStationDepthLength.MIN_LENGTH;
+            lengthSlider.maxValue = SetStationCustomizations.MAX_LENGTH;
+            lengthSlider.minValue = SetStationCustomizations.MIN_LENGTH;
             lengthSlider.stepSize = LENGTH_STEP;
             lengthSlider.relativePosition = new Vector2(0, 0);
             lengthSlider.size = lengthSliderLeftPanel.size;
@@ -186,7 +198,7 @@ namespace MetroOverhaul.UI
                 if (m_lengthTextbox.text != v.ToString())
                 {
                     m_valueChanged = true;
-                    if (v > SetStationDepthLength.MIN_LENGTH)
+                    if (v > SetStationCustomizations.MIN_LENGTH)
                     {
                         m_lengthTextbox.text = v.ToString();
                         m_setLength = v;
@@ -194,7 +206,7 @@ namespace MetroOverhaul.UI
                     else
                     {
                         m_lengthTextbox.text = "Default";
-                        m_setLength = SetStationDepthLength.MIN_LENGTH;
+                        m_setLength = SetStationCustomizations.MIN_LENGTH;
                     }
                 }
             };
@@ -237,9 +249,9 @@ namespace MetroOverhaul.UI
                 }
                 else
                 {
-                    m_setLength = SetStationDepthLength.MIN_LENGTH;
-                    if (lengthSlider.value != SetStationDepthLength.MIN_LENGTH)
-                        lengthSlider.value = SetStationDepthLength.MIN_LENGTH;
+                    m_setLength = SetStationCustomizations.MIN_LENGTH;
+                    if (lengthSlider.value != SetStationCustomizations.MIN_LENGTH)
+                        lengthSlider.value = SetStationCustomizations.MIN_LENGTH;
                 }
             };
 
@@ -257,9 +269,9 @@ namespace MetroOverhaul.UI
             depthSliderLeftPanel.relativePosition = new Vector2(0, 0);
 
             UISlider depthSlider = depthSliderLeftPanel.AddUIComponent<UISlider>();
-            depthSlider.name = "depth Slider";
-            depthSlider.maxValue = SetStationDepthLength.MAX_DEPTH;
-            depthSlider.minValue = SetStationDepthLength.MIN_DEPTH;
+            depthSlider.name = "Depth Slider";
+            depthSlider.maxValue = SetStationCustomizations.MAX_DEPTH;
+            depthSlider.minValue = SetStationCustomizations.MIN_DEPTH;
             depthSlider.stepSize = DEPTH_STEP;
             depthSlider.relativePosition = new Vector2(0, 0);
             depthSlider.size = depthSliderLeftPanel.size;
@@ -269,7 +281,7 @@ namespace MetroOverhaul.UI
                 if (m_depthTextbox.text != v.ToString())
                 {
                     m_valueChanged = true;
-                    if (v > SetStationDepthLength.MIN_DEPTH)
+                    if (v > SetStationCustomizations.MIN_DEPTH)
                     {
                         m_depthTextbox.text = v.ToString();
                         m_setDepth = v;
@@ -277,7 +289,7 @@ namespace MetroOverhaul.UI
                     else
                     {
                         m_depthTextbox.text = "Default";
-                        m_setDepth = SetStationDepthLength.MIN_DEPTH;
+                        m_setDepth = SetStationCustomizations.MIN_DEPTH;
                     }
                 }
             };
@@ -321,15 +333,100 @@ namespace MetroOverhaul.UI
                 }
                 else
                 {
-                    m_setDepth = SetStationDepthLength.MIN_DEPTH;
-                    if (depthSlider.value != SetStationDepthLength.MIN_DEPTH)
-                        depthSlider.value = SetStationDepthLength.MIN_DEPTH;
+                    m_setDepth = SetStationCustomizations.MIN_DEPTH;
+                    if (depthSlider.value != SetStationCustomizations.MIN_DEPTH)
+                        depthSlider.value = SetStationCustomizations.MIN_DEPTH;
+                }
+            };
+
+            UIPanel angleSliderPanel = AddUIComponent<UIPanel>();
+            angleSliderPanel.atlas = atlas;
+            angleSliderPanel.backgroundSprite = "GenericPanel";
+            angleSliderPanel.color = new Color32(206, 206, 206, 255);
+            angleSliderPanel.size = new Vector2(width - 16, 16);
+            angleSliderPanel.relativePosition = new Vector2(8, 120);
+
+            UIPanel angleSliderLeftPanel = angleSliderPanel.AddUIComponent<UIPanel>();
+            angleSliderLeftPanel.name = "Angle panel left";
+            angleSliderLeftPanel.height = angleSliderPanel.height;
+            angleSliderLeftPanel.width = (0.7f * angleSliderPanel.width) - 5;
+            angleSliderLeftPanel.relativePosition = new Vector2(0, 0);
+
+            UISlider angleSlider = angleSliderLeftPanel.AddUIComponent<UISlider>();
+            angleSlider.name = "Angle Slider";
+            angleSlider.maxValue = SetStationCustomizations.MAX_ANGLE;
+            angleSlider.minValue = SetStationCustomizations.MIN_ANGLE;
+            angleSlider.stepSize = ANGLE_STEP;
+            angleSlider.relativePosition = new Vector2(0, 0);
+            angleSlider.size = angleSliderLeftPanel.size;
+            angleSlider.eventValueChanged += (c, v) =>
+            {
+
+                if (m_angleTextbox.text != v.ToString())
+                {
+                    m_valueChanged = true;
+                    if (v <= SetStationCustomizations.MIN_ANGLE)
+                    {
+                        m_angleTextbox.text = "Default";
+                        m_setAngle = SetStationCustomizations.MIN_ANGLE;
+                    }
+                    else
+                    {
+                        m_angleTextbox.text = v.ToString();
+                        m_setAngle = v;
+                    }
+                }
+            };
+
+            angleSlider.eventMouseUp += (c, e) =>
+            {
+                if (m_valueChanged)
+                {
+                    m_valueChanged = false;
+                    t.Run();
+                }
+
+            };
+
+            UISlicedSprite angleSliderBgSprite = angleSliderLeftPanel.AddUIComponent<UISlicedSprite>();
+            angleSliderBgSprite.isInteractive = false;
+            angleSliderBgSprite.atlas = atlas;
+            angleSliderBgSprite.spriteName = "BudgetSlider";
+            angleSliderBgSprite.size = angleSliderLeftPanel.size;
+            angleSliderBgSprite.relativePosition = new Vector2(0, 0);
+
+            UISlicedSprite angleSliderMkSprite = angleSliderLeftPanel.AddUIComponent<UISlicedSprite>();
+            angleSliderMkSprite.atlas = atlas;
+            angleSliderMkSprite.spriteName = "SliderBudget";
+            angleSliderMkSprite.isInteractive = false;
+            angleSlider.thumbObject = angleSliderMkSprite;
+
+            m_angleTextbox = angleSliderPanel.AddUIComponent<UITextField>();
+            m_angleTextbox.text = "Default";
+            m_angleTextbox.height = angleSliderPanel.height;
+            m_angleTextbox.width = angleSliderPanel.size.x - angleSliderLeftPanel.size.x;
+            m_angleTextbox.relativePosition = new Vector2(angleSliderLeftPanel.width, 0);
+            m_angleTextbox.eventTextChanged += (c, v) =>
+            {
+                float val = 0;
+                if (float.TryParse(v, out val))
+                {
+                    m_setAngle = val;
+                    if (angleSlider.value != val)
+                        angleSlider.value = val;
+                }
+                else
+                {
+                    m_setAngle = SetStationCustomizations.MIN_ANGLE;
+                    if (angleSlider.value != SetStationCustomizations.MIN_ANGLE)
+                        angleSlider.value = SetStationCustomizations.MIN_ANGLE;
                 }
             };
         }
 
         private void Activate(BuildingInfo bInfo)
         {
+            m_oldAngle = 0;
             m_activated = true;
             m_currentBuilding = bInfo;
             isVisible = true;
@@ -348,7 +445,9 @@ namespace MetroOverhaul.UI
 
         private void DoStationMechanics()
         {
-            SetStationDepthLength.ModifyStation(m_currentBuilding, m_setDepth, m_setLength);
+            var angleDelta = Math.PI / 180 * (m_setAngle - m_oldAngle);
+            m_oldAngle = m_setAngle;
+            SetStationCustomizations.ModifyStation(m_currentBuilding, m_setDepth, m_setLength, angleDelta);
         }
     }
 }

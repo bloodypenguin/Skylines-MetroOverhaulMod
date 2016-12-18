@@ -476,7 +476,7 @@ namespace MetroOverhaul
             prefab.m_availableIn = ItemClass.Availability.AssetEditor;
             prefab.m_class.hideFlags = HideFlags.None;
             prefab.m_class.name = prefab.name;
-            prefab.m_maxBuildAngle = 90;
+            prefab.m_maxBuildAngle = 60;
             prefab.m_maxTurnAngleCos = Mathf.Cos(prefab.m_maxBuildAngle);
             prefab.m_maxTurnAngle = 60;
             prefab.m_maxTurnAngleCos = Mathf.Cos(prefab.m_maxTurnAngle);

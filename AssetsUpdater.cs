@@ -91,7 +91,7 @@ namespace MetroOverhaul
                     {
                         if (!OptionsWrapper<Options>.Options.metroUi)
                         {
-                            SetStationDepthLength.ModifyStation(prefab, 12, 144);
+                            SetStationCustomizations.ModifyStation(prefab, 12, 144, 0);
                         }
                     }
                     SetupTunnelTracks(prefab, toVanilla);
@@ -138,8 +138,6 @@ namespace MetroOverhaul
                         path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track Tunnel");
                     }
                 }
-
-
             }
         }
 
