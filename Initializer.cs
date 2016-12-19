@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Globalization;
+using ICities;
 using MetroOverhaul.InitializationSteps;
 using UnityEngine;
 using MetroOverhaul.NEXT;
@@ -14,12 +15,16 @@ namespace MetroOverhaul
 {
     public class Initializer : AbstractInitializer
     {
+        public AppMode AppMode { get; set; }
 
         protected override void InitializeImpl()
         {
             CreateTracks();
-            AssetsUpdater.PreventVanillaMetroTrainSpawning();
-            AssetsUpdater.UpdateVanillaMetroTracks();
+            if (AppMode != AppMode.AssetEditor)
+            {
+                AssetsUpdater.PreventVanillaMetroTrainSpawning();
+                AssetsUpdater.UpdateVanillaMetroTracks();
+            }
         }
 
         private void CreateTracks()

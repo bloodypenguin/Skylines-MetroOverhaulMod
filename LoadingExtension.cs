@@ -20,6 +20,8 @@ namespace MetroOverhaul
 
         private static readonly Queue<Action> LateBuildUpQueue = new Queue<Action>();
 
+        private LoadMode _cachedMode;
+
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
@@ -29,6 +31,7 @@ namespace MetroOverhaul
             if (Container == null)
             {
                 Container = new GameObject("MetroOverhaul").AddComponent<Initializer>();
+                Container.AppMode = loading.currentMode;
             }
             if (loading.currentMode == AppMode.Game)
             {
@@ -94,6 +97,7 @@ namespace MetroOverhaul
         public override void OnLevelLoaded(LoadMode mode)
         {
             base.OnLevelLoaded(mode);
+            _cachedMode = mode;
             while (LateBuildUpQueue.Count > 0)
             {
                 LateBuildUpQueue.Dequeue().Invoke();
@@ -103,9 +107,9 @@ namespace MetroOverhaul
                 _updater = new AssetsUpdater();
                 _updater.UpdateExistingAssets(mode);
             }
+            AssetsUpdater.UpdateBuildingsMetroPaths(mode, false);
             if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame || mode == LoadMode.NewGameFromScenario)
             {
-                AssetsUpdater.UpdateBuildingsMetroPaths(mode, false);
                 SimulationManager.instance.AddAction(DespawnVanillaMetro);
                 var gameObject = new GameObject("MetroOverhaulUISetup");
                 gameObject.AddComponent<UpgradeSetup>();
@@ -122,7 +126,7 @@ namespace MetroOverhaul
         {
             base.OnLevelUnloading();
             //it appears, the game caches vanilla prefabs even when exiting to main menu, and stations won't load properly on reloading from main menu
-            AssetsUpdater.UpdateBuildingsMetroPaths(LoadMode.LoadMap, true);
+            AssetsUpdater.UpdateBuildingsMetroPaths(_cachedMode, true);
             var go = GameObject.Find("MetroOverhaulUISetup");
             if (go != null)
             {
