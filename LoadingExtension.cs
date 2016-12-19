@@ -30,14 +30,17 @@ namespace MetroOverhaul
             {
                 Container = new GameObject("MetroOverhaul").AddComponent<Initializer>();
             }
-            Redirector<DepotAIDetour>.Deploy();
-            if (OptionsWrapper<Options>.Options.improvedMetroTrainAi)
+            if (loading.currentMode == AppMode.Game)
             {
-                Redirector<MetroTrainAIDetour>.Deploy();
-            }
-            if (OptionsWrapper<Options>.Options.improvedPassengerTrainAi)
-            {
-                Redirector<PassengerTrainAIDetour>.Deploy();
+                Redirector<DepotAIDetour>.Deploy();
+                if (OptionsWrapper<Options>.Options.improvedMetroTrainAi)
+                {
+                    Redirector<MetroTrainAIDetour>.Deploy();
+                }
+                if (OptionsWrapper<Options>.Options.improvedPassengerTrainAi)
+                {
+                    Redirector<PassengerTrainAIDetour>.Deploy();
+                }
             }
         }
 
@@ -100,10 +103,10 @@ namespace MetroOverhaul
                 _updater = new AssetsUpdater();
                 _updater.UpdateExistingAssets(mode);
             }
-            AssetsUpdater.UpdateBuildingsMetroPaths(mode, false);
-            SimulationManager.instance.AddAction(DespawnVanillaMetro);
-            if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame)
+            if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame || mode == LoadMode.NewGameFromScenario)
             {
+                AssetsUpdater.UpdateBuildingsMetroPaths(mode, false);
+                SimulationManager.instance.AddAction(DespawnVanillaMetro);
                 var gameObject = new GameObject("MetroOverhaulUISetup");
                 gameObject.AddComponent<UpgradeSetup>();
                 gameObject.AddComponent<StyleSelectionUI>();
