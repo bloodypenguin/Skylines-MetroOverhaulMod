@@ -35,6 +35,7 @@ namespace MetroOverhaul
             ResizeUndergroundStationTracks(info, targetStationTrackLength);
             if (BuildingHasPedestrianConnectionSurface(info))
             {
+                CheckPedestrianConnections(info);
                 ChangeStationDepthAndRotation(info, targetDepth, angle);
             }
             else
@@ -203,17 +204,15 @@ namespace MetroOverhaul
             var pivotPoint = lowestHighPath.m_nodes.Last();
             foreach (var path in info.m_paths)
             {
-                if (AllNodesUnderGround(path) && path != lowestHighPath)
-                {
-
-                    ChangePathRotation(path, pivotPoint, angle);
-                    DipPath(path, offsetDepthDist);
-                }
-                else
+                if (path == lowestHighPath)
                 {
                     updatedPaths.AddRange(GenerateSteps(lowestHighPath, stepDepthDist, pivotPoint, angle));
                 }
-
+                else if (AllNodesUnderGround(path))
+                {
+                    ChangePathRotation(path, pivotPoint, angle);
+                    DipPath(path, offsetDepthDist);
+                }
                 updatedPaths.Add(path);
             }
             info.m_paths = updatedPaths.ToArray();
