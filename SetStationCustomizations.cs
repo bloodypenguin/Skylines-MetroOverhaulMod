@@ -102,16 +102,16 @@ namespace MetroOverhaul
 
         private static void RecalculateSpawnPoints(BuildingInfo info)
         {
-            var buildingAI = info.GetComponent<DepotAI>();
-            var spawnPoints = new List<Vector3>();
-            if (buildingAI == null)
+            var buildingAI = info?.GetComponent<DepotAI>();
+            var paths = info?.m_paths;
+            if (buildingAI == null || paths == null)
             {
                 return;
             }
-            spawnPoints.AddRange(from path in info.m_paths
-                                 where path.m_netInfo.IsUndergroundMetroStationTrack()
-                                 select GetMiddle(path));
-            switch (spawnPoints.Count)
+            var spawnPoints = (from path in paths
+                               where IsVehicleStop(path)
+                               select GetMiddle(path)).Distinct().ToArray();
+            switch (spawnPoints.Length)
             {
                 case 0:
                     buildingAI.m_spawnPosition = Vector3.zero;
@@ -140,6 +140,11 @@ namespace MetroOverhaul
                     }).ToArray();
                     break;
             }
+        }
+
+        private static bool IsVehicleStop(BuildingInfo.PathInfo path)
+        {
+            return (path?.m_nodes?.Length ?? 0) > 1 && (path?.m_netInfo?.IsUndergroundMetroStationTrack() ?? false);
         }
 
         private static void ResizeUndergroundStationTracks(BuildingInfo info, float targetStationTrackLength)

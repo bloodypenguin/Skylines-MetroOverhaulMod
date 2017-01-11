@@ -14,13 +14,13 @@ namespace MetroOverhaul
 
         public void UpdateExistingAssets(LoadMode mode)
         {
+            UpdateMetroTrainEffects();
             if (mode == LoadMode.LoadAsset || mode == LoadMode.NewAsset)
             {
                 return;
             }
             UpdateTrainTracks();
             UpdateMetroStationsMeta();
-            UpdateMetroTrainEffects();
         }
 
         private static void UpdateTrainTracks()
@@ -196,30 +196,37 @@ namespace MetroOverhaul
             var arriveEffect = ((MetroTrainAI)vanillaMetro.m_vehicleAI).m_arriveEffect;
             for (uint i = 0; i < PrefabCollection<VehicleInfo>.LoadedCount(); i++)
             {
-                var info = PrefabCollection<VehicleInfo>.GetLoaded(i);
-                var metroTrainAI = info?.m_vehicleAI as MetroTrainAI;
-                if (metroTrainAI == null)
+                try
                 {
-                    continue;
-                }
-                if (info.m_effects == null || info.m_effects.Length == 0)
-                {
-                    info.m_effects = vanillaMetro.m_effects;
-                }
-                else
-                {
-                    for (var j = 0; j < info.m_effects.Length; j++)
+                    var info = PrefabCollection<VehicleInfo>.GetLoaded(i);
+                    var metroTrainAI = info?.m_vehicleAI as MetroTrainAI;
+                    if (metroTrainAI == null)
                     {
-                        if (info.m_effects[j].m_effect?.name == "Train Movement")
+                        continue;
+                    }
+                    if (info.m_effects == null || info.m_effects.Length == 0)
+                    {
+                        info.m_effects = vanillaMetro.m_effects;
+                    }
+                    else
+                    {
+                        for (var j = 0; j < info.m_effects.Length; j++)
                         {
-                            info.m_effects[j] = vanillaMetro.m_effects[0];
+                            if (info.m_effects[j].m_effect?.name == "Train Movement")
+                            {
+                                info.m_effects[j] = vanillaMetro.m_effects[0];
+                            }
                         }
                     }
+                    var arriveEffectName = metroTrainAI.m_arriveEffect?.name;
+                    if (arriveEffectName == null || arriveEffectName == "Transport Arrive")
+                    {
+                        metroTrainAI.m_arriveEffect = arriveEffect;
+                    }
                 }
-                var arriveEffectName = metroTrainAI.m_arriveEffect?.name;
-                if (arriveEffectName == null || arriveEffectName == "Transport Arrive")
+                catch
                 {
-                    metroTrainAI.m_arriveEffect = arriveEffect;
+                    //swallow
                 }
             }
         }
