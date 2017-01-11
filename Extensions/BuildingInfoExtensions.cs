@@ -11,7 +11,12 @@ namespace MetroOverhaul.Extensions
 
         public static bool IsUndergroundMetroStation(this BuildingInfo info)
         {
-            return IsMetroDepot(info) && info.m_buildingAI is TransportStationAI && info.m_paths != null && info.m_paths.Any(p => p?.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack());
+            return IsMetroDepot(info) && info.m_buildingAI is TransportStationAI && HasUndergroundMetroTracks(info);
+        }
+
+        public static bool HasUndergroundMetroTracks(this BuildingInfo info)
+        {
+            return info.m_paths != null && info.m_paths.Any(p => p?.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack());
         }
     }
 }

@@ -102,8 +102,10 @@ namespace MetroOverhaul
             }
             AssetsUpdater.UpdateBuildingsMetroPaths(mode, false);
             SimulationManager.instance.AddAction(DespawnVanillaMetro);
+#if RELEASE
             if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame)
             {
+#endif
                 var gameObject = new GameObject("MetroOverhaulUISetup");
                 gameObject.AddComponent<UpgradeSetup>();
                 gameObject.AddComponent<StyleSelectionUI>();
@@ -112,7 +114,9 @@ namespace MetroOverhaul
                 {
                     UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizerUI));
                 }
-            }
+#if RELEASE
+        }
+#endif
         }
 
         public override void OnLevelUnloading()

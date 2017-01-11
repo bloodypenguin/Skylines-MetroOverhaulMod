@@ -1,5 +1,6 @@
 ﻿using MetroOverhaul.NEXT.Texturing;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MetroOverhaul.NEXT.Extensions
@@ -35,6 +36,13 @@ namespace MetroOverhaul.NEXT.Extensions
             }
 
             return node;
+        }
+
+        public static NetInfo.Node[] AddNodes(this NetInfo info, params NetInfo.Node[] nodesToAdd)
+        {
+            var thenodes = info.m_nodes.ToList();
+            thenodes.AddRange(nodesToAdd);
+            return thenodes.ToArray();
         }
 
         public static NetInfo.Node SetMeshes(this NetInfo.Node node, string newMeshPath, string newLODMeshPath = null)

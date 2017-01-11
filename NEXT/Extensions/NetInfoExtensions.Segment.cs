@@ -1,5 +1,6 @@
 ﻿using MetroOverhaul.NEXT.Texturing;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MetroOverhaul.NEXT.Extensions
@@ -35,6 +36,13 @@ namespace MetroOverhaul.NEXT.Extensions
             }
 
             return segment;
+        }
+
+        public static NetInfo.Segment[] AddSegments(this NetInfo info, params NetInfo.Segment[] segmentsToAdd)
+        {
+            var theSegments = info.m_segments.ToList();
+            theSegments.AddRange(segmentsToAdd);
+            return theSegments.ToArray();
         }
 
         public static NetInfo.Segment SetMeshes(this NetInfo.Segment segment, string newMeshPath, string newLODMeshPath = null)

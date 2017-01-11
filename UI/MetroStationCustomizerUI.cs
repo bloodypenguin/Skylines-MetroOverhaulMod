@@ -42,7 +42,7 @@ namespace MetroOverhaul.UI
                 BuildingInfo finalInfo = null;
                 if (toolInfo != null)
                 {
-                    if (toolInfo.IsUndergroundMetroStation())
+                    if (toolInfo.HasUndergroundMetroTracks())
                     {
                         finalInfo = toolInfo;
                     }
@@ -50,7 +50,7 @@ namespace MetroOverhaul.UI
                     {
                         foreach (var subInfo in toolInfo.m_subBuildings)
                         {
-                            if (subInfo.m_buildingInfo == null || !subInfo.m_buildingInfo.IsUndergroundMetroStation())
+                            if (subInfo.m_buildingInfo == null || !subInfo.m_buildingInfo.HasUndergroundMetroTracks())
                             {
                                 continue;
                             }

@@ -27,6 +27,7 @@ namespace MetroOverhaul.InitializationSteps
             lanes.Add(propLane);
             prefab.m_lanes = lanes.ToArray();
         }
+
         public static void SetupStationProps(NetInfo prefab, NetInfoVersion version)
         {
             var propLanes = prefab.m_lanes.Where(l => l.m_laneType == NetInfo.LaneType.Pedestrian).ToList();
@@ -55,12 +56,12 @@ namespace MetroOverhaul.InitializationSteps
 
         public static void CommonCustomizationNoBar(NetInfo prefab, NetInfoVersion version)  //TODO(earalov): do we need to customize slope version too?
         {
-            switch (version)
-            {
-                case NetInfoVersion.Ground:
-                    prefab.m_createGravel = true;
-                    break;
-            }
+            //switch (version)
+            //{
+            //    case NetInfoVersion.Ground:
+            //        prefab.m_createGravel = true;
+            //        break;
+            //}
         }
         public static void SetStandardTrackWidths(NetInfo prefab, NetInfoVersion version)
         {
@@ -68,11 +69,11 @@ namespace MetroOverhaul.InitializationSteps
             {
                 case NetInfoVersion.Elevated:
                     prefab.m_halfWidth = prefab.name.Contains("Steel") ? 5.0001f:5; //Todo make proper enum for the styles
-                    prefab.m_pavementWidth = 2.5f;
+                    prefab.m_pavementWidth = 1.5f;
                     break;
                 case NetInfoVersion.Bridge:
                     prefab.m_halfWidth = 4.9999f;
-                    prefab.m_pavementWidth = 2.5f;
+                    prefab.m_pavementWidth = 1.5f;
                     break;
                 case NetInfoVersion.Slope:
                     prefab.m_halfWidth = 6.5f;
@@ -84,7 +85,7 @@ namespace MetroOverhaul.InitializationSteps
                     break;
                 case NetInfoVersion.Ground:
                     prefab.m_halfWidth = 5;
-                    prefab.m_pavementWidth = 2.5f;
+                    prefab.m_pavementWidth = 1.5f;
                     break;
             }
         }

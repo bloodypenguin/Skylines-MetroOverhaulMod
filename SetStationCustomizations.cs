@@ -23,7 +23,7 @@ namespace MetroOverhaul
 
         public static void ModifyStation(BuildingInfo info, float targetDepth, float targetStationTrackLength, double angle)
         {
-            if (!info.IsUndergroundMetroStation() || info.m_paths == null || info.m_paths.Length < 1)
+            if (!info.HasUndergroundMetroTracks() || info.m_paths == null || info.m_paths.Length < 1)
             {
                 return;
             }
@@ -185,7 +185,7 @@ namespace MetroOverhaul
             float lowestHigh = 0;
             var lowestHighPath =
                 info.m_paths.FirstOrDefault(p => p.m_nodes.Any(n => n.y >= 0) && p.m_nodes.Any(nd => nd.y < 0)) ??
-                info.m_paths.Where(p => p.m_netInfo.name == "Pedestrian Connection Surface")
+                info.m_paths.Where(p => p.m_netInfo.name == "Pedestrian Connection Surface" || p.m_netInfo.name == "Pedestrian Connection Inside")
                     .OrderByDescending(p => p.m_nodes[0].y)
                     .FirstOrDefault();
             //TODO(earalov): What if author used "Pedestrian Connection" instead of "Pedestrian Connection Surface"?
@@ -250,8 +250,18 @@ namespace MetroOverhaul
         {
             var newPath = path.ShallowClone();
             var pathList = new List<BuildingInfo.PathInfo>();
-            var lastCoords = newPath.m_nodes.OrderBy(n => n.z).FirstOrDefault();
-            var currCoords = newPath.m_nodes.OrderBy(n => n.z).LastOrDefault();
+            Vector3 lastCoords;
+            Vector3 currCoords;
+            if (AllNodesUnderGround(newPath))
+            {
+                lastCoords = newPath.m_nodes.OrderBy(n => n.z).FirstOrDefault();
+                currCoords = newPath.m_nodes.OrderBy(n => n.z).LastOrDefault();
+            }
+            else
+            {
+                lastCoords = newPath.m_nodes.OrderBy(n => n.y).LastOrDefault();
+                currCoords = newPath.m_nodes.OrderBy(n => n.y).FirstOrDefault();
+            }
             var dir = new Vector3();
 
             MarkPathGenerated(newPath);
@@ -432,7 +442,52 @@ namespace MetroOverhaul
         }
         private static bool BuildingHasPedestrianConnectionSurface(BuildingInfo info)
         {
-            return info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.name == "Pedestrian Connection Surface") >= 1;
+            return info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.name == "Pedestrian Connection Surface" || p.m_netInfo.name == "Pedestrian Connection Inside") >= 1;
+        }
+        private static void CheckPedestrianConnections(BuildingInfo info)
+        {
+            var query = info.m_paths
+                .Where(p => p.m_netInfo != null && p.m_netInfo.name == "Pedestrian Connection Surface" || p.m_netInfo.name == "Pedestrian Connection Inside")
+                .SelectMany(p => p.m_nodes).GroupBy(x => x)
+                  .Where(g => g.Count() == 1)
+                  .Select(y => y.Key)
+                  .ToList();
+            if (query.Count() > 0)
+            {
+                var isolatedPaths = info.m_paths.Where(p => p.m_nodes.All(n => query.Contains(n))).ToList();
+                var straddlePaths = isolatedPaths.Where(p => p.m_nodes.Any(n => n.y >= 0));
+                if (isolatedPaths.Count > 0 && straddlePaths.Count() == 0)
+                {
+                    var pathList = info.m_paths.ToList();
+                    foreach (var path in isolatedPaths)
+                    {
+                        var newStub = AddStub(path);
+                        if (newStub != null)
+                        {
+                            pathList.Add(newStub);
+                        }
+                    }
+                    info.m_paths = pathList.ToArray();
+                }
+            }
+            //return info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.name == "Pedestrian Connection Surface" || p.m_netInfo.name == "Pedestrian Connection Inside");
+        }
+        private static BuildingInfo.PathInfo AddStub(BuildingInfo.PathInfo path)
+        {
+            var pathLastIndex = path?.m_nodes?.Count() - 1 ?? 0;
+            if (pathLastIndex < 1 || path.m_nodes.Any(n => n.y >= 0))
+            {
+                return null;
+            }
+            var newPath = path.ShallowClone();
+            var newPathNodes = new List<Vector3>();
+            var pathNodeDiff = path.m_nodes.Last() - path.m_nodes.First();
+            //var pathLengthCoeff = Vector3.Distance(path.m_nodes.First(), path.m_nodes.Last()) / 3;
+            newPathNodes.Add(new Vector3() { x = path.m_nodes.First().x - pathNodeDiff.x, y = 0, z = path.m_nodes.First().z - pathNodeDiff.z });
+            newPathNodes.Add(path.m_nodes.First());
+            newPath.m_nodes = newPathNodes.ToArray();
+            //MarkPathGenerated(newPath);
+            return newPath;
         }
     }
 }
