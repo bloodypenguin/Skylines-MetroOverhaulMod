@@ -442,8 +442,8 @@ namespace MetroOverhaul.InitializationSteps
                 case NetInfoVersion.Elevated:
                 case NetInfoVersion.Bridge:
                     {
-                        var segment0 = info.m_segments[0];
-                        var node0 = info.m_nodes[0];
+                        var segment0 = info.m_segments[0].ShallowClone();
+                        var node0 = info.m_nodes[0].ShallowClone();
                         segment0
                             .SetFlagsDefault()
                             .SetMeshes

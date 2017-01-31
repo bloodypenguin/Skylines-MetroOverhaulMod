@@ -12,7 +12,7 @@ namespace MetroOverhaul
         private const string GENERAL = "General settings";
         public Options()
         {
-            steelTracks = false;
+            steelTracks = true;
             improvedPassengerTrainAi = true;
             improvedMetroTrainAi = true;
             metroUi = true;
