@@ -196,3 +196,4 @@ FakesAssemblies/
 *.opt
 /NetInfoModelBase.cs
 /NetInfoCollection.cs
+/ConsoleApplication1/ConsoleApplication1.sln

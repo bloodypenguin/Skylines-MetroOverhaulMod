@@ -13,7 +13,7 @@ namespace SingleTrainTrack.Rail1LStation
                 case NetInfoVersion.Ground:
                     for (var i = 0; i < info.m_segments.Length; i++)
                     {
-                        if (info.m_segments[i].m_mesh.name.Contains("Ground_Pavement"))
+                        if (info.m_segments[i].m_mesh.name.Contains("Ground_Station_Pavement"))
                         {
                             info.m_segments[i].SetTextures(
                                 new TextureSet
