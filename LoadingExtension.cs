@@ -19,7 +19,11 @@ namespace MetroOverhaul
         public static bool Done { get; private set; } // Only one Assets installation throughout the application
 
         private static readonly Queue<Action> LateBuildUpQueue = new Queue<Action>();
-
+#if DEBUG
+        private bool indebug = true;
+#else
+        private bool indebug = false;
+#endif
         private LoadMode _cachedMode;
 
         public override void OnCreated(ILoading loading)
@@ -108,7 +112,8 @@ namespace MetroOverhaul
                 _updater.UpdateExistingAssets(mode);
             }
             AssetsUpdater.UpdateBuildingsMetroPaths(mode, false);
-            if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame || mode == LoadMode.NewGameFromScenario)
+
+            if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame || mode == LoadMode.NewGameFromScenario || indebug)
             {
                 SimulationManager.instance.AddAction(DespawnVanillaMetro);
                 var gameObject = new GameObject("MetroOverhaulUISetup");

@@ -195,3 +195,4 @@ FakesAssemblies/
 # Visual Studio 6 workspace options file
 *.opt
 /Resources/Textures - Copy
+/ConsoleApplication1/ConsoleApplication1.sln
