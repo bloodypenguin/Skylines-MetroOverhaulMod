@@ -134,7 +134,7 @@ namespace SingleTrainTrack
                 Initializer.Tracks1W = null;
                 Initializer.Tracks2W = null;
             }
-            if (mode != LoadMode.NewGame && mode != LoadMode.LoadGame)
+            if (mode != LoadMode.NewGame && mode != LoadMode.LoadGame && mode != LoadMode.NewGameFromScenario)
             {
                 return;
             }
