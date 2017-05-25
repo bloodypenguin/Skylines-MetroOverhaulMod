@@ -154,13 +154,20 @@ namespace MetroOverhaul
                     continue;
                 }
 
-                if (info.m_buildingAI.GetType() != typeof(DepotAI))
+                var transportStationAi = info.m_buildingAI as TransportStationAI;
+                if (transportStationAi != null)
                 {
-                    var transportStationAi = (TransportStationAI)info.m_buildingAI;
                     transportStationAi.m_maxVehicleCount = 0;
                 }
+
                 info.m_UnlockMilestone = vanillaMetroStation.m_UnlockMilestone;
-                ((DepotAI)info.m_buildingAI).m_createPassMilestone = ((DepotAI)vanillaMetroStation.m_buildingAI).m_createPassMilestone;
+                
+                var infoBuildingAi = info.m_buildingAI as DepotAI;
+                var vanillaBuildingAi = vanillaMetroStation.m_buildingAI as DepotAI;
+                if (infoBuildingAi != null && vanillaBuildingAi != null)
+                {
+                    infoBuildingAi.m_createPassMilestone = vanillaBuildingAi.m_createPassMilestone;
+                }
             }
         }
 
