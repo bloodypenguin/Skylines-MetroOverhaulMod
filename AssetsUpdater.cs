@@ -231,9 +231,11 @@ namespace MetroOverhaul
                         metroTrainAI.m_arriveEffect = arriveEffect;
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    //swallow
+                    #if DEBUG
+                    UnityEngine.Debug.Log(ex);
+                    #endif
                 }
             }
         }
