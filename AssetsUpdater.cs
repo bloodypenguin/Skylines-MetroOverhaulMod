@@ -153,20 +153,18 @@ namespace MetroOverhaul
                 {
                     continue;
                 }
-
-                var transportStationAi = info.m_buildingAI as TransportStationAI;
-                if (transportStationAi != null)
-                {
-                    transportStationAi.m_maxVehicleCount = 0;
-                }
-
+                
                 info.m_UnlockMilestone = vanillaMetroStation.m_UnlockMilestone;
                 
                 var infoBuildingAi = info.m_buildingAI as DepotAI;
                 var vanillaBuildingAi = vanillaMetroStation.m_buildingAI as DepotAI;
-                if (infoBuildingAi != null && vanillaBuildingAi != null)
+                if (infoBuildingAi != null)
                 {
-                    infoBuildingAi.m_createPassMilestone = vanillaBuildingAi.m_createPassMilestone;
+                    infoBuildingAi.m_maxVehicleCount = 0;
+                    if (vanillaBuildingAi != null)
+                    {
+                        infoBuildingAi.m_createPassMilestone = vanillaBuildingAi.m_createPassMilestone;
+                    }
                 }
             }
         }
