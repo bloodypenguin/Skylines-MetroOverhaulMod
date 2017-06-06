@@ -74,7 +74,7 @@ namespace MetroOverhaul
         //this method is supposed to be called from LoadingExtension
         public static void UpdateBuildingsMetroPaths(LoadMode mode, bool toVanilla = false)
         {
-#if RELEASE
+#if !DEBUG
             if (mode == LoadMode.NewAsset || mode == LoadMode.NewAsset)
             {
                 return;
