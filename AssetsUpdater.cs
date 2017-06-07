@@ -153,14 +153,19 @@ namespace MetroOverhaul
                 {
                     continue;
                 }
-
-                if (info.m_buildingAI.GetType() != typeof(DepotAI))
-                {
-                    var transportStationAi = (TransportStationAI)info.m_buildingAI;
-                    transportStationAi.m_maxVehicleCount = 0;
-                }
+                
                 info.m_UnlockMilestone = vanillaMetroStation.m_UnlockMilestone;
-                ((DepotAI)info.m_buildingAI).m_createPassMilestone = ((DepotAI)vanillaMetroStation.m_buildingAI).m_createPassMilestone;
+                
+                var infoBuildingAi = info.m_buildingAI as DepotAI;
+                var vanillaBuildingAi = vanillaMetroStation.m_buildingAI as DepotAI;
+                if (infoBuildingAi != null)
+                {
+                    infoBuildingAi.m_maxVehicleCount = 0;
+                    if (vanillaBuildingAi != null)
+                    {
+                        infoBuildingAi.m_createPassMilestone = vanillaBuildingAi.m_createPassMilestone;
+                    }
+                }
             }
         }
 
@@ -224,9 +229,11 @@ namespace MetroOverhaul
                         metroTrainAI.m_arriveEffect = arriveEffect;
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    //swallow
+                    #if DEBUG
+                    UnityEngine.Debug.Log(ex);
+                    #endif
                 }
             }
         }

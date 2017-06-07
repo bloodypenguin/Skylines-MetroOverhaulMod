@@ -1,5 +1,6 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Math;
+using MetroOverhaul.Extensions;
 using MetroOverhaul.Redirection;
 using MetroOverhaul.Redirection.Attributes;
 using UnityEngine;
@@ -32,33 +33,41 @@ namespace MetroOverhaul.Detours
         {
             if ((int)vehicleData.m_leadingVehicle == 0)
             {
-                Vector3 startPos = (vehicleData.m_flags & Vehicle.Flags.Reversed) == (Vehicle.Flags)0 ? (Vector3)vehicleData.m_targetPos0 : (Vector3)Singleton<VehicleManager>.instance.m_vehicles.m_buffer[(int)vehicleData.GetLastVehicle(vehicleID)].m_targetPos0;
+                if (!vehicleData.TryGetStartPosition(vehicleID, out Vector3 startPos))
+                    return false;
+
                 if ((vehicleData.m_flags & Vehicle.Flags.GoingBack) != (Vehicle.Flags)0)
                 {
                     if ((int)vehicleData.m_sourceBuilding != 0)
                     {
                         //begin mod
-                        BuildingManager instance = Singleton<BuildingManager>.instance;
-                        BuildingInfo info = instance.m_buildings.m_buffer[(int)vehicleData.m_sourceBuilding].Info;
-                        Randomizer randomizer = new Randomizer((int)vehicleID);
-                        Vector3 position;
-                        Vector3 target;
-                        info.m_buildingAI.CalculateUnspawnPosition(vehicleData.m_sourceBuilding, ref instance.m_buildings.m_buffer[(int)vehicleData.m_sourceBuilding], ref randomizer, this.m_info, out position, out target);
+                        var instance = Singleton<BuildingManager>.instance;
+                        if (!instance.m_buildings.TryGetFromBuffer(vehicleData.m_sourceBuilding, out Building sourceBuilding))
+                            return false;
+
+                        var randomizer = new Randomizer((int)vehicleID);
+                        sourceBuilding.Info.m_buildingAI.CalculateUnspawnPosition(vehicleData.m_sourceBuilding, ref sourceBuilding, ref randomizer, this.m_info, out Vector3 position, out Vector3 target);
                         return this.StartPathFind(vehicleID, ref vehicleData, startPos, position);
                         //end mod
                     }
                 }
                 else if ((vehicleData.m_flags & Vehicle.Flags.DummyTraffic) != (Vehicle.Flags)0)
                 {
-                    if ((int)vehicleData.m_targetBuilding != 0)
+                    if (vehicleData.m_targetBuilding != 0)
                     {
-                        Vector3 endPos = Singleton<BuildingManager>.instance.m_buildings.m_buffer[(int)vehicleData.m_targetBuilding].m_position;
-                        return this.StartPathFind(vehicleID, ref vehicleData, (Vector3)vehicleData.m_targetPos0, endPos);
+                        if (!Singleton<BuildingManager>.instance.m_buildings.TryGetFromBuffer(vehicleData.m_targetBuilding, out Building endBuilding))
+                            return false;
+
+                        var endPos = endBuilding.m_position;
+                        return this.StartPathFind(vehicleID, ref vehicleData, vehicleData.m_targetPos0, endPos);
                     }
                 }
-                else if ((int)vehicleData.m_targetBuilding != 0)
+                else if (vehicleData.m_targetBuilding != 0)
                 {
-                    Vector3 endPos = Singleton<NetManager>.instance.m_nodes.m_buffer[(int)vehicleData.m_targetBuilding].m_position;
+                    if (!Singleton<NetManager>.instance.m_nodes.TryGetFromBuffer(vehicleData.m_targetBuilding, out NetNode endNode))
+                        return false;
+
+                    var endPos = endNode.m_position;
                     return this.StartPathFind(vehicleID, ref vehicleData, startPos, endPos);
                 }
             }
