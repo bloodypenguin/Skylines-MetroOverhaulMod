@@ -120,11 +120,11 @@ namespace MetroOverhaul
                 }
                 if (toVanilla)
                 {
-                    if (path.m_netInfo.name.Contains("Metro Station Track"))
+                    if (path.m_netInfo.name.Contains("Metro Station Track Tunnel"))
                     {
                         path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track");
                     }
-                    else if (path.m_netInfo.name.Contains("Metro Track"))
+                    else if (path.m_netInfo.name.Contains("Metro Track Tunnel"))
                     {
                         path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
                     }
