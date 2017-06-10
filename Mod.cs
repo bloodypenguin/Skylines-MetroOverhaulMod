@@ -11,7 +11,7 @@ namespace MetroOverhaul
         public const bool isPatch = false;
 #endif
 
-        public string Name => "Metro Overhaul" + (isPatch ? " [Patched]" : "");
+        public string Name => "Metro Overhaul" + (isPatch ? " [Patch 1.6.2]" : "");
         public string Description => "Brings metro depots, ground and elevated metro tracks";
 
         public void OnSettingsUI(UIHelperBase helper)

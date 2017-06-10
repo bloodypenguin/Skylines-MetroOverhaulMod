@@ -100,7 +100,14 @@ namespace MetroOverhaul
             _cachedMode = mode;
             while (LateBuildUpQueue.Count > 0)
             {
-                LateBuildUpQueue.Dequeue().Invoke();
+                try
+                {
+                    LateBuildUpQueue.Dequeue().Invoke();
+                }
+                catch (Exception e)
+                {
+                    UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Enable asset in Content Manager!", e.Message, false);
+                }
             }
             if (_updater == null)
             {
