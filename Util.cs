@@ -52,7 +52,21 @@ namespace MetroOverhaul
             newPrefab.m_prefabInitialized = false;
             return newPrefab;
         }
-        public static string AssemblyPath => PluginInfo.modPath;
+        public static string AssemblyPath
+        {
+            get
+            {
+                var modPath = PluginInfo.modPath;
+                if (!Mod.isPatch)
+                {
+                    return modPath;
+                }
+                var index =  modPath.IndexOf("steamapps\\workshop\\content\\255710");
+                var basePath = modPath.Substring(0, index);
+                return basePath + "steamapps\\workshop\\content\\255710\\816260433";
+            }
+        }
+
         private static PluginInfo PluginInfo
         {
             get
