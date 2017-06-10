@@ -119,6 +119,10 @@ namespace MetroOverhaul
                 {
                     UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizerUI));
                 }
+
+                var transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Metro");
+                transportInfo.m_netLayer = ItemClass.Layer.Default | ItemClass.Layer.MetroTunnels;
+                transportInfo.m_stationLayer = ItemClass.Layer.Default | ItemClass.Layer.MetroTunnels;
             }
         }
 
@@ -132,6 +136,9 @@ namespace MetroOverhaul
             {
                 GameObject.Destroy(go);
             }
+            var transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Metro");
+            transportInfo.m_netLayer = ItemClass.Layer.MetroTunnels;
+            transportInfo.m_stationLayer = ItemClass.Layer.MetroTunnels;
         }
 
         private static void DespawnVanillaMetro()
