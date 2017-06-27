@@ -104,7 +104,14 @@ namespace MetroOverhaul
             _cachedMode = mode;
             while (LateBuildUpQueue.Count > 0)
             {
-                LateBuildUpQueue.Dequeue().Invoke();
+                try
+                {
+                    LateBuildUpQueue.Dequeue().Invoke();
+                }
+                catch (Exception e)
+                {
+                    UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Enable asset in Content Manager!", e.Message, false);
+                }
             }
             if (_updater == null)
             {
@@ -124,6 +131,10 @@ namespace MetroOverhaul
                 {
                     UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizerUI));
                 }
+
+                var transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Metro");
+                transportInfo.m_netLayer = ItemClass.Layer.Default | ItemClass.Layer.MetroTunnels;
+                transportInfo.m_stationLayer = ItemClass.Layer.Default | ItemClass.Layer.MetroTunnels;
             }
         }
 
@@ -137,6 +148,9 @@ namespace MetroOverhaul
             {
                 GameObject.Destroy(go);
             }
+            var transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Metro");
+            transportInfo.m_netLayer = ItemClass.Layer.MetroTunnels;
+            transportInfo.m_stationLayer = ItemClass.Layer.MetroTunnels;
         }
 
         private static void DespawnVanillaMetro()

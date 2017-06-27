@@ -77,7 +77,6 @@ namespace MetroOverhaul.NEXT
             {
                 mesh.LoadOBJ(OBJLoader.LoadOBJ(fileStream));
             }
-            mesh.Optimize();
             var name = Path.GetFileNameWithoutExtension(meshName);
             mesh.name = name;
             //if (!name.Contains("LOD"))

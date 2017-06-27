@@ -19,8 +19,22 @@ namespace MetroOverhaul
             {
                 return;
             }
-            UpdateTrainTracks();
-            UpdateMetroStationsMeta();
+            try
+            {
+                UpdateTrainTracks();
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
+            try
+            {
+                UpdateMetroStationsMeta();
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
         }
 
         private static void UpdateTrainTracks()
@@ -74,7 +88,7 @@ namespace MetroOverhaul
         //this method is supposed to be called from LoadingExtension
         public static void UpdateBuildingsMetroPaths(LoadMode mode, bool toVanilla = false)
         {
-#if RELEASE
+#if !DEBUG
             if (mode == LoadMode.NewAsset || mode == LoadMode.NewAsset)
             {
                 return;
@@ -120,11 +134,11 @@ namespace MetroOverhaul
                 }
                 if (toVanilla)
                 {
-                    if (path.m_netInfo.name.Contains("Metro Station Track"))
+                    if (path.m_netInfo.name.Contains("Metro Station Track Tunnel"))
                     {
                         path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track");
                     }
-                    else if (path.m_netInfo.name.Contains("Metro Track"))
+                    else if (path.m_netInfo.name.Contains("Metro Track Tunnel"))
                     {
                         path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
                     }
@@ -147,20 +161,35 @@ namespace MetroOverhaul
         {
             var vanillaMetroStation = PrefabCollection<BuildingInfo>.FindLoaded("Metro Entrance");
 
-            foreach (var info in Resources.FindObjectsOfTypeAll<BuildingInfo>())
+            var infos = Resources.FindObjectsOfTypeAll<BuildingInfo>();
+            if (infos == null)
             {
-                if (!info.IsMetroDepot() || info.m_buildingAI == null)
+                return;
+            }
+            foreach (var info in infos)
+            {
+                try
                 {
-                    continue;
-                }
+                    if (info == null || info.m_buildingAI == null || !info.IsMetroDepot())
+                    {
+                        continue;
+                    }
 
-                if (info.m_buildingAI.GetType() != typeof(DepotAI))
-                {
-                    var transportStationAi = (TransportStationAI)info.m_buildingAI;
-                    transportStationAi.m_maxVehicleCount = 0;
+                    var ai = info.m_buildingAI as TransportStationAI;
+                    if (ai != null)
+                    {
+                        var transportStationAi = ai;
+                        transportStationAi.m_maxVehicleCount = 0;
+                    }
+                    info.m_UnlockMilestone = vanillaMetroStation.m_UnlockMilestone;
+                    ((DepotAI) info.m_buildingAI).m_createPassMilestone = ((DepotAI) vanillaMetroStation.m_buildingAI)
+                        .m_createPassMilestone;
                 }
-                info.m_UnlockMilestone = vanillaMetroStation.m_UnlockMilestone;
-                ((DepotAI)info.m_buildingAI).m_createPassMilestone = ((DepotAI)vanillaMetroStation.m_buildingAI).m_createPassMilestone;
+                catch (Exception e)
+                {
+                    UnityEngine.Debug.LogError($"MOM: Failed to update meta of {info?.name}:");
+                    UnityEngine.Debug.LogException(e);
+                }
             }
         }
 
