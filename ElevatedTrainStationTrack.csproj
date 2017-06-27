@@ -45,6 +45,9 @@
     <Compile Include="Detours\DepotAIDetour.cs" />
     <Compile Include="Detours\MetroTrainAIDetour.cs" />
     <Compile Include="Extensions\NetInfoExtensions.cs" />
+    <Compile Include="InitializationSteps\SetupMesh6m.cs" />
+    <Compile Include="InitializationSteps\SetupTexture6m.cs" />
+    <Compile Include="NEXT\LaneTypeEnum.cs" />
     <Compile Include="OptionsFramework\Attibutes\AbstractOptionsAttribute.cs" />
     <Compile Include="OptionsFramework\Attibutes\CheckboxAttribute.cs" />
     <Compile Include="OptionsFramework\Attibutes\DropDownAttribute.cs" />
