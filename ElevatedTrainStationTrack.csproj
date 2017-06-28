@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,6 +37,7 @@
     <Compile Include="ActionExtensions.cs" />
     <Compile Include="Common\RailModels.10m.cs" />
     <Compile Include="Debug.cs" />
+    <Compile Include="SingleTrackAI\detour.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="Loading.cs" />
     <Compile Include="LoadingExtension.cs" />
@@ -87,6 +89,7 @@
     <Compile Include="Rail1L\Rail1LBuilderBase.Texturing.cs" />
     <Compile Include="Rail2L1W\Rail2L1WBuilder.cs" />
     <Compile Include="SharedHelpers.cs" />
+    <Compile Include="SingleTrackAI\SingleTrainTrackAI.cs" />
     <Compile Include="UI\ArrowsButtonSetup.cs" />
     <Compile Include="UI\UpgradeSetup.cs" />
     <Compile Include="Util.cs" />

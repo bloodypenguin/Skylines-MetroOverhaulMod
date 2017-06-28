@@ -12,6 +12,7 @@ using Rail1LBuilder = SingleTrainTrack.Rail1L.Rail1L1W.Rail1LBuilder;
 using Rail1L2WBuilder = SingleTrainTrack.Rail1L.Rail1L2W.Rail1L2WBuilder;
 using Rail1L2SidedStationBuilder = SingleTrainTrack.Rail1LStation.Rail1L2SidedStation.Rail1L2SidedStationBuilder;
 using Rail1LStationBuilder = SingleTrainTrack.Rail1LStation.Rail1L1SidedStation.Rail1LStationBuilder;
+using System.Reflection;
 
 namespace SingleTrainTrack
 {
@@ -75,6 +76,10 @@ namespace SingleTrainTrack
         public override void OnLevelLoaded(LoadMode mode)
         {
             base.OnLevelLoaded(mode);
+
+            EnableHook();
+            SingleTrainTrackAI.Initialize();
+
             if (Initializer.Tracks1W == null || Initializer.Tracks2W == null || Initializer.Station2SidedTracks == null || Initializer.Station1SidedTracks == null || Initializer.Tracks2L1W == null)
             {
                 return; //that assures that following code gets executed only on the first loading
@@ -144,11 +149,15 @@ namespace SingleTrainTrack
             {
                 gameObject.AddComponent<ArrowsButtonSetup>();
             }
+
         }
 
         public override void OnReleased()
         {
             base.OnReleased();
+
+            DisableHook();
+
             var gameObject = GameObject.Find("SingleTrainTrackUISetup");
             if (gameObject != null)
             {
@@ -162,6 +171,37 @@ namespace SingleTrainTrack
             Object.Destroy(Container.gameObject);
             Container = null;
             ModifyExistingNetInfos.Reset();
+        }
+
+        private bool hookEnabled = false;
+        private Dictionary<MethodInfo, RedirectCallsState> redirects = new Dictionary<MethodInfo, RedirectCallsState>();
+
+        public void EnableHook()
+        {
+            if (hookEnabled)
+            {
+                return;
+            }
+            var allFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
+            var method = typeof(TrainAI).GetMethod("CheckNextLane", allFlags);
+            redirects.Add(method, RedirectionHelper.RedirectCalls(method, typeof(SingleTrainTrackAI).GetMethod("CheckNextLane", allFlags)));
+
+            hookEnabled = true;
+        }
+
+        public void DisableHook()
+        {
+            if (!hookEnabled)
+            {
+                return;
+            }
+            foreach (var kvp in redirects)
+            {
+
+                RedirectionHelper.RevertRedirect(kvp.Key, kvp.Value);
+            }
+            redirects.Clear();
+            hookEnabled = false;
         }
     }
 }
