@@ -53,7 +53,26 @@ namespace MetroOverhaul.InitializationSteps
             theProp.m_angle = angle;
             propList.Add(theProp);
         }
-
+        public static void CommonCustomization(NetInfo prefab, NetInfoVersion version)
+        {
+            prefab.m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
+            prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.NarrowTram;
+            if (prefab.m_nodes.Count() > 1)
+            {
+                prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
+            }
+        }
+        public static void CommonCustomizationSmall(NetInfo prefab, NetInfoVersion version)
+        {
+            prefab.m_connectGroup = NetInfo.ConnectGroup.CenterTram;
+            prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.NarrowTram;
+            prefab.SetRoadLanes(version, new LanesConfiguration()
+            {
+                IsTwoWay = false,
+                LanesToAdd = -1,
+                LayoutStyle = LanesLayoutStyle.AsymL1R2
+            });
+        }
         public static void CommonCustomizationNoBar(NetInfo prefab, NetInfoVersion version)  //TODO(earalov): do we need to customize slope version too?
         {
             //switch (version)
@@ -86,6 +105,32 @@ namespace MetroOverhaul.InitializationSteps
                 case NetInfoVersion.Ground:
                     prefab.m_halfWidth = 5;
                     prefab.m_pavementWidth = 1.5f;
+                    break;
+            }
+        }
+        public static void SetSmallTrackWidths(NetInfo prefab, NetInfoVersion version)
+        {
+            switch(version)
+            {
+                case NetInfoVersion.Ground:
+                    prefab.m_halfWidth = 3;
+                    prefab.m_pavementWidth = 1.5f;
+                    break;
+                case NetInfoVersion.Elevated:
+                    prefab.m_halfWidth = 3;
+                    prefab.m_pavementWidth = 1.5f;
+                    break;
+                case NetInfoVersion.Bridge:
+                    prefab.m_halfWidth = 2.9999f;
+                    prefab.m_pavementWidth = 1.5f;
+                    break;
+                case NetInfoVersion.Slope:
+                    prefab.m_halfWidth = 4.5f;
+                    prefab.m_pavementWidth = 3f;
+                    break;
+                case NetInfoVersion.Tunnel:
+                    prefab.m_halfWidth = 3.5f;
+                    prefab.m_pavementWidth = 2f;
                     break;
             }
         }

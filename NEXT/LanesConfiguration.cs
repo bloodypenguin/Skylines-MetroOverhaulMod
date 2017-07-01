@@ -8,11 +8,14 @@ namespace MetroOverhaul.NEXT
         public float? PedPropOffsetX { get; set; }
         public float? SpeedLimit { get; set; }
         public float LaneWidth { get; set; }
+        public float LanePositionOffst { get; set; }
         public bool IsTwoWay { get; set; }
         public bool HasBusStop { get; set; }
         public float BusStopOffset { get; set; }
         public CenterLaneType CenterLane { get; set; }
         public float CenterLaneWidth { get; set; }
+        public float CenterLanePosition { get; set; }
+        public LanesLayoutStyle LayoutStyle { get; set; }
 
         public LanesConfiguration()
         {
@@ -21,11 +24,14 @@ namespace MetroOverhaul.NEXT
             PedPropOffsetX = null;
             SpeedLimit = null;
             LaneWidth = 3.0f;
+            LanePositionOffst = 0;
             IsTwoWay = true;
             HasBusStop = true;
             BusStopOffset = 1.5f;
             CenterLane = CenterLaneType.None;
             CenterLaneWidth = 3.0f;
+            CenterLanePosition = 0;
+            LayoutStyle = LanesLayoutStyle.Symmetrical;
         }
     }
 }

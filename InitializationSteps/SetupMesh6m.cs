@@ -170,7 +170,7 @@ namespace MetroOverhaul.InitializationSteps
 
                         nodes1
                             .SetMeshes
-                            (@"Meshes\6m\Ground_Rail.obj",
+                            (@"Meshes\6m\Boosted_Rail.obj",
                             @"Meshes\6m\Ground_Rail_Node_LOD.obj");
                         //nodes2
                         //    .SetMeshes
@@ -378,7 +378,8 @@ namespace MetroOverhaul.InitializationSteps
                         segments3
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\6m\Slope_Pavement.obj")
+                            (@"Meshes\6m\Slope_Pavement.obj",
+                            @"Meshes\6w\Slope_Pavement_LOD.obj")
                             .SetConsistentUVs();
                         //segments2
                         //    .SetMeshes

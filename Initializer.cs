@@ -51,10 +51,11 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.ReplaceTrackIcon).
-                        Chain(SetupMesh.Setup12mMesh, elevatedInfo, metroInfo).
-                        Chain(SetupMesh.Setup12mMeshBar, elevatedInfo).
-                        Chain(SetupTexture.Setup12mTexture).
+                        Chain(SetupMesh.Setup10mMesh, elevatedInfo, metroInfo).
+                        Chain(SetupMesh.Setup10mMeshBar, elevatedInfo).
+                        Chain(SetupTexture.Setup10mTexture).
                         Chain(
                             (info, version) =>
                             {
@@ -75,11 +76,12 @@ namespace MetroOverhaul
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.SetupTrackProps).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationNoBar).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
-                        Chain(SetupMesh.Setup12mMesh, elevatedInfo, metroInfo).
-                        Chain(SetupMesh.Setup12mMeshNoBar, elevatedInfo, metroInfo).
-                        Chain(SetupTexture.Setup12mTexture).
+                        Chain(SetupMesh.Setup10mMesh, elevatedInfo, metroInfo).
+                        Chain(SetupMesh.Setup10mMeshNoBar, elevatedInfo, metroInfo).
+                        Chain(SetupTexture.Setup10mTexture).
                         Chain(
                             (info, version) =>
                             {
@@ -98,14 +100,41 @@ namespace MetroOverhaul
                 UnityEngine.Debug.LogError("Exception happened when setting up nobar concrete tracks");
                 UnityEngine.Debug.LogException(e);
             }
-
+            try
+            {
+                CreateFullPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupTrackProps).
+                        Chain(CustomizationSteps.CommonCustomizationSmall).
+                        Chain(CustomizationSteps.SetSmallTrackWidths).
+                        Chain(SetupMesh.Setup6mMesh,LanesLayoutStyle.AsymL1R2).
+                        Chain(SetupMesh.Setup6mMeshBar).
+                        Chain(SetupTexture.Setup6mTexture).
+                        Chain(
+                            (info, version) =>
+                            {
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                            }),
+                   NetInfoVersion.All,
+                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+                            LinkToNonGroundVersions, null,NetInfoVersion.None)
+                    , prefabName => prefabName + " Small"
+                    );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Exception happened when setting up nobar concrete tracks");
+                UnityEngine.Debug.LogException(e);
+            }
             try
             {
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.SetupStationProps).
-                        Chain(SetupMesh.Setup12mMeshStation, elevatedInfo, metroStationInfo).
-                        Chain(SetupTexture.Setup12mTexture), NetInfoVersion.All, true, null,
+                        Chain(CustomizationSteps.CommonCustomization).
+                        Chain(SetupMesh.Setup10mMeshStation, elevatedInfo, metroStationInfo).
+                        Chain(SetupTexture.Setup10mTexture), NetInfoVersion.All, true, null,
                     OptionsWrapper<Options>.Options.replaceExistingNetworks ? "Metro Station Track" : null
                     );
             }
@@ -131,9 +160,10 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
-                        Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, metroInfo).
-                        Chain(SetupSteelMesh.Setup12mSteelMeshBar, elevatedInfo).
-                        Chain(SetupSteelTexture.Setup12mSteelTexture).
+                        Chain(CustomizationSteps.CommonCustomization).
+                        Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, metroInfo).
+                        Chain(SetupSteelMesh.Setup10mSteelMeshBar, elevatedInfo).
+                        Chain(SetupSteelTexture.Setup10mSteelTexture).
                         Chain(
                             (info, version) =>
                             {
@@ -159,12 +189,13 @@ namespace MetroOverhaul
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationNoBar).
                         Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
-                        Chain(SetupSteelMesh.Setup12mSteelMesh, elevatedInfo, metroInfo).
-                        Chain(SetupSteelMesh.Setup12mSteelMeshNoBar, elevatedInfo, metroInfo).
-                        Chain(SetupSteelTexture.Setup12mSteelTexture).
+                        Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, metroInfo).
+                        Chain(SetupSteelMesh.Setup10mSteelMeshNoBar, elevatedInfo, metroInfo).
+                        Chain(SetupSteelTexture.Setup10mSteelTexture).
                         Chain(
                             (info, version) =>
                             {
@@ -193,11 +224,12 @@ namespace MetroOverhaul
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.SetupStationProps).
-                        Chain(SetupSteelMesh.Setup12mStationSteelMesh, elevatedInfo, metroInfo)
+                        Chain(CustomizationSteps.CommonCustomization).
+                        Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo, metroInfo)
                         . //TODO(earalov): probably change to station specific method
-                        Chain(SetupSteelMesh.Setup12mStationSteelMesh, elevatedInfo, metroStationInfo)
+                        Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo, metroStationInfo)
                         . //TODO(earalov): probably change to station specific method
-                        Chain(SetupSteelTexture.Setup12mSteelTexture),
+                        Chain(SetupSteelTexture.Setup10mSteelTexture),
                     NetInfoVersion.Ground | NetInfoVersion.Elevated,
                     //TODO(earalov): replace wuth NetInfoVersion.All when tunnel/bridge/slope are ready
                     true, prefabName => "Steel " + prefabName,
@@ -206,8 +238,8 @@ namespace MetroOverhaul
                 CreateFullStationPrefab( //TODO(earalov): remove this setup when tunnel/bridge/slope are ready
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.SetupStationProps).
-                        Chain(SetupMesh.Setup12mMeshStation, elevatedInfo, metroStationInfo).
-                        Chain(SetupTexture.Setup12mTexture), NetInfoVersion.Tunnel, false,
+                        Chain(SetupMesh.Setup10mMeshStation, elevatedInfo, metroStationInfo).
+                        Chain(SetupTexture.Setup10mTexture), NetInfoVersion.Tunnel, false,
                     prefabName => "Steel " + prefabName,
                     null
                     );

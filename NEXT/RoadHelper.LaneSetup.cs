@@ -60,31 +60,37 @@ namespace MetroOverhaul.NEXT
             return rdInfo;
         }
 
+        public static void HandleAsymSegmentFlags(NetInfo.Segment fSegment, NetInfo.Segment bSegment = null)
+        {
+            fSegment.m_forwardForbidden |= NetSegment.Flags.Invert;
+            fSegment.m_backwardRequired |= NetSegment.Flags.Invert;
+            if (bSegment != null)
+            {
+                bSegment.m_forwardRequired |= NetSegment.Flags.Invert;
+                bSegment.m_backwardForbidden |= NetSegment.Flags.Invert;
+            }
+        }
+
         private static IEnumerable<NetInfo.Lane> SetupVehicleLanes(this NetInfo rdInfo, NetInfoVersion version, LanesConfiguration config)
         {
+            var isNotSymmetrical = config.LayoutStyle != LanesLayoutStyle.Symmetrical;
             var vehicleLanes = rdInfo.m_lanes
                 .Where(l => l.m_laneType != NetInfo.LaneType.None && l.m_laneType != NetInfo.LaneType.Parking && l.m_laneType != NetInfo.LaneType.Pedestrian)
                 .ToArray();
 
             var nbLanes = vehicleLanes.Count();
             var nbUsableLanes = nbLanes - (config.CenterLane == CenterLaneType.TurningLane ? 2 : 0);
-            var nbUsableLanesPerSide = nbUsableLanes / 2;
-            var hasCenterLane = nbUsableLanes % 2 == 1;
+            var leftLaneCount = isNotSymmetrical ? (int)Math.Floor((decimal)(int)config.LayoutStyle / 10) : 0;
+            var nbLanesBeforeMedian = isNotSymmetrical ? leftLaneCount : nbUsableLanes / 2;
+            var positionStart = -(rdInfo.m_halfWidth - rdInfo.m_pavementWidth - (rdInfo.m_hasParkingSpaces ? rdInfo.m_lanes.FirstOrDefault(l => l.m_laneType == NetInfo.LaneType.Parking)?.m_width ?? 0 : 0) - (0.5f * config.LaneWidth) + config.LanePositionOffst);
 
-            var positionStart = 0f;
+            //if (config.CenterLane == CenterLaneType.Median ||
+            //    config.CenterLane == CenterLaneType.TurningLane)
+            //{
+            //    positionStart -= config.CenterLaneWidth / 2;
+            //}
 
-            if (config.CenterLane == CenterLaneType.Median ||
-                config.CenterLane == CenterLaneType.TurningLane)
-            {
-                positionStart -= config.CenterLaneWidth / 2;
-            }
-            else if (hasCenterLane)
-            {
-                positionStart -= config.LaneWidth / 2;
-            }
-
-            positionStart -= config.LaneWidth * (nbUsableLanesPerSide - 1) + config.LaneWidth / 2;
-
+            //positionStart -= config.LaneWidth * (nbLanesBeforeMedian - (isNotSymmetrical && config.CenterLane != CenterLaneType.None ? 0 : 1)) + config.LaneWidth / 2;
             //Debug.Log(">>>> NbLanes : " + nbLanes);
             //Debug.Log(">>>> NbUsableLanes : " + nbUsableLanes);
             //Debug.Log(">>>> NbUsableLanesPerSide : " + nbUsableLanesPerSide);
@@ -98,10 +104,10 @@ namespace MetroOverhaul.NEXT
 
                 var isTurningLane =
                    config.CenterLane == CenterLaneType.TurningLane &&
-                   i >= nbUsableLanesPerSide && i <= nbLanes - nbUsableLanesPerSide - 1;
+                   i >= nbLanesBeforeMedian && i <= nbLanes - nbLanesBeforeMedian - 1;
                 var is2ndTurningLane =
                    config.CenterLane == CenterLaneType.TurningLane &&
-                   i >= nbUsableLanesPerSide + 1 && i <= nbLanes - nbUsableLanesPerSide - 1;
+                   i >= nbLanesBeforeMedian + 1 && i <= nbLanes - nbLanesBeforeMedian - 1;
 
                 if (isTurningLane)
                 {
@@ -109,7 +115,7 @@ namespace MetroOverhaul.NEXT
                 }
                 else
                 {
-                    if (i < nbUsableLanesPerSide)
+                    if (i < nbLanesBeforeMedian)
                     {
                         l.m_position =
                             positionStart +
@@ -169,6 +175,17 @@ namespace MetroOverhaul.NEXT
                             l.m_direction = NetInfo.Direction.Forward;
                         }
                     }
+                    else if (isNotSymmetrical)
+                    {
+                        if (l.m_position <= positionStart + ((leftLaneCount - 1) * l.m_width))
+                        {
+                            l.m_direction = NetInfo.Direction.Backward;
+                        }
+                        else
+                        {
+                            l.m_direction = NetInfo.Direction.Forward;
+                        }
+                    }
                     else
                     {
                         if (l.m_position < 0.0f)
@@ -196,7 +213,7 @@ namespace MetroOverhaul.NEXT
             {
                 var l = vehicleLanes[i];
 
-                if (version == NetInfoVersion.Ground && config.HasBusStop)
+                if ((version == NetInfoVersion.Ground || version == NetInfoVersion.GroundGrass || version == NetInfoVersion.GroundTrees) && config.HasBusStop)
                 {
                     if (i == 0)
                     {
@@ -271,7 +288,10 @@ namespace MetroOverhaul.NEXT
                 .m_lanes
                 .Where(l => l.m_laneType == NetInfo.LaneType.Parking)
                 .ToArray();
-
+            for (int i = 0; i < parkingLanes.Count(); i++)
+            {
+                parkingLanes[i].m_position = (float)(Math.Sign(parkingLanes[i].m_position) * (rdInfo.m_halfWidth - rdInfo.m_pavementWidth - (0.5 * parkingLanes[i].m_width)));
+            }
             return parkingLanes;
         }
 
