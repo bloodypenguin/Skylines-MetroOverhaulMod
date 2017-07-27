@@ -121,7 +121,7 @@ namespace MetroOverhaul.InitializationSteps
                                             $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__AlphaMap.png",
                                             $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__XYSMap.png"),
                                     new LODTextureSet
-                                        ($@"Textures\{elevatedBridge}_Segment_Pavement_Steel__MainTex_LOD.png",
+                                        ($@"Textures\{elevatedBridge}_Station_Segment_Pavement_Steel__MainTex_LOD.png",
                                             $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__AlphaMap_LOD.png",
                                             $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__XYSMap_LOD.png"));
                             }
