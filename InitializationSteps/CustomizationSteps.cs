@@ -4,6 +4,7 @@ using MetroOverhaul.NEXT.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System;
 
 namespace MetroOverhaul.InitializationSteps
 {
@@ -62,6 +63,81 @@ namespace MetroOverhaul.InitializationSteps
                 prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
             }
         }
+        public static void CommonIsland14mCustomization(NetInfo prefab, NetInfoVersion version)
+        {
+            prefab.m_connectGroup = NetInfo.ConnectGroup.WideTram;
+            prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.NarrowTram;
+            if (prefab.m_nodes.Count() > 1)
+            {
+                prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
+            }
+
+            var theLanes = prefab.m_lanes.ToList();
+            for (var i = 0; i < theLanes.Count; i++)
+            {
+                if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
+                {
+                    if (Math.Sign(theLanes[i].m_position) > 0)
+                    {
+                        theLanes[i].m_position = 1;
+                    }
+                    else if (Math.Sign(theLanes[i].m_position) < 0)
+                    {
+                        theLanes[i].m_position = -1;
+                    }
+                }
+                if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)
+                {
+                    if (Math.Sign(theLanes[i].m_position) > 0)
+                    {
+                        theLanes[i].m_position += 2;
+                    }
+                    else if (Math.Sign(theLanes[i].m_position) < 0)
+                    {
+                        theLanes[i].m_position += -2;
+                    }
+                }
+            }
+            prefab.m_lanes = theLanes.ToArray();
+        }
+        public static void CommonIsland16mCustomization(NetInfo prefab, NetInfoVersion version)
+        {
+            prefab.m_connectGroup = NetInfo.ConnectGroup.WideTram;
+            prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.NarrowTram;
+            if (prefab.m_nodes.Count() > 1)
+            {
+                prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
+            }
+
+            var theLanes = prefab.m_lanes.ToList();
+            for (var i = 0; i < theLanes.Count; i++)
+            {
+                if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
+                {
+                    if (Math.Sign(theLanes[i].m_position) > 0)
+                    {
+                        theLanes[i].m_position = 2;
+                    }
+                    else if (Math.Sign(theLanes[i].m_position) < 0)
+                    {
+                        theLanes[i].m_position = -2;
+                    }
+                }
+                if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)
+                {
+                    if (Math.Sign(theLanes[i].m_position) > 0)
+                    {
+                        theLanes[i].m_position += 3;
+                    }
+                    else if (Math.Sign(theLanes[i].m_position) < 0)
+                    {
+                        theLanes[i].m_position += -3;
+                    }
+                }
+            }
+            prefab.m_lanes = theLanes.ToArray();
+        }
+
         public static void CommonCustomizationSmall(NetInfo prefab, NetInfoVersion version)
         {
             prefab.m_connectGroup = NetInfo.ConnectGroup.CenterTram;
@@ -87,7 +163,7 @@ namespace MetroOverhaul.InitializationSteps
             switch (version)
             {
                 case NetInfoVersion.Elevated:
-                    prefab.m_halfWidth = prefab.name.Contains("Steel") ? 5.0001f:5; //Todo make proper enum for the styles
+                    prefab.m_halfWidth = prefab.name.Contains("Steel") ? 5.0001f : 5; //Todo make proper enum for the styles
                     prefab.m_pavementWidth = 1.5f;
                     break;
                 case NetInfoVersion.Bridge:
@@ -110,7 +186,7 @@ namespace MetroOverhaul.InitializationSteps
         }
         public static void SetSmallTrackWidths(NetInfo prefab, NetInfoVersion version)
         {
-            switch(version)
+            switch (version)
             {
                 case NetInfoVersion.Ground:
                     prefab.m_halfWidth = 3;
@@ -131,6 +207,46 @@ namespace MetroOverhaul.InitializationSteps
                 case NetInfoVersion.Tunnel:
                     prefab.m_halfWidth = 3.5f;
                     prefab.m_pavementWidth = 2f;
+                    break;
+            }
+        }
+        public static void Set14mTrackWidths(NetInfo prefab, NetInfoVersion version)
+        {
+            switch (version)
+            {
+                case NetInfoVersion.Ground:
+                    prefab.m_halfWidth = 7;
+                    prefab.m_pavementWidth = 1.5f;
+                    break;
+                case NetInfoVersion.Elevated:
+                    prefab.m_halfWidth = 7;
+                    prefab.m_pavementWidth = 1.5f;
+                    break;
+                case NetInfoVersion.Bridge:
+                    prefab.m_halfWidth = 6.9999f;
+                    prefab.m_pavementWidth = 1.5f;
+                    break;
+                case NetInfoVersion.Tunnel:
+                    prefab.m_halfWidth = 8;
+                    prefab.m_pavementWidth = 2.5f;
+                    break;
+            }
+        }
+        public static void Set16mTrackWidths(NetInfo prefab, NetInfoVersion version)
+        {
+            switch (version)
+            {
+                case NetInfoVersion.Ground:
+                    prefab.m_halfWidth = 8;
+                    prefab.m_pavementWidth = 1.5f;
+                    break;
+                case NetInfoVersion.Elevated:
+                    prefab.m_halfWidth = 8;
+                    prefab.m_pavementWidth = 1.5f;
+                    break;
+                case NetInfoVersion.Bridge:
+                    prefab.m_halfWidth = 7.9999f;
+                    prefab.m_pavementWidth = 1.5f;
                     break;
             }
         }

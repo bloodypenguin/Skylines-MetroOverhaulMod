@@ -21,7 +21,7 @@ namespace MetroOverhaul
         private static float GENERATED_PATH_MARKER = 0.09999f; //regular paths have snapping distance of 0.1f. This way we differentiate
         private const float TOLERANCE = 0.000001f; //equals 1/10 of difference between 0.1f and GENERATED_PATH_MARKER
 
-        public static void ModifyStation(BuildingInfo info, float targetDepth, float targetStationTrackLength, double angle)
+        public static void ModifyStation(BuildingInfo info, float targetDepth, float targetStationTrackLength, double angle, bool isIslandPlatform)
         {
             if (!info.HasUndergroundMetroTracks() || info.m_paths == null || info.m_paths.Length < 1)
             {

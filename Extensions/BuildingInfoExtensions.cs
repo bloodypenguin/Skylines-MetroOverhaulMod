@@ -18,5 +18,15 @@ namespace MetroOverhaul.Extensions
         {
             return info.m_paths != null && info.m_paths.Any(p => p?.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack());
         }
+
+        public static bool HasUndergroundSidePlatformMetroTracks(this BuildingInfo info)
+        {
+            return info.m_paths != null && info.m_paths.Any(p => p?.m_netInfo != null && p.m_netInfo.IsUndergroundSidePlatformMetroStationTrack());
+        }
+
+        public static bool HasUndergroundIslandPlantformMetroTracks(this BuildingInfo info)
+        {
+            return info.m_paths != null && info.m_paths.Any(p => p?.m_netInfo != null && p.m_netInfo.IsUndergroundIslandPlatformStationTrack());
+        }
     }
 }

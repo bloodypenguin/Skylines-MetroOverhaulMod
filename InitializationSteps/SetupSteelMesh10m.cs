@@ -238,79 +238,12 @@ namespace MetroOverhaul.InitializationSteps
                         info.m_nodes = new[] { node0, node1, node3, node4, node5, node6 };
                         break;
                     }
-                    //case NetInfoVersion.Tunnel:
-                    //    {
-                    //        var segment0 = info.m_segments[0];
-                    //        var segment1 = info.m_segments[0].ShallowClone();
-                    //        var segment2 = trainTrackInfo.m_segments[1].ShallowClone();
-                    //        var node0 = info.m_nodes[0];
-                    //        var node1 = info.m_nodes[0].ShallowClone();
-                    //        var node2 = trainTrackInfo.m_nodes[1].ShallowClone();
-                    //        segment2
-                    //            .SetFlagsDefault()
-                    //            .SetMeshes
-                    //            (@"Meshes\10m\Rail.obj");
-                    //        node2
-                    //            .SetMeshes
-                    //            (@"Meshes\10m\Rail.obj");
-
-                    //        if (isAlt)
-                    //        {
-                    //            segment0
-                    //                .SetFlagsDefault()
-                    //                .SetMeshes
-                    //                (@"Meshes\10m\Ground_NoBar_Pavement_Steel.obj",
-                    //                @"Meshes\10m\Ground_NoBar_Pavement_LOD.obj");
-
-                    //            node0
-                    //                .SetMeshes
-                    //                (@"Meshes\10m\Ground_NoBar_Node_Pavement_Steel.obj",
-                    //                @"Meshes\10m\Ground_NoBar_Node_Pavement_LOD.obj")
-                    //                .SetConsistentUVs(true);
-
-
-                    //            if (trainTrackMaterial != @"Meshes\10m\Blank.obj")
-                    //            {
-                    //                segment0.m_material = trainTrackMaterial;
-                    //                segment0.m_lodMaterial = trainTrackLODMaterial;
-                    //                node2.m_material = trainTrackMaterial;
-                    //            }
-
-                    //            info.m_segments = new[] { segment0, segment2 };
-                    //            info.m_nodes = new[] { node0, node2 };
-                    //        }
-                    //        else
-                    //        {
-                    //            segment1
-                    //                .SetFlagsDefault()
-                    //                .SetMeshes
-                    //                (@"Meshes\10m\Tunnel_Pavement_Steel.obj",
-                    //                @"Meshes\10m\Tunnel_Pavement_LOD.obj")
-                    //                .SetConsistentUVs();
-                    //            node1
-                    //                .SetMeshes
-                    //                (@"Meshes\10m\Tunnel_Node_Pavement_Steel.obj",
-                    //                @"Meshes\10m\Tunnel_Node_Pavement_LOD.obj")
-                    //                .SetConsistentUVs();
-
-                    //        }
-                    //        if (elevatedMaterial != @"Meshes\10m\Blank.obj")
-                    //        {
-                    //            segment1.m_material = elevatedMaterial;
-                    //            node1.m_material = elevatedMaterial;
-                    //            segment2.m_material = elevatedMaterial;
-                    //            node2.m_material = elevatedMaterial;
-                    //        }
-                    //        info.m_segments = new[] { segment0, segment1,segment2 };
-                    //        info.m_nodes = new[] { node0, node1, node2 };
-                    //        break;
-                    //    }
             }
 
         }
 
         //mind changed indices! (after Setup10mSteelMesh)
-        public static void Setup10mSteelMeshBar(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo)
+        public static void Setup10mSteelBarMesh(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo)
         {
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
             var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
@@ -405,22 +338,6 @@ namespace MetroOverhaul.InitializationSteps
                         break;
                     }
             }
-            //if (version != NetInfoVersion.Ground)
-            //{
-            //    return;
-            //}
-            //var segment0 = info.m_segments[0];
-            //var node0 = info.m_nodes[0];
-            //var node2 = info.m_nodes[2];
-
-            //var elevatedMaterial = elevatedInfo?.m_segments[0].m_material;
-            //var elevatedLODMaterial = elevatedInfo?.m_segments[0].m_lodMaterial;
-            //segment0.m_material = elevatedMaterial;
-            //segment0.m_lodMaterial = elevatedLODMaterial;
-            //node0.m_material = elevatedMaterial;
-            //node2.m_material = elevatedMaterial;
-            //segment1.m_material = railMaterial;
-            //node1.m_material = railMaterial;
         }
         private static void AddToSegments(this NetInfo.Segment[] segments, params NetInfo.Segment[] toAdd)
         {
@@ -435,7 +352,7 @@ namespace MetroOverhaul.InitializationSteps
             nodes = thenodes.ToArray();
         }
         //mind changed indices! (after Setup10mSteelMesh)
-        public static void Setup10mSteelMeshNoBar(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
+        public static void Setup10mSteelNoBarMesh(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
         {
             switch (version)
             {
@@ -561,104 +478,6 @@ namespace MetroOverhaul.InitializationSteps
                         break;
                     }
             }
-        }
-        public static void Setup10mStationSteelMeshNoBar(NetInfo prefab, NetInfoVersion version, NetInfo elevatedInfo, NetInfo metroStationInfo)
-        {
-            //    var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
-            //    var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
-            //    switch (version)
-            //    {
-            //        case NetInfoVersion.Ground:
-            //            {
-            //                var segment0 = prefab.m_segments[0].ShallowClone();
-            //                var segment1 = prefab.m_segments[1];
-            //                var node0 = prefab.m_nodes[0].ShallowClone();
-            //                var node1 = prefab.m_nodes[1];
-            //                var node2 = prefab.m_nodes[2];
-            //                var node3 = prefab.m_nodes[1].ShallowClone();
-
-            //                segment0
-            //                    .SetMeshes
-            //                    (@"Meshes\10m\Ground_Station_Pavement_Steel.obj",
-            //                        @"Meshes\10m\Ground_NoBar_Pavement_LOD.obj");
-            //                segment1
-            //                    .SetFlagsDefault()
-            //                    .SetMeshes
-            //                    (@"Meshes\10m\Rail.obj")
-            //                    .SetConsistentUVs();
-            //                node0
-            //                    .SetMeshes
-            //                    (@"Meshes\10m\Ground_Nobar_Node_Pavement_Steel.obj",
-            //                        @"Meshes\10m\Ground_Station_Node_Pavement_LOD.obj");
-            //                node1
-            //                    .SetMeshes
-            //                    (@"Meshes\10m\Elevated_Station_Node_Rail.obj")
-            //                    .SetConsistentUVs();
-            //                node2
-            //                    .SetMeshes
-            //                    (@"Meshes\10m\LevelCrossing_Pavement.obj",
-            //                        @"Meshes\10m\LevelCrossing_Pavement_LOD.obj")
-            //                    .SetConsistentUVs();
-            //                node3
-            //                    .SetMeshes
-            //                    (@"Meshes\10m\LevelCrossing_Station_Rail.obj")
-            //                    .SetConsistentUVs();
-
-            //                segment0.m_material = elevatedMaterial;
-            //                segment0.m_lodMaterial = elevatedLODMaterial;
-            //                node0.m_material = elevatedMaterial;
-            //                node0.m_lodMaterial = elevatedLODMaterial;
-            //                node2.m_lodMaterial = elevatedLODMaterial;
-
-            //                node1.m_flagsForbidden = NetNode.Flags.LevelCrossing;
-            //                node2.m_flagsRequired = NetNode.Flags.LevelCrossing;
-            //                node3.m_flagsRequired = NetNode.Flags.LevelCrossing;
-
-            //                prefab.m_segments = new[] { segment0, segment1 };
-            //                prefab.m_nodes = new[] { node0, node1, node2, node3 };
-            //                break;
-            //            }
-            //        case NetInfoVersion.Elevated:
-            //            {
-            //                var segment0 = prefab.m_segments[0].ShallowClone();
-            //                var segment1 = prefab.m_segments[1];
-            //                var node0 = prefab.m_nodes[0].ShallowClone();
-            //                var node1 = prefab.m_nodes[1];
-            //                var node2 = prefab.m_nodes[0].ShallowClone();
-
-            //                segment0
-            //                    .SetMeshes
-            //                    (@"Meshes\10m\Elevated_Station_Pavement_Steel.obj",
-            //                        @"Meshes\10m\Elevated_Station_Pavement_LOD.obj");
-            //                segment1
-            //                    .SetFlagsDefault()
-            //                    .SetMeshes
-            //                    (@"Meshes\10m\Rail.obj")
-            //                    .SetConsistentUVs();
-            //                node0
-            //                    .SetMeshes
-            //                    (@"Meshes\10m\Elevated_Nobar_Station_Node_Pavement_Steel.obj",
-            //                        @"Meshes\10m\Elevated_Station_Node_Pavement_LOD.obj");
-            //                node1
-            //                    .SetMeshes
-            //                    (@"Meshes\10m\Elevated_Station_Node_Rail.obj")
-            //                    .SetConsistentUVs();
-            //                node2
-            //                    .SetMeshes
-            //                    (@"Meshes\10m\Boosted_Station_Node_Rail_Steel.obj",
-            //                    @"Meshes\10m\Boosted_Rail_Steel_LOD.obj")
-            //                    .SetConsistentUVs();
-            //                segment0.m_material = elevatedMaterial;
-            //                segment0.m_lodMaterial = elevatedLODMaterial;
-            //                node0.m_material = elevatedMaterial;
-            //                node0.m_lodMaterial = elevatedLODMaterial;
-            //                node2.m_directConnect = true;
-
-            //                prefab.m_segments = new[] { segment0, segment1 };
-            //                prefab.m_nodes = new[] { node0, node1 };
-            //                break;
-            //            }
-            //    }
         }
     }
 }

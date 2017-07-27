@@ -379,7 +379,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetFlagsDefault()
                             .SetMeshes
                             (@"Meshes\6m\Slope_Pavement.obj",
-                            @"Meshes\6w\Slope_Pavement_LOD.obj")
+                            @"Meshes\6m\Slope_Pavement_LOD.obj")
                             .SetConsistentUVs();
                         //segments2
                         //    .SetMeshes

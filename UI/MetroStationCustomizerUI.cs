@@ -25,6 +25,7 @@ namespace MetroOverhaul.UI
         private UIButton m_upgradeButtonTemplate;
         private BuildingInfo m_currentBuilding;
         private bool m_activated = false;
+        private bool m_isIslandPlatform = false;
         public static MetroStationCustomizerUI instance;
         public override void Update()
         {
@@ -139,7 +140,7 @@ namespace MetroOverhaul.UI
             backgroundSprite = "GenericPanel";
             color = new Color32(68, 84, 68, 170);
             width = 200;
-            height = 140;
+            height = 200;
             position = Vector2.zero;
             isVisible = false;
             isInteractive = true;
@@ -422,14 +423,69 @@ namespace MetroOverhaul.UI
                         angleSlider.value = SetStationCustomizations.MIN_ANGLE;
                 }
             };
-        }
 
+            UICheckBox useIslandPlatformCheckBox = AddUIComponent<UICheckBox>();
+            useIslandPlatformCheckBox.text = "Island Platform";
+            useIslandPlatformCheckBox.size = new Vector2(width - 16, 16);
+            useIslandPlatformCheckBox.relativePosition = new Vector2(8, 160);
+            useIslandPlatformCheckBox.isInteractive = true;
+            useIslandPlatformCheckBox.eventCheckChanged += (c, v) =>
+             {
+                 m_isIslandPlatform = useIslandPlatformCheckBox.isChecked;
+                 TunnelStationTrackToggleStyles(m_currentBuilding, m_isIslandPlatform);
+             };
+            
+            m_useIslandPlatformCheckBoxClicker = useIslandPlatformCheckBox.AddUIComponent<UISprite>();
+            m_useIslandPlatformCheckBoxClicker.atlas = atlas;
+            m_useIslandPlatformCheckBoxClicker.spriteName = "check-unchecked";
+            m_useIslandPlatformCheckBoxClicker.relativePosition = new Vector2(0, 0);
+            m_useIslandPlatformCheckBoxClicker.size = new Vector2(16, 16);
+            m_useIslandPlatformCheckBoxClicker.isInteractive = true;
+
+            UILabel useIslandPlatformLabel = useIslandPlatformCheckBox.AddUIComponent<UILabel>();
+            useIslandPlatformLabel.relativePosition = new Vector2(20,0);
+            useIslandPlatformLabel.text = "Island Platform";
+            useIslandPlatformLabel.height = 16;
+            useIslandPlatformLabel.isInteractive = true;
+        }
+        private UISprite m_useIslandPlatformCheckBoxClicker = null;
+        private void TunnelStationTrackToggleStyles(BuildingInfo info, bool toIslandPlatform = false)
+        {
+            if (info?.m_paths == null)
+            {
+                return;
+            }
+            foreach (var path in info.m_paths)
+            {
+                if (path?.m_netInfo?.name == null)
+                {
+                    continue;
+                }
+                if (toIslandPlatform)
+                {
+                    m_useIslandPlatformCheckBoxClicker.spriteName = "check-checked";
+                    if (path.m_netInfo.IsUndergroundSidePlatformMetroStationTrack())
+                    {
+                        path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel Island");
+                    }
+                }
+                else
+                {
+                    m_useIslandPlatformCheckBoxClicker.spriteName = "check-unchecked";
+                    if (path.m_netInfo.IsUndergroundIslandPlatformStationTrack())
+                    {
+                        path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel");
+                    }
+                }
+            }
+        }
         private void Activate(BuildingInfo bInfo)
         {
             m_oldAngle = 0;
             m_activated = true;
             m_currentBuilding = bInfo;
             isVisible = true;
+            TunnelStationTrackToggleStyles(bInfo, m_isIslandPlatform);
             DoStationMechanics();
         }
         private void Deactivate()
@@ -447,7 +503,7 @@ namespace MetroOverhaul.UI
         {
             var angleDelta = Math.PI / 180 * (m_setAngle - m_oldAngle);
             m_oldAngle = m_setAngle;
-            SetStationCustomizations.ModifyStation(m_currentBuilding, m_setDepth, m_setLength, angleDelta);
+            SetStationCustomizations.ModifyStation(m_currentBuilding, m_setDepth, m_setLength, angleDelta, m_isIslandPlatform);
         }
     }
 }

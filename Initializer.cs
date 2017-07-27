@@ -54,7 +54,7 @@ namespace MetroOverhaul
                         Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.ReplaceTrackIcon).
                         Chain(SetupMesh.Setup10mMesh, elevatedInfo, metroInfo).
-                        Chain(SetupMesh.Setup10mMeshBar, elevatedInfo).
+                        Chain(SetupMesh.Setup10mMBaresh, elevatedInfo).
                         Chain(SetupTexture.Setup10mTexture).
                         Chain(
                             (info, version) =>
@@ -80,7 +80,6 @@ namespace MetroOverhaul
                         Chain(CustomizationSteps.CommonCustomizationNoBar).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
                         Chain(SetupMesh.Setup10mMesh, elevatedInfo, metroInfo).
-                        Chain(SetupMesh.Setup10mMeshNoBar, elevatedInfo, metroInfo).
                         Chain(SetupTexture.Setup10mTexture).
                         Chain(
                             (info, version) =>
@@ -133,7 +132,7 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.SetupStationProps).
                         Chain(CustomizationSteps.CommonCustomization).
-                        Chain(SetupMesh.Setup10mMeshStation, elevatedInfo, metroStationInfo).
+                        Chain(SetupMesh.Setup10mStationMesh, elevatedInfo, metroStationInfo).
                         Chain(SetupTexture.Setup10mTexture), NetInfoVersion.All, true, null,
                     OptionsWrapper<Options>.Options.replaceExistingNetworks ? "Metro Station Track" : null
                     );
@@ -141,6 +140,48 @@ namespace MetroOverhaul
             catch (Exception e)
             {
                 UnityEngine.Debug.LogError("Exception happened when setting up concrete station tracks");
+                UnityEngine.Debug.LogException(e);
+            }
+
+            try
+            {
+                CreateFullStationPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupStationProps).
+                        Chain(CustomizationSteps.CommonIsland14mCustomization).
+                        Chain(CustomizationSteps.Set14mTrackWidths).
+                        Chain(SetupMesh.Setup14mStationMesh, elevatedInfo, metroStationInfo).
+                        Chain(SetupTexture.Setup1416mTexture),
+                        NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
+                    //TODO(earalov): replace wuth NetInfoVersion.All when tunnel/bridge/slope are ready
+                    true, prefabName => prefabName + " Island",
+                    null
+                    );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Exception happened when setting up concrete island station tracks");
+                UnityEngine.Debug.LogException(e);
+            }
+
+            try
+            {
+                CreateFullStationPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupStationProps).
+                        Chain(CustomizationSteps.CommonIsland16mCustomization).
+                        Chain(CustomizationSteps.Set16mTrackWidths).
+                        Chain(SetupMesh.Setup16mStationMesh, elevatedInfo, metroStationInfo).
+                        Chain(SetupTexture.Setup1416mTexture),
+                        NetInfoVersion.Ground | NetInfoVersion.Elevated,
+                    //TODO(earalov): replace wuth NetInfoVersion.All when tunnel/bridge/slope are ready
+                    true, prefabName => prefabName + " Island Large",
+                    null
+                    );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Exception happened when setting up concrete large island station tracks");
                 UnityEngine.Debug.LogException(e);
             }
         }
@@ -162,7 +203,7 @@ namespace MetroOverhaul
                         Chain(CustomizationSteps.SetStandardTrackWidths).
                         Chain(CustomizationSteps.CommonCustomization).
                         Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, metroInfo).
-                        Chain(SetupSteelMesh.Setup10mSteelMeshBar, elevatedInfo).
+                        Chain(SetupSteelMesh.Setup10mSteelBarMesh, elevatedInfo).
                         Chain(SetupSteelTexture.Setup10mSteelTexture).
                         Chain(
                             (info, version) =>
@@ -194,7 +235,7 @@ namespace MetroOverhaul
                         Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
                         Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, metroInfo).
-                        Chain(SetupSteelMesh.Setup10mSteelMeshNoBar, elevatedInfo, metroInfo).
+                        Chain(SetupSteelMesh.Setup10mSteelNoBarMesh, elevatedInfo, metroInfo).
                         Chain(SetupSteelTexture.Setup10mSteelTexture).
                         Chain(
                             (info, version) =>
@@ -238,7 +279,7 @@ namespace MetroOverhaul
                 CreateFullStationPrefab( //TODO(earalov): remove this setup when tunnel/bridge/slope are ready
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.SetupStationProps).
-                        Chain(SetupMesh.Setup10mMeshStation, elevatedInfo, metroStationInfo).
+                        Chain(SetupMesh.Setup10mStationMesh, elevatedInfo, metroStationInfo).
                         Chain(SetupTexture.Setup10mTexture), NetInfoVersion.Tunnel, false,
                     prefabName => "Steel " + prefabName,
                     null
@@ -247,6 +288,56 @@ namespace MetroOverhaul
             catch (Exception e)
             {
                 UnityEngine.Debug.LogError("Exception happened when setting up concrete station tracks");
+                UnityEngine.Debug.LogException(e);
+            }
+
+            try
+            {
+                CreateFullStationPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupStationProps).
+                        Chain(CustomizationSteps.CommonIsland14mCustomization).
+                        Chain(CustomizationSteps.Set14mTrackWidths).
+                        Chain(SetupSteelMesh.Setup14mSteelStationMesh, elevatedInfo, metroStationInfo).
+                        Chain(SetupSteelTexture.Setup1416mSteelTexture),
+                        NetInfoVersion.Ground | NetInfoVersion.Elevated,
+                    //TODO(earalov): replace wuth NetInfoVersion.All when tunnel/bridge/slope are ready
+                    true, prefabName => "Steel " + prefabName + " Island",
+                    null
+                    );
+                CreateFullStationPrefab( //TODO(earalov): remove this setup when tunnel/bridge/slope are ready
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupStationProps).
+                        Chain(SetupMesh.Setup14mStationMesh, elevatedInfo, metroStationInfo).
+                        Chain(SetupTexture.Setup1416mTexture), NetInfoVersion.Tunnel, false,
+                    prefabName => "Steel " + prefabName + " Island",
+                    null
+                    );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Exception happened when setting up steel island station tracks");
+                UnityEngine.Debug.LogException(e);
+            }
+
+            try
+            {
+                CreateFullStationPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupStationProps).
+                        Chain(CustomizationSteps.CommonIsland16mCustomization).
+                        Chain(CustomizationSteps.Set16mTrackWidths).
+                        Chain(SetupSteelMesh.Setup16mSteelStationMesh, elevatedInfo, metroStationInfo).
+                        Chain(SetupSteelTexture.Setup1416mSteelTexture),
+                        NetInfoVersion.Ground | NetInfoVersion.Elevated,
+                    //TODO(earalov): replace wuth NetInfoVersion.All when tunnel/bridge/slope are ready
+                    true, prefabName => "Steel " + prefabName + " Island Large",
+                    null
+                    );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Exception happened when setting up steel large island station tracks");
                 UnityEngine.Debug.LogException(e);
             }
 

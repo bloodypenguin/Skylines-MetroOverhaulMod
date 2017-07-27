@@ -323,7 +323,7 @@ namespace MetroOverhaul.InitializationSteps
         }
 
         //mind changed segment and node indices! (after Setup10mMesh)
-        public static void Setup10mMeshBar(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo)
+        public static void Setup10mMBaresh(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo)
         {
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
             var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
@@ -431,68 +431,7 @@ namespace MetroOverhaul.InitializationSteps
             //node2.m_lodMaterial = elevatedLODMaterial;
         }
 
-        //mind changed segment and node indices! (after Setup10mMesh)
-        public static void Setup10mMeshNoBar(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
-        {
-        //    switch (version)
-        //    {
-        //        case NetInfoVersion.Ground:
-        //            {
-        //                var segment0 = info.m_segments[0];
-        //                var node0 = info.m_nodes[0];
-        //                segment0
-        //                    .SetFlagsDefault()
-        //                    .SetMeshes
-        //                    (@"Meshes\10m\Ground_NoBar_Pavement.obj",
-        //                        @"Meshes\10m\Ground_NoBar_Pavement_LOD.obj");
-
-        //                node0
-        //                    .SetMeshes
-        //                    (@"Meshes\10m\Ground_NoBar_Node_Pavement.obj",
-        //                        @"Meshes\10m\Ground_NoBar_Node_Pavement_LOD.obj")
-        //                    .SetConsistentUVs(true);
-        //                break;
-        //            }
-        //        case NetInfoVersion.Elevated:
-        //            {
-        //                var segment0 = info.m_segments[0];
-        //                var node0 = info.m_nodes[0];
-        //                segment0
-        //                    .SetFlagsDefault()
-        //                    .SetMeshes
-        //                    (@"Meshes\10m\Elevated_NoBar_Pavement.obj",
-        //                        @"Meshes\10m\Elevated_Pavement_LOD.obj");
-
-        //                node0
-        //                    .SetMeshes
-        //                    (@"Meshes\10m\Elevated_NoBar_Node_Pavement.obj",
-        //                        @"Meshes\10m\Elevated_Node_Pavement_LOD.obj")
-        //                    .SetConsistentUVs(true);
-        //                break;
-        //            }
-        //        case NetInfoVersion.Bridge:
-        //            {
-        //                var segment0 = info.m_segments[0];
-        //                var node0 = info.m_nodes[0];
-        //                segment0
-        //                    .SetFlagsDefault()
-        //                    .SetMeshes
-        //                    (@"Meshes\10m\Bridge_NoBar_Pavement.obj",
-        //                        @"Meshes\10m\Bridge_Pavement_LOD.obj");
-
-        //                node0
-        //                    .SetMeshes
-        //                    (@"Meshes\10m\Bridge_NoBar_Node_Pavement.obj",
-        //                        @"Meshes\10m\Bridge_Node_Pavement_LOD.obj")
-        //                    .SetConsistentUVs(true);
-        //                break;
-        //            }
-        //    }
-
-        }
-
-
-        public static void Setup10mMeshStation(NetInfo prefab, NetInfoVersion version, NetInfo elevatedInfo, NetInfo metroStationInfo)
+        public static void Setup10mStationMesh(NetInfo prefab, NetInfoVersion version, NetInfo elevatedInfo, NetInfo metroStationInfo)
         {
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
             var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
@@ -651,6 +590,7 @@ namespace MetroOverhaul.InitializationSteps
                         node1.m_lodMaterial = elevatedLODMaterial;
                         node2.m_material = elevatedMaterial;
                         node2.m_lodMaterial = elevatedLODMaterial;
+                        node2.m_directConnect = true;
                         node3.m_material = elevatedMaterial;
                         node3.m_lodMaterial = elevatedLODMaterial;
                         prefab.m_segments = new[] { segment0, segment1, segment2,segment3 };
