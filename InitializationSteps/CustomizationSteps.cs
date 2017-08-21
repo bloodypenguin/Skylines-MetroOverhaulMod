@@ -39,7 +39,15 @@ namespace MetroOverhaul.InitializationSteps
                 if (version == NetInfoVersion.Tunnel)
                 {
                     var thePropInfo = PrefabCollection<PropInfo>.FindLoaded("Wall Light White");
-                    propsList.AddBasicProp(thePropInfo, new Vector3(-1, 6.7f, 0), 90, 10);
+                    if (prefab.name.Contains("Island"))
+                    {
+                        propsList.AddBasicProp(thePropInfo, new Vector3(0, 6.3f, 0), 90, 14);
+                    }
+                    else
+                    {
+                        propsList.AddBasicProp(thePropInfo, new Vector3(-1, 6.7f, 0), 90, 10);
+                    }
+                    
                 }
                 t.m_laneProps.m_props = propsList.ToArray();
             }
@@ -63,43 +71,43 @@ namespace MetroOverhaul.InitializationSteps
                 prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
             }
         }
-        public static void CommonIsland14mCustomization(NetInfo prefab, NetInfoVersion version)
-        {
-            prefab.m_connectGroup = NetInfo.ConnectGroup.WideTram;
-            prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.NarrowTram;
-            if (prefab.m_nodes.Count() > 1)
-            {
-                prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
-            }
+        //public static void CommonIsland16mCustomization(NetInfo prefab, NetInfoVersion version)
+        //{
+        //    prefab.m_connectGroup = NetInfo.ConnectGroup.WideTram;
+        //    prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.NarrowTram;
+        //    if (prefab.m_nodes.Count() > 1)
+        //    {
+        //        prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
+        //    }
 
-            var theLanes = prefab.m_lanes.ToList();
-            for (var i = 0; i < theLanes.Count; i++)
-            {
-                if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
-                {
-                    if (Math.Sign(theLanes[i].m_position) > 0)
-                    {
-                        theLanes[i].m_position = 1;
-                    }
-                    else if (Math.Sign(theLanes[i].m_position) < 0)
-                    {
-                        theLanes[i].m_position = -1;
-                    }
-                }
-                if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)
-                {
-                    if (Math.Sign(theLanes[i].m_position) > 0)
-                    {
-                        theLanes[i].m_position += 2;
-                    }
-                    else if (Math.Sign(theLanes[i].m_position) < 0)
-                    {
-                        theLanes[i].m_position += -2;
-                    }
-                }
-            }
-            prefab.m_lanes = theLanes.ToArray();
-        }
+        //    var theLanes = prefab.m_lanes.ToList();
+        //    for (var i = 0; i < theLanes.Count; i++)
+        //    {
+        //        if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
+        //        {
+        //            if (Math.Sign(theLanes[i].m_position) > 0)
+        //            {
+        //                theLanes[i].m_position = 1;
+        //            }
+        //            else if (Math.Sign(theLanes[i].m_position) < 0)
+        //            {
+        //                theLanes[i].m_position = -1;
+        //            }
+        //        }
+        //        if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)
+        //        {
+        //            if (Math.Sign(theLanes[i].m_position) > 0)
+        //            {
+        //                theLanes[i].m_position += 2;
+        //            }
+        //            else if (Math.Sign(theLanes[i].m_position) < 0)
+        //            {
+        //                theLanes[i].m_position += -2;
+        //            }
+        //        }
+        //    }
+        //    prefab.m_lanes = theLanes.ToArray();
+        //}
         public static void CommonIsland16mCustomization(NetInfo prefab, NetInfoVersion version)
         {
             prefab.m_connectGroup = NetInfo.ConnectGroup.WideTram;
@@ -149,15 +157,7 @@ namespace MetroOverhaul.InitializationSteps
                 LayoutStyle = LanesLayoutStyle.AsymL1R2
             });
         }
-        public static void CommonCustomizationNoBar(NetInfo prefab, NetInfoVersion version)  //TODO(earalov): do we need to customize slope version too?
-        {
-            //switch (version)
-            //{
-            //    case NetInfoVersion.Ground:
-            //        prefab.m_createGravel = true;
-            //        break;
-            //}
-        }
+
         public static void SetStandardTrackWidths(NetInfo prefab, NetInfoVersion version)
         {
             switch (version)
@@ -210,28 +210,28 @@ namespace MetroOverhaul.InitializationSteps
                     break;
             }
         }
-        public static void Set14mTrackWidths(NetInfo prefab, NetInfoVersion version)
-        {
-            switch (version)
-            {
-                case NetInfoVersion.Ground:
-                    prefab.m_halfWidth = 7;
-                    prefab.m_pavementWidth = 1.5f;
-                    break;
-                case NetInfoVersion.Elevated:
-                    prefab.m_halfWidth = 7;
-                    prefab.m_pavementWidth = 1.5f;
-                    break;
-                case NetInfoVersion.Bridge:
-                    prefab.m_halfWidth = 6.9999f;
-                    prefab.m_pavementWidth = 1.5f;
-                    break;
-                case NetInfoVersion.Tunnel:
-                    prefab.m_halfWidth = 8;
-                    prefab.m_pavementWidth = 2.5f;
-                    break;
-            }
-        }
+        //public static void Set16mTrackWidths(NetInfo prefab, NetInfoVersion version)
+        //{
+        //    switch (version)
+        //    {
+        //        case NetInfoVersion.Ground:
+        //            prefab.m_halfWidth = 7;
+        //            prefab.m_pavementWidth = 1.5f;
+        //            break;
+        //        case NetInfoVersion.Elevated:
+        //            prefab.m_halfWidth = 7;
+        //            prefab.m_pavementWidth = 1.5f;
+        //            break;
+        //        case NetInfoVersion.Bridge:
+        //            prefab.m_halfWidth = 6.9999f;
+        //            prefab.m_pavementWidth = 1.5f;
+        //            break;
+        //        case NetInfoVersion.Tunnel:
+        //            prefab.m_halfWidth = 8;
+        //            prefab.m_pavementWidth = 2.5f;
+        //            break;
+        //    }
+        //}
         public static void Set16mTrackWidths(NetInfo prefab, NetInfoVersion version)
         {
             switch (version)
@@ -247,6 +247,10 @@ namespace MetroOverhaul.InitializationSteps
                 case NetInfoVersion.Bridge:
                     prefab.m_halfWidth = 7.9999f;
                     prefab.m_pavementWidth = 1.5f;
+                    break;
+                case NetInfoVersion.Tunnel:
+                    prefab.m_halfWidth = 9;
+                    prefab.m_pavementWidth = 2.5f;
                     break;
             }
         }

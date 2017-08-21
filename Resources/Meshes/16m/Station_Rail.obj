@@ -1,8 +1,8 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 08.07.2017 18:15:55
+# File Created: 10.08.2017 01:42:26
 
 #
-# object Rail
+# object Rail001
 #
 
 v  -5.9424 0.1000 -27.7428
@@ -1345,7 +1345,7 @@ vt 0.3174 0.0005 0.0000
 vt 0.3174 1.0045 0.0000
 # 254 texture coords
 
-g Rail
+g Rail001
 s off
 f 1/1/1 2/2/1 3/2/1 
 f 3/2/1 4/1/1 1/1/1 

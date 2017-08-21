@@ -136,6 +136,10 @@ namespace MetroOverhaul
                 transportInfo.m_netLayer = ItemClass.Layer.Default | ItemClass.Layer.MetroTunnels;
                 transportInfo.m_stationLayer = ItemClass.Layer.Default | ItemClass.Layer.MetroTunnels;
             }
+            else if (mode == LoadMode.NewAsset || mode == LoadMode.LoadAsset)
+            {
+
+            }
         }
 
         public override void OnLevelUnloading()

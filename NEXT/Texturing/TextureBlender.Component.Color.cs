@@ -46,8 +46,8 @@ namespace MetroOverhaul.NEXT.Texturing
                 //        throw new Exception("Texture is larger than the canvas");
                 //    }
 
-                //    var cPixel = canvasPixels[i];
-                //    var tPixel = texturePixels[i];
+                //    var cPixel = canvasPixels[i].ShallowClone();
+                //    var tPixel = texturePixels[i].ShallowClone();
 
                 //    var alphaLvl = tPixel.g;
                 //    var aprLvl = tPixel.b;

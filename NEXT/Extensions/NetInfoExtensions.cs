@@ -18,7 +18,7 @@ namespace MetroOverhaul.NEXT.Extensions
 
             for (int i = 0; i < info.m_lanes.Count(); i++)
             {
-                var lane = info.m_lanes[i];
+                var lane = info.m_lanes[i].ShallowClone();
                 if (lane.m_laneProps == null ||
                     lane.m_laneProps.m_props == null ||
                     lane.m_laneProps.m_props.Length == 0)

@@ -50,7 +50,7 @@ namespace MetroOverhaul
             var processedConnectedPaths = new List<int>();
             for (var index = 0; index < info.m_paths.Length; index++)
             {
-                var path = info.m_paths[index];
+                var path = info.m_paths[index].ShallowClone();
                 if (!path.m_netInfo.IsUndergroundMetroStationTrack())
                 {
                     continue;
@@ -61,7 +61,7 @@ namespace MetroOverhaul
 
         private static void BendStationTrack(BuildingInfo.PathInfo[] assetPaths, int pathIndex, float targetDepth, List<int> processedConnectedPaths)
         {
-            var path = assetPaths[pathIndex];
+            var path = assetPaths[pathIndex].ShallowClone();
             if (path.m_netInfo == null || !path.m_netInfo.IsUndergroundMetroStationTrack())
             {
                 return;
@@ -119,8 +119,8 @@ namespace MetroOverhaul
 					buildingAI.m_spawnPoints = new DepotAI.SpawnPoint[] { };
 					break;
 				case 1:
-					buildingAI.m_spawnPosition = spawnPoints[0];
-					buildingAI.m_spawnTarget = spawnPoints[0];
+					buildingAI.m_spawnPosition = spawnPoints[0].ShallowClone();
+					buildingAI.m_spawnTarget = spawnPoints[0].ShallowClone();
 					buildingAI.m_spawnPoints = new[]
 					{
 						new DepotAI.SpawnPoint
@@ -153,7 +153,7 @@ namespace MetroOverhaul
             var processedConnectedPaths = new List<int>();
             for (var index = 0; index < info.m_paths.Length; index++)
             {
-                var path = info.m_paths[index];
+                var path = info.m_paths[index].ShallowClone();
                 if (!path.m_netInfo.IsUndergroundMetroStationTrack())
                 {
                     continue;
@@ -251,9 +251,9 @@ namespace MetroOverhaul
                         Next.Debug.Log($"Node changed from {moveNodes[i].x},{moveNodes[i].y}, {moveNodes[i].z} to {mergePathDict[moveNodes[i]].x},{mergePathDict[moveNodes[i]].y},{mergePathDict[moveNodes[i]].z}");
                         if (lowestHighPathIndex > -1)
                         {
-                            lowestHighPaths[lowestHighPathIndex].m_nodes[i] = mergePathDict[moveNodes[i]];
+                            lowestHighPaths[lowestHighPathIndex].m_nodes[i] = mergePathDict[moveNodes[i]].ShallowClone();
                         }
-                        moveNodes[i] = mergePathDict[moveNodes[i]];
+                        moveNodes[i] = mergePathDict[moveNodes[i]].ShallowClone();
                     }
                 }
                 if (lowestHighPaths.Contains(path))
@@ -378,7 +378,7 @@ namespace MetroOverhaul
 
         private static void ChangeStationTrackLength(IList<BuildingInfo.PathInfo> assetPaths, int pathIndex, float newLength, ICollection<int> processedConnectedPaths)
         {
-            var path = assetPaths[pathIndex];
+            var path = assetPaths[pathIndex].ShallowClone();
             if (path.m_netInfo == null || !path.m_netInfo.IsUndergroundMetroStationTrack())
             {
                 return;
@@ -433,7 +433,7 @@ namespace MetroOverhaul
                 Vector3 pivotPoint = (Vector3)pvtPnt;
                 for (var nodeIndex = 0; nodeIndex < path.m_nodes.Count(); nodeIndex++)
                 {
-                    var oldNode = path.m_nodes[nodeIndex];
+                    var oldNode = path.m_nodes[nodeIndex].ShallowClone();
                     var newNode = new Vector3
                     {
                         x = (float)(pivotPoint.x + (oldNode.x - pivotPoint.x) * Math.Cos(angle) - (oldNode.z - pivotPoint.z) * Math.Sin(angle)),
@@ -444,7 +444,7 @@ namespace MetroOverhaul
                 }
                 for (var curveIndex = 0; curveIndex < path.m_curveTargets.Count(); curveIndex++)
                 {
-                    var oldCurve = path.m_curveTargets[curveIndex];
+                    var oldCurve = path.m_curveTargets[curveIndex].ShallowClone();
                     var newCurve = new Vector3
                     {
                         x = (float)(pivotPoint.x + (oldCurve.x - pivotPoint.x) * Math.Cos(angle) - (oldCurve.z - pivotPoint.z) * Math.Sin(angle)),
@@ -459,7 +459,7 @@ namespace MetroOverhaul
         {
             for (var pathIndex = 0; pathIndex < assetPaths.Count; pathIndex++)
             {
-                var path = assetPaths[pathIndex];
+                var path = assetPaths[pathIndex].ShallowClone();
                 if (path?.m_netInfo == null || path.m_netInfo.IsUndergroundMetroStationTrack())
                 {
                     continue;

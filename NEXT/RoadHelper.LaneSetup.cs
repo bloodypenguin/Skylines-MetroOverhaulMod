@@ -100,7 +100,7 @@ namespace MetroOverhaul.NEXT
 
             for (var i = 0; i < nbLanes; i++)
             {
-                var l = vehicleLanes[i];
+                var l = vehicleLanes[i].ShallowClone();
 
                 var isTurningLane =
                    config.CenterLane == CenterLaneType.TurningLane &&
@@ -211,7 +211,7 @@ namespace MetroOverhaul.NEXT
             // Bus stops configs
             for (int i = 0; i < vehicleLanes.Length; i++)
             {
-                var l = vehicleLanes[i];
+                var l = vehicleLanes[i].ShallowClone();
 
                 if ((version == NetInfoVersion.Ground || version == NetInfoVersion.GroundGrass || version == NetInfoVersion.GroundTrees) && config.HasBusStop)
                 {
@@ -300,7 +300,7 @@ namespace MetroOverhaul.NEXT
             var laneProps = lane.m_laneProps.Clone();
             for (var i = 0; i < laneProps.m_props.Length; i++)
             {
-                var prop = laneProps.m_props[i];
+                var prop = laneProps.m_props[i].ShallowClone();
                 if (prop.m_position.x != 0)
                 {
                     if (prop.m_prop.name.ToLower().Contains("sign")

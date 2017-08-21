@@ -23,7 +23,7 @@ namespace MetroOverhaul.NEXT.Extensions
                 s_newClasses[newName] = newClass;
             }
 
-            return s_newClasses[newName];
+            return s_newClasses[newName].ShallowClone();
         }
     }
 }

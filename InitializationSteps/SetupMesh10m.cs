@@ -15,15 +15,16 @@ namespace MetroOverhaul.InitializationSteps
             {
                 case NetInfoVersion.Ground:
                     {
-                        var segment0 = info.m_segments[0];
-                        var segment1 = info.m_segments[1];
+                        var segment0 = info.m_segments[0].ShallowClone(); 
+                        var segment1 = info.m_segments[1].ShallowClone(); 
                         var segment2 = info.m_segments[0].ShallowClone();
-                        var node0 = info.m_nodes[0];
-                        var node1 = info.m_nodes[1];
-                        var node2 = info.m_nodes[2];
+                        var node0 = info.m_nodes[0].ShallowClone();
+                        var node1 = info.m_nodes[1].ShallowClone();
+                        var node2 = info.m_nodes[2].ShallowClone();
                         var node3 = info.m_nodes[1].ShallowClone();
                         var node4 = info.m_nodes[0].ShallowClone();
                         var node5 = info.m_nodes[2].ShallowClone();
+                        var node6 = info.m_nodes[1].ShallowClone();
                         segment0
                             .SetFlagsDefault()
                             .SetMeshes
@@ -65,22 +66,30 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                             (@"Meshes\10m\ThirdRail_LevelCrossing.obj", @"Meshes\10m\Blank.obj")
                             .SetConsistentUVs();
+                        node6
+                            .SetMeshes
+                            (@"Meshes\10m\LevelCrossing_Rail_Insert.obj")
+                            .SetConsistentUVs();
+
                         node1.m_flagsForbidden = NetNode.Flags.LevelCrossing;
                         node3.m_flagsRequired = NetNode.Flags.LevelCrossing;
                         node5.m_flagsRequired = NetNode.Flags.LevelCrossing;
+                        node6.m_material = elevatedMaterial;
+                        node6.m_lodMaterial = elevatedLODMaterial;
+                        node6.m_flagsRequired = NetNode.Flags.LevelCrossing;
                         info.m_segments = new[] { segment0, segment1, segment2 };
-                        info.m_nodes = new[] { node0, node1, node2, node3, node4, node5 };
+                        info.m_nodes = new[] { node0, node1, node2, node3, node4, node5, node6 };
                         break;
                     }
                 case NetInfoVersion.Elevated:
                     {
-                        var segment0 = info.m_segments[0];
-                        var segment1 = info.m_segments[1];
+                        var segment0 = info.m_segments[0].ShallowClone();
+                        var segment1 = info.m_segments[1].ShallowClone();
                         var segment2 = info.m_segments[0].ShallowClone();
                         var segment3 = info.m_segments[0].ShallowClone();
-                        var node0 = info.m_nodes[0];
-                        var node1 = info.m_nodes[1];
-                        var node3 = info.m_nodes[3];
+                        var node0 = info.m_nodes[0].ShallowClone();
+                        var node1 = info.m_nodes[1].ShallowClone();
+                        var node3 = info.m_nodes[3].ShallowClone();
                         var node4 = info.m_nodes[0].ShallowClone();
 
                         segment0
@@ -130,13 +139,13 @@ namespace MetroOverhaul.InitializationSteps
                     }
                 case NetInfoVersion.Bridge:
                     {
-                        var segment0 = info.m_segments[0];
-                        var segment1 = info.m_segments[1];
+                        var segment0 = info.m_segments[0].ShallowClone();
+                        var segment1 = info.m_segments[1].ShallowClone();
                         var segment2 = info.m_segments[0].ShallowClone();
                         var segment3 = info.m_segments[0].ShallowClone();
-                        var node0 = info.m_nodes[0];
-                        var node1 = info.m_nodes[1];
-                        var node3 = info.m_nodes[3];
+                        var node0 = info.m_nodes[0].ShallowClone();
+                        var node1 = info.m_nodes[1].ShallowClone();
+                        var node3 = info.m_nodes[3].ShallowClone();
                         var node4 = info.m_nodes[0].ShallowClone();
 
                         segment0
@@ -183,11 +192,11 @@ namespace MetroOverhaul.InitializationSteps
                     }
                 case NetInfoVersion.Slope:
                     {
-                        var segment0 = metroInfo.m_segments[0];
+                        var segment0 = metroInfo.m_segments[0].ShallowClone();
                         var segment1 = info.m_segments[1].ShallowClone();
                         var segment2 = info.m_segments[3].ShallowClone();
                         var segment3 = info.m_segments[1].ShallowClone();
-                        var node0 = metroInfo.m_nodes[0];
+                        var node0 = metroInfo.m_nodes[0].ShallowClone();
                         var node1 = info.m_nodes[1].ShallowClone();
                         var node2 = info.m_nodes[3].ShallowClone();
                         var node3 = info.m_nodes[1].ShallowClone();
@@ -266,11 +275,11 @@ namespace MetroOverhaul.InitializationSteps
                     }
                 case NetInfoVersion.Tunnel:
                     {
-                        var segment0 = metroInfo.m_segments[0];
+                        var segment0 = metroInfo.m_segments[0].ShallowClone();
                         var segment1 = info.m_segments[0].ShallowClone();
                         var segment2 = info.m_segments[0].ShallowClone();
                         var segment3 = info.m_segments[0].ShallowClone();
-                        var node0 = metroInfo.m_nodes[0];
+                        var node0 = metroInfo.m_nodes[0].ShallowClone();
                         var node1 = info.m_nodes[0].ShallowClone();
                         var node2 = info.m_nodes[0].ShallowClone();
                         var node3 = info.m_nodes[0].ShallowClone();
@@ -323,7 +332,7 @@ namespace MetroOverhaul.InitializationSteps
         }
 
         //mind changed segment and node indices! (after Setup10mMesh)
-        public static void Setup10mMBaresh(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo)
+        public static void Setup10mBarMesh(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo)
         {
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
             var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
@@ -420,9 +429,9 @@ namespace MetroOverhaul.InitializationSteps
             //    return;
             //}
 
-            //var segment0 = info.m_segments[0];
-            //var node0 = info.m_nodes[0];
-            //var node2 = info.m_nodes[2];
+            //var segment0 = info.m_segments[0].ShallowClone();
+            //var node0 = info.m_nodes[0].ShallowClone();
+            //var node2 = info.m_nodes[2].ShallowClone();
             //segment0.m_material = elevatedMaterial;
             //segment0.m_lodMaterial = elevatedLODMaterial;
             //node0.m_material = elevatedMaterial;
@@ -441,11 +450,11 @@ namespace MetroOverhaul.InitializationSteps
                 case NetInfoVersion.Ground:
                     {
                         var segment0 = prefab.m_segments[0].ShallowClone();
-                        var segment1 = prefab.m_segments[1];
+                        var segment1 = prefab.m_segments[1].ShallowClone();
                         var segment2 = prefab.m_segments[0].ShallowClone();
                         var node0 = prefab.m_nodes[0].ShallowClone();
-                        var node1 = prefab.m_nodes[1];
-                        var node2 = prefab.m_nodes[2];
+                        var node1 = prefab.m_nodes[1].ShallowClone();
+                        var node2 = prefab.m_nodes[2].ShallowClone();
                         var node3 = prefab.m_nodes[1].ShallowClone();
                         var node4 = prefab.m_nodes[0].ShallowClone();
 
@@ -501,10 +510,10 @@ namespace MetroOverhaul.InitializationSteps
                 case NetInfoVersion.Elevated:
                     {
                         var segment0 = prefab.m_segments[0].ShallowClone();
-                        var segment1 = prefab.m_segments[1];
+                        var segment1 = prefab.m_segments[1].ShallowClone();
                         var segment2 = prefab.m_segments[0].ShallowClone();
                         var node0 = prefab.m_nodes[0].ShallowClone();
-                        var node1 = prefab.m_nodes[1];
+                        var node1 = prefab.m_nodes[1].ShallowClone();
                         var node2 = prefab.m_nodes[0].ShallowClone();
                         segment0
                             .SetMeshes
@@ -543,11 +552,11 @@ namespace MetroOverhaul.InitializationSteps
                     }
                 case NetInfoVersion.Tunnel:
                     {
-                        var segment0 = metroStationInfo.m_segments[0];    
+                        var segment0 = metroStationInfo.m_segments[0].ShallowClone();    
                         var segment1 = metroStationInfo.m_segments[0].ShallowClone();
                         var segment2 = metroStationInfo.m_segments[0].ShallowClone();
                         var segment3 = metroStationInfo.m_segments[0].ShallowClone();
-                        var node0 = metroStationInfo.m_nodes[0];
+                        var node0 = metroStationInfo.m_nodes[0].ShallowClone();
                         var node1 = metroStationInfo.m_nodes[0].ShallowClone();
                         var node2 = metroStationInfo.m_nodes[0].ShallowClone();
                         var node3 = metroStationInfo.m_nodes[0].ShallowClone();

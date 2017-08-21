@@ -7,9 +7,9 @@ using System.Text;
 
 namespace MetroOverhaul.InitializationSteps
 {
-    partial class SetupSteelMesh
+    partial class SetupMesh
     {
-        public static void Setup14mSteelStationMesh(NetInfo prefab, NetInfoVersion version, NetInfo elevatedInfo, NetInfo metroStationInfo)
+        public static void Setup16mStationMesh(NetInfo prefab, NetInfoVersion version, NetInfo elevatedInfo, NetInfo metroStationInfo)
         {
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
             var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
@@ -18,121 +18,105 @@ namespace MetroOverhaul.InitializationSteps
             {
                 case NetInfoVersion.Ground:
                     {
-                        var segment0 = prefab.m_segments[0];
+                        var segment0 = prefab.m_segments[0].ShallowClone();
                         var segment1 = prefab.m_segments[1];
                         var segment2 = prefab.m_segments[0].ShallowClone();
-                        var node0 = prefab.m_nodes[0];
+                        var node0 = prefab.m_nodes[0].ShallowClone();
                         var node1 = prefab.m_nodes[1];
                         var node2 = prefab.m_nodes[2];
                         var node3 = prefab.m_nodes[1].ShallowClone();
                         var node4 = prefab.m_nodes[0].ShallowClone();
-                        var node5 = prefab.m_nodes[2].ShallowClone();
+
                         segment0
-                            .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\14m\Ground_Station_Pavement.obj",
-                                @"Meshes\14m\Ground_Station_Pavement_LOD.obj");
-
-                        node0
-                            .SetMeshes
-                            (@"Meshes\14m\Ground_Station_Node_Pavement.obj",
-                                @"Meshes\14m\Ground_Station_Node_Pavement_LOD.obj")
-                            .SetConsistentUVs(true);
-
+                            (@"Meshes\16m\Ground_Station_Pavement.obj",
+                                @"Meshes\10m\Ground_Pavement_LOD.obj");
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\14m\Station_Rail.obj",
-                            @"Meshes\14m\Station_Rail_LOD.obj")
+                            (@"Meshes\16m\Station_Rail.obj")
                             .SetConsistentUVs();
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\14m\Station_ThirdRail.obj", @"Meshes\10m\Blank.obj")
+                            (@"Meshes\16m\Station_ThirdRail.obj", @"Meshes\10m\Blank.obj")
                             .SetConsistentUVs();
+                        node0
+                            .SetMeshes
+                            (@"Meshes\16m\Ground_Station_Node_Pavement.obj",
+                                @"Meshes\10m\Ground_Node_Pavement_LOD.obj");
                         node1
                             .SetMeshes
-                            (@"Meshes\14m\Station_Node_Boosted_Rail.obj",
-                             @"Meshes\14m\Station_Node_Rail_LOD.obj")
+                            (@"Meshes\16m\Station_Node_Boosted_Rail.obj")
                             .SetConsistentUVs();
                         node2
                             .SetMeshes
-                            (@"Meshes\10m\LevelCrossing_Pavement.obj")
+                            (@"Meshes\10m\LevelCrossing_Pavement.obj",
+                                @"Meshes\10m\LevelCrossing_Pavement_LOD.obj")
                             .SetConsistentUVs();
                         node3
                             .SetMeshes
-                            (@"Meshes\10m\LevelCrossing_Rail.obj");
-                        node4
-                            .SetMeshes
-                            (@"Meshes\14m\Station_ThirdRail_Node.obj", @"Meshes\10m\Blank.obj")
-                            .SetConsistentUVs();
-                        node5
-                            .SetMeshes
-                            (@"Meshes\10m\ThirdRail_LevelCrossing.obj", @"Meshes\10m\Blank.obj")
-                            .SetConsistentUVs();
-                        node1.m_flagsForbidden = NetNode.Flags.LevelCrossing;
-                        node3.m_flagsRequired = NetNode.Flags.LevelCrossing;
-                        prefab.m_segments = new[] { segment0, segment1, segment2 };
-                        prefab.m_nodes = new[] { node0, node1, node2, node3, node4, node5 };
-                        break;
-                    }
-                case NetInfoVersion.Elevated:
-                    {
-                        var segment0 = prefab.m_segments[0];
-                        var segment1 = prefab.m_segments[1];
-                        var segment2 = prefab.m_segments[0].ShallowClone();
-                        var node0 = prefab.m_nodes[0];
-                        var node1 = prefab.m_nodes[1];
-                        var node2 = prefab.m_nodes[0].ShallowClone();
-                        var node3 = prefab.m_nodes[3];
-                        var node4 = prefab.m_nodes[0].ShallowClone();
-
-                        segment0
-                            .SetFlagsDefault()
-                            .SetMeshes
-                            (@"Meshes\14m\Elevated_Station_Pavement_Steel.obj",
-                                @"Meshes\14m\Elevated_Station_Pavement_Steel_LOD.obj");
-
-                        segment1
-                            .SetFlagsDefault()
-                            .SetMeshes
-                            (@"Meshes\14m\Station_Rail.obj",
-                            @"Meshes\14m\Station_Rail_LOD.obj")
-                            .SetConsistentUVs();
-                        segment2
-                            .SetFlagsDefault()
-                            .SetMeshes
-                            (@"Meshes\14m\Station_ThirdRail.obj", @"Meshes\10m\Blank.obj")
-                            .SetConsistentUVs();
-                        node0
-                            .SetMeshes
-                            (@"Meshes\14m\Elevated_Station_Node_Pavement_Steel2.obj",
-                                @"Meshes\14m\Elevated_Station_Node_Pavement_Steel_LOD.obj")
-                            .SetConsistentUVs();
-                        node1
-                            .SetMeshes
-                            (@"Meshes\14m\Station_Node_Rail.obj",
-                             @"Meshes\14m\Station_Node_Rail_LOD.obj")
-                             .SetConsistentUVs();
-                        node2
-                            .SetMeshes
-                            (@"Meshes\14m\Station_Node_Insert_Steel.obj",
-                            @"Meshes\10m\Boosted_Rail_Steel_LOD.obj")
+                            (@"Meshes\10m\LevelCrossing_Station_Rail.obj")
                             .SetConsistentUVs();
                         node4
                             .SetMeshes
-                            (@"Meshes\14m\Station_Node_ThirdRail.obj", @"Meshes\10m\Blank.obj")
+                            (@"Meshes\16m\Station_Node_ThirdRail.obj", @"Meshes\10m\Blank.obj")
                             .SetConsistentUVs();
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
-                        node2.m_material = elevatedMaterial;
                         node2.m_lodMaterial = elevatedLODMaterial;
 
-                        node2.m_directConnect = true;
+                        node1.m_flagsForbidden = NetNode.Flags.LevelCrossing;
+                        node2.m_flagsRequired = NetNode.Flags.LevelCrossing;
+                        node3.m_flagsRequired = NetNode.Flags.LevelCrossing;
+
                         prefab.m_segments = new[] { segment0, segment1, segment2 };
                         prefab.m_nodes = new[] { node0, node1, node2, node3, node4 };
+                        break;
+                    }
+                case NetInfoVersion.Elevated:
+                    {
+                        var segment0 = prefab.m_segments[0].ShallowClone();
+                        var segment1 = prefab.m_segments[1];
+                        var segment2 = prefab.m_segments[0].ShallowClone();
+                        var node0 = prefab.m_nodes[0].ShallowClone();
+                        var node1 = prefab.m_nodes[1];
+                        var node2 = prefab.m_nodes[0].ShallowClone();
+                        segment0
+                            .SetMeshes
+                            (@"Meshes\16m\Elevated_Station_Pavement.obj",
+                             @"Meshes\10m\Elevated_Station_Pavement_LOD.obj");
+                        segment1
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            (@"Meshes\16m\Station_Boosted_Rail.obj")
+                            .SetConsistentUVs();
+                        segment2
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            (@"Meshes\16m\Station_ThirdRail.obj", @"Meshes\10m\Blank.obj")
+                            .SetConsistentUVs();
+                        node0
+                            .SetMeshes
+                            (@"Meshes\16m\Elevated_Station_Node_Pavement.obj",
+                             @"Meshes\10m\Elevated_Station_Node_Pavement_LOD.obj");
+                        node1
+                            .SetMeshes
+                            (@"Meshes\16m\Station_Node_Boosted_Rail.obj")
+                            .SetConsistentUVs();
+                        node2
+                            .SetMeshes
+                            (@"Meshes\16m\Station_Node_ThirdRail.obj", @"Meshes\10m\Blank.obj")
+                            .SetConsistentUVs();
+                        segment0.m_material = elevatedMaterial;
+                        segment0.m_lodMaterial = elevatedLODMaterial;
+                        node0.m_material = elevatedMaterial;
+                        node0.m_lodMaterial = elevatedLODMaterial;
+
+                        prefab.m_segments = new[] { segment0, segment1, segment2 };
+                        prefab.m_nodes = new[] { node0, node1, node2 };
                         break;
                     }
                 case NetInfoVersion.Tunnel:
@@ -148,33 +132,31 @@ namespace MetroOverhaul.InitializationSteps
 
                         segment1
                             .SetMeshes
-                            (@"Meshes\14m\Tunnel_Station_Pavement.obj",
+                            (@"Meshes\10m\Tunnel_Station_Pavement.obj",
                                 @"Meshes\10m\Tunnel_Pavement_LOD.obj")
                                 .SetConsistentUVs();
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\14m\Station_Boosted_Rail.obj",
-                            @"Meshes\14m\Station_Rail_LOD.obj")
+                            (@"Meshes\10m\Boosted_Rail.obj")
                             .SetConsistentUVs();
                         segment3
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\14m\ThirdRail.obj", @"Meshes\10m\Blank.obj")
+                            (@"Meshes\10m\ThirdRail.obj", @"Meshes\10m\Blank.obj")
                             .SetConsistentUVs();
                         node1
                             .SetMeshes
-                            (@"Meshes\14m\Tunnel_Station_Node_Pavement.obj",
+                            (@"Meshes\10m\Tunnel_Station_Node_Pavement.obj",
                                 @"Meshes\10m\Tunnel_Node_Pavement_LOD.obj")
                                 .SetConsistentUVs();
                         node2
                             .SetMeshes
-                            (@"Meshes\14m\Station_Node_Boosted_Rail.obj",
-                             @"Meshes\14m\Station_Node_Rail_LOD.obj")
+                            (@"Meshes\10m\Elevated_Station_Node_Rail.obj")
                             .SetConsistentUVs();
                         node3
                             .SetMeshes
-                            (@"Meshes\14m\Station_Node_ThirdRail.obj", @"Meshes\10m\Blank.obj")
+                            (@"Meshes\10m\ThirdRail_Node.obj", @"Meshes\10m\Blank.obj")
                             .SetConsistentUVs();
                         segment1.m_material = elevatedMaterial;
                         segment1.m_lodMaterial = elevatedLODMaterial;

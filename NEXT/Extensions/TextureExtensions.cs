@@ -20,7 +20,7 @@ namespace MetroOverhaul.NEXT.Extensions
                 for (int x = 0; x < w; x++)
                 {
                     int idx = y * w + x;
-                    Color32 pixel = pixels[idx];
+                    Color32 pixel = pixels[idx].ShallowClone();
                     if (pixel.a == 0)
                     {
                         bool done = false;
