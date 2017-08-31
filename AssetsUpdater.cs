@@ -107,7 +107,7 @@ namespace MetroOverhaul
                     {
                         if (!OptionsWrapper<Options>.Options.metroUi)
                         {
-                            SetStationCustomizations.ModifyStation(prefab, 12, 144, 0, false);
+                            SetStationCustomizations.ModifyStation(prefab, 12, 144, 0, UI.TrackType.SidePlatform, UI.TrackType.SidePlatform);
                         }
                     }
                     SetupTunnelTracks(prefab, toVanilla);

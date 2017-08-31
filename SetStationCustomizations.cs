@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using MetroOverhaul.Extensions;
 using UnityEngine;
+using MetroOverhaul.UI;
 
 namespace MetroOverhaul
 {
@@ -21,9 +22,9 @@ namespace MetroOverhaul
         private static float GENERATED_PATH_MARKER = 0.09999f; //regular paths have snapping distance of 0.1f. This way we differentiate
         private const float TOLERANCE = 0.000001f; //equals 1/10 of difference between 0.1f and GENERATED_PATH_MARKER
 
-        public static void ModifyStation(BuildingInfo info, float targetDepth, float targetStationTrackLength, double angle, bool isIslandPlatform)
+        public static void ModifyStation(BuildingInfo info, float targetDepth, float targetStationTrackLength, double angle, TrackType trkType, TrackType prevTrkType)
         {
-            if (!info.HasUndergroundMetroTracks() || info.m_paths == null || info.m_paths.Length < 1)
+            if (!info.HasUndergroundMetroStationTracks() || info.m_paths == null || info.m_paths.Length < 1)
             {
                 return;
             }
@@ -32,10 +33,12 @@ namespace MetroOverhaul
                 return;
             }
             CleanUpPaths(info);
+
             ResizeUndergroundStationTracks(info, targetStationTrackLength);
             //if (BuildingHasPedestrianConnectionSurface(info))
             //{
             ChangeStationDepthAndRotation(info, targetDepth, angle);
+            ReconfigureStationAccess(info, trkType, prevTrkType);
             //}
             //else
             //{
@@ -50,7 +53,7 @@ namespace MetroOverhaul
             var processedConnectedPaths = new List<int>();
             for (var index = 0; index < info.m_paths.Length; index++)
             {
-                var path = info.m_paths[index].ShallowClone();
+                var path = info.m_paths[index];
                 if (!path.m_netInfo.IsUndergroundMetroStationTrack())
                 {
                     continue;
@@ -58,10 +61,64 @@ namespace MetroOverhaul
                 BendStationTrack(info.m_paths, index, targetDepth, processedConnectedPaths);
             }
         }
+        private static void ReconfigureStationAccess(BuildingInfo info, TrackType trkType, TrackType prevTrkType)
+        {
+            var singleStationGap = 16;
+            var pathList = new List<BuildingInfo.PathInfo>();
+            for (int i = 0; i < info.m_paths.Length; i++)
+            {
+                var thePath = info.m_paths[i];
+                if (thePath.m_netInfo != null && thePath.m_netInfo.IsUndergroundMetroStationTrack())
+                {
+                    if (thePath.m_nodes.Length >= 2)
+                    {
+                        if (trkType == TrackType.SingleTrack)
+                        {
+                            var newPath = thePath.ShallowClone();
+                            var xCoeff = (thePath.m_nodes.First().x - thePath.m_nodes.Last().x) / Vector3.Distance(thePath.m_nodes.First(), thePath.m_nodes.Last());
+                            var zCoeff = (thePath.m_nodes.First().z - thePath.m_nodes.Last().z) / Vector3.Distance(thePath.m_nodes.First(), thePath.m_nodes.Last());
+                            var theNodeList = new List<Vector3>();
+                            var newNodeList = new List<Vector3>();
+                            for (var j = 0; j < thePath.m_nodes.Length; j++)
+                            {
+                                theNodeList.Add(thePath.m_nodes[j]);
 
+                                newNodeList.Add(new Vector3
+                                {
+                                    x = thePath.m_nodes[j].x - singleStationGap * zCoeff,
+                                    y = thePath.m_nodes[j].y,
+                                    z = thePath.m_nodes[j].z - singleStationGap * xCoeff
+                                });
+                            }
+
+                            thePath.m_nodes = theNodeList.ToArray();
+                            newPath.m_nodes = newNodeList.ToArray();
+                            SetCurveTargets(newPath);
+                            SetCurveTargets(thePath);
+                            newPath.m_nodes = newPath.m_nodes.Reverse().ToArray();
+                            newPath.m_curveTargets = newPath.m_curveTargets.Reverse().ToArray();
+                            MarkPathGenerated(newPath);
+                            var midpoint = new Vector3()
+                            {
+                                x = (thePath.m_nodes.First().x - thePath.m_nodes.Last().x) / 2,
+                                y = (thePath.m_nodes.First().y - thePath.m_nodes.Last().y) / 2,
+                                z = (thePath.m_nodes.First().z - thePath.m_nodes.Last().z) / 2,
+                            };
+                            var pedPaths = info.m_paths.Where(p => p.m_netInfo.IsPedestrianNetwork()).Where(p=>p.m_nodes.All(n=>n.y < 0));
+
+                            var intersectPath = info.m_paths.SelectMany(p => p.m_nodes);
+                            //pathList.Add(newPath);
+                        }
+                    }
+                }
+                pathList.Add(thePath);
+            }
+            info.m_paths = pathList.ToArray();
+
+        }
         private static void BendStationTrack(BuildingInfo.PathInfo[] assetPaths, int pathIndex, float targetDepth, List<int> processedConnectedPaths)
         {
-            var path = assetPaths[pathIndex].ShallowClone();
+            var path = assetPaths[pathIndex];
             if (path.m_netInfo == null || !path.m_netInfo.IsUndergroundMetroStationTrack())
             {
                 return;
@@ -100,49 +157,49 @@ namespace MetroOverhaul
             }
         }
 
-		private static void RecalculateSpawnPoints(BuildingInfo info)
-		{
-			var buildingAI = info?.GetComponent<DepotAI>();
-			var paths = info?.m_paths;
-			if (buildingAI == null || paths == null)
-			{
-				return;
-			}
-			var spawnPoints = (from path in paths
-							   where IsVehicleStop(path)
-							   select GetMiddle(path)).Distinct().ToArray();
-			switch (spawnPoints.Length)
-			{
-				case 0:
-					buildingAI.m_spawnPosition = Vector3.zero;
-					buildingAI.m_spawnTarget = Vector3.zero;
-					buildingAI.m_spawnPoints = new DepotAI.SpawnPoint[] { };
-					break;
-				case 1:
-					buildingAI.m_spawnPosition = spawnPoints[0].ShallowClone();
-					buildingAI.m_spawnTarget = spawnPoints[0].ShallowClone();
-					buildingAI.m_spawnPoints = new[]
-					{
-						new DepotAI.SpawnPoint
-						{
-							m_position =  spawnPoints[0],
-							m_target =  spawnPoints[0]
-						}
-					};
-					break;
-				default:
-					buildingAI.m_spawnPosition = Vector3.zero;
-					buildingAI.m_spawnTarget = Vector3.zero;
-					buildingAI.m_spawnPoints = spawnPoints.Select(p => new DepotAI.SpawnPoint
-					{
-						m_position = p,
-						m_target = p
-					}).ToArray();
-					break;
-			}
-		}
+        private static void RecalculateSpawnPoints(BuildingInfo info)
+        {
+            var buildingAI = info?.GetComponent<DepotAI>();
+            var paths = info?.m_paths;
+            if (buildingAI == null || paths == null)
+            {
+                return;
+            }
+            var spawnPoints = (from path in paths
+                               where IsVehicleStop(path)
+                               select GetMiddle(path)).Distinct().ToArray();
+            switch (spawnPoints.Length)
+            {
+                case 0:
+                    buildingAI.m_spawnPosition = Vector3.zero;
+                    buildingAI.m_spawnTarget = Vector3.zero;
+                    buildingAI.m_spawnPoints = new DepotAI.SpawnPoint[] { };
+                    break;
+                case 1:
+                    buildingAI.m_spawnPosition = spawnPoints[0];
+                    buildingAI.m_spawnTarget = spawnPoints[0];
+                    buildingAI.m_spawnPoints = new[]
+                    {
+                        new DepotAI.SpawnPoint
+                        {
+                            m_position =  spawnPoints[0],
+                            m_target =  spawnPoints[0]
+                        }
+                    };
+                    break;
+                default:
+                    buildingAI.m_spawnPosition = Vector3.zero;
+                    buildingAI.m_spawnTarget = Vector3.zero;
+                    buildingAI.m_spawnPoints = spawnPoints.Select(p => new DepotAI.SpawnPoint
+                    {
+                        m_position = p,
+                        m_target = p
+                    }).ToArray();
+                    break;
+            }
+        }
 
-		private static bool IsVehicleStop(BuildingInfo.PathInfo path)
+        private static bool IsVehicleStop(BuildingInfo.PathInfo path)
         {
             return (path?.m_nodes?.Length ?? 0) > 1 && (path?.m_netInfo?.IsUndergroundMetroStationTrack() ?? false);
         }
@@ -153,7 +210,7 @@ namespace MetroOverhaul
             var processedConnectedPaths = new List<int>();
             for (var index = 0; index < info.m_paths.Length; index++)
             {
-                var path = info.m_paths[index].ShallowClone();
+                var path = info.m_paths[index];
                 if (!path.m_netInfo.IsUndergroundMetroStationTrack())
                 {
                     continue;
@@ -251,9 +308,9 @@ namespace MetroOverhaul
                         Next.Debug.Log($"Node changed from {moveNodes[i].x},{moveNodes[i].y}, {moveNodes[i].z} to {mergePathDict[moveNodes[i]].x},{mergePathDict[moveNodes[i]].y},{mergePathDict[moveNodes[i]].z}");
                         if (lowestHighPathIndex > -1)
                         {
-                            lowestHighPaths[lowestHighPathIndex].m_nodes[i] = mergePathDict[moveNodes[i]].ShallowClone();
+                            lowestHighPaths[lowestHighPathIndex].m_nodes[i] = mergePathDict[moveNodes[i]];
                         }
-                        moveNodes[i] = mergePathDict[moveNodes[i]].ShallowClone();
+                        moveNodes[i] = mergePathDict[moveNodes[i]];
                     }
                 }
                 if (lowestHighPaths.Contains(path))
@@ -378,7 +435,7 @@ namespace MetroOverhaul
 
         private static void ChangeStationTrackLength(IList<BuildingInfo.PathInfo> assetPaths, int pathIndex, float newLength, ICollection<int> processedConnectedPaths)
         {
-            var path = assetPaths[pathIndex].ShallowClone();
+            var path = assetPaths[pathIndex];
             if (path.m_netInfo == null || !path.m_netInfo.IsUndergroundMetroStationTrack())
             {
                 return;
@@ -433,7 +490,7 @@ namespace MetroOverhaul
                 Vector3 pivotPoint = (Vector3)pvtPnt;
                 for (var nodeIndex = 0; nodeIndex < path.m_nodes.Count(); nodeIndex++)
                 {
-                    var oldNode = path.m_nodes[nodeIndex].ShallowClone();
+                    var oldNode = path.m_nodes[nodeIndex];
                     var newNode = new Vector3
                     {
                         x = (float)(pivotPoint.x + (oldNode.x - pivotPoint.x) * Math.Cos(angle) - (oldNode.z - pivotPoint.z) * Math.Sin(angle)),
@@ -444,7 +501,7 @@ namespace MetroOverhaul
                 }
                 for (var curveIndex = 0; curveIndex < path.m_curveTargets.Count(); curveIndex++)
                 {
-                    var oldCurve = path.m_curveTargets[curveIndex].ShallowClone();
+                    var oldCurve = path.m_curveTargets[curveIndex];
                     var newCurve = new Vector3
                     {
                         x = (float)(pivotPoint.x + (oldCurve.x - pivotPoint.x) * Math.Cos(angle) - (oldCurve.z - pivotPoint.z) * Math.Sin(angle)),
@@ -459,7 +516,7 @@ namespace MetroOverhaul
         {
             for (var pathIndex = 0; pathIndex < assetPaths.Count; pathIndex++)
             {
-                var path = assetPaths[pathIndex].ShallowClone();
+                var path = assetPaths[pathIndex];
                 if (path?.m_netInfo == null || path.m_netInfo.IsUndergroundMetroStationTrack())
                 {
                     continue;

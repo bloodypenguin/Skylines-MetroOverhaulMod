@@ -106,7 +106,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
                         node0
                             .SetMeshes
-                            (@"Meshes\16m\Elevated_Station_Node_Pavement_Steel2.obj",
+                            (@"Meshes\16m\Elevated_Station_Node_Pavement_Steel.obj",
                                 @"Meshes\16m\Elevated_Station_Node_Pavement_Steel_LOD.obj")
                             .SetConsistentUVs();
                         node1

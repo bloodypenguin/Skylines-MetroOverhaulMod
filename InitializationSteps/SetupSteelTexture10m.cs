@@ -124,7 +124,7 @@ namespace MetroOverhaul.InitializationSteps
                                             $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__AlphaMap_LOD.png",
                                             $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__XYSMap_LOD.png"));
                             }
-                            else if (segment.m_mesh.name.Contains("Pavement") || (segment.m_mesh.name.Contains("Fence")))
+                            else if (segment.m_mesh.name.Contains("Pavement") || (segment.m_mesh.name.Contains("Fence")) || (segment.m_mesh.name.Contains("Bar")))
                             {
                                 segment.SetTextures(
                                     new TextureSet
@@ -159,7 +159,7 @@ namespace MetroOverhaul.InitializationSteps
                         }
                         foreach (var node in info.m_nodes)
                         {
-                            if (node.m_mesh.name.Contains("Pavement") || (node.m_mesh.name.Contains("Fence")))
+                            if (node.m_mesh.name.Contains("Pavement") || (node.m_mesh.name.Contains("Fence")) || (node.m_mesh.name.Contains("Bar")))
                             {
                                 if (node.m_mesh.name.Contains("Elevated"))
                                 {

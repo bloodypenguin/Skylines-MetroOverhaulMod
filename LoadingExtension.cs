@@ -125,7 +125,11 @@ namespace MetroOverhaul
                 SimulationManager.instance.AddAction(DespawnVanillaMetro);
                 var gameObject = new GameObject("MetroOverhaulUISetup");
                 gameObject.AddComponent<UpgradeSetup>();
+#if DEBUG
+                gameObject.AddComponent<StyleSelectionStationUI>();
+#else
                 gameObject.AddComponent<StyleSelectionUI>();
+#endif
 
                 if (OptionsWrapper<Options>.Options.metroUi)
                 {
@@ -138,7 +142,11 @@ namespace MetroOverhaul
             }
             else if (mode == LoadMode.NewAsset || mode == LoadMode.LoadAsset)
             {
-
+                var gameObject = new GameObject("MetroOverhaulUISetup");
+                gameObject.AddComponent<StyleSelectionStationUI>();
+#if DEBUG
+                UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizerUI));
+#endif
             }
         }
 
