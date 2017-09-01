@@ -104,9 +104,23 @@ namespace MetroOverhaul
                                 y = (thePath.m_nodes.First().y - thePath.m_nodes.Last().y) / 2,
                                 z = (thePath.m_nodes.First().z - thePath.m_nodes.Last().z) / 2,
                             };
-                            var pedPaths = info.m_paths.Where(p => p.m_netInfo.IsPedestrianNetwork()).Where(p=>p.m_nodes.All(n=>n.y < 0));
+                            var pedNodes = info.m_paths.Where(p => p.m_netInfo.IsPedestrianNetwork()).Where(p => p.m_nodes.All(n => n.y < 0)).SelectMany(p => p.m_nodes);
+                            var closestDistance = float.MaxValue;
+                            Vector3 closestNode = Vector3.zero;
+                            foreach (var node in pedNodes)
+                            {
+                                if (closestDistance > Vector3.Distance(node, midpoint))
+                                {
+                                    closestNode = node;
+                                }
+                            }
+                            var closestPath = info.m_paths.Where(p => p.m_nodes.Any(n => n == closestNode)).FirstOrDefault();
+                            var xOffset = closestNode.x - thePath.m_nodes[0].x;
+                            var yOffset = closestNode.y - thePath.m_nodes[0].y;
+                            var zOffset = closestNode.z - thePath.m_nodes[0].z;
 
-                            var intersectPath = info.m_paths.SelectMany(p => p.m_nodes);
+                                closestPath.m_nodes[0] -= thePath.m_nodes[0];
+                            closestPath.m_nodes[1] -= thePath.m_nodes[0];
                             //pathList.Add(newPath);
                         }
                     }
