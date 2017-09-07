@@ -69,7 +69,11 @@ namespace MetroOverhaul.UI
                     {
                         this.showWindow = true;
                         this.SetNetToolPrefab();
-                    }
+                        //var currentTool = ToolsModifierControl.GetCurrentTool<NetTool>();
+                        //var paramArgs = new List<object>();
+                        //paramArgs.Add(currentTool.m_prefab);
+                        //var hi = (float)typeof(NetTool).GetMethod("GetElevation").Invoke(currentTool, paramArgs.ToArray());
+                        }
                     else
                         this.showWindow = false;
                 }

@@ -145,7 +145,7 @@ namespace MetroOverhaul.InitializationSteps
                 }
                 if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)
                 {
-                    if (Math.Sign(theLanes[i].m_position) > 0)
+                    if (Math.Sign(theLanes[i].m_position) > 0 || version == NetInfoVersion.Tunnel)
                     {
                         theLanes[i].m_stopOffset = 3;
                         theLanes[i].m_position = 0.0001f;

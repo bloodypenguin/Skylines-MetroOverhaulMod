@@ -44,6 +44,7 @@ namespace MetroOverhaul.UI
                 BuildingInfo finalInfo = null;
                 if (toolInfo != null)
                 {
+                    RestoreStationTrackStyles(toolInfo);
                     if (toolInfo.HasUndergroundMetroStationTracks())
                     {
                         finalInfo = toolInfo;
@@ -544,13 +545,28 @@ namespace MetroOverhaul.UI
         private UISprite m_UseSingleTrackCheckBoxClicker = null;
         private UISprite m_UseSidePlatformCheckBoxClicker = null;
 
+        private void RestoreStationTrackStyles(BuildingInfo info)
+        {
+            for (var i = 0; i < info.m_paths.Length; i++)
+            {
+                var path = info.m_paths[i];
+                if (path?.m_netInfo?.name != null && path.m_netInfo.IsUndergroundMetroStationTrack())
+                {
+                    if (m_PrevTrackType != TrackType.SidePlatform)
+                    {
+                        path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel");
+                    }
+                }
+            }
+        }
+
         private void TunnelStationTrackToggleStyles(BuildingInfo info)
         {
             if (info?.m_paths == null)
             {
                 return;
             }
-            for (var i = 0; i < info.m_paths.Length;i++)
+            for (var i = 0; i < info.m_paths.Length; i++)
             {
                 var path = info.m_paths[i];
                 if (path?.m_netInfo?.name == null || !path.m_netInfo.IsUndergroundMetroStationTrack())
@@ -625,13 +641,14 @@ namespace MetroOverhaul.UI
             m_currentBuilding = null;
             isVisible = false;
             m_activated = false;
+
         }
 
         private void DoStationMechanics()
         {
             var angleDelta = Math.PI / 180 * (m_setAngle - m_oldAngle);
             m_oldAngle = m_setAngle;
-            SetStationCustomizations.ModifyStation(m_currentBuilding, m_setDepth, m_setLength, angleDelta, m_TrackType, m_PrevTrackType);
+            SetStationCustomizations.ModifyStation(m_currentBuilding, m_setDepth, m_setLength, angleDelta);
         }
     }
     public enum TrackType

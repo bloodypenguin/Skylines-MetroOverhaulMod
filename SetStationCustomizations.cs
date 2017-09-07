@@ -22,7 +22,7 @@ namespace MetroOverhaul
         private static float GENERATED_PATH_MARKER = 0.09999f; //regular paths have snapping distance of 0.1f. This way we differentiate
         private const float TOLERANCE = 0.000001f; //equals 1/10 of difference between 0.1f and GENERATED_PATH_MARKER
 
-        public static void ModifyStation(BuildingInfo info, float targetDepth, float targetStationTrackLength, double angle, TrackType trkType, TrackType prevTrkType)
+        public static void ModifyStation(BuildingInfo info, float targetDepth, float targetStationTrackLength, double angle)
         {
             if (!info.HasUndergroundMetroStationTracks() || info.m_paths == null || info.m_paths.Length < 1)
             {
@@ -37,8 +37,8 @@ namespace MetroOverhaul
             ResizeUndergroundStationTracks(info, targetStationTrackLength);
             //if (BuildingHasPedestrianConnectionSurface(info))
             //{
-            ChangeStationDepthAndRotation(info, targetDepth, angle);
-            ReconfigureStationAccess(info, trkType, prevTrkType);
+            var pivotPoint = ChangeStationDepthAndRotation(info, targetDepth, angle);
+            ReconfigureStationAccess(info, pivotPoint);
             //}
             //else
             //{
@@ -61,215 +61,271 @@ namespace MetroOverhaul
                 BendStationTrack(info.m_paths, index, targetDepth, processedConnectedPaths);
             }
         }
-        private static void ReconfigureStationAccess(BuildingInfo info, TrackType trkType, TrackType prevTrkType)
+        private static void ReconfigureStationAccess(BuildingInfo info, Vector3 pivotPoint)
         {
-            var singleStationGap = 16;
             var pathList = new List<BuildingInfo.PathInfo>();
+            var pathDict = new Dictionary<Vector3, List<Vector3>>();
+            var singleGap = 16;
             for (int i = 0; i < info.m_paths.Length; i++)
             {
-                var trackPath = info.m_paths[i];
+
+                var thePath = info.m_paths[i];
+                if (thePath.m_netInfo == null || thePath.m_nodes == null || thePath.m_nodes.Count() < 2)
+                    continue;
+                if (thePath.m_netInfo.IsUndergroundSmallStationTrack())
+                {
+                    var xCoeff = -(thePath.m_nodes.First().x - thePath.m_nodes.Last().x) / Vector3.Distance(thePath.m_nodes.First(), thePath.m_nodes.Last());
+                    var zCoeff = (thePath.m_nodes.First().z - thePath.m_nodes.Last().z) / Vector3.Distance(thePath.m_nodes.First(), thePath.m_nodes.Last());
+                    Debug.Log("WAYPOINT 1");
+                    Debug.Log($"x={thePath.m_nodes.First().x - thePath.m_nodes.Last().x} and xcoeff={xCoeff}");
+                    Debug.Log($"z={thePath.m_nodes.First().z - thePath.m_nodes.Last().z} and zcoeff={zCoeff}");
+                    Debug.Log($"distance={Vector3.Distance(thePath.m_nodes.First(), thePath.m_nodes.Last())}");
+                    var multiplier = 1;
+                    var nearestTrackNode = info.m_paths.Where(p => p.m_netInfo.IsUndergroundMetroStationTrack()).SelectMany(p => p.m_nodes).Where(n=>n.y == thePath.m_nodes.First().y).OrderBy(n => Vector3.Distance(n, thePath.m_nodes.First())).FirstOrDefault();
+                    if(Vector3.Distance(nearestTrackNode, thePath.m_nodes.First()) <= 2 * singleGap)
+                    {
+                        multiplier = -1;
+                    }
+                    var aNewPath = thePath.ShallowClone();
+                    var nodeList = new List<Vector3>();
+                    nodeList.Add(new Vector3()
+                    {
+                        x = thePath.m_nodes.First().x + multiplier * zCoeff * singleGap,
+                        y = thePath.m_nodes.First().y,
+                        z = thePath.m_nodes.First().z + multiplier * xCoeff * singleGap
+                    });
+                    nodeList.Add(new Vector3()
+                    {
+                        x = thePath.m_nodes.Last().x + multiplier * zCoeff * singleGap,
+                        y = thePath.m_nodes.Last().y,
+                        z = thePath.m_nodes.Last().z + multiplier * xCoeff * singleGap
+                    });
+                    aNewPath.m_nodes = nodeList.ToArray();
+                    MarkPathGenerated(aNewPath);
+                    pathList.Add(aNewPath);
+                }
+                pathList.Add(thePath);
+            }
+            var specialNetInfo = PrefabCollection<NetInfo>.FindLoaded("Pedestrian Connection Surface");
+            specialNetInfo.m_maxSlope = 100;
+            specialNetInfo.m_maxTurnAngle = 180;
+            specialNetInfo.m_maxTurnAngleCos = -1;
+            for (int i = 0; i < pathList.Count; i++)
+            {
+                var newPath = pathList.FirstOrDefault(p => p.m_nodes.Any(n => n == pivotPoint)).ShallowClone();
+                var trackPath = pathList[i];
                 if (trackPath.m_netInfo != null && trackPath.m_netInfo.IsUndergroundMetroStationTrack())
                 {
-                    if (trackPath.m_nodes.Length >= 2)
+                    if (newPath != null)
                     {
-                        var midpoint = new Vector3()
-                        {
-                            x = (trackPath.m_nodes.First().x - trackPath.m_nodes.Last().x) / 2,
-                            y = (trackPath.m_nodes.First().y - trackPath.m_nodes.Last().y) / 2,
-                            z = (trackPath.m_nodes.First().z - trackPath.m_nodes.Last().z) / 2,
-                        };
-                        var pedNodes = info.m_paths.Where(p => p.m_netInfo.IsPedestrianNetwork()).Where(p => p.m_nodes.All(n => n.y < 0)).SelectMany(p => p.m_nodes);
-                        var closestDistance = float.MaxValue;
-                        Vector3 closestNode = Vector3.zero;
-                        foreach (var node in pedNodes)
-                        {
-                            if (closestDistance > Vector3.Distance(node, midpoint))
-                            {
-                                closestNode = node;
-                            }
-                        }
-                        var closestPath = info.m_paths.Where(p => p.m_nodes.Any(n => n == closestNode)).FirstOrDefault();
-                        var xCoeff = (trackPath.m_nodes.First().x - trackPath.m_nodes.Last().x) / Vector3.Distance(trackPath.m_nodes.First(), trackPath.m_nodes.Last());
+                        var xCoeff = -(trackPath.m_nodes.First().x - trackPath.m_nodes.Last().x) / Vector3.Distance(trackPath.m_nodes.First(), trackPath.m_nodes.Last());
                         var zCoeff = (trackPath.m_nodes.First().z - trackPath.m_nodes.Last().z) / Vector3.Distance(trackPath.m_nodes.First(), trackPath.m_nodes.Last());
 
-                        switch (trkType)
+                        newPath.m_netInfo.m_maxSlope = 100;
+                        newPath.m_netInfo.m_maxTurnAngle = 180;
+                        newPath.m_netInfo.m_maxTurnAngleCos = -1;
+                        if (trackPath.m_netInfo.IsUndergroundIslandPlatformStationTrack())
                         {
-                            case TrackType.SidePlatform:
-                                {
-                                    pathList.AddRange(CreateSingleTrackPedPaths(info, trackPath, closestPath, xCoeff, zCoeff, singleStationGap, true,trkType));
-                                }
-                                break;
-                            case TrackType.IslandPlatform:
-                                {
-                                    pathList.AddRange(CreateSingleTrackPedPaths(info, trackPath, closestPath, xCoeff, zCoeff, singleStationGap, true, trkType));
-                                }
-                                break;
-                            case TrackType.SingleTrack:
-                                {
-
-                                }
-                                break;
-                        }
-                        if (trkType == TrackType.SingleTrack)
-                        {
-                            var newTrackPath = trackPath.ShallowClone();
-
-                            var theNodeList = new List<Vector3>();
-                            var newNodeList = new List<Vector3>();
-                            for (var j = 0; j < trackPath.m_nodes.Length; j++)
+                            var stationLength = Vector3.Distance(trackPath.m_nodes.First(), trackPath.m_nodes.Last());
+                            var newNodes = new List<Vector3>();
+                            newNodes.Add(new Vector3()
                             {
-                                theNodeList.Add(trackPath.m_nodes[j]);
+                                x = trackPath.m_nodes.Last().x,
+                                y = trackPath.m_nodes.Last().y + 8,
+                                z = trackPath.m_nodes.Last().z
+                            });
+                            newNodes.Add(new Vector3()
+                            {
+                                x = newNodes.First().x + (5.5f * stationLength / 32) * -xCoeff,
+                                y = trackPath.m_nodes.Last().y,
+                                z = newNodes.First().z + (5.5f * stationLength / 32) * zCoeff,
+                            });
+                            newPath.m_nodes = newNodes.ToArray();
+                            newPath.m_netInfo = specialNetInfo;
+                            if (!pathDict.ContainsKey(trackPath.m_nodes.Last()))
+                                pathDict.Add(trackPath.m_nodes.Last(), new List<Vector3>() { newNodes.First() });
+                            MarkPathGenerated(newPath);
+                            pathList.Add(newPath);
+                        }
+                        else if (trackPath.m_netInfo.IsUndergroundSmallStationTrack())
+                        {
+                            var stationLength = Vector3.Distance(trackPath.m_nodes.First(), trackPath.m_nodes.Last());
+                            var newNodes = new List<Vector3>();
+                            newNodes.Add(new Vector3()
+                            {
+                                x = trackPath.m_nodes.Last().x + 5 * zCoeff,
+                                y = trackPath.m_nodes.Last().y + 8,
+                                z = trackPath.m_nodes.Last().z - 5 * -xCoeff
+                            });
+                            newNodes.Add(new Vector3()
+                            {
+                                x = newNodes.First().x + (5 * stationLength / 32) * -xCoeff,
+                                y = trackPath.m_nodes.Last().y,
+                                z = newNodes.First().z + (5 * stationLength / 32) * zCoeff,
+                            });
+                            newPath.m_nodes = newNodes.ToArray();
+                            newPath.m_netInfo = specialNetInfo;
+                            if (!pathDict.ContainsKey(trackPath.m_nodes.Last()))
+                                pathDict.Add(trackPath.m_nodes.Last(), new List<Vector3>() { newNodes.First() });
+                            MarkPathGenerated(newPath);
+                            pathList.Add(newPath);
+                        }
+                        else if (trackPath.m_netInfo.IsUndergroundSidePlatformMetroStationTrack())
+                        {
+                            var stationLength = Vector3.Distance(trackPath.m_nodes.First(), trackPath.m_nodes.Last());
+                            var newNodes = new List<Vector3>();
+                            newNodes.Add(new Vector3()
+                            {
+                                x = trackPath.m_nodes.Last().x - 7 * zCoeff,
+                                y = trackPath.m_nodes.Last().y + 8,
+                                z = trackPath.m_nodes.Last().z - 7 * xCoeff
+                            });
+                            newNodes.Add(new Vector3()
+                            {
+                                x = newNodes.First().x + (5.5f * stationLength / 32) * -xCoeff,
+                                y = trackPath.m_nodes.Last().y,
+                                z = newNodes.First().z + (5.5f * stationLength / 32) * zCoeff,
+                            });
+                            newPath.m_nodes = newNodes.ToArray();
+                            newPath.m_netInfo = specialNetInfo;
+                            MarkPathGenerated(newPath);
+                            pathList.Add(newPath);
 
-                                newNodeList.Add(new Vector3
-                                {
-                                    x = trackPath.m_nodes[j].x - singleStationGap * zCoeff,
-                                    y = trackPath.m_nodes[j].y,
-                                    z = trackPath.m_nodes[j].z - singleStationGap * xCoeff
-                                });
-                            }
-
-                            trackPath.m_nodes = theNodeList.ToArray();
-                            newTrackPath.m_nodes = newNodeList.ToArray();
-                            SetCurveTargets(newTrackPath);
-                            SetCurveTargets(trackPath);
-                            newTrackPath.m_nodes = newTrackPath.m_nodes.Reverse().ToArray();
-                            newTrackPath.m_curveTargets = newTrackPath.m_curveTargets.Reverse().ToArray();
-                            MarkPathGenerated(newTrackPath);
-                            pathList.Add(newTrackPath);
-
-                            var newClosestPath = closestPath.ShallowClone();
-                            var closestPathNodeList = new List<Vector3>();
-                            closestPathNodeList.Add(closestPath.m_nodes[0]);
-                            closestPathNodeList.Add(closestPath.m_nodes[1]);
-                            newClosestPath.m_nodes = closestPathNodeList.ToArray();
-                            MarkPathGenerated(newClosestPath);
-                            pathList.AddRange(CreateSingleTrackPedPaths(info, trackPath, closestPath, xCoeff, zCoeff, singleStationGap,true, trkType));
-                            pathList.AddRange(CreateSingleTrackPedPaths(info, newTrackPath, newClosestPath, xCoeff, zCoeff, singleStationGap,false, trkType));
+                            var branchVectorConnect = new Vector3()
+                            {
+                                x = trackPath.m_nodes.Last().x + 7 * zCoeff,
+                                y = trackPath.m_nodes.Last().y + 8,
+                                z = trackPath.m_nodes.Last().z + 7 * xCoeff
+                            };
+                            var branchVectorStair = new Vector3()
+                            {
+                                x = branchVectorConnect.x + (5 * stationLength / 32) * -xCoeff,
+                                y = trackPath.m_nodes.Last().y,
+                                z = branchVectorConnect.z + (5 * stationLength / 32) * zCoeff,
+                            };
+                            var branchPathConnect = ChainPath(newPath, branchVectorConnect, 0);
+                            var branchPathStair = ChainPath(branchPathConnect, branchVectorStair);
+                            pathList.Add(branchPathConnect);
+                            pathList.Add(branchPathStair);
+                            var connectNodeList = new List<Vector3>() { newNodes.First(), branchVectorConnect };
+                            if (!pathDict.ContainsKey(trackPath.m_nodes.Last()))
+                                pathDict.Add(trackPath.m_nodes.Last(), connectNodeList);
                         }
                     }
                 }
-                pathList.Add(trackPath);
             }
-            info.m_paths = pathList.ToArray();
+            var currentVector = Vector3.zero;
+            BuildingInfo.PathInfo currentPath = null;
+            var stationCount = pathList.Where(p => p.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack()).Count();
+            var pivotPath = pathList.FirstOrDefault(p => p.m_nodes.Any(n => n == pivotPoint));
+            var nearestTrack = pathDict.Keys.OrderBy(n => currentVector.x - n.x + 100 * (pivotPoint.y - n.y) + currentVector.z - n.z).FirstOrDefault();
+            var nearestPed = pathDict[nearestTrack].OrderBy(n => Vector3.Distance(pivotPoint, n)).FirstOrDefault();
+            pathList.Add(ChainPath(pivotPath, nearestPed, Array.IndexOf(pivotPath.m_nodes, pivotPoint)));
+            for (var i = 0; i < stationCount; i++)
+            {
+                if (pathDict.Keys.Count > 0)
+                {
+                    if (i == 0)
+                    {
+                        var furthestTrackVector = pathDict.Keys.OrderBy(n => Vector3.Distance(pivotPoint, n)).LastOrDefault();
+                        var furthestPedVector = pathDict[furthestTrackVector].OrderBy(n => Vector3.Distance(pivotPoint, n)).LastOrDefault();
+                        var otherPedVector = furthestPedVector;
+                        if(pathDict[furthestTrackVector].Count > 1) 
+                        otherPedVector = pathDict[furthestTrackVector].OrderBy(n => Vector3.Distance(pivotPoint, n)).FirstOrDefault();
+                        currentPath = pathList.FirstOrDefault(p => p.m_nodes.Any(n => n == otherPedVector));
+                        if (pathDict.ContainsKey(furthestTrackVector))
+                        {
+                            pathDict.Remove(furthestTrackVector);
+                        }
+                        currentVector = otherPedVector;
+                    }
+                    else
+                    {
+                        var nearestTrackVector = pathDict.Keys.OrderBy(n => currentVector.x - n.x + 100 * (currentVector.y - n.y) + currentVector.z - n.z).FirstOrDefault();
+                        var nearestPedVector = pathDict[nearestTrackVector].OrderBy(n => Vector3.Distance(currentVector, n)).FirstOrDefault();
+                        var otherPedVector = nearestPedVector;
+                        if (pathDict[nearestTrackVector].Count > 1) 
+                            otherPedVector = pathDict[nearestTrackVector].OrderBy(n => Vector3.Distance(currentVector, n)).LastOrDefault();
+                        currentPath = pathList.FirstOrDefault(p => p.m_nodes.Any(n => n == currentVector));
+                        pathList.Add(ChainPath(currentPath, nearestPedVector, Array.IndexOf(currentPath.m_nodes, currentVector)));
+                        if (pathDict.ContainsKey(nearestTrackVector))
+                        {
+                            pathDict.Remove(nearestTrackVector);
+                        }
+                        currentVector = otherPedVector;
+                    }
+                }
+            }
 
+            var tinyPaths = pathList.Where(p => Vector3.Distance(p.m_nodes.First(), p.m_nodes.Last()) <= 4).ToList();
+            var mergePathDict = new Dictionary<Vector3, Vector3>();
+            if (tinyPaths.Count > 0)
+            {
+                foreach (var path in tinyPaths)
+                {
+                    var average = (path.m_nodes.First() + path.m_nodes.Last()) / 2;
+
+                    if (!(mergePathDict.ContainsKey(path.m_nodes.First())))
+                    {
+                        mergePathDict.Add(path.m_nodes.First(), average);
+                    }
+                    else if (!mergePathDict.ContainsKey(path.m_nodes.Last()))
+                    {
+                        mergePathDict.Add(path.m_nodes.Last(), mergePathDict[path.m_nodes.First()]);
+                    }
+                    if (!(mergePathDict.ContainsKey(path.m_nodes.Last())))
+                    {
+                        mergePathDict.Add(path.m_nodes.Last(), average);
+                    }
+                    else if (!mergePathDict.ContainsKey(path.m_nodes.First()))
+                    {
+                        mergePathDict.Add(path.m_nodes.First(), mergePathDict[path.m_nodes.Last()]);
+                    }
+                }
+            }
+            var finalPathList = new List<BuildingInfo.PathInfo>();
+            for (var i = 0; i < pathList.Count(); i++)
+            {
+                var path = pathList[i];
+                if (tinyPaths.Contains(path))
+                {
+                    continue;
+                }
+                var nodeList = new List<Vector3>();
+                for (var j = 0; j < path.m_nodes.Count(); j++)
+                {
+                    var newNode = path.m_nodes[j];
+                    if (mergePathDict.ContainsKey(path.m_nodes[j]))
+                    {
+                        newNode = mergePathDict[path.m_nodes[j]];
+                    }
+                    nodeList.Add(newNode);
+                }
+                path.m_nodes = nodeList.ToArray();
+                SetCurveTargets(path);
+                finalPathList.Add(path);
+            }
+            info.m_paths = finalPathList.ToArray();
         }
-        private static IEnumerable<BuildingInfo.PathInfo> CreateSingleTrackPedPaths(BuildingInfo info, BuildingInfo.PathInfo theTrackPath, BuildingInfo.PathInfo closestPath, float xCoeff, float zCoeff, int singleStationGap, bool forOriginalTrack, TrackType trkType)
+
+        private static BuildingInfo.PathInfo ChainPath(BuildingInfo.PathInfo startPath, Vector3 endNode, int startNodeIndex = -1, NetInfo info = null)
         {
-            var multiplier = forOriginalTrack ? 1 : -1;
-            var multiplier2 = forOriginalTrack ? 1 : 2;
-            var multiplier3 = 1;
-            int entranceOffset = 0;
-            switch (trkType)
+
+            var newNodes = new List<Vector3>();
+            var newPath = startPath.ShallowClone();
+            if (startNodeIndex == -1 || startNodeIndex >= startPath.m_nodes.Count())
             {
-                case TrackType.IslandPlatform:
-                    entranceOffset = 0;
-                    break;
-                case TrackType.SidePlatform:
-                    entranceOffset = 7;
-                    multiplier3 = -1;
-                    break;
-                case TrackType.SingleTrack:
-                    entranceOffset = 5;
-                    break;
+                startNodeIndex = startPath.m_nodes.Count() - 1;
             }
-            var pathList = new List<BuildingInfo.PathInfo>();
-            closestPath.m_nodes[1] = new Vector3()
-            {
-                x = theTrackPath.m_nodes[1].x + multiplier2 * singleStationGap * zCoeff,
-                y = theTrackPath.m_nodes[1].y + 8,
-                z = theTrackPath.m_nodes[1].z + multiplier2 * singleStationGap * xCoeff
-            };
-            SetCurveTargets(closestPath);
-            if (!forOriginalTrack)
-            {
-                pathList.Add(closestPath);
-            }
+            var startNode = startPath.m_nodes[startNodeIndex];
+            newNodes.Add(startNode);
+            newNodes.Add(endNode);
 
-            var newPedCrossPath = closestPath.ShallowClone();
-            var pedCrossNodeList = new List<Vector3>();
-            pedCrossNodeList.Add(new Vector3()
-            {
-                x = closestPath.m_nodes[1].x,
-                y = closestPath.m_nodes[1].y,
-                z = closestPath.m_nodes[1].z
-            });
-            pedCrossNodeList.Add(new Vector3()
-            {
-                x = theTrackPath.m_nodes[1].x -  multiplier * multiplier3 * entranceOffset * zCoeff,
-                y = theTrackPath.m_nodes[1].y + 8,
-                z = theTrackPath.m_nodes[1].z - multiplier * multiplier3 * entranceOffset * xCoeff
-            });
-            newPedCrossPath.m_nodes = pedCrossNodeList.ToArray();
-            SetCurveTargets(newPedCrossPath);
-            MarkPathGenerated(newPedCrossPath);
-
-            pathList.Add(newPedCrossPath);
-
-            var newPedStairsPath = closestPath.ShallowClone();
-            var pedStairsNodeList = new List<Vector3>();
-            pedStairsNodeList.Add(new Vector3()
-            {
-                x = newPedCrossPath.m_nodes[1].x,
-                y = newPedCrossPath.m_nodes[1].y,
-                z = newPedCrossPath.m_nodes[1].z
-            });
-            var stationLength = Vector3.Distance(theTrackPath.m_nodes.First(), theTrackPath.m_nodes.Last());
-            pedStairsNodeList.Add(new Vector3()
-            {
-                x = newPedCrossPath.m_nodes[1].x + (multiplier * 5 * stationLength / 32) * xCoeff,
-                y = theTrackPath.m_nodes[1].y,
-                z = newPedCrossPath.m_nodes[1].z + (multiplier * 5 * stationLength / 32) * zCoeff,
-            });
-            newPedStairsPath.m_nodes = pedStairsNodeList.ToArray();
-            SetCurveTargets(newPedStairsPath);
-            MarkPathGenerated(newPedStairsPath);
-
-            if (trkType == TrackType.SidePlatform)
-            {
-                multiplier3 = 1;
-                var newPedCrossPath2 = newPedCrossPath.ShallowClone();
-                var pedCrossNodeList2 = new List<Vector3>();
-                pedCrossNodeList2.Add(new Vector3()
-                {
-                    x = newPedCrossPath2.m_nodes[1].x,
-                    y = newPedCrossPath2.m_nodes[1].y,
-                    z = newPedCrossPath2.m_nodes[1].z
-                });
-                pedCrossNodeList2.Add(new Vector3()
-                {
-                    x = theTrackPath.m_nodes[1].x - multiplier3 * entranceOffset * zCoeff,
-                    y = theTrackPath.m_nodes[1].y + 8,
-                    z = theTrackPath.m_nodes[1].z - multiplier3 * entranceOffset * xCoeff
-                });
-                newPedCrossPath2.m_nodes = pedCrossNodeList2.ToArray();
-                SetCurveTargets(newPedCrossPath2);
-                MarkPathGenerated(newPedCrossPath2);
-
-                pathList.Add(newPedCrossPath2);
-
-                var newPedStairsPath2 = closestPath.ShallowClone();
-                var pedStairsNodeList2 = new List<Vector3>();
-                pedStairsNodeList2.Add(new Vector3()
-                {
-                    x = newPedCrossPath2.m_nodes[1].x,
-                    y = newPedCrossPath2.m_nodes[1].y,
-                    z = newPedCrossPath2.m_nodes[1].z
-                });
-                pedStairsNodeList2.Add(new Vector3()
-                {
-                    x = newPedCrossPath2.m_nodes[1].x + (multiplier * 5 * stationLength / 32) * xCoeff,
-                    y = theTrackPath.m_nodes[1].y,
-                    z = newPedCrossPath2.m_nodes[1].z + (multiplier * 5 * stationLength / 32) * zCoeff,
-                });
-                newPedStairsPath2.m_nodes = pedStairsNodeList2.ToArray();
-                SetCurveTargets(newPedStairsPath2);
-                MarkPathGenerated(newPedStairsPath2);
-
-                pathList.Add(newPedStairsPath2);
-            }
-            pathList.Add(newPedStairsPath);
-            return pathList;
+            newPath.m_nodes = newNodes.ToArray();
+            MarkPathGenerated(newPath);
+            return newPath;
         }
+
         private static void BendStationTrack(BuildingInfo.PathInfo[] assetPaths, int pathIndex, float targetDepth, List<int> processedConnectedPaths)
         {
             var path = assetPaths[pathIndex];
@@ -375,8 +431,76 @@ namespace MetroOverhaul
                 }
             }
         }
+        private static Vector3 ChangeStationDepthAndRotation(BuildingInfo info, float targetDepth, double angle)
+        {
+            var pathList = new List<BuildingInfo.PathInfo>();
+            var highestStation = float.MinValue;
+            var totalNode = Vector3.zero;
+            foreach (var path in info.m_paths)
+            {
 
-        private static void ChangeStationDepthAndRotation(BuildingInfo info, float targetDepth, double angle)
+                if (path.m_netInfo?.m_netAI == null || !path.m_netInfo.IsUndergroundMetroStationTrack())
+                {
+                    continue;
+                }
+                var highest = path.m_nodes.OrderByDescending(n => n.y).FirstOrDefault().y;
+                highestStation = Math.Max(highest, highestStation);
+            }
+            var offsetDepthDist = targetDepth + highestStation;
+            var lowestHighPaths = info.m_paths.Where(p => p.m_nodes.Any(n => n.y >= 0) && p.m_nodes.Any(nd => nd.y < 0)).ToList();
+            if (lowestHighPaths.Count == 0)
+            {
+                lowestHighPaths.Add(info.m_paths.Where(p => p.m_netInfo.name == "Pedestrian Connection Surface" || p.m_netInfo.name == "Pedestrian Connection Inside")
+                    .OrderByDescending(p => p.m_nodes[0].y)
+                    .FirstOrDefault());
+            }
+            if (lowestHighPaths.Count > 0)
+            {
+                for (var i = 0; i < lowestHighPaths.Count(); i++)
+                {
+                    var path = lowestHighPaths[i];
+                    var currCoords = path.m_nodes.OrderBy(n => n.z).LastOrDefault();
+                    totalNode += currCoords;
+                }
+                totalNode /= lowestHighPaths.Count();
+
+                for (var i = 0; i < lowestHighPaths.Count; i++)
+                {
+                    var path = lowestHighPaths[i];
+                    var currCoords = path.m_nodes.OrderBy(n => n.z).LastOrDefault();
+                    var newPath = path.ShallowClone();
+                    newPath.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Pedestrian Connection Underground");
+                    var newNodes = new List<Vector3>();
+                    newNodes.Add(currCoords);
+                    newNodes.Add(totalNode);
+                    newPath.m_nodes = newNodes.ToArray();
+                    SetCurveTargets(newPath);
+                    MarkPathGenerated(newPath);
+                    pathList.Add(newPath);
+
+                }
+                for (var i = 0; i < info.m_paths.Count();i++)
+                {
+                    var path = info.m_paths[i];
+                    if (AllNodesUnderGround(path))
+                    {
+                        if (!lowestHighPaths.Contains(path))
+                        {
+                            if (!path.m_netInfo.IsUndergroundMetroStationTrack())
+                            {
+                                continue;
+                            }
+                            ChangePathRotation(path, totalNode, angle);
+                            DipPath(path, offsetDepthDist);
+                        }
+                    }
+                    pathList.Add(path);
+                }
+                info.m_paths = pathList.ToArray();
+            }
+            return totalNode;
+        }
+        private static void ChangeStationDepthAndRotationx(BuildingInfo info, float targetDepth, double angle)
         {
             var highestLow = float.MinValue;
             var highestStation = float.MinValue;
@@ -401,7 +525,6 @@ namespace MetroOverhaul
                     .FirstOrDefault());
             }
 
-            //TODO(earalov): What if author used "Pedestrian Connection" instead of "Pedestrian Connection Surface"?
             Vector3? pivotPoint = null;
             if (lowestHighPaths.Count > 0)
             {
@@ -467,14 +590,18 @@ namespace MetroOverhaul
                         moveNodes[i] = mergePathDict[moveNodes[i]];
                     }
                 }
-                if (lowestHighPaths.Contains(path))
+
+                if (AllNodesUnderGround(path))
                 {
-                    updatedPaths.AddRange(GenerateSteps(path, stepDepthDist, pivotPoint, angle));
-                }
-                else if (AllNodesUnderGround(path))
-                {
-                    ChangePathRotation(path, pivotPoint, angle);
-                    DipPath(path, offsetDepthDist);
+                    if (path.m_netInfo.IsUndergroundMetroStationTrack())
+                    {
+                        ChangePathRotation(path, pivotPoint, angle);
+                        DipPath(path, offsetDepthDist);
+                    }
+                    else if (!lowestHighPaths.Contains(path))
+                    {
+                        continue;
+                    }
                 }
                 updatedPaths.Add(path);
             }
