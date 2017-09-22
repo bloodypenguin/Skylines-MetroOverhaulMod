@@ -1,8 +1,8 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 27.04.2017 00:13:24
+# File Created: 09.09.2017 15:10:23
 
 #
-# object start
+# object Ground_Rail_Start
 #
 
 v  -0.9997 0.0994 -27.7401
@@ -815,7 +815,7 @@ vt 0.3174 0.0005 0.0000
 vt 0.3174 1.0045 0.0000
 # 254 texture coords
 
-g start
+g Ground_Rail_Start
 s off
 f 1/1/1 2/2/1 3/2/1 
 f 3/2/1 4/1/1 1/1/1 
@@ -1697,5 +1697,5 @@ f 501/253/1 502/254/1 528/254/1
 f 528/254/1 527/253/1 501/253/1 
 f 502/1/1 265/2/1 268/2/1 
 f 268/2/1 528/1/1 502/1/1 
-# 852 faces
+# 0 polygons - 852 triangles
 

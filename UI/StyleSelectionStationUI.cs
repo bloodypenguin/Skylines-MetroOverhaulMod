@@ -26,7 +26,7 @@ namespace MetroOverhaul.UI
             }
             else
             {
-                this.window.height = 220;
+                this.window.height = 290;
             }
         }
     }

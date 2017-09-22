@@ -26,7 +26,12 @@ namespace MetroOverhaul.InitializationSteps
                         var node2 = prefab.m_nodes[2].ShallowClone();
                         var node3 = prefab.m_nodes[1].ShallowClone();
                         var node4 = prefab.m_nodes[0].ShallowClone();
-
+                        var nodeList = new List<NetInfo.Node>();
+                        nodeList.Add(node0);
+                        nodeList.Add(node1);
+                        nodeList.Add(node2);
+                        nodeList.Add(node3);
+                        nodeList.Add(node4);
                         segment0
                             .SetMeshes
                             (@"Meshes\16m\Ground_Station_Pavement.obj",
@@ -86,6 +91,11 @@ namespace MetroOverhaul.InitializationSteps
                         var node0 = prefab.m_nodes[0].ShallowClone();
                         var node1 = prefab.m_nodes[1].ShallowClone();
                         var node2 = prefab.m_nodes[0].ShallowClone();
+                        var nodeList = new List<NetInfo.Node>();
+                        nodeList.Add(node0);
+                        nodeList.Add(node1);
+                        nodeList.Add(node2);
+
                         segment0
                             .SetMeshes
                             (@"Meshes\16m\Elevated_Station_Pavement.obj",
@@ -134,6 +144,10 @@ namespace MetroOverhaul.InitializationSteps
                         var node1 = metroStationInfo.m_nodes[0].ShallowClone();
                         var node2 = metroStationInfo.m_nodes[0].ShallowClone();
                         var node3 = metroStationInfo.m_nodes[0].ShallowClone();
+                        var nodeList = new List<NetInfo.Node>();
+                        nodeList.Add(node0);
+                        nodeList.Add(node1);
+                        nodeList.Add(node2);
 
                         segment1
                             .SetMeshes

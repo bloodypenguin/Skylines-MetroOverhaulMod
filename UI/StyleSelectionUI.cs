@@ -14,6 +14,7 @@ namespace MetroOverhaul.UI
         public int style;
         public int stationType;
         public int trackType;
+        public int trackDir;
         public bool fence;
         public bool station;
         public bool island;
@@ -22,17 +23,37 @@ namespace MetroOverhaul.UI
 
         private NetInfo concretePrefab;
         private NetInfo concretePrefabNoBar;
-        private NetInfo concreteStationPrefab;
-        private NetInfo concreteStationIslandPrefab;
+
+        private NetInfo concreteTwoLaneOneWayPrefab;
+        private NetInfo concreteTwoLaneOneWayPrefabNoBar;
+
         private NetInfo concreteSmallPrefab;
         private NetInfo concreteSmallPrefabNoBar;
+
+        private NetInfo concreteSmallTwoWayPrefab;
+        private NetInfo concreteSmallTwoWayPrefabNoBar;
+
+
+        private NetInfo concreteStationPrefab;
+        private NetInfo concreteStationIslandPrefab;
         private NetInfo concreteStationSmallPrefab;
+
+
         private NetInfo steelPrefab;
         private NetInfo steelPrefabNoBar;
-        private NetInfo steelStationPrefab;
-        private NetInfo steelStationIslandPrefab;
+
+        private NetInfo steelTwoLaneOneWayPrefab;
+        private NetInfo steelTwoLaneOneWayPrefabNoBar;
+
         private NetInfo steelSmallPrefab;
         private NetInfo steelSmallPrefabNoBar;
+
+        private NetInfo steelSmallTwoWayPrefab;
+        private NetInfo steelSmallTwoWayPrefabNoBar;
+
+
+        private NetInfo steelStationPrefab;
+        private NetInfo steelStationIslandPrefab;
         private NetInfo steelStationSmallPrefab;
 
         public StyleSelectionUI()
@@ -44,17 +65,35 @@ namespace MetroOverhaul.UI
         {
             concretePrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground");
             concretePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground NoBar");
-            concreteStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground");
-            concreteStationIslandPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Island");
+
+            concreteTwoLaneOneWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Two-Lane One-Way");
+            concreteTwoLaneOneWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Two-Lane One-Way NoBar");
+
             concreteSmallPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small");
             concreteSmallPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small NoBar");
+
+            concreteSmallTwoWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small Two-Way");
+            concreteSmallTwoWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small Two-Way NoBar");
+
+            concreteStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground");
+            concreteStationIslandPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Island");
             concreteStationSmallPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Small");
+
+
             steelPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground");
             steelPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground NoBar");
-            steelStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground");
-            steelStationIslandPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Island");
+
+            steelTwoLaneOneWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Two-Lane One-Way");
+            steelTwoLaneOneWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Two-Lane One-Way NoBar");
+
             steelSmallPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small");
             steelSmallPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small NoBar");
+
+            steelSmallTwoWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small Two-Way");
+            steelSmallTwoWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small Two-Way NoBar");
+
+            steelStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground");
+            steelStationIslandPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Island");
             steelStationSmallPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Small");
         }
 
@@ -67,13 +106,14 @@ namespace MetroOverhaul.UI
                     binfo = null;
                     if (this.IsMetroTrack(ToolsModifierControl.GetCurrentTool<NetTool>().m_prefab))
                     {
+                        Debug.Log($"Getting {ToolsModifierControl.GetCurrentTool<NetTool>().m_prefab}");
                         this.showWindow = true;
                         this.SetNetToolPrefab();
                         //var currentTool = ToolsModifierControl.GetCurrentTool<NetTool>();
                         //var paramArgs = new List<object>();
                         //paramArgs.Add(currentTool.m_prefab);
                         //var hi = (float)typeof(NetTool).GetMethod("GetElevation").Invoke(currentTool, paramArgs.ToArray());
-                        }
+                    }
                     else
                         this.showWindow = false;
                 }
@@ -127,7 +167,7 @@ namespace MetroOverhaul.UI
             }
             else
             {
-                this.window.height = 134;
+                this.window.height = 200;
             }
         }
 
@@ -170,16 +210,21 @@ namespace MetroOverhaul.UI
                 trackList.Add("2L Track");
                 trackList.Add("1L Track");
 
+                var dirList = new List<string>();
+                dirList.Add("2 Way");
+                dirList.Add("1 Way");
+
                 var stationList = new List<string>();
                 stationList.Add("Side Platform");
                 stationList.Add("Island Platform");
 
                 trackType = GUI.Toolbar(new Rect(5f, 65f, 290f, 32f), trackType, trackList.ToArray());
-                this.fence = binfo == null && showFenceOption && GUI.Toggle(new Rect(5f, 100f, 140f, 30f), this.fence, "Fenced track");
-                station = binfo == null && GUI.Toggle(new Rect(5f, 120f, 140f, 30f), station, "Station track");
+                trackDir = GUI.Toolbar(new Rect(5f, 112f, 290f, 32f), trackDir, dirList.ToArray());
+                this.fence = binfo == null && showFenceOption && GUI.Toggle(new Rect(5f, 159f, 140f, 30f), this.fence, "Fenced track");
+                station = binfo == null && GUI.Toggle(new Rect(5f, 204f, 140f, 30f), station, "Station track");
                 if (binfo == null)
                 {
-                    stationType = GUI.Toolbar(new Rect(5f, 170f, 290f, 32f), this.stationType, stationList.ToArray());
+                    stationType = GUI.Toolbar(new Rect(5f, 249f, 290f, 32f), this.stationType, stationList.ToArray());
                 }
                 if (GUI.changed)
                 {
@@ -235,7 +280,9 @@ namespace MetroOverhaul.UI
         {
             return IsSubversion(info, concretePrefab) || IsSubversion(info, concretePrefabNoBar) || IsSubversion(info, concreteSmallPrefab) || IsSubversion(info, concreteSmallPrefabNoBar) ||
                    IsSubversion(info, steelPrefab) || IsSubversion(info, steelPrefabNoBar) || IsSubversion(info, steelSmallPrefab) || IsSubversion(info, steelSmallPrefabNoBar) ||
+                   IsSubversion(info, concreteTwoLaneOneWayPrefab) || IsSubversion(info, concreteTwoLaneOneWayPrefabNoBar) || IsSubversion(info, concreteSmallTwoWayPrefab) || IsSubversion(info, concreteSmallTwoWayPrefabNoBar) ||
                    IsSubversion(info, concreteStationPrefab) || IsSubversion(info, concreteStationIslandPrefab) || IsSubversion(info, concreteStationSmallPrefab) ||
+                   IsSubversion(info, steelTwoLaneOneWayPrefab) || IsSubversion(info, steelTwoLaneOneWayPrefabNoBar) || IsSubversion(info, steelSmallTwoWayPrefab) || IsSubversion(info, steelSmallTwoWayPrefabNoBar) ||
                    IsSubversion(info, steelStationPrefab) || IsSubversion(info, steelStationIslandPrefab) || IsSubversion(info, steelStationSmallPrefab);
         }
         private void SetBuildingToolPrefab()
@@ -304,18 +351,35 @@ namespace MetroOverhaul.UI
                         }
                         else
                         {
-                            prefab = fence ? concretePrefab : concretePrefabNoBar;
+                            if (trackDir == 0)
+                            {
+                                prefab = fence ? concretePrefab : concretePrefabNoBar;
+                            }
+                            else
+                            {
+                                prefab = fence ? concreteTwoLaneOneWayPrefab : concreteTwoLaneOneWayPrefabNoBar;
+                            }
                         }
                     }
                     else
                     {
                         if (station)
                         {
-                            prefab = concreteStationSmallPrefab;
+                            if (stationType == 0)
+                            {
+prefab = concreteStationSmallPrefab;
+                            }
                         }
                         else
                         {
-                            prefab = fence ? concreteSmallPrefab : concreteSmallPrefabNoBar;
+                            if (trackDir == 0)
+                            {
+                                prefab = fence ? concreteSmallTwoWayPrefab : concreteSmallTwoWayPrefabNoBar;
+                            }
+                            else
+                            {
+                                prefab = fence ? concreteSmallPrefab : concreteSmallPrefabNoBar;
+                            }
                         }
                     }
 
@@ -336,7 +400,15 @@ namespace MetroOverhaul.UI
                         }
                         else
                         {
-                            prefab = fence ? steelPrefab : steelPrefabNoBar;
+                            if (trackDir == 0)
+                            {
+                                prefab = fence ? steelPrefab : steelPrefabNoBar;
+                            }
+                            else
+                            {
+                                prefab = fence ? steelTwoLaneOneWayPrefab : steelTwoLaneOneWayPrefabNoBar;
+                            }
+                            
                         }
                     }
                     else
@@ -347,7 +419,14 @@ namespace MetroOverhaul.UI
                         }
                         else
                         {
-                            prefab = fence ? steelSmallPrefab : steelSmallPrefabNoBar;
+                            if (trackDir == 0)
+                            {
+                                prefab = fence ? steelSmallTwoWayPrefab : steelSmallTwoWayPrefabNoBar;
+                            }
+                            else
+                            {
+                                prefab = fence ? steelSmallPrefab : steelSmallPrefabNoBar;
+                            }
                         }
                     }
 

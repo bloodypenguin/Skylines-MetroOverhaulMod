@@ -72,7 +72,6 @@ namespace MetroOverhaul
                 UnityEngine.Debug.LogException(e);
             }
 
-
             try
             {
                 CreateFullPrefab(
@@ -94,6 +93,65 @@ namespace MetroOverhaul
                             LinkToNonGroundVersions, null,
                             NetInfoVersion.Slope | NetInfoVersion.Tunnel)
                     , prefabName => prefabName + " NoBar"
+                    );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Exception happened when setting up nobar concrete tracks");
+                UnityEngine.Debug.LogException(e);
+            }
+
+            try
+            {
+                CreateFullPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupTrackProps).
+                        Chain(CustomizationSteps.CommonCustomizationTwoLaneOneWay).
+                        Chain(CustomizationSteps.CommonConcreteCustomization).
+                        Chain(CustomizationSteps.SetStandardTrackWidths).
+                        Chain(SetupMesh.Setup10mMesh, elevatedInfo, metroInfo).
+                        Chain(SetupMesh.Setup10mBarMesh, elevatedInfo).
+                        Chain(SetupTexture.Setup10mTexture).
+                        Chain(
+                            (info, version) =>
+                            {
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                            }),
+                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge,
+                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+                            LinkToNonGroundVersions, null,
+                            NetInfoVersion.Slope | NetInfoVersion.Tunnel)
+                    , prefabName => prefabName + " Two-Lane One-Way"
+                    );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Exception happened when setting up nobar concrete tracks");
+                UnityEngine.Debug.LogException(e);
+            }
+
+            try
+            {
+                CreateFullPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupTrackProps).
+                        Chain(CustomizationSteps.CommonCustomizationTwoLaneOneWay).
+                        Chain(CustomizationSteps.CommonConcreteCustomization).
+                        Chain(CustomizationSteps.SetStandardTrackWidths).
+                        Chain(SetupMesh.Setup10mMesh, elevatedInfo, metroInfo).
+                        Chain(SetupTexture.Setup10mTexture).
+                        Chain(
+                            (info, version) =>
+                            {
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                            }),
+                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge,
+                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+                            LinkToNonGroundVersions, null,
+                            NetInfoVersion.Slope | NetInfoVersion.Tunnel)
+                    , prefabName => prefabName + " Two-Lane One-Way NoBar"
                     );
             }
             catch (Exception e)
@@ -151,6 +209,63 @@ namespace MetroOverhaul
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null, NetInfoVersion.None)
                     , prefabName => prefabName + " Small NoBar"
+                    );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Exception happened when setting up nobar concrete tracks");
+                UnityEngine.Debug.LogException(e);
+            }
+
+            try
+            {
+                CreateFullPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupTrackProps).
+                        Chain(CustomizationSteps.CommonCustomizationSmall).
+                        Chain(CustomizationSteps.CommonConcreteCustomization).
+                        Chain(CustomizationSteps.SetSmallTrackWidths).
+                        Chain(SetupMesh.Setup6mMesh).
+                        Chain(SetupMesh.Setup6mMeshBar).
+                        Chain(SetupTexture.Setup6mTexture).
+                        Chain(
+                            (info, version) =>
+                            {
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                            }),
+                   NetInfoVersion.All,
+                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                    , prefabName => prefabName + " Small Two-Way"
+                    );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Exception happened when setting up nobar concrete tracks");
+                UnityEngine.Debug.LogException(e);
+            }
+
+            try
+            {
+                CreateFullPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupTrackProps).
+                        Chain(CustomizationSteps.CommonCustomizationSmall).
+                        Chain(CustomizationSteps.CommonConcreteCustomization).
+                        Chain(CustomizationSteps.SetSmallTrackWidths).
+                        Chain(SetupMesh.Setup6mMesh).
+                        Chain(SetupTexture.Setup6mTexture).
+                        Chain(
+                            (info, version) =>
+                            {
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                            }),
+                   NetInfoVersion.All,
+                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                    , prefabName => prefabName + " Small Two-Way NoBar"
                     );
             }
             catch (Exception e)
@@ -247,13 +362,13 @@ namespace MetroOverhaul
                             {
                                 LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
                             }),
-                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge,
-                    //TODO(earalov): replace wuth NetInfoVersion.All when tunnel/bridge/slope are ready
-                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>()
-                        . //TODO(earalov): replace wuth null when tunnel/bridge/slope are ready
+                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null,
-                            NetInfoVersion.Slope | NetInfoVersion.Tunnel)
+                            LinkToNonGroundVersions,
+                            null,
+                            //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
+                            NetInfoVersion.None)
                     , prefabName => "Steel " + prefabName
                     );
             }
@@ -279,19 +394,211 @@ namespace MetroOverhaul
                             {
                                 LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
                             }),
-                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge,
+                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions,
                             null,
                             //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
-                            NetInfoVersion.Slope | NetInfoVersion.Tunnel)
+                            NetInfoVersion.None)
                     , prefabName => "Steel " + prefabName + " NoBar"
                     );
             }
             catch (Exception e)
             {
                 UnityEngine.Debug.LogError("Exception happened when setting up nobar steel tracks");
+                UnityEngine.Debug.LogException(e);
+            }
+
+            try
+            {
+                CreateFullPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupTrackProps).
+                        Chain(CustomizationSteps.CommonCustomizationTwoLaneOneWay).
+                        Chain(CustomizationSteps.CommonSteelCustomization).
+                        Chain(CustomizationSteps.SetStandardTrackWidths).
+                        Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, metroInfo).
+                        Chain(SetupSteelMesh.Setup10mSteelBarMesh, elevatedInfo).
+                        Chain(SetupSteelTexture.Setup10mSteelTexture).
+                        Chain(
+                            (info, version) =>
+                            {
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
+                            }),
+                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+                            LinkToNonGroundVersions,
+                            null,
+                            //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
+                            NetInfoVersion.None)
+                    , prefabName => "Steel " + prefabName + " Two-Lane One-Way"
+                    );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Exception happened when setting up nobar steel tracks");
+                UnityEngine.Debug.LogException(e);
+            }
+
+            try
+            {
+                CreateFullPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupTrackProps).
+                        Chain(CustomizationSteps.CommonCustomizationTwoLaneOneWay).
+                        Chain(CustomizationSteps.CommonSteelCustomization).
+                        Chain(CustomizationSteps.SetStandardTrackWidths).
+                        Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, metroInfo).
+                        Chain(SetupSteelMesh.Setup10mSteelNoBarMesh, elevatedInfo, metroInfo).
+                        Chain(SetupSteelTexture.Setup10mSteelTexture).
+                        Chain(
+                            (info, version) =>
+                            {
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
+                            }),
+                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+                            LinkToNonGroundVersions,
+                            null,
+                            //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
+                            NetInfoVersion.None)
+                    , prefabName => "Steel " + prefabName + " Two-Lane One-Way NoBar"
+                    );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Exception happened when setting up nobar steel tracks");
+                UnityEngine.Debug.LogException(e);
+            }
+
+            try
+            {
+                CreateFullPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupTrackProps).
+                        Chain(CustomizationSteps.CommonCustomizationSmall).
+                        Chain(CustomizationSteps.CommonSteelCustomization).
+                        Chain(CustomizationSteps.SetSmallTrackWidths).
+                        Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo, trainTrackInfo).
+                        Chain(SetupSteelMesh.Setup6mSteelMeshBar, elevatedInfo).
+                        Chain(SetupSteelTexture.Setup6mSteelTexture).
+                        Chain(
+                            (info, version) =>
+                            {
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                            }),
+                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+                            LinkToNonGroundVersions,
+                            null,
+                            //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
+                            NetInfoVersion.None)
+                    , prefabName => "Steel " + prefabName + " Small"
+                    );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Exception happened when setting up steel small tracks");
+                UnityEngine.Debug.LogException(e);
+            }
+
+            try
+            {
+                CreateFullPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupTrackProps).
+                        Chain(CustomizationSteps.CommonCustomizationSmall).
+                        Chain(CustomizationSteps.CommonSteelCustomization).
+                        Chain(CustomizationSteps.SetSmallTrackWidths).
+                        Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo, trainTrackInfo).
+                        Chain(SetupSteelMesh.Setup6mSteelMeshNoBar, elevatedInfo, trainTrackInfo).
+                        Chain(SetupSteelTexture.Setup6mSteelTexture).
+                        Chain(
+                            (info, version) =>
+                            {
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                            }),
+                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+                            LinkToNonGroundVersions,
+                            null,
+                            //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
+                            NetInfoVersion.None)
+                    , prefabName => "Steel " + prefabName + " Small NoBar"
+                    );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Exception happened when setting up steel small tracks");
+                UnityEngine.Debug.LogException(e);
+            }
+            try
+            {
+                CreateFullPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupTrackProps).
+                        Chain(CustomizationSteps.CommonCustomizationSmall).
+                        Chain(CustomizationSteps.CommonSteelCustomization).
+                        Chain(CustomizationSteps.SetSmallTrackWidths).
+                        Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo, trainTrackInfo).
+                        Chain(SetupSteelMesh.Setup6mSteelMeshBar, elevatedInfo).
+                        Chain(SetupSteelTexture.Setup6mSteelTexture).
+                        Chain(
+                            (info, version) =>
+                            {
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                            }),
+                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+                            LinkToNonGroundVersions,
+                            null,
+                            //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
+                            NetInfoVersion.None)
+                    , prefabName => "Steel " + prefabName + " Small Two-Way"
+                    );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Exception happened when setting up steel small tracks");
+                UnityEngine.Debug.LogException(e);
+            }
+
+            try
+            {
+                CreateFullPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupTrackProps).
+                        Chain(CustomizationSteps.CommonCustomizationSmall).
+                        Chain(CustomizationSteps.CommonSteelCustomization).
+                        Chain(CustomizationSteps.SetSmallTrackWidths).
+                        Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo, trainTrackInfo).
+                        Chain(SetupSteelMesh.Setup6mSteelMeshNoBar, elevatedInfo, trainTrackInfo).
+                        Chain(SetupSteelTexture.Setup6mSteelTexture).
+                        Chain(
+                            (info, version) =>
+                            {
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                            }),
+                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+                            LinkToNonGroundVersions,
+                            null,
+                            //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
+                            NetInfoVersion.None)
+                    , prefabName => "Steel " + prefabName + " Small Two-Way NoBar"
+                    );
+            }
+
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Exception happened when setting up steel small nobar tracks");
                 UnityEngine.Debug.LogException(e);
             }
 
@@ -384,64 +691,6 @@ namespace MetroOverhaul
             catch (Exception e)
             {
                 UnityEngine.Debug.LogError("Exception happened when setting up small steel station tracks");
-                UnityEngine.Debug.LogException(e);
-            }
-
-            try
-            {
-                CreateFullPrefab(
-                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                        Chain(CustomizationSteps.SetupTrackProps).
-                        Chain(CustomizationSteps.CommonCustomizationSmall).
-                        Chain(CustomizationSteps.CommonSteelCustomization).
-                        Chain(CustomizationSteps.SetSmallTrackWidths).
-                        Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo, trainTrackInfo).
-                        Chain(SetupSteelMesh.Setup6mSteelMeshBar, elevatedInfo).
-                        Chain(SetupSteelTexture.Setup6mSteelTexture).
-                        Chain(
-                            (info, version) =>
-                            {
-                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
-                            }),
-                   NetInfoVersion.All,
-                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
-                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.Slope | NetInfoVersion.Tunnel)
-                    , prefabName => "Steel " + prefabName + " Small"
-                    );
-            }
-            catch (Exception e)
-            {
-                UnityEngine.Debug.LogError("Exception happened when setting up steel small tracks");
-                UnityEngine.Debug.LogException(e);
-            }
-
-            try
-            {
-                CreateFullPrefab(
-                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                        Chain(CustomizationSteps.SetupTrackProps).
-                        Chain(CustomizationSteps.CommonCustomizationSmall).
-                        Chain(CustomizationSteps.CommonSteelCustomization).
-                        Chain(CustomizationSteps.SetSmallTrackWidths).
-                        Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo, trainTrackInfo).
-                        Chain(SetupSteelMesh.Setup6mSteelMeshNoBar, elevatedInfo, trainTrackInfo).
-                        Chain(SetupSteelTexture.Setup6mSteelTexture).
-                        Chain(
-                            (info, version) =>
-                            {
-                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
-                            }),
-                   NetInfoVersion.All,
-                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
-                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.Slope | NetInfoVersion.Tunnel)
-                    , prefabName => "Steel " + prefabName + " Small NoBar"
-                    );
-            }
-            catch (Exception e)
-            {
-                UnityEngine.Debug.LogError("Exception happened when setting up steel small nobar tracks");
                 UnityEngine.Debug.LogException(e);
             }
         }
@@ -603,6 +852,15 @@ namespace MetroOverhaul
                 GameObject.DestroyImmediate(originalAi);
                 var ai = prefab.gameObject.AddComponent<TrainTrackBridgeAIMetro>();
                 ai.m_canModify = canModify;
+                ai.m_noiseAccumulation = noiseAccumulation;
+                ai.m_noiseRadius = noiseRadius;
+                ai.m_info = prefab;
+                prefab.m_netAI = ai;
+            }
+            else
+            {
+                GameObject.DestroyImmediate(originalAi);
+                var ai = prefab.gameObject.AddComponent<TrainTrackAIMetro>();
                 ai.m_noiseAccumulation = noiseAccumulation;
                 ai.m_noiseRadius = noiseRadius;
                 ai.m_info = prefab;

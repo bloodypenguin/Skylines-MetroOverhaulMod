@@ -1,22 +1,25 @@
 ﻿using MetroOverhaul.NEXT;
 using MetroOverhaul.NEXT.Extensions;
+using Next;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace MetroOverhaul.InitializationSteps
 {
     public static partial class SetupMesh
     {
-        public static void Setup10mMesh(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo,
-            NetInfo metroInfo)
+        public static void Setup10mMesh(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo, NetInfo metroInfo)
         {
+            var isOneWay = info.name.Contains("One-Way");
+            Debug.Log(info.name + "IsOneWay " + isOneWay);
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
             var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
             switch (version)
             {
                 case NetInfoVersion.Ground:
                     {
-                        var segment0 = info.m_segments[0].ShallowClone(); 
-                        var segment1 = info.m_segments[1].ShallowClone(); 
+                        var segment0 = info.m_segments[0].ShallowClone();
+                        var segment1 = info.m_segments[1].ShallowClone();
                         var segment2 = info.m_segments[0].ShallowClone();
                         var node0 = info.m_nodes[0].ShallowClone();
                         var node1 = info.m_nodes[1].ShallowClone();
@@ -25,6 +28,14 @@ namespace MetroOverhaul.InitializationSteps
                         var node4 = info.m_nodes[0].ShallowClone();
                         var node5 = info.m_nodes[2].ShallowClone();
                         var node6 = info.m_nodes[1].ShallowClone();
+                        var nodeList = new List<NetInfo.Node>();
+                        nodeList.Add(node0);
+                        nodeList.Add(node1);
+                        nodeList.Add(node2);
+                        nodeList.Add(node3);
+                        nodeList.Add(node4);
+                        nodeList.Add(node5);
+                        nodeList.Add(node6);
                         segment0
                             .SetFlagsDefault()
                             .SetMeshes
@@ -77,8 +88,14 @@ namespace MetroOverhaul.InitializationSteps
                         node6.m_material = elevatedMaterial;
                         node6.m_lodMaterial = elevatedLODMaterial;
                         node6.m_flagsRequired = NetNode.Flags.LevelCrossing;
+                        if (isOneWay)
+                        {
+                            nodeList.AddRange(GenerateLevelCrossing(info));
+                            nodeList.AddRange(GenerateSplitTracks(info, version));
+                        }
+
                         info.m_segments = new[] { segment0, segment1, segment2 };
-                        info.m_nodes = new[] { node0, node1, node2, node3, node4, node5, node6 };
+                        info.m_nodes = nodeList.ToArray();
                         break;
                     }
                 case NetInfoVersion.Elevated:
@@ -91,6 +108,13 @@ namespace MetroOverhaul.InitializationSteps
                         var node1 = info.m_nodes[1].ShallowClone();
                         var node3 = info.m_nodes[3].ShallowClone();
                         var node4 = info.m_nodes[0].ShallowClone();
+                        var node5 = info.m_nodes[0].ShallowClone();
+                        var nodeList = new List<NetInfo.Node>();
+                        nodeList.Add(node0);
+                        nodeList.Add(node1);
+                        nodeList.Add(node3);
+                        nodeList.Add(node4);
+                        nodeList.Add(node5);
 
                         segment0
                             .SetFlagsDefault()
@@ -114,6 +138,7 @@ namespace MetroOverhaul.InitializationSteps
                             (@"Meshes\10m\Elevated_RailGuards.obj", @"Meshes\10m\Blank.obj")
                             .SetConsistentUVs();
                         node0
+                            .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
                             .SetMeshes
                             (@"Meshes\10m\Elevated_Node_Pavement.obj",
                                 @"Meshes\10m\Elevated_Node_Pavement_LOD.obj")
@@ -126,15 +151,29 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                             (@"Meshes\10m\ThirdRail_Node.obj", @"Meshes\10m\Blank.obj")
                             .SetConsistentUVs();
+                        node5
+                            .SetFlags(NetNode.Flags.Transition, NetNode.Flags.None)
+                            .SetMeshes
+                            (@"Meshes\10m\Elevated_Node_Pavement_Trans.obj",
+                                @"Meshes\10m\Elevated_Node_Pavement_LOD.obj")
+                            .SetConsistentUVs();
 
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         segment3.m_material = elevatedMaterial;
                         segment3.m_lodMaterial = elevatedLODMaterial;
+
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
-                        info.m_segments = new[] { segment0, segment1, segment2,segment3 };
-                        info.m_nodes = new[] { node0, node1, node3, node4 };
+                        node5.m_material = elevatedMaterial;
+                        node5.m_lodMaterial = elevatedLODMaterial;
+                        if (isOneWay)
+                        {
+                            nodeList.AddRange(GenerateLevelCrossing(info));
+                            nodeList.AddRange(GenerateSplitTracks(info, version));
+                        }
+                        info.m_segments = new[] { segment0, segment1, segment2, segment3 };
+                        info.m_nodes = nodeList.ToArray();
                         break;
                     }
                 case NetInfoVersion.Bridge:
@@ -147,7 +186,13 @@ namespace MetroOverhaul.InitializationSteps
                         var node1 = info.m_nodes[1].ShallowClone();
                         var node3 = info.m_nodes[3].ShallowClone();
                         var node4 = info.m_nodes[0].ShallowClone();
-
+                        var node5 = info.m_nodes[0].ShallowClone();
+                        var nodeList = new List<NetInfo.Node>();
+                        nodeList.Add(node0);
+                        nodeList.Add(node1);
+                        nodeList.Add(node3);
+                        nodeList.Add(node4);
+                        nodeList.Add(node5);
                         segment0
                             .SetFlagsDefault()
                             .SetMeshes
@@ -169,6 +214,7 @@ namespace MetroOverhaul.InitializationSteps
                             (@"Meshes\10m\Elevated_RailGuards.obj", @"Meshes\10m\Blank.obj")
                             .SetConsistentUVs();
                         node0
+                            .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
                             .SetMeshes
                             (@"Meshes\10m\Bridge_Node_Pavement.obj",
                             @"Meshes\10m\Bridge_Node_Pavement_LOD.obj")
@@ -180,14 +226,25 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                             (@"Meshes\10m\ThirdRail_Node.obj", @"Meshes\10m\Blank.obj")
                             .SetConsistentUVs();
-
+                        node5
+                            .SetFlags(NetNode.Flags.Transition, NetNode.Flags.None)
+                            .SetMeshes
+                            (@"Meshes\10m\Bridge_Node_Pavement_Trans.obj",
+                            @"Meshes\10m\Bridge_Node_Pavement_LOD.obj")
+                            .SetConsistentUVs();
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
-
-                        info.m_segments = new[] { segment0, segment1, segment2,segment3 };
-                        info.m_nodes = new[] { node0, node1, node3, node4 };
+                        node5.m_material = elevatedMaterial;
+                        node5.m_lodMaterial = elevatedLODMaterial;
+                        if (isOneWay)
+                        {
+                            nodeList.AddRange(GenerateLevelCrossing(info));
+                            nodeList.AddRange(GenerateSplitTracks(info, version));
+                        }
+                        info.m_segments = new[] { segment0, segment1, segment2, segment3 };
+                        info.m_nodes = nodeList.ToArray();
                         break;
                     }
                 case NetInfoVersion.Slope:
@@ -205,6 +262,16 @@ namespace MetroOverhaul.InitializationSteps
                         var node6 = info.m_nodes[1].ShallowClone();
                         var node7 = info.m_nodes[3].ShallowClone();
                         var node8 = info.m_nodes[3].ShallowClone();
+                        var nodeList = new List<NetInfo.Node>();
+                        nodeList.Add(node0);
+                        nodeList.Add(node1);
+                        nodeList.Add(node2);
+                        nodeList.Add(node3);
+                        nodeList.Add(node4);
+                        nodeList.Add(node5);
+                        nodeList.Add(node6);
+                        nodeList.Add(node7);
+                        nodeList.Add(node8);
                         segment1
                             .SetMeshes
                             (@"Meshes\10m\Boosted_Rail.obj")
@@ -269,8 +336,13 @@ namespace MetroOverhaul.InitializationSteps
                         node2.m_lodMaterial = elevatedLODMaterial;
                         node5.m_material = elevatedMaterial;
                         node5.m_lodMaterial = elevatedLODMaterial;
+                        if (isOneWay)
+                        {
+                            nodeList.AddRange(GenerateLevelCrossing(info));
+                            nodeList.AddRange(GenerateSplitTracks(info, version));
+                        }
                         info.m_segments = new[] { segment0, segment1, segment2, segment3 };
-                        info.m_nodes = new[] { node0, node1, node2, node3, node4, node5, node6, node7, node8 };
+                        info.m_nodes = nodeList.ToArray();
                         break;
                     }
                 case NetInfoVersion.Tunnel:
@@ -283,6 +355,12 @@ namespace MetroOverhaul.InitializationSteps
                         var node1 = info.m_nodes[0].ShallowClone();
                         var node2 = info.m_nodes[0].ShallowClone();
                         var node3 = info.m_nodes[0].ShallowClone();
+
+                        var nodeList = new List<NetInfo.Node>();
+                        nodeList.Add(node0);
+                        nodeList.Add(node1);
+                        nodeList.Add(node2);
+
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
@@ -321,11 +399,16 @@ namespace MetroOverhaul.InitializationSteps
                         node1.m_lodMaterial = elevatedLODMaterial;
                         node2.m_material = elevatedMaterial;
                         node2.m_lodMaterial = elevatedLODMaterial;
+                        node2.m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
                         node2.m_directConnect = true;
                         node3.m_material = elevatedMaterial;
                         node3.m_lodMaterial = elevatedLODMaterial;
+                        if (isOneWay)
+                        {
+                            nodeList.AddRange(GenerateSplitTracks(info, version));
+                        }
                         info.m_segments = new[] { segment0, segment1, segment2, segment3 };
-                        info.m_nodes = new[] { node0, node1, node2, node3 };
+                        info.m_nodes = nodeList.ToArray();
                         break;
                     }
             }
@@ -457,7 +540,12 @@ namespace MetroOverhaul.InitializationSteps
                         var node2 = prefab.m_nodes[2].ShallowClone();
                         var node3 = prefab.m_nodes[1].ShallowClone();
                         var node4 = prefab.m_nodes[0].ShallowClone();
-
+                        var nodeList = new List<NetInfo.Node>();
+                        nodeList.Add(node0);
+                        nodeList.Add(node1);
+                        nodeList.Add(node2);
+                        nodeList.Add(node3);
+                        nodeList.Add(node4);
                         segment0
                             .SetMeshes
                             (@"Meshes\10m\Ground_Station_Pavement.obj",
@@ -503,8 +591,8 @@ namespace MetroOverhaul.InitializationSteps
                         node2.m_flagsRequired = NetNode.Flags.LevelCrossing;
                         node3.m_flagsRequired = NetNode.Flags.LevelCrossing;
 
-                        prefab.m_segments = new[] { segment0, segment1,segment2 };
-                        prefab.m_nodes = new[] { node0, node1, node2, node3,node4 };
+                        prefab.m_segments = new[] { segment0, segment1, segment2 };
+                        prefab.m_nodes = new[] { node0, node1, node2, node3, node4 };
                         break;
                     }
                 case NetInfoVersion.Elevated:
@@ -515,6 +603,11 @@ namespace MetroOverhaul.InitializationSteps
                         var node0 = prefab.m_nodes[0].ShallowClone();
                         var node1 = prefab.m_nodes[1].ShallowClone();
                         var node2 = prefab.m_nodes[0].ShallowClone();
+                        var nodeList = new List<NetInfo.Node>();
+                        nodeList.Add(node0);
+                        nodeList.Add(node1);
+                        nodeList.Add(node2);
+
                         segment0
                             .SetMeshes
                             (@"Meshes\10m\Elevated_Station_Pavement.obj",
@@ -546,13 +639,13 @@ namespace MetroOverhaul.InitializationSteps
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
 
-                        prefab.m_segments = new[] { segment0, segment1,segment2 };
-                        prefab.m_nodes = new[] { node0, node1,node2 };
+                        prefab.m_segments = new[] { segment0, segment1, segment2 };
+                        prefab.m_nodes = new[] { node0, node1, node2 };
                         break;
                     }
                 case NetInfoVersion.Tunnel:
                     {
-                        var segment0 = metroStationInfo.m_segments[0].ShallowClone();    
+                        var segment0 = metroStationInfo.m_segments[0].ShallowClone();
                         var segment1 = metroStationInfo.m_segments[0].ShallowClone();
                         var segment2 = metroStationInfo.m_segments[0].ShallowClone();
                         var segment3 = metroStationInfo.m_segments[0].ShallowClone();
@@ -560,6 +653,11 @@ namespace MetroOverhaul.InitializationSteps
                         var node1 = metroStationInfo.m_nodes[0].ShallowClone();
                         var node2 = metroStationInfo.m_nodes[0].ShallowClone();
                         var node3 = metroStationInfo.m_nodes[0].ShallowClone();
+                        var nodeList = new List<NetInfo.Node>();
+                        nodeList.Add(node0);
+                        nodeList.Add(node1);
+                        nodeList.Add(node2);
+                        nodeList.Add(node3);
 
                         segment1
                             .SetMeshes
@@ -597,12 +695,13 @@ namespace MetroOverhaul.InitializationSteps
                         segment3.m_lodMaterial = elevatedLODMaterial;
                         node1.m_material = elevatedMaterial;
                         node1.m_lodMaterial = elevatedLODMaterial;
+                        node1.m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
                         node2.m_material = elevatedMaterial;
                         node2.m_lodMaterial = elevatedLODMaterial;
                         node2.m_directConnect = true;
                         node3.m_material = elevatedMaterial;
                         node3.m_lodMaterial = elevatedLODMaterial;
-                        prefab.m_segments = new[] { segment0, segment1, segment2,segment3 };
+                        prefab.m_segments = new[] { segment0, segment1, segment2, segment3 };
                         prefab.m_nodes = new[] { node0, node1, node2, node3 };
                         break;
                     }
