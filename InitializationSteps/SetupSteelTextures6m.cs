@@ -61,7 +61,7 @@ namespace MetroOverhaul.InitializationSteps
                         }
                         foreach (var node in info.m_nodes)
                         {
-                            if (node.m_mesh.name.Contains("Level_Crossing_Rail"))
+                            if (node.m_mesh.name.Contains("LevelCrossing_Rail"))
                             {
                                 node.SetTextures(
                                     new TextureSet
@@ -69,7 +69,7 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
                                             @"Textures\Ground_Level_Crossing_Rail__XYSMap.png"));
                             }
-                            else if (node.m_mesh.name.Contains("Level_Crossing"))
+                            else if (node.m_mesh.name.Contains("LevelCrossing"))
                             {
                                 node.SetTextures(
                                     new TextureSet

@@ -74,7 +74,7 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\Ground_Segment_Pavement__AlphaMap_LOD.png",
                                             @"Textures\Ground_Segment_Pavement__XYSMap_LOD.png"));
                             }
-                            else if (node.m_mesh.name.Contains("Level_Crossing_Rail"))
+                            else if (node.m_mesh.name.Contains("LevelCrossing_Rail"))
                             {
                                 node.SetTextures(
                                     new TextureSet
@@ -82,7 +82,7 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
                                             @"Textures\Ground_Level_Crossing_Rail__XYSMap.png"));
                             }
-                            else if (node.m_mesh.name.Contains("Level_Crossing"))
+                            else if (node.m_mesh.name.Contains("LevelCrossing"))
                             {
                                 node.SetTextures(
                                     new TextureSet

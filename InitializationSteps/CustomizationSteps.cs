@@ -83,7 +83,7 @@ namespace MetroOverhaul.InitializationSteps
             }
             else
             {
-                prefab.m_class.m_level = ItemClass.Level.Level2;
+                prefab.m_class.m_level = ItemClass.Level.Level4;
             }
         }
 
@@ -107,7 +107,7 @@ namespace MetroOverhaul.InitializationSteps
         public static void CommonCustomizationTwoLaneOneWay(NetInfo prefab, NetInfoVersion version)
         {
             prefab.m_connectGroup = (NetInfo.ConnectGroup)32;
-            prefab.m_nodeConnectGroups = (NetInfo.ConnectGroup)32 | NetInfo.ConnectGroup.NarrowTram;
+            prefab.m_nodeConnectGroups = (NetInfo.ConnectGroup)32 | NetInfo.ConnectGroup.NarrowTram | NetInfo.ConnectGroup.WideTram;
 
             if (prefab.m_nodes.Count() > 1)
             {
@@ -124,6 +124,41 @@ namespace MetroOverhaul.InitializationSteps
                         lane.m_direction = NetInfo.Direction.Forward;
                     }
                 }
+            }
+        }
+        public static void CommonCustomizationLarge(NetInfo prefab, NetInfoVersion version)
+        {
+            prefab.m_connectGroup = NetInfo.ConnectGroup.WideTram;
+            prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.NarrowTram | (NetInfo.ConnectGroup)16;
+
+            if (prefab.m_nodes.Count() > 1)
+            {
+                prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.WideTram;
+            }
+            prefab.SetRoadLanes(version, new LanesConfiguration()
+            {
+                IsTwoWay = true,
+                LanesToAdd = 2
+            });
+            for (var i = 0; i < prefab.m_lanes.Count(); i++)
+            {
+                var lane = prefab.m_lanes[i];
+                var forwardDone = false;
+                var backwardDone = false;
+                if (lane.m_laneType == NetInfo.LaneType.Vehicle)
+                {
+                    if (!forwardDone && lane.m_direction == NetInfo.Direction.Forward)
+                    {
+                        lane.m_position = 5.89f;
+                        forwardDone = true;
+                    }
+                    else if (!backwardDone && lane.m_direction == NetInfo.Direction.Backward)
+                    {
+                        lane.m_position = -5.89f;
+                        backwardDone = true;
+                    }
+                }
+                lane.m_verticalOffset = 0.35f;
             }
         }
 
@@ -143,6 +178,10 @@ namespace MetroOverhaul.InitializationSteps
             if (isTwoWay)
             {
                 prefab.m_nodeConnectGroups |= (NetInfo.ConnectGroup)16;
+            }
+            else
+            {
+                prefab.m_nodeConnectGroups |= NetInfo.ConnectGroup.WideTram;
             }
 
             prefab.SetRoadLanes(version, new LanesConfiguration()
@@ -243,7 +282,33 @@ namespace MetroOverhaul.InitializationSteps
                     break;
                 case NetInfoVersion.Ground:
                     prefab.m_halfWidth = 5;
+                    prefab.m_pavementWidth = 2f;
+                    break;
+            }
+        }
+        public static void SetLargeTrackWidths(NetInfo prefab, NetInfoVersion version)
+        {
+            switch (version)
+            {
+                case NetInfoVersion.Elevated:
+                    prefab.m_halfWidth = prefab.name.Contains("Steel") ? 9.0001f : 9; //Todo make proper enum for the styles
                     prefab.m_pavementWidth = 1.5f;
+                    break;
+                case NetInfoVersion.Bridge:
+                    prefab.m_halfWidth = 8.9999f;
+                    prefab.m_pavementWidth = 1.5f;
+                    break;
+                case NetInfoVersion.Slope:
+                    prefab.m_halfWidth = prefab.name.Contains("Steel") ? 10 : 10.5f;
+                    prefab.m_pavementWidth = prefab.name.Contains("Steel") ? 2.5f : 3f;
+                    break;
+                case NetInfoVersion.Tunnel:
+                    prefab.m_halfWidth = prefab.name.Contains("Steel") ? 10.0001f : 10;//Todo make proper enum for the styles
+                    prefab.m_pavementWidth = 2.5f;
+                    break;
+                case NetInfoVersion.Ground:
+                    prefab.m_halfWidth = 9;
+                    prefab.m_pavementWidth = 2f;
                     break;
             }
         }
