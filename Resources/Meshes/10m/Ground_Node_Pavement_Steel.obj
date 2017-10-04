@@ -1,5 +1,5 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 02.01.2017 23:59:49
+# File Created: 22.09.2017 07:44:23
 
 #
 # object Ground_Node_Pavement_Steel
@@ -392,5 +392,5 @@ f 70/125/4 95/124/4 92/119/4
 f 92/119/4 60/118/4 70/125/4 
 f 10/126/4 96/127/4 94/123/4 
 f 94/123/4 69/122/4 10/126/4 
-# 152 faces
+# 0 polygons - 152 triangles
 

@@ -11,9 +11,9 @@ namespace MetroOverhaul.UI
         public Rect window;
         public bool showWindow;
         public bool move;
-        public int style;
+        public int style = 0;
         public int stationType;
-        public int trackType;
+        public int trackType = 1;
         public int trackDir;
         public bool fence;
         public bool station;
@@ -26,6 +26,9 @@ namespace MetroOverhaul.UI
 
         private NetInfo concreteTwoLaneOneWayPrefab;
         private NetInfo concreteTwoLaneOneWayPrefabNoBar;
+
+        private NetInfo concreteLargePrefab;
+        private NetInfo concreteLargePrefabNoBar;
 
         private NetInfo concreteSmallPrefab;
         private NetInfo concreteSmallPrefabNoBar;
@@ -44,6 +47,9 @@ namespace MetroOverhaul.UI
 
         private NetInfo steelTwoLaneOneWayPrefab;
         private NetInfo steelTwoLaneOneWayPrefabNoBar;
+
+        private NetInfo steelLargePrefab;
+        private NetInfo steelLargePrefabNoBar;
 
         private NetInfo steelSmallPrefab;
         private NetInfo steelSmallPrefabNoBar;
@@ -69,6 +75,9 @@ namespace MetroOverhaul.UI
             concreteTwoLaneOneWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Two-Lane One-Way");
             concreteTwoLaneOneWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Two-Lane One-Way NoBar");
 
+            concreteLargePrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Large");
+            concreteLargePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Large NoBar");
+
             concreteSmallPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small");
             concreteSmallPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small NoBar");
 
@@ -91,6 +100,9 @@ namespace MetroOverhaul.UI
 
             steelSmallTwoWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small Two-Way");
             steelSmallTwoWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small Two-Way NoBar");
+
+            steelLargePrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Large");
+            steelLargePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Large NoBar");
 
             steelStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground");
             steelStationIslandPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Island");
@@ -180,48 +192,20 @@ namespace MetroOverhaul.UI
             }
             else
             {
-                var styleList = new List<string>();
-                if (concretePrefab != null)
-                {
-                    styleList.Add("Concrete");
-                }
-                if (steelPrefab != null)
-                {
-                    styleList.Add("Steel");
-                }
-                this.style = GUI.Toolbar(new Rect(5f, 28f, 290f, 32f), this.style, styleList.ToArray());
-                var showFenceOption = false;
-
-                if (style == 0)
-                {
-                    if (concretePrefab != null && concretePrefabNoBar != null)
-                    {
-                        showFenceOption = true;
-                    }
-                }
-                else if (style == 1)
-                {
-                    if (steelPrefab != null && concretePrefabNoBar != null)
-                    {
-                        showFenceOption = true;
-                    }
-                }
-                var trackList = new List<string>();
-                trackList.Add("2L Track");
-                trackList.Add("1L Track");
-
-                var dirList = new List<string>();
-                dirList.Add("2 Way");
-                dirList.Add("1 Way");
+                string[] styles = { "Modern", "Classic" };
+                string[] trackCounts = { "Single", "Double", "Quad" };
+                string[] directions = { "1 Way -->", "2 Way <-->" };
 
                 var stationList = new List<string>();
                 stationList.Add("Side Platform");
                 stationList.Add("Island Platform");
 
-                trackType = GUI.Toolbar(new Rect(5f, 65f, 290f, 32f), trackType, trackList.ToArray());
-                trackDir = GUI.Toolbar(new Rect(5f, 112f, 290f, 32f), trackDir, dirList.ToArray());
-                this.fence = binfo == null && showFenceOption && GUI.Toggle(new Rect(5f, 159f, 140f, 30f), this.fence, "Fenced track");
+                style = GUI.Toolbar(new Rect(5f, 28f, 290f, 32f), this.style, styles);
+                trackType = GUI.Toolbar(new Rect(5f, 65f, 290f, 32f), trackType, trackCounts);
+                trackDir = GUI.Toolbar(new Rect(5f, 112f, 290f, 32f), trackDir, directions);
+                fence = binfo == null && GUI.Toggle(new Rect(5f, 159f, 140f, 30f), this.fence, "Fenced track");
                 station = binfo == null && GUI.Toggle(new Rect(5f, 204f, 140f, 30f), station, "Station track");
+
                 if (binfo == null)
                 {
                     stationType = GUI.Toolbar(new Rect(5f, 249f, 290f, 32f), this.stationType, stationList.ToArray());
@@ -283,7 +267,8 @@ namespace MetroOverhaul.UI
                    IsSubversion(info, concreteTwoLaneOneWayPrefab) || IsSubversion(info, concreteTwoLaneOneWayPrefabNoBar) || IsSubversion(info, concreteSmallTwoWayPrefab) || IsSubversion(info, concreteSmallTwoWayPrefabNoBar) ||
                    IsSubversion(info, concreteStationPrefab) || IsSubversion(info, concreteStationIslandPrefab) || IsSubversion(info, concreteStationSmallPrefab) ||
                    IsSubversion(info, steelTwoLaneOneWayPrefab) || IsSubversion(info, steelTwoLaneOneWayPrefabNoBar) || IsSubversion(info, steelSmallTwoWayPrefab) || IsSubversion(info, steelSmallTwoWayPrefabNoBar) ||
-                   IsSubversion(info, steelStationPrefab) || IsSubversion(info, steelStationIslandPrefab) || IsSubversion(info, steelStationSmallPrefab);
+                   IsSubversion(info, steelStationPrefab) || IsSubversion(info, steelStationIslandPrefab) || IsSubversion(info, steelStationSmallPrefab) || IsSubversion(info, concreteLargePrefab) || IsSubversion(info, concreteLargePrefabNoBar) ||
+                   IsSubversion(info, steelLargePrefab) || IsSubversion(info, steelLargePrefabNoBar);
         }
         private void SetBuildingToolPrefab()
         {
@@ -336,98 +321,141 @@ namespace MetroOverhaul.UI
             switch (style)
             {
                 case 0:
-                    if (trackType == 0)
+                    switch (trackType)
                     {
-                        if (station)
-                        {
-                            if (stationType == 0)
+                        case 0:
+                            if (station)
                             {
-                                prefab = concreteStationPrefab;
-                            }
-                            else if (stationType == 1)
-                            {
-                                prefab = concreteStationIslandPrefab;
-                            }
-                        }
-                        else
-                        {
-                            if (trackDir == 0)
-                            {
-                                prefab = fence ? concretePrefab : concretePrefabNoBar;
+                                if (stationType == 0)
+                                {
+                                    prefab = concreteStationSmallPrefab;
+                                }
                             }
                             else
                             {
-                                prefab = fence ? concreteTwoLaneOneWayPrefab : concreteTwoLaneOneWayPrefabNoBar;
+                                if (trackDir == 0)
+                                {
+                                    prefab = fence ? concreteSmallPrefab : concreteSmallPrefabNoBar;
+                                }
+                                else
+                                {
+                                    prefab = fence ? concreteSmallTwoWayPrefab : concreteSmallTwoWayPrefabNoBar;
+                                    
+                                }
                             }
-                        }
-                    }
-                    else
-                    {
-                        if (station)
-                        {
-                            if (stationType == 0)
+                            break;
+                        case 1:
+                            if (station)
                             {
-prefab = concreteStationSmallPrefab;
-                            }
-                        }
-                        else
-                        {
-                            if (trackDir == 0)
-                            {
-                                prefab = fence ? concreteSmallTwoWayPrefab : concreteSmallTwoWayPrefabNoBar;
-                            }
-                            else
-                            {
-                                prefab = fence ? concreteSmallPrefab : concreteSmallPrefabNoBar;
-                            }
-                        }
-                    }
+                                if (stationType == 0)
+                                {
+                                    prefab = concreteStationPrefab;
+                                }
+                                else if (stationType == 1)
+                                {
+                                    prefab = concreteStationIslandPrefab;
+                                }
 
+                            }
+                            else
+                            {
+                                if (trackDir == 0)
+                                {
+                                    prefab = fence ? concreteTwoLaneOneWayPrefab : concreteTwoLaneOneWayPrefabNoBar;
+                                }
+                                else
+                                {
+                                    prefab = fence ? concretePrefab : concretePrefabNoBar;
+                                }
+                            }
+                            break;
+
+                        case 2:
+                            if (station)
+                            {
+
+                            }
+                            else
+                            {
+                                if (trackDir == 0)
+                                {
+                                }
+                                else
+                                {
+                                    prefab = fence ? concreteLargePrefab : concreteLargePrefabNoBar;
+                                }
+                            }
+                            break;
+                    }
                     break;
                 case 1:
-                    if (trackType == 0)
+                    switch (trackType)
                     {
-                        if (station)
-                        {
-                            if (stationType == 0)
+                        case 0:
+                            if (station)
                             {
-                                prefab = steelStationPrefab;
-                            }
-                            else if (stationType == 1)
-                            {
-                                prefab = steelStationIslandPrefab;
-                            }
-                        }
-                        else
-                        {
-                            if (trackDir == 0)
-                            {
-                                prefab = fence ? steelPrefab : steelPrefabNoBar;
+                                prefab = steelStationSmallPrefab;
                             }
                             else
                             {
-                                prefab = fence ? steelTwoLaneOneWayPrefab : steelTwoLaneOneWayPrefabNoBar;
+                                if (trackDir == 0)
+                                {
+                                    prefab = fence ? steelSmallTwoWayPrefab : steelSmallTwoWayPrefabNoBar;
+                                }
+                                else
+                                {
+                                    prefab = fence ? steelSmallPrefab : steelSmallPrefabNoBar;
+                                }
                             }
-                            
-                        }
-                    }
-                    else
-                    {
-                        if (station)
-                        {
-                            prefab = steelStationSmallPrefab;
-                        }
-                        else
-                        {
-                            if (trackDir == 0)
+                            break;
+                        case 1:
+                            if (station)
                             {
-                                prefab = fence ? steelSmallTwoWayPrefab : steelSmallTwoWayPrefabNoBar;
+                                if (stationType == 0)
+                                {
+                                    prefab = steelStationPrefab;
+                                }
+                                else if (stationType == 1)
+                                {
+                                    prefab = steelStationIslandPrefab;
+                                }
                             }
                             else
                             {
-                                prefab = fence ? steelSmallPrefab : steelSmallPrefabNoBar;
+                                if (trackDir == 0)
+                                { 
+                                    prefab = fence ? steelTwoLaneOneWayPrefab : steelTwoLaneOneWayPrefabNoBar;
+                                }
+                                else
+                                {
+                                    prefab = fence ? steelPrefab : steelPrefabNoBar;
+                                }
                             }
-                        }
+                            break;
+                        case 2:
+                            if (station)
+                            {
+                                //if (stationType == 0)
+                                //{
+                                //    prefab = steelStationPrefab;
+                                //}
+                                //else if (stationType == 1)
+                                //{
+                                //    prefab = steelStationIslandPrefab;
+                                //}
+                            }
+                            else
+                            {
+                                if (trackDir == 0)
+                                {
+                                    //prefab = fence ? steelTwoLaneOneWayPrefab : steelTwoLaneOneWayPrefabNoBar;
+                                }
+                                else
+                                {
+                                    prefab = fence ? steelLargePrefab : steelLargePrefabNoBar;
+                                }
+                            }
+                            break;
                     }
 
                     break;
