@@ -125,15 +125,16 @@ namespace MetroOverhaul
                 SimulationManager.instance.AddAction(DespawnVanillaMetro);
                 var gameObject = new GameObject("MetroOverhaulUISetup");
                 gameObject.AddComponent<UpgradeSetup>();
-#if DEBUG
-                gameObject.AddComponent<StyleSelectionStationUI>();
-#else
-                gameObject.AddComponent<StyleSelectionUI>();
-#endif
+//#if DEBUG
+//                gameObject.AddComponent<StyleSelectionStationUI>();
+//#else
+//                gameObject.AddComponent<StyleSelectionUI>();
+//#endif
 
                 if (OptionsWrapper<Options>.Options.metroUi)
                 {
                     UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizerUI));
+                    UIView.GetAView().AddUIComponent(typeof(MetroTrackCustomizerUI));
                 }
 
                 var transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Metro");
@@ -143,9 +144,10 @@ namespace MetroOverhaul
             else if (mode == LoadMode.NewAsset || mode == LoadMode.LoadAsset)
             {
                 var gameObject = new GameObject("MetroOverhaulUISetup");
-                gameObject.AddComponent<StyleSelectionStationUI>();
+                //gameObject.AddComponent<StyleSelectionStationUI>();
 #if DEBUG
                 UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizerUI));
+                UIView.GetAView().AddUIComponent(typeof(MetroTrackCustomizerUI));
 #endif
             }
         }

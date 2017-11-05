@@ -32,13 +32,13 @@ namespace MetroOverhaul.InitializationSteps
                             {
                                 segment.SetTextures(
                                     new TextureSet
-                                        (@"Textures\Ground_Fence__MainTex.png",
-                                            @"Textures\Ground_Fence__AlphaMap.png",
-                                            @"Textures\Ground_Fence__XYSMap.png"),
+                                        (@"Textures\Ground_Fence_Steel__MainTex.png",
+                                            @"Textures\Ground_Fence_Steel__AlphaMap.png",
+                                            @"Textures\Ground_Fence_Steel__XYSMap.png"),
                                     new LODTextureSet
-                                        (@"Textures\Ground_Segment_Pavement__MainTex_LOD.png",
-                                            @"Textures\Ground_Segment_Pavement__AlphaMap_LOD.png",
-                                            @"Textures\Ground_Segment_Pavement__XYSMap_LOD.png"));
+                                        (@"Textures\Ground_Fence_Steel__MainTex_LOD.png",
+                                            @"Textures\Ground_Fence_Steel__AlphaMap_LOD.png",
+                                            @"Textures\Ground_Fence_Steel__XYSMap_LOD.png"));
                             }
                             else if (segment.m_mesh.name.Contains("ThirdRail"))
                             {
@@ -67,13 +67,13 @@ namespace MetroOverhaul.InitializationSteps
                             {
                                 node.SetTextures(
                                     new TextureSet
-                                        ($@"Textures\Ground_Fence__MainTex.png",
-                                            $@"Textures\Ground_Fence__AlphaMap.png",
-                                            @"Textures\Ground_Fence__XYSMap.png"),
+                                        ($@"Textures\Ground_Fence_Steel__MainTex.png",
+                                            $@"Textures\Ground_Fence_Steel__AlphaMap.png",
+                                            @"Textures\Ground_Fence_Steel__XYSMap.png"),
                                     new LODTextureSet
-                                        ($@"Textures\Ground_Segment_Pavement__MainTex_LOD.png",
-                                            $@"Textures\Ground_Segment_Pavement__AlphaMap_LOD.png",
-                                            @"Textures\Ground_Segment_Pavement__XYSMap_LOD.png"));
+                                        ($@"Textures\Ground_Fence_Steel__MainTex_LOD.png",
+                                            $@"Textures\Ground_Fence_Steel__AlphaMap_LOD.png",
+                                            @"Textures\Ground_Fence_Steel__XYSMap_LOD.png"));
                             }
                             if (node.m_mesh.name.Contains("LevelCrossing_Pavement"))
                             {
@@ -299,6 +299,18 @@ namespace MetroOverhaul.InitializationSteps
                                         (@"Textures\Tunnel_Node_Pavement_Steel__MainTex_LOD.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap_LOD.png",
                                             @"Textures\Tunnel_Segment_Pavement_Steel__XYSMap_LOD.png"));
+                            }
+                            else if (node.m_mesh.name.Contains("Trans"))
+                            {
+                                node.SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Tunnel_Node_Pavement__MainTex.png",
+                                            @"Textures\Elevated_Node_Pavement__AlphaMap.png",
+                                            @"Textures\Tunnel_Segment_Pavement__XYSMap.png"),
+                                    new LODTextureSet
+                                        (@"Textures\Tunnel_Node_Pavement__MainTex_LOD.png",
+                                            @"Textures\Elevated_Node_Pavement__AlphaMap_LOD.png",
+                                            @"Textures\Tunnel_Segment_Pavement__XYSMap_LOD.png"));
                             }
                             else if (node.m_mesh.name.Contains("ThirdRail"))
                             {

@@ -459,7 +459,7 @@ namespace MetroOverhaul
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogError("Exception happened when setting up steel small tracks");
+                UnityEngine.Debug.LogError("Exception happened when setting up steel large tracks");
                 UnityEngine.Debug.LogException(e);
             }
 
@@ -491,7 +491,7 @@ namespace MetroOverhaul
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogError("Exception happened when setting up steel small tracks");
+                UnityEngine.Debug.LogError("Exception happened when setting up steel large nobar tracks");
                 UnityEngine.Debug.LogException(e);
             }
             try
@@ -554,7 +554,7 @@ namespace MetroOverhaul
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogError("Exception happened when setting up nobar steel tracks");
+                UnityEngine.Debug.LogError("Exception happened when setting up two lane one way steel tracks");
                 UnityEngine.Debug.LogException(e);
             }
 
@@ -586,7 +586,7 @@ namespace MetroOverhaul
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogError("Exception happened when setting up nobar steel tracks");
+                UnityEngine.Debug.LogError("Exception happened when setting up two lane one way nobar steel tracks");
                 UnityEngine.Debug.LogException(e);
             }
 
@@ -650,7 +650,7 @@ namespace MetroOverhaul
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogError("Exception happened when setting up steel small tracks");
+                UnityEngine.Debug.LogError("Exception happened when setting up steel small nobar tracks");
                 UnityEngine.Debug.LogException(e);
             }
             try
@@ -681,7 +681,7 @@ namespace MetroOverhaul
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogError("Exception happened when setting up steel small tracks");
+                UnityEngine.Debug.LogError("Exception happened when setting up steel small two way tracks");
                 UnityEngine.Debug.LogException(e);
             }
 
@@ -714,7 +714,7 @@ namespace MetroOverhaul
 
             catch (Exception e)
             {
-                UnityEngine.Debug.LogError("Exception happened when setting up steel small nobar tracks");
+                UnityEngine.Debug.LogError("Exception happened when setting up steel small two way nobar tracks");
                 UnityEngine.Debug.LogException(e);
             }
 
@@ -746,7 +746,7 @@ namespace MetroOverhaul
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogError("Exception happened when setting up concrete station tracks");
+                UnityEngine.Debug.LogError("Exception happened when setting up steel station tracks");
                 UnityEngine.Debug.LogException(e);
             }
 
@@ -943,7 +943,7 @@ namespace MetroOverhaul
             originalAi.GetNoiseAccumulation(out noiseAccumulation, out noiseRadius);
             if (originalAi is TrainTrackTunnelAI || version == NetInfoVersion.Tunnel)
             {
-                if (originalAi is TrainTrackTunnelAI && version == NetInfoVersion.Slope)
+                if ((originalAi is TrainTrackTunnelAI && version == NetInfoVersion.Slope))
                 {
                     GameObject.DestroyImmediate(originalAi);
                     var ai = prefab.gameObject.AddComponent<TrainTrackTunnelAIMetro>();
@@ -956,7 +956,7 @@ namespace MetroOverhaul
                 else
                 {
                     GameObject.DestroyImmediate(originalAi);
-                    var ai = prefab.gameObject.AddComponent<MetroTrackAI>();
+                    var ai = prefab.gameObject.AddComponent<MetroTrackAIMetro>();
                     ai.m_info = prefab;
                     ai.m_transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Train");
                     prefab.m_netAI = ai;

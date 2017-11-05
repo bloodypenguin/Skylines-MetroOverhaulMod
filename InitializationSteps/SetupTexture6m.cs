@@ -239,7 +239,7 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\Ground_Segment_Pavement__AlphaMap_LOD.png",
                                             @"Textures\Ground_Segment_Pavement__XYSMap_LOD.png"));
                             }
-                            else if (segment.m_mesh.name.Contains("Station"))
+                            else if (segment.m_mesh.name.Contains("Station_Pavement"))
                             {
                                 segment.SetTextures(
                                     new TextureSet

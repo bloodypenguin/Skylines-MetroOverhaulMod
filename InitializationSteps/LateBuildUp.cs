@@ -11,7 +11,7 @@ namespace MetroOverhaul.InitializationSteps
             {
                 case NetInfoVersion.Elevated:
                     {
-                        var epPropInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("MetroElevatedPillar")}.MetroElevatedPillar_Data");
+                        var epPropInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("MetroElevatedPillar2")}.MetroElevatedPillar2_Data");
                         if (epPropInfo == null)
                         {
                             throw new Exception($"{prefab.name}: MetroElevatedPillar not found!");

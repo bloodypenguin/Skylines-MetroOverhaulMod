@@ -34,7 +34,7 @@ namespace MetroOverhaul.NEXT
             var files = new List<FileInfo>();
             files.AddRange(modDirectory.GetFiles("*.png", SearchOption.AllDirectories));
             files.AddRange(modDirectory.GetFiles("*.obj", SearchOption.AllDirectories));
-
+            Next.Debug.Log("Path" + modPath);
             foreach (var assetFile in files)
             {
                 var assetFullPath = assetFile.FullName;

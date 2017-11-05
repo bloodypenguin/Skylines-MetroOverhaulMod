@@ -296,6 +296,18 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\Ground_Segment_Rail__AlphaMap_LOD.png",
                                             @"Textures\Tunnel_Segment_Pavement_Steel__XYSMap_LOD.png"));
                             }
+                            else if (node.m_mesh.name.Contains("Trans"))
+                            {
+                                node.SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Tunnel_Node_Pavement__MainTex.png",
+                                            @"Textures\Elevated_Node_Pavement__AlphaMap.png",
+                                            @"Textures\Tunnel_Segment_Pavement__XYSMap.png"),
+                                    new LODTextureSet
+                                        (@"Textures\Tunnel_Node_Pavement__MainTex_LOD.png",
+                                            @"Textures\Elevated_Node_Pavement__AlphaMap_LOD.png",
+                                            @"Textures\Tunnel_Segment_Pavement__XYSMap_LOD.png"));
+                            }
                             else if (node.m_mesh.name.Contains("ThirdRail"))
                             {
                                 node.SetTextures(

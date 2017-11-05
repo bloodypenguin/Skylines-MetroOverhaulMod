@@ -62,6 +62,7 @@ namespace MetroOverhaul.UI
         private NetInfo steelStationIslandPrefab;
         private NetInfo steelStationSmallPrefab;
 
+        private GUISkin mySkin;
         public StyleSelectionUI()
         {
             this.window = new Rect((float)(Screen.width - 350), (float)(Screen.height - 300), 300f, 134f);
@@ -165,7 +166,10 @@ namespace MetroOverhaul.UI
                 Debug.Log(ex);
             }
         }
-
+        protected virtual void Start()
+        {
+            mySkin = Resources.Load("Skins/OrangeGUISkin") as GUISkin;
+        }
         protected virtual void OnGUI()
         {
             if (!this.showWindow)
@@ -193,13 +197,13 @@ namespace MetroOverhaul.UI
             else
             {
                 string[] styles = { "Modern", "Classic" };
-                string[] trackCounts = { "Single", "Double", "Quad" };
+                string[] trackCounts = { "Single", "Double" };
                 string[] directions = { "1 Way -->", "2 Way <-->" };
 
                 var stationList = new List<string>();
                 stationList.Add("Side Platform");
                 stationList.Add("Island Platform");
-
+                GUI.skin = mySkin;
                 style = GUI.Toolbar(new Rect(5f, 28f, 290f, 32f), this.style, styles);
                 trackType = GUI.Toolbar(new Rect(5f, 65f, 290f, 32f), trackType, trackCounts);
                 trackDir = GUI.Toolbar(new Rect(5f, 112f, 290f, 32f), trackDir, directions);
@@ -400,11 +404,11 @@ namespace MetroOverhaul.UI
                             {
                                 if (trackDir == 0)
                                 {
-                                    prefab = fence ? steelSmallTwoWayPrefab : steelSmallTwoWayPrefabNoBar;
+                                    prefab = fence ? steelSmallPrefab : steelSmallPrefabNoBar;
                                 }
                                 else
                                 {
-                                    prefab = fence ? steelSmallPrefab : steelSmallPrefabNoBar;
+                                    prefab = fence ? steelSmallTwoWayPrefab : steelSmallTwoWayPrefabNoBar;
                                 }
                             }
                             break;

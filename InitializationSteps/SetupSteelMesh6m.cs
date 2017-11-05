@@ -44,8 +44,8 @@ namespace MetroOverhaul.InitializationSteps
             }
             else if (is18m)
             {
-                variations = new List<string> { "_Merge", "_Single_Merge" }.ToArray();
-                groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)16 }.ToArray();
+                variations = new List<string> { "_Merge", "_Single_Merge", "_Single" }.ToArray();
+                groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)16, NetInfo.ConnectGroup.CenterTram }.ToArray();
             }
             else
             {
@@ -56,8 +56,8 @@ namespace MetroOverhaul.InitializationSteps
                 }
                 else
                 {
-                    variations = new List<string> { "", "_Merge", "_Single" }.ToArray();
-                    groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)32, NetInfo.ConnectGroup.WideTram }.ToArray();
+                    variations = new List<string> { "", "_Merge" }.ToArray();
+                    groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)32 }.ToArray();
                 }
             }
 
@@ -172,6 +172,7 @@ namespace MetroOverhaul.InitializationSteps
             var is10m = info.name.Contains("Two-Lane");
             var is18m = info.name.Contains("Large");
             var isMerge = info.name.Contains("Two-Way") || info.name.Contains("Station") || is10m;
+            var isOneWay = info.name.Contains("One-Way");
             var mergeName = isMerge ? "Merge_" : "";
             var LevelCrossing = isMerge ? "" : "LevelCrossing_";
             var nodeList = new List<NetInfo.Node>();
@@ -225,31 +226,46 @@ namespace MetroOverhaul.InitializationSteps
                 .SetConsistentUVs();
 
             string[] variations = null;
+            NetInfo.ConnectGroup myGroup;
             NetInfo.ConnectGroup[] groups = null;
             if (is10m)
             {
+                if (isOneWay)
+                {
+                    myGroup = (NetInfo.ConnectGroup)32;
+                }
+                else
+                {
+                    myGroup = NetInfo.ConnectGroup.NarrowTram;
+                }
                 variations = new List<string> { "_Merge", "" }.ToArray();
                 groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, NetInfo.ConnectGroup.WideTram }.ToArray();
             }
             else if (is18m)
             {
-                variations = new List<string> { "_Merge", "_Single_Merge" }.ToArray();
-                groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)16 }.ToArray();
+                myGroup = NetInfo.ConnectGroup.WideTram;
+                variations = new List<string> { "_Merge", "_Single_Merge", "_Single" }.ToArray();
+                groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)16, NetInfo.ConnectGroup.CenterTram }.ToArray();
             }
             else
             {
                 if (isMerge)
                 {
+                    myGroup = (NetInfo.ConnectGroup)16;
                     variations = new List<string> { "_Merge", "_Merge" }.ToArray();
                     groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)32 }.ToArray();
                 }
                 else
                 {
-                    variations = new List<string> { "", "_Merge", "_Single" }.ToArray();
-                    groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)32, NetInfo.ConnectGroup.WideTram }.ToArray();
+                    myGroup = NetInfo.ConnectGroup.CenterTram;
+                    variations = new List<string> { "", "_Merge" }.ToArray();
+                    groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)32 }.ToArray();
                 }
             }
-
+            nodes1.m_directConnect = true;
+            nodes2.m_directConnect = true;
+            nodes1.m_connectGroup = myGroup;
+            nodes2.m_connectGroup = myGroup;
             for (var i = 0; i < variations.Length; i++)
             {
                 var node1 = info.m_nodes[1].ShallowClone();
@@ -279,7 +295,8 @@ namespace MetroOverhaul.InitializationSteps
                     .SetMeshes
                     ($@"Meshes\{width}\LevelCrossing_Rail_Insert{variations[i]}_End.obj", @"Meshes\10m\Blank.obj")
                     .SetConsistentUVs();
-
+                node1.m_directConnect = true;
+                node2.m_directConnect = true;
                 node3.m_directConnect = true;
                 node4.m_directConnect = true;
                 node1.m_connectGroup = groups[i] | NetInfo.ConnectGroup.OnewayStart;
@@ -295,6 +312,9 @@ namespace MetroOverhaul.InitializationSteps
             var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
             var trainTrackMaterial = trainTrackInfo.m_nodes[0].m_material;
             var trainTrackLODMaterial = elevatedInfo.m_nodes[0].m_lodMaterial;
+            var brElInfo = Prefabs.Find<NetInfo>("Basic Road Elevated");
+            var defaultElMaterial = brElInfo.m_segments[0].m_material;
+            var defaultElLODMaterial =  brElInfo.m_segments[0].m_lodMaterial;
             var isTwoWay = info.name.Contains("Two-Way");
             switch (version)
             {
@@ -573,7 +593,7 @@ namespace MetroOverhaul.InitializationSteps
                         nodeList.Add(node1);
                         nodeList.Add(node2);
                         nodeList.Add(node3);
-                        nodeList.Add(node5); 
+                        nodeList.Add(node5);
                         node1.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
                         node2.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
                         if (isTwoWay)
@@ -654,15 +674,16 @@ namespace MetroOverhaul.InitializationSteps
                         var node0 = metroInfo.m_nodes[0].ShallowClone();
                         var node1 = info.m_nodes[0].ShallowClone();
                         var node2 = info.m_nodes[0].ShallowClone();
+                        var node3 = info.m_nodes[0].ShallowClone();
                         var nodeList = new List<NetInfo.Node>();
                         nodeList.Add(node0);
                         nodeList.Add(node1);
                         nodeList.Add(node2);
-
-                        node2.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
+                        nodeList.Add(node3);
+                        node3.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
                         if (isTwoWay)
                         {
-                            node2.m_connectGroup |= (NetInfo.ConnectGroup)16;
+                            node3.m_connectGroup |= (NetInfo.ConnectGroup)16;
                         }
                         segment1
                             .SetFlagsDefault()
@@ -685,28 +706,38 @@ namespace MetroOverhaul.InitializationSteps
                             (@"Meshes\6m\Tunnel_Pavement_Steel_Ground.obj",
                                 @"Meshes\6m\Blank.obj");
                         node1
+                            .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
                             .SetMeshes
                             (@"Meshes\6m\Tunnel_Node_Pavement_Steel.obj",
                                 @"Meshes\6m\Tunnel_Node_Pavement_LOD.obj")
                             .SetConsistentUVs();
                         node2
+                            .SetFlags( NetNode.Flags.Transition, NetNode.Flags.None)
+                            .SetMeshes
+                                ($@"Meshes\6m\Tunnel_Trans_Pavement_Steel.obj",
+                                $@"Meshes\6m\Tunnel_Node_Pavement_LOD.obj")
+                            .SetConsistentUVs();
+                        node3
                             .SetMeshes
                             (@"Meshes\6m\Boosted_Rail.obj")
                             .SetConsistentUVs();
 
-                        segment1.m_material = elevatedMaterial;
-                        segment1.m_lodMaterial = elevatedLODMaterial;
+                        segment1.m_material = defaultElMaterial;
+                        segment1.m_lodMaterial = defaultElLODMaterial;
                         segment2.m_material = elevatedMaterial;
                         segment2.m_lodMaterial = elevatedLODMaterial;
                         segment3.m_material = elevatedMaterial;
                         segment3.m_lodMaterial = elevatedLODMaterial;
-                        segment4.m_material = elevatedMaterial;
-                        segment4.m_lodMaterial = elevatedLODMaterial;
+                        segment4.m_material = defaultElMaterial;
+                        segment4.m_lodMaterial = defaultElLODMaterial;
                         node1.m_material = elevatedMaterial;
                         node1.m_lodMaterial = elevatedLODMaterial;
                         node2.m_material = elevatedMaterial;
                         node2.m_lodMaterial = elevatedLODMaterial;
-                        node2.m_directConnect = true;
+                        node3.m_connectGroup = isTwoWay ? (NetInfo.ConnectGroup)16 | NetInfo.ConnectGroup.CenterTram: NetInfo.ConnectGroup.CenterTram;
+                        node3.m_material = elevatedMaterial;
+                        node3.m_lodMaterial = elevatedLODMaterial;
+                        node3.m_directConnect = true;
                         RoadHelper.HandleAsymSegmentFlags(segment1);
                         RoadHelper.HandleAsymSegmentFlags(segment3);
                         nodeList.AddRange(GenerateSplitTracks(info, version));
@@ -736,7 +767,7 @@ namespace MetroOverhaul.InitializationSteps
                             (@"Meshes\6m\Ground_Fence_Steel.obj",
                             @"Meshes\6m\Ground_Fence_LOD.obj");
                         node
-                            .SetFlags(NetNode.Flags.None, NetNode.Flags.None)
+                            .SetFlags(NetNode.Flags.None, NetNode.Flags.LevelCrossing)
                             .SetMeshes
                             (@"Meshes\6m\Ground_Node_Fence_Steel.obj",
                             @"Meshes\6m\Ground_Node_Fence_LOD.obj");

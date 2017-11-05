@@ -76,6 +76,14 @@
             }
             return netInfo.name.Contains("Metro Track Tunnel");
         }
+        public static bool IsMetroTrack(this NetInfo netInfo)
+        {
+            if (netInfo?.name == null)
+            {
+                return false;
+            }
+            return netInfo.name.Contains("Metro Track");
+        }
 
         public static bool IsPedestrianNetwork(this NetInfo info)
         {

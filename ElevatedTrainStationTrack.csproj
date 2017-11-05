@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="AbstractInitializer.cs" />
     <Compile Include="AssetsUpdater.cs" />
+    <Compile Include="Assets\Resources\Skins\SkinTest.cs" />
     <Compile Include="Detours\PassengerTrainAIDetour.cs" />
     <Compile Include="Extensions\ActionExtensions.cs" />
     <Compile Include="Detours\DepotAIDetour.cs" />
@@ -70,8 +71,8 @@
     <Compile Include="Redirection\Extensions\TypeExtension.cs" />
     <Compile Include="TrainTrackAIMetro.cs" />
     <Compile Include="TrainTrackBridgeAIMetro.cs" />
-    <Compile Include="UI\StyleSelectionStationUI.cs" />
-    <Compile Include="UI\StyleSelectionUI.cs" />
+    <Compile Include="MetroTrackAIMetro.cs" />
+    <Compile Include="UI\MetroTrackCustomizerUI.cs" />
     <Compile Include="TrainTrackTunnelAIMetro.cs" />
     <Compile Include="InitializationSteps\LateBuildUpSteel.cs" />
     <Compile Include="InitializationSteps\LateBuildUp.cs" />
@@ -168,6 +169,84 @@
     <None Include="Assets\MetroElevatedPillar.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Assets\MetroElevatedPillar2.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\Resources\Skins\Amiga500GUISkin.guiskin" />
+    <None Include="Assets\Resources\Skins\Amiga500GUISkin.guiskin.meta" />
+    <None Include="Assets\Resources\Skins\controls.meta" />
+    <None Include="Assets\Resources\Skins\controls2.meta" />
+    <None Include="Assets\Resources\Skins\controls2\box.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\buttonActive.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\buttonHover.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\buttonNormal.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\horizScrollBar.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\horizScrollBarThumbHover.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\horizScrollBarThumbNormal.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\horizSlider.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\horizSliderThumbHover.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\horizSliderThumbNormal.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\textArea.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\textField.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\toggleSelected.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\toggleUnselected.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\vertScrollBar.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\vertScrollBarThumbHover.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\vertScrollBarThumbNormal.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\vertSlider.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\vertSliderThumbHover.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\vertSliderThumbNormal.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\windowActive.png.meta" />
+    <None Include="Assets\Resources\Skins\controls2\windowInactive.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3.meta" />
+    <None Include="Assets\Resources\Skins\controls3\boxActive.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\boxNormal.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\buttonActive.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\buttonHover.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\buttonNormal.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\horizScrollBar.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\horizScrollbarThumbActive.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\horizScrollbarThumbNormal.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\horizSlider.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\sliderThumb.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\sliderThumbActive.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\textFieldActive.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\textFieldNormal.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\toggleSelected.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\toggleUnselected.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\vertScrollBar.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\vertScrollbarThumbActive.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\vertScrollbarThumbNormal.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\vertSlider.png.meta" />
+    <None Include="Assets\Resources\Skins\controls3\window.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\boxNormal.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\boxOver.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\buttonDown.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\buttonNormal.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\buttonOver.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\checkboxOff.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\checkboxOn.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\horizScrollBar.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\horizScrollButton.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\horizSliderBar.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\horizSliderButton.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\label.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\textfieldNormal.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\textfieldOver.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\vertScrollBar.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\vertScrollButton.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\vertSliderBar.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\vertSliderButton.png.meta" />
+    <None Include="Assets\Resources\Skins\controls\window.png.meta" />
+    <None Include="Assets\Resources\Skins\GUITest.unity" />
+    <None Include="Assets\Resources\Skins\GUITest.unity.meta" />
+    <None Include="Assets\Resources\Skins\MetalGUISkin.guiskin" />
+    <None Include="Assets\Resources\Skins\MetalGUISkin.guiskin.meta" />
+    <None Include="Assets\Resources\Skins\OrangeGUISkin.guiskin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\Resources\Skins\OrangeGUISkin.guiskin.meta" />
+    <None Include="Assets\Resources\Skins\SkinTest.cs.meta" />
     <None Include="Assets\SteelMetroElevatedPillar.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -534,6 +613,15 @@
     <None Include="Resources\Meshes\10m\Slope_U_Node_Pavement_Steel_Fence.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\10m\Station_Boosted_Rail.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Station_Rail.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Station_ThirdRail.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\10m\Tunnel_Node_Pavement_Steel.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -580,6 +668,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\10m\Tunnel_Station_Pavement.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Tunnel_Trans_Pavement_Steel.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\14m\Elevated_Station_Node_Pavement_LOD.obj">
@@ -768,10 +859,16 @@
     <None Include="Resources\Meshes\18m\Boosted_Rail_Merge_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\18m\Boosted_Rail_Single_End.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\18m\Boosted_Rail_Single_Merge_End.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\18m\Boosted_Rail_Single_Merge_Start.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\18m\Boosted_Rail_Single_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\18m\Boosted_Rail_Steel.obj">
@@ -783,10 +880,16 @@
     <None Include="Resources\Meshes\18m\Boosted_Rail_Steel_Insert_Merge_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\18m\Boosted_Rail_Steel_Insert_Single_End.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\18m\Boosted_Rail_Steel_Insert_Single_Merge_End.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\18m\Boosted_Rail_Steel_Insert_Single_Merge_Start.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\18m\Boosted_Rail_Steel_Insert_Single_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\18m\Boosted_Rail_Steel_LOD.obj">
@@ -864,10 +967,16 @@
     <None Include="Resources\Meshes\18m\Elevated_Node_Pavement_Steel_Insert_Merge_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\18m\Elevated_Node_Pavement_Steel_Insert_Single_End.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\18m\Elevated_Node_Pavement_Steel_Insert_Single_Merge_End.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\18m\Elevated_Node_Pavement_Steel_Insert_Single_Merge_Start.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\18m\Elevated_Node_Pavement_Steel_Insert_Single_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\18m\Elevated_Node_Pavement_Steel_LOD.obj">
@@ -996,10 +1105,16 @@
     <None Include="Resources\Meshes\18m\Ground_Rail_Merge_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\18m\Ground_Rail_Single_End.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\18m\Ground_Rail_Single_Merge_End.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\18m\Ground_Rail_Single_Merge_Start.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\18m\Ground_Rail_Single_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\18m\Ground_Station_Fence.obj">
@@ -1053,10 +1168,16 @@
     <None Include="Resources\Meshes\18m\LevelCrossing_Rail_Insert_Merge_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\18m\LevelCrossing_Rail_Insert_Single_End.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\18m\LevelCrossing_Rail_Insert_Single_Merge_End.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\18m\LevelCrossing_Rail_Insert_Single_Merge_Start.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\18m\LevelCrossing_Rail_Insert_Single_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\18m\LevelCrossing_Rail_Merge_End.obj">
@@ -1065,10 +1186,16 @@
     <None Include="Resources\Meshes\18m\LevelCrossing_Rail_Merge_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\18m\LevelCrossing_Rail_Single_End.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\18m\LevelCrossing_Rail_Single_Merge_End.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\18m\LevelCrossing_Rail_Single_Merge_Start.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\18m\LevelCrossing_Rail_Single_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\18m\LevelCrossing_Station_Rail.obj">
@@ -1080,102 +1207,6 @@
     <None Include="Resources\Meshes\18m\Level_Crossing_Pavement_LOD.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\Meshes\18m\LOL\Bridge_Fence_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Bridge_Node_Fence_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Bridge_Node_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Bridge_Node_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Bridge_Node_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Bridge_Node_Pavement_Steel_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Bridge_Node_Pavement_Trans.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Bridge_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Bridge_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Bridge_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Bridge_Pavement_Steel_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Bar_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Fence.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Fence_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Node_Fence.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Node_Fence_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Node_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Node_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Node_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Node_Pavement_Steel_Insert_Merge_End.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Node_Pavement_Steel_Insert_Merge_Start.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Node_Pavement_Steel_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Node_Pavement_Steel_Trans.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Node_Pavement_Trans.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Pavement_Steel_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Station_Node_Bar_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Station_Node_Fence.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Station_Node_Fence_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Station_Node_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Station_Node_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Station_Node_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Station_Node_Pavement_Steel_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Station_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Station_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Station_Pavement_Node.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Station_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_Station_Pavement_Steel_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_ThirdRail_Base.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Elevated_ThirdRail_Base_Node.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Fence.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Fence_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Fence_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Node_Fence.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Node_Fence_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Node_Fence_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Node_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Node_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Node_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Station_Fence.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Station_Node_Fence.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Station_Node_Fence_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Station_Node_Fence_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Station_Node_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Station_Node_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Station_Node_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Station_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Station_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Ground_Station_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\LevelCrossing_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\LOL\LevelCrossing_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Level_Crossing_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Slope_Node_Fence.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Slope_Node_Fence_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Slope_Node_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Slope_Node_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Slope_Node_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Slope_Node_Pavement_Steel_Fence.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Slope_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Slope_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Slope_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Slope_Pavement_Steel_Bar.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Slope_Pavement_Steel_Fence.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Slope_Pavement_Steel_Ground.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Slope_U_Node_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Slope_U_Node_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Station_Node_Insert_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Station_Node_Insert_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Station_Node_ThirdRail.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Tunnel_Node_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Tunnel_Node_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Tunnel_Node_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Tunnel_Node_Pavement_Steel_Bar.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Tunnel_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Tunnel_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Tunnel_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Tunnel_Pavement_Steel_Bar.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Tunnel_Pavement_Steel_Fence.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Tunnel_Pavement_Steel_Ground.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Tunnel_Station_Node_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\LOL\Tunnel_Station_Pavement.obj" />
     <None Include="Resources\Meshes\18m\Rail.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1230,30 +1261,6 @@
     <None Include="Resources\Meshes\18m\Slope_U_Node_Pavement_Steel_Fence.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\Meshes\18m\Station\Elevated_Station_Node_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\Station\Elevated_Station_Node_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\Station\Elevated_Station_Node_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\Station\Elevated_Station_Node_Pavement_Steel2.obj" />
-    <None Include="Resources\Meshes\18m\Station\Elevated_Station_Node_Pavement_Steel_LOD.obj" />
-    <None Include="Resources\Meshes\18m\Station\Elevated_Station_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\Station\Elevated_Station_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\Station\Elevated_Station_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\Station\Elevated_Station_Pavement_Steel_LOD.obj" />
-    <None Include="Resources\Meshes\18m\Station\Ground_Station_Fence.obj" />
-    <None Include="Resources\Meshes\18m\Station\Ground_Station_Node_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\Station\Ground_Station_Node_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\Station\Ground_Station_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\Station\Ground_Station_Pavement_LOD.obj" />
-    <None Include="Resources\Meshes\18m\Station\Station_Node_Insert_Pavement_Steel.obj" />
-    <None Include="Resources\Meshes\18m\Station\Station_Node_Insert_Pavement_SteelX.obj" />
-    <None Include="Resources\Meshes\18m\Station\Station_Node_Insert_Steel.obj" />
-    <None Include="Resources\Meshes\18m\Station\Station_Node_Insert_Steel2.obj" />
-    <None Include="Resources\Meshes\18m\Station\Station_Node_Insert_Steel3.obj" />
-    <None Include="Resources\Meshes\18m\Station\Station_Node_ThirdRail.obj" />
-    <None Include="Resources\Meshes\18m\Station\Station_ThirdRail.obj" />
-    <None Include="Resources\Meshes\18m\Station\Station_ThirdRail_Node.obj" />
-    <None Include="Resources\Meshes\18m\Station\Tunnel_Station_Node_Pavement.obj" />
-    <None Include="Resources\Meshes\18m\Station\Tunnel_Station_Pavement.obj" />
     <None Include="Resources\Meshes\18m\Station_Boosted_Rail.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1353,6 +1360,9 @@
     <None Include="Resources\Meshes\18m\Tunnel_Station_Pavement.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\18m\Tunnel_Trans_Pavement_Steel.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\6m\Blank.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1368,12 +1378,6 @@
     <None Include="Resources\Meshes\6m\Boosted_Rail_Merge_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\Meshes\6m\Boosted_Rail_Single_End.obj">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Meshes\6m\Boosted_Rail_Single_Start.obj">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Resources\Meshes\6m\Boosted_Rail_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1387,12 +1391,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\6m\Boosted_Rail_Steel_Insert_Merge_Start.obj">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Meshes\6m\Boosted_Rail_Steel_Insert_Single_End.obj">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Meshes\6m\Boosted_Rail_Steel_Insert_Single_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\6m\Boosted_Rail_Steel_Insert_Start.obj">
@@ -1462,9 +1460,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\6m\Elevated_Node_Pavement_Steel_Insert_Single_End.obj">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Meshes\6m\Elevated_Node_Pavement_Steel_Insert_Single_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\6m\Elevated_Node_Pavement_Steel_Insert_Start.obj">
@@ -1539,12 +1534,6 @@
     <None Include="Resources\Meshes\6m\Ground_Fence_Steel.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\Meshes\6m\Ground_Rail_Single_End.obj">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Meshes\6m\Ground_Rail_Single_Start.obj">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Resources\Meshes\6m\LevelCrossing.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1569,12 +1558,6 @@
     <None Include="Resources\Meshes\6m\LevelCrossing_Rail_Insert_Merge_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\Meshes\6m\LevelCrossing_Rail_Insert_Single_End.obj">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Meshes\6m\LevelCrossing_Rail_Insert_Single_Start.obj">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Resources\Meshes\6m\LevelCrossing_Rail_Insert_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1585,12 +1568,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\6m\LevelCrossing_Rail_Merge_Start.obj">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Meshes\6m\LevelCrossing_Rail_Single_End.obj">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Meshes\6m\LevelCrossing_Rail_Single_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\6m\LevelCrossing_Rail_Start.obj">
@@ -1731,6 +1708,15 @@
     <None Include="Resources\Meshes\6m\Ground_Station_Rail_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\6m\Station_Boosted_Rail.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\6m\Station_Rail.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\6m\Station_ThirdRail.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\6m\ThirdRail.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1785,8 +1771,72 @@
     <None Include="Resources\Meshes\6m\Tunnel_Station_Pavement.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\6m\Tunnel_Trans_Pavement_Steel.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Resources\Skins\controls2\box.png" />
+    <Content Include="Assets\Resources\Skins\controls2\buttonActive.png" />
+    <Content Include="Assets\Resources\Skins\controls2\buttonHover.png" />
+    <Content Include="Assets\Resources\Skins\controls2\buttonNormal.png" />
+    <Content Include="Assets\Resources\Skins\controls2\horizScrollBar.png" />
+    <Content Include="Assets\Resources\Skins\controls2\horizScrollBarThumbHover.png" />
+    <Content Include="Assets\Resources\Skins\controls2\horizScrollBarThumbNormal.png" />
+    <Content Include="Assets\Resources\Skins\controls2\horizSlider.png" />
+    <Content Include="Assets\Resources\Skins\controls2\horizSliderThumbHover.png" />
+    <Content Include="Assets\Resources\Skins\controls2\horizSliderThumbNormal.png" />
+    <Content Include="Assets\Resources\Skins\controls2\textArea.png" />
+    <Content Include="Assets\Resources\Skins\controls2\textField.png" />
+    <Content Include="Assets\Resources\Skins\controls2\toggleSelected.png" />
+    <Content Include="Assets\Resources\Skins\controls2\toggleUnselected.png" />
+    <Content Include="Assets\Resources\Skins\controls2\vertScrollBar.png" />
+    <Content Include="Assets\Resources\Skins\controls2\vertScrollBarThumbHover.png" />
+    <Content Include="Assets\Resources\Skins\controls2\vertScrollBarThumbNormal.png" />
+    <Content Include="Assets\Resources\Skins\controls2\vertSlider.png" />
+    <Content Include="Assets\Resources\Skins\controls2\vertSliderThumbHover.png" />
+    <Content Include="Assets\Resources\Skins\controls2\vertSliderThumbNormal.png" />
+    <Content Include="Assets\Resources\Skins\controls2\windowActive.png" />
+    <Content Include="Assets\Resources\Skins\controls2\windowInactive.png" />
+    <Content Include="Assets\Resources\Skins\controls3\boxActive.png" />
+    <Content Include="Assets\Resources\Skins\controls3\boxNormal.png" />
+    <Content Include="Assets\Resources\Skins\controls3\buttonActive.png" />
+    <Content Include="Assets\Resources\Skins\controls3\buttonHover.png" />
+    <Content Include="Assets\Resources\Skins\controls3\buttonNormal.png" />
+    <Content Include="Assets\Resources\Skins\controls3\horizScrollBar.png" />
+    <Content Include="Assets\Resources\Skins\controls3\horizScrollbarThumbActive.png" />
+    <Content Include="Assets\Resources\Skins\controls3\horizScrollbarThumbNormal.png" />
+    <Content Include="Assets\Resources\Skins\controls3\horizSlider.png" />
+    <Content Include="Assets\Resources\Skins\controls3\sliderThumb.png" />
+    <Content Include="Assets\Resources\Skins\controls3\sliderThumbActive.png" />
+    <Content Include="Assets\Resources\Skins\controls3\textFieldActive.png" />
+    <Content Include="Assets\Resources\Skins\controls3\textFieldNormal.png" />
+    <Content Include="Assets\Resources\Skins\controls3\toggleSelected.png" />
+    <Content Include="Assets\Resources\Skins\controls3\toggleUnselected.png" />
+    <Content Include="Assets\Resources\Skins\controls3\vertScrollBar.png" />
+    <Content Include="Assets\Resources\Skins\controls3\vertScrollbarThumbActive.png" />
+    <Content Include="Assets\Resources\Skins\controls3\vertScrollbarThumbNormal.png" />
+    <Content Include="Assets\Resources\Skins\controls3\vertSlider.png" />
+    <Content Include="Assets\Resources\Skins\controls3\window.png" />
+    <Content Include="Assets\Resources\Skins\controls\boxNormal.png" />
+    <Content Include="Assets\Resources\Skins\controls\boxOver.png" />
+    <Content Include="Assets\Resources\Skins\controls\buttonDown.png" />
+    <Content Include="Assets\Resources\Skins\controls\buttonNormal.png" />
+    <Content Include="Assets\Resources\Skins\controls\buttonOver.png" />
+    <Content Include="Assets\Resources\Skins\controls\checkboxOff.png" />
+    <Content Include="Assets\Resources\Skins\controls\checkboxOn.png" />
+    <Content Include="Assets\Resources\Skins\controls\horizScrollBar.png" />
+    <Content Include="Assets\Resources\Skins\controls\horizScrollButton.png" />
+    <Content Include="Assets\Resources\Skins\controls\horizSliderBar.png" />
+    <Content Include="Assets\Resources\Skins\controls\horizSliderButton.png" />
+    <Content Include="Assets\Resources\Skins\controls\label.png" />
+    <Content Include="Assets\Resources\Skins\controls\textfieldNormal.png" />
+    <Content Include="Assets\Resources\Skins\controls\textfieldOver.png" />
+    <Content Include="Assets\Resources\Skins\controls\vertScrollBar.png" />
+    <Content Include="Assets\Resources\Skins\controls\vertScrollButton.png" />
+    <Content Include="Assets\Resources\Skins\controls\vertSliderBar.png" />
+    <Content Include="Assets\Resources\Skins\controls\vertSliderButton.png" />
+    <Content Include="Assets\Resources\Skins\controls\window.png" />
     <Content Include="CHECKLIST.txt" />
     <Content Include="lib\ObjUnity3D.dll" />
     <Content Include="Resources\Textures\Bridge_Node_Pavement_Steel__MainTex.png">
@@ -2239,7 +2289,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\Meshes\14m\Station\" />
-    <Folder Include="Resources\Meshes\18m\New folder\" />
+    <Folder Include="Resources\Skins\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

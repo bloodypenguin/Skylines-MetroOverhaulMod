@@ -129,7 +129,7 @@ namespace MetroOverhaul.InitializationSteps
         public static void CommonCustomizationLarge(NetInfo prefab, NetInfoVersion version)
         {
             prefab.m_connectGroup = NetInfo.ConnectGroup.WideTram;
-            prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.NarrowTram | (NetInfo.ConnectGroup)16;
+            prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.NarrowTram | (NetInfo.ConnectGroup)16 | NetInfo.ConnectGroup.CenterTram;
 
             if (prefab.m_nodes.Count() > 1)
             {
@@ -178,10 +178,6 @@ namespace MetroOverhaul.InitializationSteps
             if (isTwoWay)
             {
                 prefab.m_nodeConnectGroups |= (NetInfo.ConnectGroup)16;
-            }
-            else
-            {
-                prefab.m_nodeConnectGroups |= NetInfo.ConnectGroup.WideTram;
             }
 
             prefab.SetRoadLanes(version, new LanesConfiguration()

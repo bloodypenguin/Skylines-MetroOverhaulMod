@@ -232,7 +232,7 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         foreach (var segment in info.m_segments)
                         {
-                            if (segment.m_mesh.name.Contains("Tunnel_Station"))
+                            if (segment.m_mesh.name.Contains("Tunnel_Station_Pavement"))
                             {
                                 segment.SetTextures(
                                     new TextureSet

@@ -11,22 +11,25 @@ namespace MetroOverhaul.UI
         private const int DEPTH_STEP = 3;
         private const int LENGTH_STEP = 8;
         private const int ANGLE_STEP = 15;
+        private const float BEND_STRENGTH_STEP = 0.5f;
         private float m_setDepth;
         private float m_setLength;
+        private float m_setBendStrength;
         private float m_setAngle;
         private float m_oldAngle;
         private bool m_valueChanged = false;
         private UITextField m_lengthTextbox = new UITextField();
         private UITextField m_depthTextbox = new UITextField();
         private UITextField m_angleTextbox = new UITextField();
+        private UITextField m_bendStrengthTextbox = new UITextField();
         private BulldozeTool m_bulldozeTool;
         private BuildingTool m_buildingTool;
         private NetTool m_netTool;
         private UIButton m_upgradeButtonTemplate;
         private BuildingInfo m_currentBuilding;
         private bool m_activated = false;
-        private TrackType m_TrackType = TrackType.SidePlatform;
-        private TrackType m_PrevTrackType = TrackType.SidePlatform;
+        private StationTrackType m_TrackType = StationTrackType.SidePlatform;
+        private StationTrackType m_PrevTrackType = StationTrackType.SidePlatform;
         public static MetroStationCustomizerUI instance;
         public override void Update()
         {
@@ -134,7 +137,7 @@ namespace MetroOverhaul.UI
         private void CreateUI()
         {
 #if DEBUG
-            Next.Debug.Log("MOM GUI Created");
+            Next.Debug.Log("MOM STATION TRACK GUI Created");
 #endif
             Action stationMechanicsTask = DoStationMechanics;
             Task t = Task.Create(stationMechanicsTask);
@@ -142,7 +145,7 @@ namespace MetroOverhaul.UI
             backgroundSprite = "GenericPanel";
             color = new Color32(68, 84, 68, 170);
             width = 200;
-            height = 230;
+            height = 270;
             position = Vector2.zero;
             isVisible = false;
             isInteractive = true;
@@ -163,18 +166,6 @@ namespace MetroOverhaul.UI
             lengthTitleLabel.relativePosition = new Vector3() { x = 8, y = 20, z = 0 };
             lengthTitleLabel.text = "Station Length";
             lengthTitleLabel.isInteractive = false;
-
-            UILabel depthTitleLabel = AddUIComponent<UILabel>();
-            depthTitleLabel.relativePosition = new Vector3() { x = 8, y = 60, z = 0 };
-            depthTitleLabel.text = "Station Depth";
-            depthTitleLabel.height = 10;
-            depthTitleLabel.isInteractive = false;
-
-            UILabel angleTitleLabel = AddUIComponent<UILabel>();
-            angleTitleLabel.relativePosition = new Vector3() { x = 8, y = 100, z = 0 };
-            angleTitleLabel.text = "Station Angle";
-            angleTitleLabel.height = 10;
-            angleTitleLabel.isInteractive = false;
 
             UIPanel lengthSliderPanel = AddUIComponent<UIPanel>();
             lengthSliderPanel.atlas = atlas;
@@ -257,6 +248,12 @@ namespace MetroOverhaul.UI
                         lengthSlider.value = SetStationCustomizations.MIN_LENGTH;
                 }
             };
+
+            UILabel depthTitleLabel = AddUIComponent<UILabel>();
+            depthTitleLabel.relativePosition = new Vector3() { x = 8, y = 60, z = 0 };
+            depthTitleLabel.text = "Station Depth";
+            depthTitleLabel.height = 10;
+            depthTitleLabel.isInteractive = false;
 
             UIPanel depthSliderPanel = AddUIComponent<UIPanel>();
             depthSliderPanel.atlas = atlas;
@@ -342,6 +339,12 @@ namespace MetroOverhaul.UI
                 }
             };
 
+            UILabel angleTitleLabel = AddUIComponent<UILabel>();
+            angleTitleLabel.relativePosition = new Vector3() { x = 8, y = 100, z = 0 };
+            angleTitleLabel.text = "Station Angle";
+            angleTitleLabel.height = 10;
+            angleTitleLabel.isInteractive = false;
+
             UIPanel angleSliderPanel = AddUIComponent<UIPanel>();
             angleSliderPanel.atlas = atlas;
             angleSliderPanel.backgroundSprite = "GenericPanel";
@@ -425,20 +428,110 @@ namespace MetroOverhaul.UI
                         angleSlider.value = SetStationCustomizations.MIN_ANGLE;
                 }
             };
+
+
+            UILabel bendStrengthTitleLabel = AddUIComponent<UILabel>();
+            bendStrengthTitleLabel.relativePosition = new Vector3() { x = 8, y = 140, z = 0 };
+            bendStrengthTitleLabel.text = "Station Bend";
+            bendStrengthTitleLabel.height = 10;
+            bendStrengthTitleLabel.isInteractive = false;
+
+            UIPanel bendStrengthSliderPanel = AddUIComponent<UIPanel>();
+            bendStrengthSliderPanel.atlas = atlas;
+            bendStrengthSliderPanel.backgroundSprite = "GenericPanel";
+            bendStrengthSliderPanel.color = new Color32(206, 206, 206, 255);
+            bendStrengthSliderPanel.size = new Vector2(width - 16, 16);
+            bendStrengthSliderPanel.relativePosition = new Vector2(8, 160);
+
+            UIPanel bendStrengthSliderLeftPanel = bendStrengthSliderPanel.AddUIComponent<UIPanel>();
+            bendStrengthSliderLeftPanel.name = "bendStrength panel left";
+            bendStrengthSliderLeftPanel.height = bendStrengthSliderPanel.height;
+            bendStrengthSliderLeftPanel.width = (0.7f * bendStrengthSliderPanel.width) - 5;
+            bendStrengthSliderLeftPanel.relativePosition = new Vector2(0, 0);
+
+            UISlider bendStrengthSlider = bendStrengthSliderLeftPanel.AddUIComponent<UISlider>();
+            bendStrengthSlider.name = "bendStrength Slider";
+            bendStrengthSlider.maxValue = SetStationCustomizations.MAX_BEND_STRENGTH;
+            bendStrengthSlider.minValue = SetStationCustomizations.MIN_BEND_STRENGTH;
+            bendStrengthSlider.stepSize = BEND_STRENGTH_STEP;
+            bendStrengthSlider.relativePosition = new Vector2(0, 0);
+            bendStrengthSlider.size = bendStrengthSliderLeftPanel.size;
+            bendStrengthSlider.eventValueChanged += (c, v) =>
+            {
+
+                if (m_bendStrengthTextbox.text != v.ToString())
+                {
+                    m_valueChanged = true;
+                    if (v >= SetStationCustomizations.MIN_BEND_STRENGTH && v <= SetStationCustomizations.MAX_BEND_STRENGTH)
+                    {
+                        m_bendStrengthTextbox.text = v.ToString();
+                        m_setBendStrength = v;
+                    }
+                    else
+                    {
+                        m_bendStrengthTextbox.text = "0";
+                        m_setBendStrength = 0;
+                    }
+                }
+            };
+
+            bendStrengthSlider.eventMouseUp += (c, e) =>
+            {
+                if (m_valueChanged)
+                {
+                    m_valueChanged = false;
+                    t.Run();
+                }
+
+            };
+            UISlicedSprite bendStrengthSliderBgSprite = bendStrengthSliderLeftPanel.AddUIComponent<UISlicedSprite>();
+            bendStrengthSliderBgSprite.isInteractive = false;
+            bendStrengthSliderBgSprite.atlas = atlas;
+            bendStrengthSliderBgSprite.spriteName = "BudgetSlider";
+            bendStrengthSliderBgSprite.size = bendStrengthSliderLeftPanel.size;
+            bendStrengthSliderBgSprite.relativePosition = new Vector2(0, 0);
+
+            UISlicedSprite bendStrengthSliderMkSprite = bendStrengthSliderLeftPanel.AddUIComponent<UISlicedSprite>();
+            bendStrengthSliderMkSprite.atlas = atlas;
+            bendStrengthSliderMkSprite.spriteName = "SliderBudget";
+            bendStrengthSliderMkSprite.isInteractive = false;
+            bendStrengthSlider.thumbObject = bendStrengthSliderMkSprite;
+
+            m_bendStrengthTextbox = bendStrengthSliderPanel.AddUIComponent<UITextField>();
+            m_bendStrengthTextbox.text = "Default";
+            m_bendStrengthTextbox.height = bendStrengthSliderPanel.height;
+            m_bendStrengthTextbox.width = bendStrengthSliderPanel.size.x - bendStrengthSliderLeftPanel.size.x;
+            m_bendStrengthTextbox.relativePosition = new Vector2(bendStrengthSliderLeftPanel.width, 0);
+            m_bendStrengthTextbox.eventTextChanged += (c, v) =>
+            {
+                float val = 0;
+                if (float.TryParse(v, out val))
+                {
+                    m_setBendStrength = val;
+                    if (bendStrengthSlider.value != val)
+                        bendStrengthSlider.value = val;
+                }
+                else
+                {
+                    m_setBendStrength = 0;
+                    if (bendStrengthSlider.value != 0)
+                        bendStrengthSlider.value = 0;
+                }
+            };
             UICheckBox useIslandPlatformCheckBox = AddUIComponent<UICheckBox>();
             UICheckBox UseSidePlatformCheckBox = AddUIComponent<UICheckBox>();
             UICheckBox UseSingleTrackCheckBox = AddUIComponent<UICheckBox>();
 
             UseSidePlatformCheckBox.text = "Side Platform";
             UseSidePlatformCheckBox.size = new Vector2(width - 16, 16);
-            UseSidePlatformCheckBox.relativePosition = new Vector2(8, 160);
+            UseSidePlatformCheckBox.relativePosition = new Vector2(8, 200);
             UseSidePlatformCheckBox.isInteractive = true;
             UseSidePlatformCheckBox.eventCheckChanged += (c, v) =>
             {
                 if (UseSidePlatformCheckBox.isChecked)
                 {
                     m_PrevTrackType = m_TrackType;
-                    m_TrackType = TrackType.SidePlatform;
+                    m_TrackType = StationTrackType.SidePlatform;
                     useIslandPlatformCheckBox.isChecked = false;
                     UseSingleTrackCheckBox.isChecked = false;
                     TunnelStationTrackToggleStyles(m_currentBuilding);
@@ -469,14 +562,14 @@ namespace MetroOverhaul.UI
 
             useIslandPlatformCheckBox.text = "Island Platform";
             useIslandPlatformCheckBox.size = new Vector2(width - 16, 16);
-            useIslandPlatformCheckBox.relativePosition = new Vector2(8, 180);
+            useIslandPlatformCheckBox.relativePosition = new Vector2(8, 220);
             useIslandPlatformCheckBox.isInteractive = true;
             useIslandPlatformCheckBox.eventCheckChanged += (c, v) =>
              {
                  if (useIslandPlatformCheckBox.isChecked)
                  {
                      m_PrevTrackType = m_TrackType;
-                     m_TrackType = TrackType.IslandPlatform;
+                     m_TrackType = StationTrackType.IslandPlatform;
                      UseSingleTrackCheckBox.isChecked = false;
                      UseSidePlatformCheckBox.isChecked = false;
                      TunnelStationTrackToggleStyles(m_currentBuilding);
@@ -506,14 +599,14 @@ namespace MetroOverhaul.UI
 
             UseSingleTrackCheckBox.text = "Single Track";
             UseSingleTrackCheckBox.size = new Vector2(width - 16, 16);
-            UseSingleTrackCheckBox.relativePosition = new Vector2(8, 200);
+            UseSingleTrackCheckBox.relativePosition = new Vector2(8, 240);
             UseSingleTrackCheckBox.isInteractive = true;
             UseSingleTrackCheckBox.eventCheckChanged += (c, v) =>
             {
                 if (UseSingleTrackCheckBox.isChecked)
                 {
                     m_PrevTrackType = m_TrackType;
-                    m_TrackType = TrackType.SingleTrack;
+                    m_TrackType = StationTrackType.SingleTrack;
                     useIslandPlatformCheckBox.isChecked = false;
                     UseSidePlatformCheckBox.isChecked = false;
                     TunnelStationTrackToggleStyles(m_currentBuilding);
@@ -552,7 +645,7 @@ namespace MetroOverhaul.UI
                 var path = info.m_paths[i];
                 if (path?.m_netInfo?.name != null && path.m_netInfo.IsUndergroundMetroStationTrack())
                 {
-                    if (m_PrevTrackType != TrackType.SidePlatform)
+                    if (m_PrevTrackType != StationTrackType.SidePlatform)
                     {
                         path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel");
                     }
@@ -575,7 +668,7 @@ namespace MetroOverhaul.UI
                 }
                 switch (m_TrackType)
                 {
-                    case TrackType.SidePlatform:
+                    case StationTrackType.SidePlatform:
                         {
                             if (m_UseSidePlatformCheckBoxClicker.spriteName == "check-unchecked")
                             {
@@ -584,13 +677,13 @@ namespace MetroOverhaul.UI
                                 m_UseSingleTrackCheckBoxClicker.spriteName = "check-unchecked";
                             }
 
-                            if (m_PrevTrackType != TrackType.SidePlatform)
+                            if (m_PrevTrackType != StationTrackType.SidePlatform)
                             {
                                 path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel");
                             }
                         }
                         break;
-                    case TrackType.IslandPlatform:
+                    case StationTrackType.IslandPlatform:
                         {
                             if (m_UseIslandPlatformCheckBoxClicker.spriteName == "check-unchecked")
                             {
@@ -599,13 +692,13 @@ namespace MetroOverhaul.UI
                                 m_UseSingleTrackCheckBoxClicker.spriteName = "check-unchecked";
                             }
 
-                            if (m_PrevTrackType != TrackType.IslandPlatform)
+                            if (m_PrevTrackType != StationTrackType.IslandPlatform)
                             {
                                 path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel Island");
                             }
                         }
                         break;
-                    case TrackType.SingleTrack:
+                    case StationTrackType.SingleTrack:
                         {
                             if (m_UseSingleTrackCheckBoxClicker.spriteName == "check-unchecked")
                             {
@@ -614,7 +707,7 @@ namespace MetroOverhaul.UI
                                 m_UseSidePlatformCheckBoxClicker.spriteName = "check-unchecked";
                             }
 
-                            if (m_PrevTrackType != TrackType.SingleTrack)
+                            if (m_PrevTrackType != StationTrackType.SingleTrack)
                             {
                                 path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel Small");
                             }
@@ -648,10 +741,10 @@ namespace MetroOverhaul.UI
         {
             var angleDelta = Math.PI / 180 * (m_setAngle - m_oldAngle);
             m_oldAngle = m_setAngle;
-            SetStationCustomizations.ModifyStation(m_currentBuilding, m_setDepth, m_setLength, angleDelta);
+            SetStationCustomizations.ModifyStation(m_currentBuilding, m_setDepth, m_setLength, angleDelta, m_setBendStrength);
         }
     }
-    public enum TrackType
+    public enum StationTrackType
     {
         SidePlatform,
         IslandPlatform,
