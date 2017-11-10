@@ -135,6 +135,7 @@ namespace MetroOverhaul
                 {
                     UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizerUI));
                     UIView.GetAView().AddUIComponent(typeof(MetroTrackCustomizerUI));
+					UIView.GetAView().AddUIComponent(typeof(MetroAboveGroundStationCustomizerUI));
                 }
 
                 var transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Metro");
@@ -148,8 +149,9 @@ namespace MetroOverhaul
 #if DEBUG
                 UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizerUI));
                 UIView.GetAView().AddUIComponent(typeof(MetroTrackCustomizerUI));
+				UIView.GetAView().AddUIComponent(typeof(MetroAboveGroundStationCustomizerUI));
 #endif
-            }
+			}
         }
 
         public override void OnLevelUnloading()

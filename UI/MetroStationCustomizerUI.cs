@@ -137,7 +137,7 @@ namespace MetroOverhaul.UI
         private void CreateUI()
         {
 #if DEBUG
-            Next.Debug.Log("MOM STATION TRACK GUI Created");
+            Next.Debug.Log("MOM UNDERGROUND STATION TRACK GUI Created");
 #endif
             Action stationMechanicsTask = DoStationMechanics;
             Task t = Task.Create(stationMechanicsTask);
@@ -146,23 +146,34 @@ namespace MetroOverhaul.UI
             color = new Color32(68, 84, 68, 170);
             width = 200;
             height = 270;
+			opacity = 60;
             position = Vector2.zero;
             isVisible = false;
             isInteractive = true;
             padding = new RectOffset() { bottom = 8, left = 8, right = 8, top = 8 };
 
-            UIDragHandle dragHandle = AddUIComponent<UIDragHandle>();
-            dragHandle.width = width;
-            dragHandle.height = 20;
-            dragHandle.relativePosition = Vector3.zero;
-            dragHandle.target = this;
+			UIPanel dragHandlePanel = AddUIComponent<UIPanel>();
+			dragHandlePanel.atlas = atlas;
+			dragHandlePanel.backgroundSprite = "GenericPanel";
+			dragHandlePanel.width = width;
+			dragHandlePanel.height = 20;
+			dragHandlePanel.opacity = 100;
+			dragHandlePanel.color = new Color32(21, 140, 34, 255);
+			dragHandlePanel.relativePosition = Vector3.zero;
 
-            UILabel titleLabel = AddUIComponent<UILabel>();
-            titleLabel.relativePosition = new Vector3() { x = 5, y = 0, z = 0 };
-            titleLabel.text = "Station Attributes";
-            titleLabel.isInteractive = false;
+			UIDragHandle dragHandle = dragHandlePanel.AddUIComponent<UIDragHandle>();
+			dragHandle.width = width;
+			dragHandle.height = 20;
+			dragHandle.relativePosition = Vector3.zero;
+			dragHandle.target = this;
 
-            UILabel lengthTitleLabel = AddUIComponent<UILabel>();
+			UILabel titleLabel = dragHandlePanel.AddUIComponent<UILabel>();
+			titleLabel.relativePosition = new Vector3() { x = 5, y = 3, z = 0 };
+			titleLabel.textAlignment = UIHorizontalAlignment.Center;
+			titleLabel.text = "Underground Station Attributes";
+			titleLabel.isInteractive = false;
+
+			UILabel lengthTitleLabel = AddUIComponent<UILabel>();
             lengthTitleLabel.relativePosition = new Vector3() { x = 8, y = 20, z = 0 };
             lengthTitleLabel.text = "Station Length";
             lengthTitleLabel.isInteractive = false;
@@ -170,7 +181,7 @@ namespace MetroOverhaul.UI
             UIPanel lengthSliderPanel = AddUIComponent<UIPanel>();
             lengthSliderPanel.atlas = atlas;
             lengthSliderPanel.backgroundSprite = "GenericPanel";
-            lengthSliderPanel.color = new Color32(206, 206, 206, 255);
+            lengthSliderPanel.color = new Color32(150, 150, 150, 255);
             lengthSliderPanel.size = new Vector2(width - 16, 16);
             lengthSliderPanel.relativePosition = new Vector2(8, 40);
 
@@ -199,7 +210,7 @@ namespace MetroOverhaul.UI
                     }
                     else
                     {
-                        m_lengthTextbox.text = "Default";
+                        m_lengthTextbox.text = SetStationCustomizations.MIN_LENGTH.ToString();
                         m_setLength = SetStationCustomizations.MIN_LENGTH;
                     }
                 }
@@ -228,7 +239,7 @@ namespace MetroOverhaul.UI
             lengthSlider.thumbObject = lengthSliderMkSprite;
 
             m_lengthTextbox = lengthSliderPanel.AddUIComponent<UITextField>();
-            m_lengthTextbox.text = "Default";
+			m_lengthTextbox.text = SetStationCustomizations.MIN_LENGTH.ToString();
             m_lengthTextbox.height = lengthSliderPanel.height;
             m_lengthTextbox.width = lengthSliderPanel.size.x - lengthSliderLeftPanel.size.x;
             m_lengthTextbox.relativePosition = new Vector2(lengthSliderLeftPanel.width, 0);
@@ -258,7 +269,7 @@ namespace MetroOverhaul.UI
             UIPanel depthSliderPanel = AddUIComponent<UIPanel>();
             depthSliderPanel.atlas = atlas;
             depthSliderPanel.backgroundSprite = "GenericPanel";
-            depthSliderPanel.color = new Color32(206, 206, 206, 255);
+            depthSliderPanel.color = new Color32(150, 150, 150, 255);
             depthSliderPanel.size = new Vector2(width - 16, 16);
             depthSliderPanel.relativePosition = new Vector2(8, 80);
 
@@ -288,7 +299,7 @@ namespace MetroOverhaul.UI
                     }
                     else
                     {
-                        m_depthTextbox.text = "Default";
+                        m_depthTextbox.text = SetStationCustomizations.MIN_DEPTH.ToString();
                         m_setDepth = SetStationCustomizations.MIN_DEPTH;
                     }
                 }
@@ -318,7 +329,7 @@ namespace MetroOverhaul.UI
             depthSlider.thumbObject = depthSliderMkSprite;
 
             m_depthTextbox = depthSliderPanel.AddUIComponent<UITextField>();
-            m_depthTextbox.text = "Default";
+            m_depthTextbox.text = SetStationCustomizations.MIN_DEPTH.ToString();
             m_depthTextbox.height = depthSliderPanel.height;
             m_depthTextbox.width = depthSliderPanel.size.x - depthSliderLeftPanel.size.x;
             m_depthTextbox.relativePosition = new Vector2(depthSliderLeftPanel.width, 0);
@@ -348,7 +359,7 @@ namespace MetroOverhaul.UI
             UIPanel angleSliderPanel = AddUIComponent<UIPanel>();
             angleSliderPanel.atlas = atlas;
             angleSliderPanel.backgroundSprite = "GenericPanel";
-            angleSliderPanel.color = new Color32(206, 206, 206, 255);
+            angleSliderPanel.color = new Color32(150, 150, 150, 255);
             angleSliderPanel.size = new Vector2(width - 16, 16);
             angleSliderPanel.relativePosition = new Vector2(8, 120);
 
@@ -373,8 +384,8 @@ namespace MetroOverhaul.UI
                     m_valueChanged = true;
                     if (v <= SetStationCustomizations.MIN_ANGLE)
                     {
-                        m_angleTextbox.text = "Default";
-                        m_setAngle = SetStationCustomizations.MIN_ANGLE;
+                        m_angleTextbox.text = SetStationCustomizations.MIN_ANGLE.ToString();
+						m_setAngle = SetStationCustomizations.MIN_ANGLE;
                     }
                     else
                     {
@@ -408,7 +419,7 @@ namespace MetroOverhaul.UI
             angleSlider.thumbObject = angleSliderMkSprite;
 
             m_angleTextbox = angleSliderPanel.AddUIComponent<UITextField>();
-            m_angleTextbox.text = "Default";
+            m_angleTextbox.text = SetStationCustomizations.MIN_ANGLE.ToString();
             m_angleTextbox.height = angleSliderPanel.height;
             m_angleTextbox.width = angleSliderPanel.size.x - angleSliderLeftPanel.size.x;
             m_angleTextbox.relativePosition = new Vector2(angleSliderLeftPanel.width, 0);
@@ -439,7 +450,7 @@ namespace MetroOverhaul.UI
             UIPanel bendStrengthSliderPanel = AddUIComponent<UIPanel>();
             bendStrengthSliderPanel.atlas = atlas;
             bendStrengthSliderPanel.backgroundSprite = "GenericPanel";
-            bendStrengthSliderPanel.color = new Color32(206, 206, 206, 255);
+            bendStrengthSliderPanel.color = new Color32(150, 150, 150, 255);
             bendStrengthSliderPanel.size = new Vector2(width - 16, 16);
             bendStrengthSliderPanel.relativePosition = new Vector2(8, 160);
 
@@ -498,7 +509,7 @@ namespace MetroOverhaul.UI
             bendStrengthSlider.thumbObject = bendStrengthSliderMkSprite;
 
             m_bendStrengthTextbox = bendStrengthSliderPanel.AddUIComponent<UITextField>();
-            m_bendStrengthTextbox.text = "Default";
+            m_bendStrengthTextbox.text = "0";
             m_bendStrengthTextbox.height = bendStrengthSliderPanel.height;
             m_bendStrengthTextbox.width = bendStrengthSliderPanel.size.x - bendStrengthSliderLeftPanel.size.x;
             m_bendStrengthTextbox.relativePosition = new Vector2(bendStrengthSliderLeftPanel.width, 0);
