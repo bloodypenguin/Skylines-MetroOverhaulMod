@@ -184,6 +184,18 @@ namespace MetroOverhaul.InitializationSteps
                         {
                             if (node.m_mesh.name.Contains("Pavement") || (node.m_mesh.name.Contains("Fence")) || (node.m_mesh.name.Contains("Bar")))
                             {
+                                if (node.m_mesh.name.Contains("Trans"))
+                                {
+                                    node.SetTextures(
+                                        new TextureSet
+                                            (@"Textures\Elevated_Node_Pavement__MainTex.png",
+                                                @"Textures\Elevated_Node_Pavement__AlphaMap.png",
+                                                @"Textures\Ground_Segment_Pavement__XYSMap.png"),
+                                        new LODTextureSet
+                                            (@"Textures\Elevated_Node_Pavement__MainTex_LOD.png",
+                                                @"Textures\Elevated_Node_Pavement__AlphaMap_LOD.png",
+                                                @"Textures\Ground_Segment_Pavement__XYSMap_LOD.png"));
+                                }
                                 if (node.m_mesh.name.Contains("Elevated"))
                                 {
                                     node.SetTextures(

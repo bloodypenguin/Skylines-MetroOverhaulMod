@@ -111,13 +111,11 @@ namespace MetroOverhaul.InitializationSteps
                         var node1 = info.m_nodes[1].ShallowClone();
                         var node3 = info.m_nodes[3].ShallowClone();
                         var node4 = info.m_nodes[0].ShallowClone();
-                        var node5 = info.m_nodes[0].ShallowClone();
                         var nodeList = new List<NetInfo.Node>();
                         nodeList.Add(node0);
                         nodeList.Add(node1);
                         nodeList.Add(node3);
                         nodeList.Add(node4);
-                        nodeList.Add(node5);
 
                         segment0
                             .SetFlagsDefault()
@@ -141,7 +139,6 @@ namespace MetroOverhaul.InitializationSteps
                             ($@"Meshes\{width}\Elevated_RailGuards.obj", $@"Meshes\{width}\Blank.obj")
                             .SetConsistentUVs();
                         node0
-                            .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
                             .SetMeshes
                             ($@"Meshes\{width}\Elevated_Node_Pavement.obj",
                                 $@"Meshes\{width}\Elevated_Node_Pavement_LOD.obj")
@@ -154,12 +151,6 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                             ($@"Meshes\{width}\ThirdRail_Node.obj", $@"Meshes\{width}\Blank.obj")
                             .SetConsistentUVs();
-                        node5
-                            .SetFlags(NetNode.Flags.Transition, NetNode.Flags.None)
-                            .SetMeshes
-                            ($@"Meshes\{width}\Elevated_Node_Pavement_Trans.obj",
-                                $@"Meshes\{width}\Elevated_Node_Pavement_LOD.obj")
-                            .SetConsistentUVs();
 
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
@@ -168,8 +159,6 @@ namespace MetroOverhaul.InitializationSteps
 
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
-                        node5.m_material = elevatedMaterial;
-                        node5.m_lodMaterial = elevatedLODMaterial;
                         if (isOneWay || isLarge)
                         {
                             nodeList.AddRange(GenerateLevelCrossing(info));

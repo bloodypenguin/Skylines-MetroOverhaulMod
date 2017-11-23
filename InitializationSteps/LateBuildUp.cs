@@ -7,11 +7,12 @@ namespace MetroOverhaul.InitializationSteps
     {
         public static void BuildUp(NetInfo prefab, NetInfoVersion version)
         {
+            var smallWord = prefab.name.ToLower().Contains("small") ? "Small" : "";
             switch (version)
             {
                 case NetInfoVersion.Elevated:
                     {
-                        var epPropInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("MetroElevatedPillar2")}.MetroElevatedPillar2_Data");
+                        var epPropInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"MetroElevatedPillar{smallWord}")}.MetroElevatedPillar{smallWord}_Data");
                         if (epPropInfo == null)
                         {
                             throw new Exception($"{prefab.name}: MetroElevatedPillar not found!");
@@ -20,12 +21,13 @@ namespace MetroOverhaul.InitializationSteps
                         if (bridgeAI != null)
                         {
                             bridgeAI.m_bridgePillarInfo = epPropInfo;
+                            bridgeAI.m_bridgePillarOffset = -0.75f;
                         }
                         break;
                     }
                 case NetInfoVersion.Bridge:
                     {
-                        var bpPropInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("MetroBridgePillar")}.MetroBridgePillar_Data");
+                        var bpPropInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"MetroBridgePillar{smallWord}")}.MetroBridgePillar{smallWord}_Data");
                         if (bpPropInfo == null)
                         {
                             throw new Exception($"{prefab.name}: MetroBridgePillar not found!");

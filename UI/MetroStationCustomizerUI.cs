@@ -144,7 +144,7 @@ namespace MetroOverhaul.UI
 
             backgroundSprite = "GenericPanel";
             color = new Color32(68, 84, 68, 170);
-            width = 200;
+            width = 280;
             height = 270;
 			opacity = 60;
             position = Vector2.zero;
@@ -156,25 +156,25 @@ namespace MetroOverhaul.UI
 			dragHandlePanel.atlas = atlas;
 			dragHandlePanel.backgroundSprite = "GenericPanel";
 			dragHandlePanel.width = width;
-			dragHandlePanel.height = 20;
+			dragHandlePanel.height = 30;
 			dragHandlePanel.opacity = 100;
 			dragHandlePanel.color = new Color32(21, 140, 34, 255);
-			dragHandlePanel.relativePosition = Vector3.zero;
+            dragHandlePanel.relativePosition = Vector3.zero;
 
 			UIDragHandle dragHandle = dragHandlePanel.AddUIComponent<UIDragHandle>();
 			dragHandle.width = width;
-			dragHandle.height = 20;
+			dragHandle.height = dragHandle.parent.height;
 			dragHandle.relativePosition = Vector3.zero;
 			dragHandle.target = this;
 
 			UILabel titleLabel = dragHandlePanel.AddUIComponent<UILabel>();
-			titleLabel.relativePosition = new Vector3() { x = 5, y = 3, z = 0 };
+			titleLabel.relativePosition = new Vector3() { x = 5, y = 5, z = 0 };
 			titleLabel.textAlignment = UIHorizontalAlignment.Center;
-			titleLabel.text = "Underground Station Attributes";
+			titleLabel.text = "Subway Station Options";
 			titleLabel.isInteractive = false;
 
 			UILabel lengthTitleLabel = AddUIComponent<UILabel>();
-            lengthTitleLabel.relativePosition = new Vector3() { x = 8, y = 20, z = 0 };
+            lengthTitleLabel.relativePosition = new Vector3() { x = 8, y = 30, z = 0 };
             lengthTitleLabel.text = "Station Length";
             lengthTitleLabel.isInteractive = false;
 
@@ -183,7 +183,7 @@ namespace MetroOverhaul.UI
             lengthSliderPanel.backgroundSprite = "GenericPanel";
             lengthSliderPanel.color = new Color32(150, 150, 150, 255);
             lengthSliderPanel.size = new Vector2(width - 16, 16);
-            lengthSliderPanel.relativePosition = new Vector2(8, 40);
+            lengthSliderPanel.relativePosition = new Vector2(8, 50);
 
             UIPanel lengthSliderLeftPanel = lengthSliderPanel.AddUIComponent<UIPanel>();
             lengthSliderLeftPanel.name = "length panel left";
@@ -261,7 +261,7 @@ namespace MetroOverhaul.UI
             };
 
             UILabel depthTitleLabel = AddUIComponent<UILabel>();
-            depthTitleLabel.relativePosition = new Vector3() { x = 8, y = 60, z = 0 };
+            depthTitleLabel.relativePosition = new Vector3() { x = 8, y = 70, z = 0 };
             depthTitleLabel.text = "Station Depth";
             depthTitleLabel.height = 10;
             depthTitleLabel.isInteractive = false;
@@ -271,7 +271,7 @@ namespace MetroOverhaul.UI
             depthSliderPanel.backgroundSprite = "GenericPanel";
             depthSliderPanel.color = new Color32(150, 150, 150, 255);
             depthSliderPanel.size = new Vector2(width - 16, 16);
-            depthSliderPanel.relativePosition = new Vector2(8, 80);
+            depthSliderPanel.relativePosition = new Vector2(8, 90);
 
             UIPanel depthSliderLeftPanel = depthSliderPanel.AddUIComponent<UIPanel>();
             depthSliderLeftPanel.name = "depth panel left";
@@ -351,7 +351,7 @@ namespace MetroOverhaul.UI
             };
 
             UILabel angleTitleLabel = AddUIComponent<UILabel>();
-            angleTitleLabel.relativePosition = new Vector3() { x = 8, y = 100, z = 0 };
+            angleTitleLabel.relativePosition = new Vector3() { x = 8, y = 110, z = 0 };
             angleTitleLabel.text = "Station Angle";
             angleTitleLabel.height = 10;
             angleTitleLabel.isInteractive = false;
@@ -361,7 +361,7 @@ namespace MetroOverhaul.UI
             angleSliderPanel.backgroundSprite = "GenericPanel";
             angleSliderPanel.color = new Color32(150, 150, 150, 255);
             angleSliderPanel.size = new Vector2(width - 16, 16);
-            angleSliderPanel.relativePosition = new Vector2(8, 120);
+            angleSliderPanel.relativePosition = new Vector2(8, 130);
 
             UIPanel angleSliderLeftPanel = angleSliderPanel.AddUIComponent<UIPanel>();
             angleSliderLeftPanel.name = "Angle panel left";
@@ -442,7 +442,7 @@ namespace MetroOverhaul.UI
 
 
             UILabel bendStrengthTitleLabel = AddUIComponent<UILabel>();
-            bendStrengthTitleLabel.relativePosition = new Vector3() { x = 8, y = 140, z = 0 };
+            bendStrengthTitleLabel.relativePosition = new Vector3() { x = 8, y = 150, z = 0 };
             bendStrengthTitleLabel.text = "Station Bend";
             bendStrengthTitleLabel.height = 10;
             bendStrengthTitleLabel.isInteractive = false;
@@ -452,7 +452,7 @@ namespace MetroOverhaul.UI
             bendStrengthSliderPanel.backgroundSprite = "GenericPanel";
             bendStrengthSliderPanel.color = new Color32(150, 150, 150, 255);
             bendStrengthSliderPanel.size = new Vector2(width - 16, 16);
-            bendStrengthSliderPanel.relativePosition = new Vector2(8, 160);
+            bendStrengthSliderPanel.relativePosition = new Vector2(8, 170);
 
             UIPanel bendStrengthSliderLeftPanel = bendStrengthSliderPanel.AddUIComponent<UIPanel>();
             bendStrengthSliderLeftPanel.name = "bendStrength panel left";

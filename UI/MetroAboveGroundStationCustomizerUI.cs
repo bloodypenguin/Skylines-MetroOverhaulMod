@@ -144,16 +144,16 @@ namespace MetroOverhaul.UI
 			dragHandlePanel.color = new Color32(21, 140, 34, 255);
 			dragHandlePanel.relativePosition = Vector3.zero;
 
-			UIDragHandle dragHandle = dragHandlePanel.AddUIComponent<UIDragHandle>();
-			dragHandle.width = width;
-			dragHandle.height = 20;
-			dragHandle.relativePosition = Vector3.zero;
-			dragHandle.target = this;
+            UIDragHandle dragHandle = dragHandlePanel.AddUIComponent<UIDragHandle>();
+            dragHandle.width = width;
+            dragHandle.height = dragHandle.parent.height;
+            dragHandle.relativePosition = Vector3.zero;
+            dragHandle.target = this;
 
-			UILabel titleLabel = dragHandlePanel.AddUIComponent<UILabel>();
-			titleLabel.relativePosition = new Vector3() { x = 5, y = 3, z = 0 };
-			titleLabel.textAlignment = UIHorizontalAlignment.Center;
-			titleLabel.text = "Station Attributes";
+            UILabel titleLabel = dragHandlePanel.AddUIComponent<UILabel>();
+            titleLabel.relativePosition = new Vector3() { x = 5, y = 5, z = 0 };
+            titleLabel.textAlignment = UIHorizontalAlignment.Center;
+            titleLabel.text = "Surface Station Options";
 			titleLabel.isInteractive = false;
 
 			btnModernStyle = CreateButton("Modern", new Vector3(8, 50), (c, v) =>

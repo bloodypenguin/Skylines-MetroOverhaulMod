@@ -445,7 +445,7 @@ namespace MetroOverhaul
                         Chain(
                             (info, version) =>
                             {
-                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
                             }),
                     NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
@@ -477,7 +477,7 @@ namespace MetroOverhaul
                         Chain(
                             (info, version) =>
                             {
-                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
                             }),
                     NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
@@ -604,7 +604,7 @@ namespace MetroOverhaul
                         Chain(
                             (info, version) =>
                             {
-                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
                             }),
                     NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
@@ -636,7 +636,7 @@ namespace MetroOverhaul
                         Chain(
                             (info, version) =>
                             {
-                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
                             }),
                     NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
@@ -667,7 +667,7 @@ namespace MetroOverhaul
                         Chain(
                             (info, version) =>
                             {
-                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
                             }),
                     NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
@@ -699,7 +699,7 @@ namespace MetroOverhaul
                         Chain(
                             (info, version) =>
                             {
-                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
                             }),
                     NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().

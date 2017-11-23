@@ -11,7 +11,7 @@ namespace MetroOverhaul
 {
     class TrainTrackBridgeAIMetro : TrainTrackBridgeAI
     {
-        public Dictionary<int, BuildingInfo> m_bridgePillarInfoHeightDictionary { get; set; }
+        public List<BridgePillarItem> pillarList { get; set; }
         public override void GetNodeBuilding(ushort nodeID, ref NetNode data, out BuildingInfo building, out float heightOffset)
         {
             if ((data.m_flags & NetNode.Flags.Outside) == NetNode.Flags.None)
@@ -27,24 +27,36 @@ namespace MetroOverhaul
                 {
                     building = this.m_bridgePillarInfo;
                     heightOffset = this.m_bridgePillarOffset - 1f - this.m_bridgePillarInfo.m_generatedInfo.m_size.y;
-                    if (m_bridgePillarInfoHeightDictionary != null && m_bridgePillarInfoHeightDictionary.Count > 0)
+                    if (pillarList != null && pillarList.Count > 0)
                     {
                         var theNetTool = FindObjectOfType<NetTool>();
                         if (theNetTool != null && theNetTool.m_prefab != null)
                         {
-                            
-                            //var getElevationMethod = typeof(NetTool).GetMethod("GetElevation", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                            //if (getElevationMethod != null)
-                            //{
-                            //    var param = new List<object>();
-                            //    param.Add(theNetTool.m_prefab);
-                            //    object elevationObject = getElevationMethod.Invoke(theNetTool, param.ToArray());
-                            //    if (elevationObject != null)
-                            //    {
-                            //        var elevation = (float)elevationObject;
-                            //        building = m_bridgePillarInfoHeightDictionary.Where(d => d.Key >= elevation).OrderBy(x => x.Key - elevation).FirstOrDefault().Value;
-                            //    }
-                            //}
+                            var getElevationMethod = typeof(NetTool).GetMethod("GetElevation", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                            if (getElevationMethod != null)
+                            {
+                                var param = new List<object>();
+                                param.Add(theNetTool.m_prefab);
+                                object elevationObject = getElevationMethod.Invoke(theNetTool, param.ToArray());
+                                if (elevationObject != null)
+                                {
+                                    var elevation = (float)elevationObject;
+                                    var theList = pillarList.Where(d => d.HeightLimit >= elevation).OrderBy(x => x.HeightLimit).ToList();
+
+                                    if (theList == null || theList.Count == 0)
+                                    {
+                                        var thePillarInfo = pillarList.LastOrDefault();
+                                        building = thePillarInfo.info;
+                                        heightOffset = thePillarInfo.HeightOffset - 1f - thePillarInfo.info.m_generatedInfo.m_size.y;
+                                    }
+                                    else
+                                    {
+                                        var thePillarInfo = theList.FirstOrDefault();
+                                        building = thePillarInfo.info;
+                                        heightOffset = thePillarInfo.HeightOffset - 1f - thePillarInfo.info.m_generatedInfo.m_size.y;
+                                    }
+                                }
+                            }
                         }
                     }
                     return;
@@ -105,5 +117,19 @@ namespace MetroOverhaul
             }
             data.m_flags = flags;
         }
+    }
+}
+
+public class BridgePillarItem
+{
+    public float HeightLimit { get; set; }
+    public float HeightOffset { get; set; }
+    public BuildingInfo info { get; set; }
+
+    public BridgePillarItem()
+    {
+        HeightLimit = 60;
+        HeightOffset = 0;
+        info = null;
     }
 }

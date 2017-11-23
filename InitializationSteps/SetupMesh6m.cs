@@ -337,11 +337,9 @@ namespace MetroOverhaul.InitializationSteps
                         var segments4 = info.m_segments[0].ShallowClone();
                         var nodes0 = info.m_nodes[0].ShallowClone();
                         var nodes1 = info.m_nodes[1].ShallowClone();
-                        var nodes2 = info.m_nodes[0].ShallowClone();
                         var nodeList = new List<NetInfo.Node>();
                         nodeList.Add(nodes0);
                         nodeList.Add(nodes1);
-                        nodeList.Add(nodes2);
                         nodes1.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
                         if (isTwoWay)
                         {
@@ -380,10 +378,6 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                             (@"Meshes\6m\Boosted_Rail.obj",
                             @"Meshes\6m\Ground_Rail_Node_LOD.obj");
-                        nodes2
-                            .SetMeshes
-                            (@"Meshes\6m\Elevated_Node_Pavement_Trans.obj",
-                            @"Meshes\6m\Elevated_Node_Pavement_LOD.obj");
 
                         RoadHelper.HandleAsymSegmentFlags(segments3);
                         segments0.m_material = defaultMaterial;
@@ -394,8 +388,6 @@ namespace MetroOverhaul.InitializationSteps
                         segments4.m_lodMaterial = defaultLODMaterial;
                         nodes0.m_material = defaultMaterial;
                         nodes0.m_lodMaterial = defaultLODMaterial;
-                        nodes2.m_material = defaultMaterial;
-                        nodes2.m_lodMaterial = defaultLODMaterial;
                         nodeList.AddRange(GenerateSplitTracks(info, version));
                         nodeList.AddRange(GenerateLevelCrossing(info));
                         info.m_segments = new[] { segments0, segments1 /*,segments2*/, segments3, segments4 };
@@ -410,7 +402,6 @@ namespace MetroOverhaul.InitializationSteps
                         var segments4 = info.m_segments[0].ShallowClone();
                         var nodes0 = info.m_nodes[0].ShallowClone();
                         var nodes1 = info.m_nodes[1].ShallowClone();
-                        var nodes2 = info.m_nodes[0].ShallowClone();
                         nodes1.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
                         if (isTwoWay)
                         {
@@ -419,7 +410,6 @@ namespace MetroOverhaul.InitializationSteps
                         var nodeList = new List<NetInfo.Node>();
                         nodeList.Add(nodes0);
                         nodeList.Add(nodes1);
-                        nodeList.Add(nodes2);
                         segments0
                             .SetFlagsDefault()
                             .SetMeshes
@@ -453,10 +443,6 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                               (@"Meshes\6m\Boosted_Rail.obj",
                               @"Meshes\6m\Ground_Rail_Node_LOD.obj");
-                        nodes2
-                            .SetMeshes
-                            (@"Meshes\6m\Elevated_Node_Pavement_Trans.obj",
-                            @"Meshes\6m\Elevated_Node_Pavement_LOD.obj");
 
                         var segmentNormals = segments0.m_mesh.normals;
                         var segmentVertices = segments0.m_mesh.vertices;
@@ -506,8 +492,6 @@ namespace MetroOverhaul.InitializationSteps
                         segments4.m_lodMaterial = defaultLODMaterial;
                         nodes0.m_material = defaultMaterial;
                         nodes0.m_lodMaterial = defaultLODMaterial;
-                        nodes2.m_material = defaultMaterial;
-                        nodes2.m_lodMaterial = defaultLODMaterial;
                         nodeList.AddRange(GenerateLevelCrossing(info));
                         nodeList.AddRange(GenerateSplitTracks(info, version));
                         info.m_segments = new[] { segments0, segments1/*, segments2*/, segments3, segments4 };

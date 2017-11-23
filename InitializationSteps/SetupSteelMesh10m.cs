@@ -178,8 +178,8 @@ namespace MetroOverhaul.InitializationSteps
                         node5
                             .SetFlags(NetNode.Flags.Transition, NetNode.Flags.None)
                             .SetMeshes
-                            ($@"Meshes\{width}\Elevated_Node_Pavement_Steel_Trans.obj",
-                                $@"Meshes\{width}\Elevated_Node_Pavement_Steel_LOD.obj")
+                            ($@"Meshes\{width}\Elevated_Trans_Pavement_Steel.obj",
+                                $@"Meshes\{width}\Elevated_Node_Pavement_LOD.obj")
                             .SetConsistentUVs();
 
                         segment0.m_material = elevatedMaterial;
@@ -214,27 +214,21 @@ namespace MetroOverhaul.InitializationSteps
                     }
                 case NetInfoVersion.Bridge:
                     {
-                        var segment0 = info.m_segments[0].ShallowClone();
+                        //var segment0 = info.m_segments[0].ShallowClone();
                         var segment1 = info.m_segments[1].ShallowClone();
                         var segment2 = info.m_segments[0].ShallowClone();
-                        var node0 = info.m_nodes[0].ShallowClone();
+                        //var node0 = info.m_nodes[0].ShallowClone();
                         var node1 = info.m_nodes[1].ShallowClone();
                         var node2 = info.m_nodes[0].ShallowClone();
                         var node3 = info.m_nodes[0].ShallowClone();
                         var node4 = info.m_nodes[0].ShallowClone();
                         var nodeList = new List<NetInfo.Node>();
-                        nodeList.Add(node0);
+                        //nodeList.Add(node0);
                         nodeList.Add(node1);
                         nodeList.Add(node2);
                         nodeList.Add(node3);
                         nodeList.Add(node4);
 
-                        segment0
-                            .SetFlagsDefault()
-                            .SetMeshes
-                            ($@"Meshes\{width}\Bridge_Pavement_Steel.obj",
-                            $@"Meshes\{width}\Bridge_Pavement_Steel_LOD.obj")
-                            .SetConsistentUVs();
 
                         segment1
                             .SetFlagsDefault()
@@ -244,13 +238,6 @@ namespace MetroOverhaul.InitializationSteps
                             .SetFlagsDefault()
                             .SetMeshes
                             ($@"Meshes\{width}\ThirdRail.obj", $@"Meshes\{width}\Blank.obj")
-                            .SetConsistentUVs();
-
-                        node0
-                            .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
-                            .SetMeshes
-                            ($@"Meshes\{width}\Bridge_Node_Pavement_Steel.obj",
-                            $@"Meshes\{width}\Bridge_Node_Pavement_Steel_LOD.obj")
                             .SetConsistentUVs();
 
                         node1
@@ -269,21 +256,16 @@ namespace MetroOverhaul.InitializationSteps
                         node4
                             .SetFlags(NetNode.Flags.Transition, NetNode.Flags.None)
                             .SetMeshes
-                            ($@"Meshes\{width}\Elevated_Node_Pavement_Steel_Trans.obj",
-                                $@"Meshes\{width}\Elevated_Node_Pavement_Steel_LOD.obj")
+                            ($@"Meshes\{width}\Elevated_Trans_Pavement_Steel.obj",
+                                $@"Meshes\{width}\Elevated_Node_Pavement_LOD.obj")
                             .SetConsistentUVs();
-
                         if (elevatedMaterial != null)
                         {
-                            segment0.m_material = elevatedMaterial;
-                            segment0.m_lodMaterial = elevatedLODMaterial;
-                            node0.m_material = elevatedMaterial;
-                            node0.m_lodMaterial = elevatedLODMaterial;
+                           // node0.m_material = elevatedMaterial;
+                           // node0.m_lodMaterial = elevatedLODMaterial;
                             node2.m_directConnect = true;
                             node2.m_material = elevatedMaterial;
                             node2.m_lodMaterial = elevatedLODMaterial;
-                            node4.m_material = elevatedMaterial;
-                            node4.m_lodMaterial = elevatedLODMaterial;
 
                             //segment1.m_material = railMaterial;
                             //node1.m_material = railMaterial;
@@ -304,7 +286,7 @@ namespace MetroOverhaul.InitializationSteps
                         {
                             node2.m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
                         }
-                        info.m_segments = new[] { segment0, segment1, segment2 };
+                        info.m_segments = new[] {  segment1, segment2 };
                         info.m_nodes = nodeList.ToArray();
                         break;
                     }
@@ -528,25 +510,54 @@ namespace MetroOverhaul.InitializationSteps
                     {
 
                         var segment = info.m_segments[0].ShallowClone();
-                        var node = info.m_nodes[0].ShallowClone();
+                        var segment1 = info.m_segments[0].ShallowClone();
+                        var node0 = elevatedInfo.m_nodes[0].ShallowClone();
+                        var node1 = elevatedInfo.m_nodes[0].ShallowClone();
+                        var node2 = elevatedInfo.m_nodes[0].ShallowClone();
                         segment
                             .SetFlagsDefault()
                             .SetMeshes
                             ($@"Meshes\{width}\Bridge_Fence_Steel.obj",
                             $@"Meshes\{width}\Blank.obj");
-                        node
-                            .SetFlags(NetNode.Flags.None, NetNode.Flags.None)
+                        segment1
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            ($@"Meshes\{width}\Bridge_Pavement_Steel.obj",
+                            $@"Meshes\{width}\Bridge_Pavement_Steel_LOD.obj")
+                            .SetConsistentUVs();
+                        node0
+                            .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
+                            .SetMeshes
+                            ($@"Meshes\{width}\Bridge_Node_Pavement_Steel.obj",
+                            $@"Meshes\{width}\Bridge_Node_Pavement_Steel_LOD.obj")
+                            .SetConsistentUVs();
+
+                        node1
+                            .SetFlags(NetNode.Flags.Transition, NetNode.Flags.None)
+                            .SetMeshes
+                            ($@"Meshes\{width}\Elevated_Trans_Pavement_Steel.obj",
+                            $@"Meshes\{width}\Bridge_Node_Pavement_Steel_LOD.obj")
+                            .SetConsistentUVs();
+
+                        node2
+                            .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
                             .SetMeshes
                             ($@"Meshes\{width}\Bridge_Node_Fence_Steel.obj",
                             $@"Meshes\{width}\Blank.obj");
 
                         segment.m_material = elevatedMaterial;
                         segment.m_lodMaterial = elevatedLODMaterial;
-                        node.m_material = elevatedMaterial;
-                        node.m_lodMaterial = elevatedLODMaterial;
+                        segment1.m_material = elevatedMaterial;
+                        segment1.m_lodMaterial = elevatedLODMaterial;
+                        node0.m_material = elevatedMaterial;
+                        node0.m_lodMaterial = elevatedLODMaterial;
+                        node1.m_material = elevatedMaterial;
+                        node1.m_lodMaterial = elevatedLODMaterial;
+                        node2.m_material = elevatedMaterial;
+                        node2.m_lodMaterial = elevatedLODMaterial;
 
-                        info.m_segments = info.AddSegments(segment);
-                        info.m_nodes = info.AddNodes(node);
+                        info.m_segments = info.AddSegments(segment,segment1);
+                        info.m_nodes = info.AddNodes(node0,node1,node2);
                         break;
                     }
                 case NetInfoVersion.Slope:
@@ -617,7 +628,6 @@ namespace MetroOverhaul.InitializationSteps
             switch (version)
             {
                 case NetInfoVersion.Elevated:
-                case NetInfoVersion.Bridge:
                     {
                         var segment0 = info.m_segments[0].ShallowClone();
                         var node0 = info.m_nodes[0].ShallowClone();
@@ -633,6 +643,41 @@ namespace MetroOverhaul.InitializationSteps
                             ($@"Meshes\{width}\Elevated_Bar_Steel.obj",
                                 $@"Meshes\{width}\Blank.obj")
                             .SetConsistentUVs(true);
+
+                        info.m_segments = info.AddSegments(segment0);
+                        info.m_nodes = info.AddNodes(node0);
+                        break;
+                    }
+                case NetInfoVersion.Bridge:
+                    {
+                        var segment0 = info.m_segments[0].ShallowClone();
+                        var node0 = elevatedInfo.m_nodes[0].ShallowClone();
+                        var node1 = elevatedInfo.m_nodes[0].ShallowClone();
+                        segment0
+                            .SetFlagsDefault()
+                            .SetMeshes
+                            ($@"Meshes\{width}\Bridge_Pavement_Steel2.obj",
+                            $@"Meshes\{width}\Bridge_Pavement_Steel_LOD.obj")
+                            .SetConsistentUVs();
+                        node0
+                            .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
+                            .SetMeshes
+                            ($@"Meshes\{width}\Bridge_Node_Pavement_Steel2.obj",
+                                $@"Meshes\{width}\Bridge_Node_Pavement_Steel_LOD.obj")
+                            .SetConsistentUVs();
+                        node1
+                            .SetFlags(NetNode.Flags.Transition, NetNode.Flags.None)
+                            .SetMeshes
+                            ($@"Meshes\{width}\Elevated_Trans_Pavement_Steel.obj",
+                                $@"Meshes\{width}\Elevated_Node_Pavement_Steel.obj")
+                            .SetConsistentUVs();
+
+                        segment0.m_material = elevatedMaterial;
+                        segment0.m_lodMaterial = elevatedLODMaterial;
+                        node0.m_material = elevatedMaterial;
+                        node0.m_lodMaterial = elevatedLODMaterial;
+                        node1.m_material = elevatedMaterial;
+                        node1.m_lodMaterial = elevatedLODMaterial;
 
                         info.m_segments = info.AddSegments(segment0);
                         info.m_nodes = info.AddNodes(node0);

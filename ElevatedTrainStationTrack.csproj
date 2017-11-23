@@ -40,7 +40,6 @@
   <ItemGroup>
     <Compile Include="AbstractInitializer.cs" />
     <Compile Include="AssetsUpdater.cs" />
-    <Compile Include="Assets\Resources\Skins\SkinTest.cs" />
     <Compile Include="Detours\PassengerTrainAIDetour.cs" />
     <Compile Include="Extensions\ActionExtensions.cs" />
     <Compile Include="Detours\DepotAIDetour.cs" />
@@ -161,93 +160,39 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Classic 1L Pillar %28Bridge%29.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\Classic 1L Pillar %28High%29.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\Classic 1L Pillar %28Low%29.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\Classic 2L Pillar %28Bridge%29.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\Classic 2L Pillar %28High%29.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\Classic 2L Pillar %28Low%29.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Assets\m100.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Assets\MetroBridgePillar.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Assets\MetroBridgePillarSmall.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Assets\MetroElevatedPillar.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Assets\MetroElevatedPillar2.crp">
+    <None Include="Assets\MetroElevatedPillarSmall.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Assets\Resources\Skins\Amiga500GUISkin.guiskin" />
-    <None Include="Assets\Resources\Skins\Amiga500GUISkin.guiskin.meta" />
-    <None Include="Assets\Resources\Skins\controls.meta" />
-    <None Include="Assets\Resources\Skins\controls2.meta" />
-    <None Include="Assets\Resources\Skins\controls2\box.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\buttonActive.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\buttonHover.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\buttonNormal.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\horizScrollBar.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\horizScrollBarThumbHover.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\horizScrollBarThumbNormal.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\horizSlider.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\horizSliderThumbHover.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\horizSliderThumbNormal.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\textArea.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\textField.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\toggleSelected.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\toggleUnselected.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\vertScrollBar.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\vertScrollBarThumbHover.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\vertScrollBarThumbNormal.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\vertSlider.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\vertSliderThumbHover.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\vertSliderThumbNormal.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\windowActive.png.meta" />
-    <None Include="Assets\Resources\Skins\controls2\windowInactive.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3.meta" />
-    <None Include="Assets\Resources\Skins\controls3\boxActive.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\boxNormal.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\buttonActive.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\buttonHover.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\buttonNormal.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\horizScrollBar.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\horizScrollbarThumbActive.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\horizScrollbarThumbNormal.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\horizSlider.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\sliderThumb.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\sliderThumbActive.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\textFieldActive.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\textFieldNormal.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\toggleSelected.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\toggleUnselected.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\vertScrollBar.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\vertScrollbarThumbActive.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\vertScrollbarThumbNormal.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\vertSlider.png.meta" />
-    <None Include="Assets\Resources\Skins\controls3\window.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\boxNormal.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\boxOver.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\buttonDown.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\buttonNormal.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\buttonOver.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\checkboxOff.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\checkboxOn.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\horizScrollBar.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\horizScrollButton.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\horizSliderBar.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\horizSliderButton.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\label.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\textfieldNormal.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\textfieldOver.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\vertScrollBar.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\vertScrollButton.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\vertSliderBar.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\vertSliderButton.png.meta" />
-    <None Include="Assets\Resources\Skins\controls\window.png.meta" />
-    <None Include="Assets\Resources\Skins\GUITest.unity" />
-    <None Include="Assets\Resources\Skins\GUITest.unity.meta" />
-    <None Include="Assets\Resources\Skins\MetalGUISkin.guiskin" />
-    <None Include="Assets\Resources\Skins\MetalGUISkin.guiskin.meta" />
-    <None Include="Assets\Resources\Skins\OrangeGUISkin.guiskin">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Assets\Resources\Skins\OrangeGUISkin.guiskin.meta" />
-    <None Include="Assets\Resources\Skins\SkinTest.cs.meta" />
     <None Include="Assets\SteelMetroElevatedPillar.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -308,10 +253,13 @@
     <None Include="Resources\Meshes\10m\Bridge_Node_Pavement_Steel.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\10m\Bridge_Node_Pavement_Steel2.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\10m\Bridge_Node_Pavement_Steel_LOD.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\Meshes\10m\Bridge_Node_Pavement_Trans.obj">
+    <None Include="Resources\Meshes\10m\Bridge_Trans_Pavement.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\10m\Bridge_Pavement.obj">
@@ -321,6 +269,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\10m\Bridge_Pavement_Steel.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Bridge_Pavement_Steel2.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Bridge_Pavement_Steel2_LOD.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\10m\Bridge_Pavement_Steel_LOD.obj">
@@ -432,6 +386,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\10m\Elevated_ThirdRail_Base_Node.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Elevated_Trans_Pavement_Steel.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\10m\Ground_Fence.obj">
@@ -1409,10 +1366,16 @@
     <None Include="Resources\Meshes\6m\Bridge_Node_Pavement_LOD.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\6m\Bridge_Node_Pavement_Steel.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\6m\Bridge_Node_Pavement_Steel2.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\6m\Bridge_Node_Pavement_Steel_LOD.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\Meshes\6m\Bridge_Node_Pavement_Trans.obj">
+    <None Include="Resources\Meshes\6m\Bridge_Trans_Pavement.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\6m\Bridge_Pavement.obj">
@@ -1422,6 +1385,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\6m\Bridge_Pavement_Steel.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\6m\Bridge_Pavement_Steel2.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\6m\Bridge_Pavement_Steel2_LOD.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\6m\Bridge_Pavement_Steel_LOD.obj">
@@ -1524,6 +1493,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\6m\Elevated_ThirdRail_Base.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\6m\Elevated_Trans_Pavement_Steel.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\6m\Ground_Fence.obj">
@@ -1777,67 +1749,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Resources\Skins\controls2\box.png" />
-    <Content Include="Assets\Resources\Skins\controls2\buttonActive.png" />
-    <Content Include="Assets\Resources\Skins\controls2\buttonHover.png" />
-    <Content Include="Assets\Resources\Skins\controls2\buttonNormal.png" />
-    <Content Include="Assets\Resources\Skins\controls2\horizScrollBar.png" />
-    <Content Include="Assets\Resources\Skins\controls2\horizScrollBarThumbHover.png" />
-    <Content Include="Assets\Resources\Skins\controls2\horizScrollBarThumbNormal.png" />
-    <Content Include="Assets\Resources\Skins\controls2\horizSlider.png" />
-    <Content Include="Assets\Resources\Skins\controls2\horizSliderThumbHover.png" />
-    <Content Include="Assets\Resources\Skins\controls2\horizSliderThumbNormal.png" />
-    <Content Include="Assets\Resources\Skins\controls2\textArea.png" />
-    <Content Include="Assets\Resources\Skins\controls2\textField.png" />
-    <Content Include="Assets\Resources\Skins\controls2\toggleSelected.png" />
-    <Content Include="Assets\Resources\Skins\controls2\toggleUnselected.png" />
-    <Content Include="Assets\Resources\Skins\controls2\vertScrollBar.png" />
-    <Content Include="Assets\Resources\Skins\controls2\vertScrollBarThumbHover.png" />
-    <Content Include="Assets\Resources\Skins\controls2\vertScrollBarThumbNormal.png" />
-    <Content Include="Assets\Resources\Skins\controls2\vertSlider.png" />
-    <Content Include="Assets\Resources\Skins\controls2\vertSliderThumbHover.png" />
-    <Content Include="Assets\Resources\Skins\controls2\vertSliderThumbNormal.png" />
-    <Content Include="Assets\Resources\Skins\controls2\windowActive.png" />
-    <Content Include="Assets\Resources\Skins\controls2\windowInactive.png" />
-    <Content Include="Assets\Resources\Skins\controls3\boxActive.png" />
-    <Content Include="Assets\Resources\Skins\controls3\boxNormal.png" />
-    <Content Include="Assets\Resources\Skins\controls3\buttonActive.png" />
-    <Content Include="Assets\Resources\Skins\controls3\buttonHover.png" />
-    <Content Include="Assets\Resources\Skins\controls3\buttonNormal.png" />
-    <Content Include="Assets\Resources\Skins\controls3\horizScrollBar.png" />
-    <Content Include="Assets\Resources\Skins\controls3\horizScrollbarThumbActive.png" />
-    <Content Include="Assets\Resources\Skins\controls3\horizScrollbarThumbNormal.png" />
-    <Content Include="Assets\Resources\Skins\controls3\horizSlider.png" />
-    <Content Include="Assets\Resources\Skins\controls3\sliderThumb.png" />
-    <Content Include="Assets\Resources\Skins\controls3\sliderThumbActive.png" />
-    <Content Include="Assets\Resources\Skins\controls3\textFieldActive.png" />
-    <Content Include="Assets\Resources\Skins\controls3\textFieldNormal.png" />
-    <Content Include="Assets\Resources\Skins\controls3\toggleSelected.png" />
-    <Content Include="Assets\Resources\Skins\controls3\toggleUnselected.png" />
-    <Content Include="Assets\Resources\Skins\controls3\vertScrollBar.png" />
-    <Content Include="Assets\Resources\Skins\controls3\vertScrollbarThumbActive.png" />
-    <Content Include="Assets\Resources\Skins\controls3\vertScrollbarThumbNormal.png" />
-    <Content Include="Assets\Resources\Skins\controls3\vertSlider.png" />
-    <Content Include="Assets\Resources\Skins\controls3\window.png" />
-    <Content Include="Assets\Resources\Skins\controls\boxNormal.png" />
-    <Content Include="Assets\Resources\Skins\controls\boxOver.png" />
-    <Content Include="Assets\Resources\Skins\controls\buttonDown.png" />
-    <Content Include="Assets\Resources\Skins\controls\buttonNormal.png" />
-    <Content Include="Assets\Resources\Skins\controls\buttonOver.png" />
-    <Content Include="Assets\Resources\Skins\controls\checkboxOff.png" />
-    <Content Include="Assets\Resources\Skins\controls\checkboxOn.png" />
-    <Content Include="Assets\Resources\Skins\controls\horizScrollBar.png" />
-    <Content Include="Assets\Resources\Skins\controls\horizScrollButton.png" />
-    <Content Include="Assets\Resources\Skins\controls\horizSliderBar.png" />
-    <Content Include="Assets\Resources\Skins\controls\horizSliderButton.png" />
-    <Content Include="Assets\Resources\Skins\controls\label.png" />
-    <Content Include="Assets\Resources\Skins\controls\textfieldNormal.png" />
-    <Content Include="Assets\Resources\Skins\controls\textfieldOver.png" />
-    <Content Include="Assets\Resources\Skins\controls\vertScrollBar.png" />
-    <Content Include="Assets\Resources\Skins\controls\vertScrollButton.png" />
-    <Content Include="Assets\Resources\Skins\controls\vertSliderBar.png" />
-    <Content Include="Assets\Resources\Skins\controls\vertSliderButton.png" />
-    <Content Include="Assets\Resources\Skins\controls\window.png" />
     <Content Include="CHECKLIST.txt" />
     <Content Include="lib\ObjUnity3D.dll" />
     <Content Include="Resources\Textures\Bridge_Node_Pavement_Steel__MainTex.png">
@@ -2290,7 +2201,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\Meshes\14m\Station\" />
-    <Folder Include="Resources\Skins\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
