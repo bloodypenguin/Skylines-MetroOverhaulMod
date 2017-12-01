@@ -12,6 +12,7 @@ namespace MetroOverhaul.UI
 		public int trackSize = 1;
 		public int trackDirection = 1;
 		public bool fence = false;
+        public bool extraElevated = false;
 		private BulldozeTool m_bulldozeTool;
 		private NetTool m_netTool;
 		private UIButton m_upgradeButtonTemplate;
@@ -20,8 +21,9 @@ namespace MetroOverhaul.UI
 		public static MetroTrackCustomizerUI instance;
 
 		UISprite m_useFenceCheckBoxClicker = null;
+        UISprite m_useExtraElevatedPillarClicker = null;
 
-		private NetInfo concretePrefab;
+        private NetInfo concretePrefab;
 		private NetInfo concretePrefabNoBar;
 
 		private NetInfo concreteTwoLaneOneWayPrefab;
@@ -192,7 +194,7 @@ namespace MetroOverhaul.UI
 			backgroundSprite = "GenericPanel";
 			color = new Color32(73, 68, 84, 170);
 			width = 200;
-			height = 250;
+			height = 270;
 			opacity = 90;
 			position = Vector2.zero;
 			isVisible = false;
@@ -289,7 +291,38 @@ namespace MetroOverhaul.UI
 			useFenceLabel.height = 16;
 			useFenceLabel.isInteractive = true;
 
-		}
+            UICheckBox useExtraElevatedPillarsCheckBox = AddUIComponent<UICheckBox>();
+            useExtraElevatedPillarsCheckBox.text = "Island Platform";
+            useExtraElevatedPillarsCheckBox.size = new Vector2(width - 16, 16);
+            useExtraElevatedPillarsCheckBox.relativePosition = new Vector2(8, 230);
+            useExtraElevatedPillarsCheckBox.isInteractive = true;
+            useExtraElevatedPillarsCheckBox.eventCheckChanged += (c, v) =>
+            {
+                extraElevated = useExtraElevatedPillarsCheckBox.isChecked;
+                if (extraElevated)
+                {
+                    m_useExtraElevatedPillarClicker.spriteName = "check-checked";
+                }
+                else
+                {
+                    m_useExtraElevatedPillarClicker.spriteName = "check-unchecked";
+                }
+                SetNetToolPrefab();
+            };
+
+            m_useExtraElevatedPillarClicker = useExtraElevatedPillarsCheckBox.AddUIComponent<UISprite>();
+            m_useExtraElevatedPillarClicker.atlas = atlas;
+            m_useExtraElevatedPillarClicker.spriteName = "check-unchecked";
+            m_useExtraElevatedPillarClicker.relativePosition = new Vector2(0, 0);
+            m_useExtraElevatedPillarClicker.size = new Vector2(16, 16);
+            m_useExtraElevatedPillarClicker.isInteractive = true;
+
+            UILabel useExtraElevatedPillarLabel = useExtraElevatedPillarsCheckBox.AddUIComponent<UILabel>();
+            useExtraElevatedPillarLabel.relativePosition = new Vector2(20, 0);
+            useExtraElevatedPillarLabel.text = "Extra Elevated Pillars";
+            useExtraElevatedPillarLabel.height = 16;
+            useExtraElevatedPillarLabel.isInteractive = true;
+        }
 
 		private UIButton CreateButton(string text, Vector3 pos, MouseEventHandler eventClick)
 		{
@@ -476,6 +509,20 @@ namespace MetroOverhaul.UI
 			}
 			if (prefab != null)
 			{
+                if (extraElevated)
+                {
+                    prefab.m_segments[0].m_forwardRequired = NetSegment.Flags.Bend;
+                    prefab.m_segments[0].m_backwardRequired = NetSegment.Flags.Bend;
+                    prefab.m_segments[0].m_forwardForbidden = NetSegment.Flags.None;
+                    prefab.m_segments[0].m_backwardForbidden = NetSegment.Flags.None;
+                }
+                else
+                {
+                    prefab.m_segments[0].m_forwardRequired = NetSegment.Flags.None;
+                    prefab.m_segments[0].m_backwardRequired = NetSegment.Flags.None;
+                    prefab.m_segments[0].m_forwardForbidden = NetSegment.Flags.None;
+                    prefab.m_segments[0].m_backwardForbidden = NetSegment.Flags.None;
+                }
 				m_netTool.m_prefab = prefab;
 			}
 		}

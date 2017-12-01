@@ -12,16 +12,21 @@ namespace MetroOverhaul.InitializationSteps
             {
                 case NetInfoVersion.Elevated:
                     {
-                        var epPropInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"MetroElevatedPillar{smallWord}")}.MetroElevatedPillar{smallWord}_Data");
-                        if (epPropInfo == null)
+                        var epBuildingInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"MetroElevatedPillar{smallWord}")}.MetroElevatedPillar{smallWord}_Data");
+                        var epPropInfo = PrefabCollection<PropInfo>.FindLoaded($"{Util.PackageName($"MetroElevatedPillar{smallWord}Prop")}.MetroElevatedPillar{smallWord}Prop_Data");
+                        if (epBuildingInfo == null)
                         {
                             throw new Exception($"{prefab.name}: MetroElevatedPillar not found!");
                         }
-                        var bridgeAI = prefab.GetComponent<TrainTrackBridgeAI>();
+                        var bridgeAI = prefab.GetComponent<TrainTrackBridgeAIMetro>();
                         if (bridgeAI != null)
                         {
-                            bridgeAI.m_bridgePillarInfo = epPropInfo;
+                            bridgeAI.m_bridgePillarInfo = epBuildingInfo;
                             bridgeAI.m_bridgePillarOffset = -0.75f;
+                            if (epPropInfo != null)
+                            {
+                                bridgeAI.m_ElevatedPillarPropInfo = epPropInfo;
+                            }
                         }
                         break;
                     }

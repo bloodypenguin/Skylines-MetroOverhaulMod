@@ -920,7 +920,7 @@ namespace MetroOverhaul.InitializationSteps
                         var segment0 = info.m_segments[0].ShallowClone();
                         var node0 = trainTrackInfo.m_nodes[0].ShallowClone();
                         var node1 = trainTrackInfo.m_nodes[0].ShallowClone();
-
+                        var node2 = trainTrackInfo.m_nodes[0].ShallowClone();
                         segment0
                             .SetFlagsDefault()
                             .SetMeshes
@@ -939,7 +939,12 @@ namespace MetroOverhaul.InitializationSteps
                            ($@"Meshes\6m\Elevated_Trans_Pavement_Steel.obj",
                            $@"Meshes\6m\Bridge_Node_Pavement_Steel_LOD.obj")
                            .SetConsistentUVs();
-
+                        node2
+                            .SetFlags(NetNode.Flags.None, NetNode.Flags.None)
+                            .SetMeshes
+                            (@"Meshes\6m\Elevated_Bar_Steel.obj",
+                                @"Meshes\6m\Blank.obj")
+                            .SetConsistentUVs();
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
@@ -948,7 +953,7 @@ namespace MetroOverhaul.InitializationSteps
                         node1.m_lodMaterial = elevatedLODMaterial;
 
                         info.m_segments = info.AddSegments(segment0);
-                        info.m_nodes = info.AddNodes(node0, node1);
+                        info.m_nodes = info.AddNodes(node0, node1,node2);
                         break;
                     }
             }

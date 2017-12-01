@@ -540,7 +540,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
 
                         node2
-                            .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
+                            .SetFlags(NetNode.Flags.None, NetNode.Flags.None)
                             .SetMeshes
                             ($@"Meshes\{width}\Bridge_Node_Fence_Steel.obj",
                             $@"Meshes\{width}\Blank.obj");
@@ -642,7 +642,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                             ($@"Meshes\{width}\Elevated_Bar_Steel.obj",
                                 $@"Meshes\{width}\Blank.obj")
-                            .SetConsistentUVs(true);
+                            .SetConsistentUVs();
 
                         info.m_segments = info.AddSegments(segment0);
                         info.m_nodes = info.AddNodes(node0);
@@ -653,6 +653,7 @@ namespace MetroOverhaul.InitializationSteps
                         var segment0 = info.m_segments[0].ShallowClone();
                         var node0 = elevatedInfo.m_nodes[0].ShallowClone();
                         var node1 = elevatedInfo.m_nodes[0].ShallowClone();
+                        var node2 = elevatedInfo.m_nodes[0].ShallowClone();
                         segment0
                             .SetFlagsDefault()
                             .SetMeshes
@@ -671,16 +672,22 @@ namespace MetroOverhaul.InitializationSteps
                             ($@"Meshes\{width}\Elevated_Trans_Pavement_Steel.obj",
                                 $@"Meshes\{width}\Elevated_Node_Pavement_Steel.obj")
                             .SetConsistentUVs();
-
+                        node2
+                            .SetFlags(NetNode.Flags.None, NetNode.Flags.LevelCrossing)
+                            .SetMeshes
+                            ($@"Meshes\{width}\Elevated_Bar_Steel.obj",
+                                $@"Meshes\{width}\Blank.obj")
+                            .SetConsistentUVs();
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
                         node1.m_material = elevatedMaterial;
                         node1.m_lodMaterial = elevatedLODMaterial;
-
+                        node2.m_material = elevatedMaterial;
+                        node2.m_lodMaterial = elevatedLODMaterial;
                         info.m_segments = info.AddSegments(segment0);
-                        info.m_nodes = info.AddNodes(node0);
+                        info.m_nodes = info.AddNodes(node0,node1,node2);
                         break;
                     }
                 case NetInfoVersion.Slope:
