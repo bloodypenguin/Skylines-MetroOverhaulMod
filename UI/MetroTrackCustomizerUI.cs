@@ -509,20 +509,20 @@ namespace MetroOverhaul.UI
 			}
 			if (prefab != null)
 			{
-                if (extraElevated)
-                {
-                    prefab.m_segments[0].m_forwardRequired = NetSegment.Flags.Bend;
-                    prefab.m_segments[0].m_backwardRequired = NetSegment.Flags.Bend;
-                    prefab.m_segments[0].m_forwardForbidden = NetSegment.Flags.None;
-                    prefab.m_segments[0].m_backwardForbidden = NetSegment.Flags.None;
-                }
-                else
-                {
-                    prefab.m_segments[0].m_forwardRequired = NetSegment.Flags.None;
-                    prefab.m_segments[0].m_backwardRequired = NetSegment.Flags.None;
-                    prefab.m_segments[0].m_forwardForbidden = NetSegment.Flags.None;
-                    prefab.m_segments[0].m_backwardForbidden = NetSegment.Flags.None;
-                }
+                //if (extraElevated)
+                //{
+                //    prefab.m_segments[0].m_forwardRequired = NetSegment.Flags.Bend;
+                //    prefab.m_segments[0].m_backwardRequired = NetSegment.Flags.Bend;
+                //    prefab.m_segments[0].m_forwardForbidden = NetSegment.Flags.None;
+                //    prefab.m_segments[0].m_backwardForbidden = NetSegment.Flags.None;
+                //}
+                //else
+                //{
+                //    prefab.m_segments[0].m_forwardRequired = NetSegment.Flags.None;
+                //    prefab.m_segments[0].m_backwardRequired = NetSegment.Flags.None;
+                //    prefab.m_segments[0].m_forwardForbidden = NetSegment.Flags.None;
+                //    prefab.m_segments[0].m_backwardForbidden = NetSegment.Flags.None;
+                //}
 				m_netTool.m_prefab = prefab;
 			}
 		}

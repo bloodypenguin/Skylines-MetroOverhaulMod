@@ -44,7 +44,7 @@ namespace MetroOverhaul
                                 {
                                     var elevation = (float)elevationObject;
                                     var theList = pillarList.Where(d => d.HeightLimit >= elevation).OrderBy(x => x.HeightLimit).ToList();
-                                    var thePropList = pillarPropList.Where(d => d.HeightLimit >= elevation).OrderBy(x => x.HeightLimit).ToList();
+                                    //var thePropList = pillarPropList.Where(d => d.HeightLimit >= elevation).OrderBy(x => x.HeightLimit).ToList();
                                     if (theList == null || theList.Count == 0)
                                     {
                                         var thePillarInfo = pillarList.LastOrDefault();
@@ -58,16 +58,16 @@ namespace MetroOverhaul
                                         heightOffset = thePillarInfo.HeightOffset - 1f - thePillarInfo.info.m_generatedInfo.m_size.y;
                                     }
 
-                                    if (thePropList == null || thePropList.Count == 0)
-                                    {
-                                        var thePillarPropInfo = pillarPropList.LastOrDefault();
-                                        m_ElevatedPillarPropInfo = thePillarPropInfo.prop;
-                                    }
-                                    else
-                                    {
-                                        var thePillarPropInfo = pillarPropList.FirstOrDefault();
-                                        m_ElevatedPillarPropInfo = thePillarPropInfo.prop;
-                                    }
+                                    //if (thePropList == null || thePropList.Count == 0)
+                                    //{
+                                    //    var thePillarPropInfo = pillarPropList.LastOrDefault();
+                                    //    m_ElevatedPillarPropInfo = thePillarPropInfo.prop;
+                                    //}
+                                    //else
+                                    //{
+                                    //    var thePillarPropInfo = pillarPropList.FirstOrDefault();
+                                    //    m_ElevatedPillarPropInfo = thePillarPropInfo.prop;
+                                    //}
                                 }
                             }
                         }
