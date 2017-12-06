@@ -1,5 +1,7 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Math;
+using MetroOverhaul.Extensions;
+using MetroOverhaul.NEXT.Extensions;
 using Next;
 using System;
 using System.Collections.Generic;
@@ -12,8 +14,8 @@ namespace MetroOverhaul
     class TrainTrackBridgeAIMetro : TrainTrackBridgeAI
     {
         public List<BridgePillarItem> pillarList { get; set; }
-        public List<BridgePillarPropItem> pillarPropList { get; set; }
-        public PropInfo m_ElevatedPillarPropInfo { get; set; }
+        //public List<BridgePillarPropItem> pillarPropList { get; set; }
+        //public PropInfo m_ElevatedPillarPropInfo { get; set; }
         public override void GetNodeBuilding(ushort nodeID, ref NetNode data, out BuildingInfo building, out float heightOffset)
         {
             if ((data.m_flags & NetNode.Flags.Outside) == NetNode.Flags.None)
@@ -32,45 +34,24 @@ namespace MetroOverhaul
                     if (pillarList != null && pillarList.Count > 0)
                     {
                         var theNetTool = FindObjectOfType<NetTool>();
-                        if (theNetTool != null && theNetTool.m_prefab != null)
+                        if (theNetTool != null)
                         {
-                            var getElevationMethod = typeof(NetTool).GetMethod("GetElevation", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                            if (getElevationMethod != null)
+                            var elevation = theNetTool.GetElevation();
+                            var theList = pillarList.Where(d => d.HeightLimit >= elevation).OrderBy(x => x.HeightLimit).ToList();
+                            if (theList == null || theList.Count == 0)
                             {
-                                var param = new List<object>();
-                                param.Add(theNetTool.m_prefab);
-                                object elevationObject = getElevationMethod.Invoke(theNetTool, param.ToArray());
-                                if (elevationObject != null)
-                                {
-                                    var elevation = (float)elevationObject;
-                                    var theList = pillarList.Where(d => d.HeightLimit >= elevation).OrderBy(x => x.HeightLimit).ToList();
-                                    //var thePropList = pillarPropList.Where(d => d.HeightLimit >= elevation).OrderBy(x => x.HeightLimit).ToList();
-                                    if (theList == null || theList.Count == 0)
-                                    {
-                                        var thePillarInfo = pillarList.LastOrDefault();
-                                        building = thePillarInfo.info;
-                                        heightOffset = thePillarInfo.HeightOffset - 1f - thePillarInfo.info.m_generatedInfo.m_size.y;
-                                    }
-                                    else
-                                    {
-                                        var thePillarInfo = theList.FirstOrDefault();
-                                        building = thePillarInfo.info;
-                                        heightOffset = thePillarInfo.HeightOffset - 1f - thePillarInfo.info.m_generatedInfo.m_size.y;
-                                    }
-
-                                    //if (thePropList == null || thePropList.Count == 0)
-                                    //{
-                                    //    var thePillarPropInfo = pillarPropList.LastOrDefault();
-                                    //    m_ElevatedPillarPropInfo = thePillarPropInfo.prop;
-                                    //}
-                                    //else
-                                    //{
-                                    //    var thePillarPropInfo = pillarPropList.FirstOrDefault();
-                                    //    m_ElevatedPillarPropInfo = thePillarPropInfo.prop;
-                                    //}
-                                }
+                                var thePillarInfo = pillarList.LastOrDefault();
+                                building = thePillarInfo.info;
+                                heightOffset = thePillarInfo.HeightOffset - 1f - thePillarInfo.info.m_generatedInfo.m_size.y;
+                            }
+                            else
+                            {
+                                var thePillarInfo = theList.FirstOrDefault();
+                                building = thePillarInfo.info;
+                                heightOffset = thePillarInfo.HeightOffset - 1f - thePillarInfo.info.m_generatedInfo.m_size.y;
                             }
                         }
+
                     }
                     return;
                 }
@@ -130,6 +111,45 @@ namespace MetroOverhaul
             }
             data.m_flags = flags;
         }
+        private void GetSegmentPillarProps(float elevation)
+        {
+            //if (pillarPropList != null && pillarList.Count > 0)
+            //{
+            //    var thePropList = pillarPropList.Where(d => d.HeightLimit >= elevation).OrderBy(x => x.HeightLimit).ToList();
+            //    BridgePillarPropItem thePillarPropInfo = null;
+            //    if (thePropList == null || thePropList.Count == 0)
+            //    {
+            //        thePillarPropInfo = pillarPropList.LastOrDefault();
+            //    }
+            //    else
+            //    {
+            //        thePillarPropInfo = thePropList.FirstOrDefault();
+            //    }
+            //    if (thePillarPropInfo != null)
+            //    {
+            //        var prop = new NetLaneProps.Prop();
+            //        m_ElevatedPillarPropInfo = thePillarPropInfo.Prop;
+            //        prop.m_prop = m_ElevatedPillarPropInfo;
+            //        prop.m_probability = 100;
+            //        prop.m_repeatDistance = thePillarPropInfo.RepeatDistance;
+            //        prop.m_segmentOffset = thePillarPropInfo.SegmentOffset;
+            //        var prefab = FindObjectOfType<NetTool>().Prefab;
+            //        var centerLane = prefab.m_lanes.FirstOrDefault(l => l != null && l.m_laneType == NetInfo.LaneType.None);
+            //        if (centerLane == null)
+            //        {
+            //            centerLane = new NetInfo.Lane();
+            //            centerLane.m_laneType = NetInfo.LaneType.None;
+            //            centerLane.m_laneProps = ScriptableObject.CreateInstance<NetLaneProps>();
+            //        }
+            //        var laneProps = centerLane.m_laneProps.m_props.ToList();
+            //        laneProps.Add(prop);
+            //        centerLane.m_laneProps.m_props = laneProps.ToArray();
+            //        var lanes = prefab.m_lanes.ToList();
+            //        lanes.Add(centerLane);
+            //        prefab.m_lanes = lanes.ToArray();
+            //    }
+            //}
+        }
     }
 }
 
@@ -149,11 +169,16 @@ public class BridgePillarItem
 public class BridgePillarPropItem
 {
     public float HeightLimit { get; set; }
-    public PropInfo prop { get; set; }
-
+    public PropInfo Prop { get; set; }
+    public Vector3 Position { get; set; }
+    public float SegmentOffset { get; set; }
+    public float RepeatDistance { get; set; }
     public BridgePillarPropItem()
     {
         HeightLimit = 60;
-        prop = null;
+        Position = Vector3.zero;
+        SegmentOffset = 0;
+        RepeatDistance = 60;
+        Prop = null;
     }
 }

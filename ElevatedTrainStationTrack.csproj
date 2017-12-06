@@ -45,6 +45,7 @@
     <Compile Include="Detours\DepotAIDetour.cs" />
     <Compile Include="Detours\MetroTrainAIDetour.cs" />
     <Compile Include="Extensions\NetInfoExtensions.cs" />
+    <Compile Include="Extensions\NetToolExtensions.cs" />
     <Compile Include="InitializationSteps\SetupSteelMesh16m.cs" />
     <Compile Include="InitializationSteps\SetupMesh16m.cs" />
     <Compile Include="InitializationSteps\SetupMesh6m.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="InitializationSteps\SetupSteelTextures6m.cs" />
     <Compile Include="InitializationSteps\SetupTexture1416m.cs" />
     <Compile Include="InitializationSteps\SetupTexture6m.cs" />
+    <Compile Include="NEXT\Extensions\NetToolExtensions.cs" />
     <Compile Include="NEXT\LaneTypeEnum.cs" />
     <Compile Include="OptionsFramework\Attibutes\AbstractOptionsAttribute.cs" />
     <Compile Include="OptionsFramework\Attibutes\CheckboxAttribute.cs" />
@@ -163,7 +165,13 @@
     <None Include="Assets\Classic 1L Pillar %28Bridge%29.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Assets\Classic 1L Pillar %28High%29 Prop.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Assets\Classic 1L Pillar %28High%29.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\Classic 1L Pillar %28Low%29 Prop.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Assets\Classic 1L Pillar %28Low%29.crp">
@@ -172,7 +180,13 @@
     <None Include="Assets\Classic 2L Pillar %28Bridge%29.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Assets\Classic 2L Pillar %28High%29 Prop.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Assets\Classic 2L Pillar %28High%29.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\Classic 2L Pillar %28Low%29 Prop.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Assets\Classic 2L Pillar %28Low%29.crp">

@@ -371,11 +371,6 @@ namespace MetroOverhaul.InitializationSteps
                         nodeList.Add(nodes0);
                         nodeList.Add(nodes1);
 
-                        nodes1.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
-                        if (isTwoWay)
-                        {
-                            nodes1.m_connectGroup |= (NetInfo.ConnectGroup)16;
-                        }
                         segments0
                             .SetFlagsDefault()
                             .SetMeshes
@@ -427,14 +422,21 @@ namespace MetroOverhaul.InitializationSteps
 
                         var nodeList = new List<NetInfo.Node>();
 
-                        node1.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
+                        if (isTwoWay)
+                        {
+                            node2.m_connectGroup = NetInfo.ConnectGroup.CenterTram|(NetInfo.ConnectGroup)16;
+                            node10.m_connectGroup = NetInfo.ConnectGroup.CenterTram|(NetInfo.ConnectGroup)16;
+                        }
+                        else
+                        {
                         node2.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
                         node10.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
+                        }
+
                         if (isTwoWay)
                         {
                             node1.m_connectGroup |= (NetInfo.ConnectGroup)16;
-                            node2.m_connectGroup |= (NetInfo.ConnectGroup)16;
-                            node10.m_connectGroup |= (NetInfo.ConnectGroup)16;
+
                         }
                         segment0
                             .SetFlagsDefault()
@@ -532,14 +534,15 @@ namespace MetroOverhaul.InitializationSteps
                         nodeList.Add(node3);
                         nodeList.Add(node9);
 
-                        node1.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
-                        node2.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
-                        node9.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
                         if (isTwoWay)
                         {
-                            node1.m_connectGroup |= (NetInfo.ConnectGroup)16;
-                            node2.m_connectGroup |= (NetInfo.ConnectGroup)16;
-                            node9.m_connectGroup |= (NetInfo.ConnectGroup)16;
+                            node2.m_connectGroup = NetInfo.ConnectGroup.CenterTram | (NetInfo.ConnectGroup)16;
+                            node9.m_connectGroup = NetInfo.ConnectGroup.CenterTram | (NetInfo.ConnectGroup)16;
+                        }
+                        else
+                        {
+                            node2.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
+                            node9.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
                         }
 
                         segment1

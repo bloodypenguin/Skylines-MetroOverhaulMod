@@ -281,11 +281,6 @@ namespace MetroOverhaul.InitializationSteps
                         var nodeList = new List<NetInfo.Node>();
                         nodeList.Add(nodes0);
                         nodeList.Add(nodes1);
-                        nodes1.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
-                        if (isTwoWay)
-                        {
-                            nodes1.m_connectGroup |= (NetInfo.ConnectGroup)16;
-                        }
 
                         segments0
                             .SetFlagsDefault()
@@ -340,11 +335,6 @@ namespace MetroOverhaul.InitializationSteps
                         var nodeList = new List<NetInfo.Node>();
                         nodeList.Add(nodes0);
                         nodeList.Add(nodes1);
-                        nodes1.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
-                        if (isTwoWay)
-                        {
-                            nodes1.m_connectGroup |= (NetInfo.ConnectGroup)16;
-                        }
 
                         segments0
                             .SetFlagsDefault()
@@ -402,11 +392,6 @@ namespace MetroOverhaul.InitializationSteps
                         var segments4 = info.m_segments[0].ShallowClone();
                         var nodes0 = info.m_nodes[0].ShallowClone();
                         var nodes1 = info.m_nodes[1].ShallowClone();
-                        nodes1.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
-                        if (isTwoWay)
-                        {
-                            nodes1.m_connectGroup |= (NetInfo.ConnectGroup)16;
-                        }
                         var nodeList = new List<NetInfo.Node>();
                         nodeList.Add(nodes0);
                         nodeList.Add(nodes1);
