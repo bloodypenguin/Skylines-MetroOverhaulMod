@@ -1098,7 +1098,7 @@ namespace MetroOverhaul.InitializationSteps
                         node11
                             .SetFlags(NetNode.Flags.Transition, NetNode.Flags.None)
                             .SetMeshes
-                            (@"Meshes\6m\Elevated_Node_Pavement_Steel_Trans.obj",
+                            (@"Meshes\6m\Elevated_Trans_Pavement_Steel.obj",
                                 @"Meshes\6m\Elevated_Node_Pavement_Steel_LOD.obj")
                             .SetConsistentUVs();
 

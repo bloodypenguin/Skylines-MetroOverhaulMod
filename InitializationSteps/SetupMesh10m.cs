@@ -178,13 +178,11 @@ namespace MetroOverhaul.InitializationSteps
                         var node1 = info.m_nodes[1].ShallowClone();
                         var node3 = info.m_nodes[3].ShallowClone();
                         var node4 = info.m_nodes[0].ShallowClone();
-                        var node5 = info.m_nodes[0].ShallowClone();
                         var nodeList = new List<NetInfo.Node>();
                         nodeList.Add(node0);
                         nodeList.Add(node1);
                         nodeList.Add(node3);
                         nodeList.Add(node4);
-                        nodeList.Add(node5);
                         segment0
                             .SetFlagsDefault()
                             .SetMeshes
@@ -218,20 +216,12 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                             ($@"Meshes\{width}\ThirdRail_Node.obj", $@"Meshes\{width}\Blank.obj")
                             .SetConsistentUVs();
-                        node5
-                            .SetFlags(NetNode.Flags.Transition, NetNode.Flags.None)
-                            .SetMeshes
-                            ($@"Meshes\{width}\Bridge_Node_Pavement_Trans.obj",
-                            $@"Meshes\{width}\Bridge_Node_Pavement_LOD.obj")
-                            .SetConsistentUVs();
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         segment3.m_material = elevatedMaterial;
                         segment3.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
-                        node5.m_material = elevatedMaterial;
-                        node5.m_lodMaterial = elevatedLODMaterial;
                         if (isOneWay || isLarge)
                         {
                             nodeList.AddRange(GenerateLevelCrossing(info));
