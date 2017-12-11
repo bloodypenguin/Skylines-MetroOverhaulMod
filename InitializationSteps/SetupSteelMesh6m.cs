@@ -464,7 +464,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
 
                         node0
-                            .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
+                            .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition | NetNode.Flags.LevelCrossing)
                             .SetMeshes
                             (@"Meshes\6m\Elevated_Node_Pavement_Steel.obj",
                                 @"Meshes\6m\Elevated_Node_Pavement_Steel_LOD.obj")
@@ -482,7 +482,7 @@ namespace MetroOverhaul.InitializationSteps
                             (@"Meshes\6m\Elevated_Node_Pavement_Steel_Insert.obj", @"Meshes\6m\Blank.obj")
                             .SetConsistentUVs();
                         node11
-                            .SetFlags(NetNode.Flags.Transition, NetNode.Flags.None)
+                            .SetFlags(NetNode.Flags.Transition, NetNode.Flags.LevelCrossing)
                             .SetMeshes
                             (@"Meshes\6m\Elevated_Trans_Pavement_Steel.obj",
                                 @"Meshes\6m\Elevated_Node_Pavement_LOD.obj")
@@ -569,7 +569,7 @@ namespace MetroOverhaul.InitializationSteps
                             (@"Meshes\6m\Boosted_Rail_Steel_Insert.obj", @"Meshes\6m\Blank.obj")
                             .SetConsistentUVs();
                         node3
-                            .SetFlags(NetNode.Flags.Transition, NetNode.Flags.None)
+                            .SetFlags(NetNode.Flags.Transition, NetNode.Flags.LevelCrossing)
                             .SetMeshes
                             (@"Meshes\6m\Elevated_Trans_Pavement_Steel.obj",
                             @"Meshes\6m\Elevated_Node_Pavement_LOD.obj")
@@ -931,13 +931,13 @@ namespace MetroOverhaul.InitializationSteps
                             $@"Meshes\6m\Bridge_Pavement_Steel_LOD.obj")
                             .SetConsistentUVs();
                         node0
-                            .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
+                            .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition | NetNode.Flags.LevelCrossing)
                             .SetMeshes
                             ($@"Meshes\6m\Bridge_Node_Pavement_Steel2.obj",
                             $@"Meshes\6m\Elevated_Node_Pavement_Steel_LOD.obj")
                             .SetConsistentUVs();
                         node1
-                           .SetFlags(NetNode.Flags.Transition, NetNode.Flags.None)
+                           .SetFlags(NetNode.Flags.Transition, NetNode.Flags.LevelCrossing)
                            .SetMeshes
                            ($@"Meshes\6m\Elevated_Trans_Pavement_Steel.obj",
                            $@"Meshes\6m\Bridge_Node_Pavement_Steel_LOD.obj")
