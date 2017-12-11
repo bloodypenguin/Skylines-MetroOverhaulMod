@@ -710,7 +710,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetFlagsDefault()
                             .SetMeshes
                             (@"Meshes\6m\Tunnel_Pavement_Steel.obj",
-                                @"Meshes\6m\Tunnel_Pavement_LOD.obj")
+                                @"Meshes\6m\Tunnel_Pavement_Steel_LOD.obj")
                             .SetConsistentUVs();
                         segment2
                             .SetFlagsDefault()

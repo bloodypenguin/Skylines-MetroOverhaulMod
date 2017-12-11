@@ -172,7 +172,27 @@ namespace MetroOverhaul.InitializationSteps
                         }
                         foreach (var node in info.m_nodes)
                         {
-                            if (node.m_mesh.name.Contains("Pavement") || (node.m_mesh.name.Contains("Fence")))
+                            if (node.m_mesh.name.Contains("LevelCrossing_Rail"))
+                            {
+                                node.SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Ground_Level_Crossing_Rail__MainTex.png",
+                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                                            @"Textures\Ground_Level_Crossing_Rail__XYSMap.png"));
+                            }
+                            else if (node.m_mesh.name.Contains("LevelCrossing"))
+                            {
+                                node.SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Ground_Level_Crossing__MainTex.png",
+                                            @"Textures\Ground_Level_Crossing__AlphaMap.png",
+                                            @"Textures\Ground_Segment_Rail__XYSMap.png"),
+                                    new LODTextureSet
+                                        (@"Textures\Ground_Level_Crossing__MainTex_LOD.png",
+                                            @"Textures\Ground_Level_Crossing__AlphaMap_LOD.png",
+                                            @"Textures\Ground_Segment_Pavement__XYSMap_LOD.png"));
+                            }
+                            else if (node.m_mesh.name.Contains("Pavement") || (node.m_mesh.name.Contains("Fence")))
                             {
                                 if (node.m_mesh.name.Contains("Elevated"))
                                 {
@@ -286,7 +306,27 @@ namespace MetroOverhaul.InitializationSteps
                         }
                         foreach (var node in info.m_nodes)
                         {
-                            if (node.m_mesh.name.Contains("Fence"))
+                            if (node.m_mesh.name.Contains("LevelCrossing_Rail"))
+                            {
+                                node.SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Ground_Level_Crossing_Rail__MainTex.png",
+                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                                            @"Textures\Ground_Level_Crossing_Rail__XYSMap.png"));
+                            }
+                            else if (node.m_mesh.name.Contains("LevelCrossing"))
+                            {
+                                node.SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Ground_Level_Crossing__MainTex.png",
+                                            @"Textures\Ground_Level_Crossing__AlphaMap.png",
+                                            @"Textures\Ground_Segment_Rail__XYSMap.png"),
+                                    new LODTextureSet
+                                        (@"Textures\Ground_Level_Crossing__MainTex_LOD.png",
+                                            @"Textures\Ground_Level_Crossing__AlphaMap_LOD.png",
+                                            @"Textures\Ground_Segment_Pavement__XYSMap_LOD.png"));
+                            }
+                            else if (node.m_mesh.name.Contains("Fence"))
                             {
                                 node.SetTextures(
                                     new TextureSet

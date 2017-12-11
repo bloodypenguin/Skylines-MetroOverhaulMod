@@ -375,6 +375,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
                         segment1.m_material = elevatedbrMaterial;
                         segment1.m_lodMaterial = elevatedLODMaterial;
+                        RoadHelper.HandleAsymSegmentFlags(segment1);
                         segment2.m_material = elevatedbrMaterial;
                         segment2.m_lodMaterial = elevatedLODMaterial;
                         segment3.m_material = elevatedbrMaterial;

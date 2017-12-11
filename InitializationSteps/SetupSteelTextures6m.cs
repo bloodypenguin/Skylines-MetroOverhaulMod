@@ -245,6 +245,26 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\Ground_Segment_Rail__AlphaMap_LOD.png",
                                             @"Textures\Elevated_Segment_Steel_Rail__XYSMap_LOD.png"));
                             }
+                            else if (node.m_mesh.name.Contains("LevelCrossing_Rail"))
+                            {
+                                node.SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Ground_Level_Crossing_Rail__MainTex.png",
+                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                                            @"Textures\Ground_Level_Crossing_Rail__XYSMap.png"));
+                            }
+                            else if (node.m_mesh.name.Contains("LevelCrossing"))
+                            {
+                                node.SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Ground_Level_Crossing__MainTex.png",
+                                            @"Textures\Ground_Level_Crossing__AlphaMap.png",
+                                            @"Textures\Ground_Segment_Rail__XYSMap.png"),
+                                    new LODTextureSet
+                                        (@"Textures\Ground_Level_Crossing__MainTex_LOD.png",
+                                            @"Textures\Ground_Level_Crossing__AlphaMap_LOD.png",
+                                            @"Textures\Ground_Segment_Pavement__XYSMap_LOD.png"));
+                            }
                             else
                             {
                                 node.SetTextures(
@@ -289,9 +309,9 @@ namespace MetroOverhaul.InitializationSteps
                             {
                                 segment.SetTextures(
                                     new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        (@"Textures\Ground_Segment_Rail_Steel__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                                            @"Textures\Ground_Segment_Rail_Steel__XYSMap.png"));
                             }
                         }
                         foreach (var node in info.m_nodes)
@@ -332,13 +352,33 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\ThirdRail__AlphaMap_LOD.png",
                                             @"Textures\ThirdRail__XYSMap_LOD.png"));
                             }
+                            else if (node.m_mesh.name.Contains("LevelCrossing_Rail"))
+                            {
+                                node.SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Ground_Level_Crossing_Rail__MainTex.png",
+                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                                            @"Textures\Ground_Level_Crossing_Rail__XYSMap.png"));
+                            }
+                            else if (node.m_mesh.name.Contains("LevelCrossing"))
+                            {
+                                node.SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Ground_Level_Crossing__MainTex.png",
+                                            @"Textures\Ground_Level_Crossing__AlphaMap.png",
+                                            @"Textures\Ground_Segment_Rail__XYSMap.png"),
+                                    new LODTextureSet
+                                        (@"Textures\Ground_Level_Crossing__MainTex_LOD.png",
+                                            @"Textures\Ground_Level_Crossing__AlphaMap_LOD.png",
+                                            @"Textures\Ground_Segment_Pavement__XYSMap_LOD.png"));
+                            }
                             else
                             {
                                 node.SetTextures(
                                     new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        (@"Textures\Ground_Segment_Rail_Steel__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                                            @"Textures\Ground_Segment_Rail_Steel__XYSMap.png"));
                             }
                         }
                         break;
