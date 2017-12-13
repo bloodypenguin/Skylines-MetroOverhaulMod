@@ -730,7 +730,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
                             .SetMeshes
                             (@"Meshes\6m\Tunnel_Node_Pavement_Steel.obj",
-                                @"Meshes\6m\Tunnel_Node_Pavement_LOD.obj")
+                                @"Meshes\6m\Tunnel_Node_Pavement_Steel_LOD.obj")
                             .SetConsistentUVs();
                         node2
                             .SetFlags(NetNode.Flags.Transition, NetNode.Flags.None)
