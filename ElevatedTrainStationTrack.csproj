@@ -294,6 +294,12 @@
     <None Include="Resources\Meshes\10m\Bridge_Pillar.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\10m\Bridge_Trans_Pavement_Steel.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Bridge_Trans_Pavement_Steel2.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\10m\Elevated_Bar_Steel.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

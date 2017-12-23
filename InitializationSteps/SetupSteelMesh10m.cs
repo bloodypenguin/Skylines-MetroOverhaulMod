@@ -529,7 +529,7 @@ namespace MetroOverhaul.InitializationSteps
                         node1
                             .SetFlags(NetNode.Flags.Transition, NetNode.Flags.LevelCrossing)
                             .SetMeshes
-                            ($@"Meshes\{width}\Elevated_Trans_Pavement_Steel.obj",
+                            ($@"Meshes\{width}\Bridge_Trans_Pavement_Steel.obj",
                             $@"Meshes\{width}\Bridge_Node_Pavement_Steel_LOD.obj")
                             .SetConsistentUVs();
 
@@ -652,7 +652,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetFlagsDefault()
                             .SetMeshes
                             ($@"Meshes\{width}\Bridge_Pavement_Steel2.obj",
-                            $@"Meshes\{width}\Bridge_Pavement_Steel_LOD.obj")
+                            $@"Meshes\{width}\Bridge_Pavement_Steel2_LOD.obj")
                             .SetConsistentUVs();
                         node0
                             .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition| NetNode.Flags.LevelCrossing)
@@ -663,7 +663,7 @@ namespace MetroOverhaul.InitializationSteps
                         node1
                             .SetFlags(NetNode.Flags.Transition, NetNode.Flags.LevelCrossing)
                             .SetMeshes
-                            ($@"Meshes\{width}\Elevated_Trans_Pavement_Steel.obj",
+                            ($@"Meshes\{width}\Bridge_Trans_Pavement_Steel2.obj",
                                 $@"Meshes\{width}\Elevated_Node_Pavement_Steel.obj")
                             .SetConsistentUVs();
                         node2

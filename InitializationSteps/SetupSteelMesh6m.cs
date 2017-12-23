@@ -928,7 +928,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetFlagsDefault()
                             .SetMeshes
                             ($@"Meshes\6m\Bridge_Pavement_Steel2.obj",
-                            $@"Meshes\6m\Bridge_Pavement_Steel_LOD.obj")
+                            $@"Meshes\6m\Bridge_Pavement_Steel2_LOD.obj")
                             .SetConsistentUVs();
                         node0
                             .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition | NetNode.Flags.LevelCrossing)
