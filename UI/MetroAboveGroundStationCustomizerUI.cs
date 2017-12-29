@@ -232,7 +232,7 @@ namespace MetroOverhaul.UI
 					{
 						if (trackName.ToLower().StartsWith("steel"))
 						{
-							trackName = trackName.Substring(5);
+							trackName = trackName.Substring(6);
 						}
 						paths[i].m_netInfo = PrefabCollection<NetInfo>.FindLoaded(trackName);
 					}
