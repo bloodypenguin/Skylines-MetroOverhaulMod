@@ -384,10 +384,6 @@ namespace MetroOverhaul
 					}
 					nodeList.Add(newNode);
 				}
-				if (path.m_netInfo.name.ToLower().Contains("inside"))
-				{
-					path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Pedestrian Connection Surface");
-				}
 
 				path.m_nodes = nodeList.ToArray();
 				SetCurveTargets(path);

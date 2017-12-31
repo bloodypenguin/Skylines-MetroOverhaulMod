@@ -465,7 +465,7 @@ namespace MetroOverhaul.InitializationSteps
                             ($@"Meshes\{width}\Ground_Fence_Steel.obj",
                             $@"Meshes\{width}\Ground_Fence_LOD.obj");
                         node
-                            .SetFlags(NetNode.Flags.None, NetNode.Flags.None)
+                            .SetFlags(NetNode.Flags.None, NetNode.Flags.LevelCrossing)
                             .SetMeshes
                             ($@"Meshes\{width}\Ground_Node_Fence_Steel.obj",
                             $@"Meshes\{width}\Ground_Node_Fence_LOD.obj");
@@ -487,7 +487,7 @@ namespace MetroOverhaul.InitializationSteps
                             ($@"Meshes\{width}\Elevated_Fence_Steel.obj",
                             $@"Meshes\{width}\Blank.obj");
                         node
-                            .SetFlags(NetNode.Flags.None, NetNode.Flags.None)
+                            .SetFlags(NetNode.Flags.None, NetNode.Flags.LevelCrossing)
                             .SetMeshes
                             ($@"Meshes\{width}\Elevated_Node_Fence_Steel.obj",
                             $@"Meshes\{width}\Blank.obj");
