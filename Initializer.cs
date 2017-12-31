@@ -1124,17 +1124,17 @@ namespace MetroOverhaul
 		private static int GetTrackCost(NetInfoVersion version)
 		{
 			var metroInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
-			var trainInfo = PrefabCollection<NetInfo>.FindLoaded($"Train Track");
-			double coeff = ((PlayerNetAI)metroInfo.m_netAI).m_constructionCost / ((PlayerNetAI)trainInfo.m_netAI).m_constructionCost;
-			var info = PrefabCollection<NetInfo>.FindLoaded($"Train Track{(version != NetInfoVersion.Ground ? "" + version.ToString() : "")}");
+			var trainInfo = PrefabCollection<NetInfo>.FindLoaded("Train Track");
+			double coeff = (double)((PlayerNetAI)metroInfo.m_netAI).m_constructionCost / ((PlayerNetAI)trainInfo.m_netAI).m_constructionCost;
+			var info = PrefabCollection<NetInfo>.FindLoaded($"Train Track{(version != NetInfoVersion.Ground ? " " + version.ToString() : "")}");
 			return (int)Math.Round(((PlayerNetAI)info.m_netAI).m_constructionCost * coeff);
 		}
 		private static int GetTrackMaintCost(NetInfoVersion version)
 		{
 			var metroInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
-			var trainInfo = PrefabCollection<NetInfo>.FindLoaded($"Train Track");
-			double coeff = ((PlayerNetAI)metroInfo.m_netAI).m_maintenanceCost / ((PlayerNetAI)trainInfo.m_netAI).m_maintenanceCost;
-			var info = PrefabCollection<NetInfo>.FindLoaded($"Train Track{(version != NetInfoVersion.Ground ? "" + version.ToString() : "")}");
+			var trainInfo = PrefabCollection<NetInfo>.FindLoaded("Train Track");
+			double coeff = (double)((PlayerNetAI)metroInfo.m_netAI).m_maintenanceCost / ((PlayerNetAI)trainInfo.m_netAI).m_maintenanceCost;
+			var info = PrefabCollection<NetInfo>.FindLoaded($"Train Track{(version != NetInfoVersion.Ground ? " " + version.ToString() : "")}");
 			return (int)Math.Round(((PlayerNetAI)info.m_netAI).m_maintenanceCost * coeff);
 		}
 		public static float GetCostMultiplier(NetInfoVersion version)

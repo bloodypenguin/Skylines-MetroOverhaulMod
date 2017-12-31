@@ -225,9 +225,9 @@ namespace MetroOverhaul
 							var newNodes = new List<Vector3>();
 							newNodes.Add(new Vector3()
 							{
-								x = trackPath.m_nodes.Last().x - 6 * zCoeff,
+								x = trackPath.m_nodes.Last().x - 7 * zCoeff,
 								y = trackPath.m_nodes.Last().y + 8,
-								z = trackPath.m_nodes.Last().z - 6 * xCoeff
+								z = trackPath.m_nodes.Last().z - 7 * xCoeff
 							});
 							newNodes.Add(new Vector3()
 							{
@@ -242,9 +242,9 @@ namespace MetroOverhaul
 
 							var branchVectorConnect = new Vector3()
 							{
-								x = trackPath.m_nodes.Last().x + 6 * zCoeff,
+								x = trackPath.m_nodes.Last().x + 7 * zCoeff,
 								y = trackPath.m_nodes.Last().y + 8,
-								z = trackPath.m_nodes.Last().z + 6 * xCoeff
+								z = trackPath.m_nodes.Last().z + 7 * xCoeff
 							};
 							var branchVectorStair = new Vector3()
 							{
