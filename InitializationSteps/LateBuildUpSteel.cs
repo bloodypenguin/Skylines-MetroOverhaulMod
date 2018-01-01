@@ -31,14 +31,14 @@ namespace MetroOverhaul.InitializationSteps
                             if (highPillar != null)
                             {
                                 bridgeAI.pillarList = new List<BridgePillarItem>();
-                                bridgeAI.pillarList.Add(new BridgePillarItem() { HeightLimit = 15, HeightOffset = 0, info = lowPillar });
+                                bridgeAI.pillarList.Add(new BridgePillarItem() { HeightLimit = 12, HeightOffset = 0, info = lowPillar });
                                 bridgeAI.pillarList.Add(new BridgePillarItem() { HeightLimit = 60, HeightOffset = 0, info = highPillar });
                             }
                             // bridgeAI.m_bridgePillarOffset = 0.75f;
                         }
 
                         var pillarPropList = new List<BridgePillarPropItem>();
-                        pillarPropList.Add(new BridgePillarPropItem() { HeightLimit = 15, RepeatDistance = 60, Position = new Vector3(0,-15.75f, 0), Prop = lowPillarProp });
+                        pillarPropList.Add(new BridgePillarPropItem() { HeightLimit = 12, RepeatDistance = 60, Position = new Vector3(0,-15.75f, 0), Prop = lowPillarProp });
                         pillarPropList.Add(new BridgePillarPropItem() { HeightLimit = 60, RepeatDistance = 60, Position = new Vector3(0,-24.9f, 0), Prop = highPillarProp });
                         var lanes = prefab.m_lanes.ToList();
                         var propLane = lanes.FirstOrDefault(l => l.m_laneType == NetInfo.LaneType.None);
