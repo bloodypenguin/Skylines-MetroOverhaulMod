@@ -1,178 +1,1163 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using ColossalFramework;
+using ColossalFramework.Globalization;
+using ICities;
+using MetroOverhaul.InitializationSteps;
 using UnityEngine;
+using MetroOverhaul.NEXT;
+using MetroOverhaul.NEXT.Extensions;
+using MetroOverhaul.OptionsFramework;
 
-namespace ElevatedTrainStationTrack
+namespace MetroOverhaul
 {
-    public class Initializer : AbstractInitializer
-    {
-        protected override void InitializeImpl()
-        {
-            CreatePrefab("Station Track Eleva", "Train Station Track",
-                SetupElevatedPrefab); //for compatibility, never change this prefab's name
-            CreatePrefab("Station Track Elevated (C)", "Train Station Track",
-                new Action<NetInfo, bool>(SetupElevatedPrefab).Apply(true));
-            CreatePrefab("Station Track Elevated (NP)", "Train Station Track",
-                new Action<NetInfo>(SetupElevatedPrefab).Chain(Modifiers.RemoveElectricityPoles));
-            CreatePrefab("Station Track Elevated (CNP)", "Train Station Track",
-                new Action<NetInfo, bool>(SetupElevatedPrefab).Apply(true).Chain(Modifiers.RemoveElectricityPoles));
+	public class Initializer : AbstractInitializer
+	{
+		public AppMode AppMode { get; set; }
 
-            CreatePrefab("Station Track Elevated Narrow", "Train Station Track",
-                new Action<NetInfo>(SetupElevatedPrefab).Chain(Modifiers.MakePedestrianLanesNarrow));
-            CreatePrefab("Station Track Elevated Narrow (C)", "Train Station Track",
-                new Action<NetInfo, bool>(SetupElevatedPrefab).Apply(true).Chain(Modifiers.MakePedestrianLanesNarrow));
-            CreatePrefab("Station Track Elevated Narrow (NP)", "Train Station Track",
-                new Action<NetInfo>(SetupElevatedPrefab).Chain(Modifiers.RemoveElectricityPoles).Chain(Modifiers.MakePedestrianLanesNarrow));
-            CreatePrefab("Station Track Elevated Narrow (CNP)", "Train Station Track",
-                new Action<NetInfo, bool>(SetupElevatedPrefab).Apply(true).Chain(Modifiers.RemoveElectricityPoles).Chain(Modifiers.MakePedestrianLanesNarrow));
+		protected override void InitializeImpl()
+		{
+			CreateTracks();
+			if (AppMode != AppMode.AssetEditor)
+			{
+				AssetsUpdater.PreventVanillaMetroTrainSpawning();
+				AssetsUpdater.UpdateVanillaMetroTracks();
+			}
+		}
 
-            CreatePrefab("Station Track Sunken", "Train Station Track",
-                SetupSunkenPrefab); //for compatibility, never change this prefab's name
-            CreatePrefab("Station Track Sunken (NP)", "Train Station Track",
-                new Action<NetInfo>(SetupSunkenPrefab).Chain(Modifiers.RemoveElectricityPoles));
-            CreatePrefab("Train Station Track (C)", "Train Station Track",
-                Modifiers.CreatePavement);
-            CreatePrefab("Train Station Track (NP)", "Train Station Track",
-                Modifiers.RemoveElectricityPoles);
-            CreatePrefab("Train Station Track (CNP)", "Train Station Track",
-                new Action<NetInfo>(Modifiers.CreatePavement).Chain(Modifiers.RemoveElectricityPoles));
+		private void CreateTracks()
+		{
+			CreateConcreteTracks();
+			if (OptionsWrapper<Options>.Options.steelTracks)
+			{
+				CreateSteelTracks();
+			}
+		}
 
-            CreatePrefab("Station Track Tunnel", "Metro Station Track",
-                SetupTunnelPrefab); //for compatibility, never change this prefab's name
-        }
+		#region CONCRETE
+		private void CreateConcreteTracks()
+		{
+			var elevatedInfo = FindOriginalNetInfo("Basic Road Elevated");
+			var trainTrackInfo = FindOriginalNetInfo("Train Track");
+			var metroInfo = FindOriginalNetInfo("Metro Track");
+			var metroStationInfo = FindOriginalNetInfo("Metro Station Track");
+			try
+			{
+				var replacements = OptionsWrapper<Options>.Options.replaceExistingNetworks
+					? new Dictionary<NetInfoVersion, string> { { NetInfoVersion.Tunnel, "Metro Track" } }
+					: null;
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.SetStandardTrackWidths).
+						Chain(CustomizationSteps.CommonCustomization).
+						Chain(CustomizationSteps.CommonConcreteCustomization).
+						Chain(CustomizationSteps.ReplaceTrackIcon).
+						Chain(SetupMesh.Setup10mMesh, elevatedInfo, metroInfo).
+						Chain(SetupMesh.Setup10mBarMesh, elevatedInfo).
+						Chain(SetupTexture.Setup10mTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+							}),
+					NetInfoVersion.All, null, null, replacements
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up concrete tracks");
+				UnityEngine.Debug.LogException(e);
+			}
 
-        private static void SetupElevatedPrefab(NetInfo elevatedPrefab)
-        {
-            SetupElevatedPrefab(elevatedPrefab, false);
-        }
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomization).
+						Chain(CustomizationSteps.CommonConcreteCustomization).
+						Chain(CustomizationSteps.SetStandardTrackWidths).
+						Chain(SetupMesh.Setup10mMesh, elevatedInfo, metroInfo).
+						Chain(SetupTexture.Setup10mTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+							}),
+					NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions, null,
+							NetInfoVersion.Slope | NetInfoVersion.Tunnel)
+					, prefabName => prefabName + " NoBar"
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up nobar concrete tracks");
+				UnityEngine.Debug.LogException(e);
+			}
 
-        private static void SetupElevatedPrefab(NetInfo elevatedPrefab, bool concrete)
-        {
-            var stationAI = elevatedPrefab.GetComponent<TrainTrackAI>();
-            stationAI.m_elevatedInfo = elevatedPrefab;
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomizationTwoLaneOneWay).
+						Chain(CustomizationSteps.CommonConcreteCustomization).
+						Chain(CustomizationSteps.SetStandardTrackWidths).
+						Chain(SetupMesh.Setup10mMesh, elevatedInfo, metroInfo).
+						Chain(SetupMesh.Setup10mBarMesh, elevatedInfo).
+						Chain(SetupTexture.Setup10mTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+							}),
+					NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions, null,
+							NetInfoVersion.Slope | NetInfoVersion.Tunnel)
+					, prefabName => prefabName + " Two-Lane One-Way"
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up nobar concrete tracks");
+				UnityEngine.Debug.LogException(e);
+			}
 
-            elevatedPrefab.m_followTerrain = false;
-            elevatedPrefab.m_flattenTerrain = false;
-            elevatedPrefab.m_createGravel = false;
-            elevatedPrefab.m_createPavement = false;
-            elevatedPrefab.m_createRuining = false;
-            elevatedPrefab.m_requireSurfaceMaps = false;
-            elevatedPrefab.m_clipTerrain = false;
-            elevatedPrefab.m_snapBuildingNodes = false;
-            elevatedPrefab.m_placementStyle = ItemClass.Placement.Procedural;
-            elevatedPrefab.m_useFixedHeight = true;
-            elevatedPrefab.m_lowerTerrain = true;
-            elevatedPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
-            var elevatedTrack = FindOriginalPrefab("Train Track Elevated");
-            if (elevatedTrack == null)
-            {
-                return;
-            }
-            var etstMesh = Util.LoadMesh(string.Concat(Util.AssemblyDirectory, "/TTNR.obj"), "ETST ");
-            var etstSegmentLodMesh = Util.LoadMesh(string.Concat(Util.AssemblyDirectory, "/TTNR_LOD.obj"), "ETST_SLOD");
-            var etstNodeLodMesh = Util.LoadMesh(string.Concat(Util.AssemblyDirectory, "/TTNR_Node_LOD.obj"), "ETST_NLOD");
-            elevatedPrefab.m_segments[0].m_segmentMaterial = ModifyRailMaterial(elevatedTrack.m_segments[0].m_segmentMaterial, concrete);
-            elevatedPrefab.m_segments[0].m_material = ModifyRailMaterial(elevatedTrack.m_segments[0].m_material, concrete);
-            elevatedPrefab.m_segments[0].m_mesh = etstMesh;
-            elevatedPrefab.m_segments[0].m_segmentMesh = etstMesh;
-            elevatedPrefab.m_segments[0].m_lodMaterial = ModifyRailMaterial(elevatedTrack.m_segments[0].m_lodMaterial, concrete);
-            elevatedPrefab.m_segments[0].m_lodMesh = etstSegmentLodMesh;
-            elevatedPrefab.m_nodes[0].m_material = ModifyRailMaterial(elevatedTrack.m_nodes[0].m_material, concrete);
-            elevatedPrefab.m_nodes[0].m_nodeMaterial = ModifyRailMaterial(elevatedTrack.m_nodes[0].m_nodeMaterial, concrete);
-            elevatedPrefab.m_nodes[0].m_lodMaterial = ModifyRailMaterial(elevatedTrack.m_nodes[0].m_lodMaterial, concrete);
-            elevatedPrefab.m_nodes[0].m_lodMesh = etstNodeLodMesh;
-            elevatedPrefab.m_nodes[0].m_nodeMesh = etstMesh;
-            elevatedPrefab.m_nodes[0].m_mesh = etstMesh;
-        }
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomizationTwoLaneOneWay).
+						Chain(CustomizationSteps.CommonConcreteCustomization).
+						Chain(CustomizationSteps.SetStandardTrackWidths).
+						Chain(SetupMesh.Setup10mMesh, elevatedInfo, metroInfo).
+						Chain(SetupTexture.Setup10mTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+							}),
+					NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions, null, NetInfoVersion.None)
+					, prefabName => prefabName + " Two-Lane One-Way NoBar"
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up nobar concrete tracks");
+				UnityEngine.Debug.LogException(e);
+			}
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomizationLarge).
+						Chain(CustomizationSteps.CommonConcreteCustomization).
+						Chain(CustomizationSteps.SetLargeTrackWidths).
+						Chain(SetupMesh.Setup10mMesh, elevatedInfo, metroInfo).
+						Chain(SetupMesh.Setup10mBarMesh, elevatedInfo).
+						Chain(SetupTexture.Setup10mTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+							}),
+					NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions, null, NetInfoVersion.None)
+					, prefabName => prefabName + " Large"
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up nobar concrete tracks");
+				UnityEngine.Debug.LogException(e);
+			}
 
-        private static Material ModifyRailMaterial(Material material, bool concrete)
-        {
-            if (!concrete)
-            {
-                return material;
-            }
-            var newMaterial = new Material(material)
-            {
-                name = $"{material.name}-concrete",
-                shader = Shader.Find("Custom/Net/RoadBridge")
-            };
-            return newMaterial;
-        }
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomizationLarge).
+						Chain(CustomizationSteps.CommonConcreteCustomization).
+						Chain(CustomizationSteps.SetLargeTrackWidths).
+						Chain(SetupMesh.Setup10mMesh, elevatedInfo, metroInfo).
+						Chain(SetupTexture.Setup10mTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+							}),
+					NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions, null, NetInfoVersion.None)
+					, prefabName => prefabName + " Large NoBar"
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up nobar concrete tracks");
+				UnityEngine.Debug.LogException(e);
+			}
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomizationSmall).
+						Chain(CustomizationSteps.CommonConcreteCustomization).
+						Chain(CustomizationSteps.SetSmallTrackWidths).
+						Chain(SetupMesh.Setup6mMesh).
+						Chain(SetupMesh.Setup6mMeshBar).
+						Chain(SetupTexture.Setup6mTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+							}),
+				   NetInfoVersion.All,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions, null, NetInfoVersion.None)
+					, prefabName => prefabName + " Small"
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up nobar concrete tracks");
+				UnityEngine.Debug.LogException(e);
+			}
 
-        public class UndergroundTrainStationTrackAI : MetroTrackAI
-        {
-            public override bool IsUnderground()
-            {
-                return false;
-            }
-        }
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomizationSmall).
+						Chain(CustomizationSteps.CommonConcreteCustomization).
+						Chain(CustomizationSteps.SetSmallTrackWidths).
+						Chain(SetupMesh.Setup6mMesh).
+						Chain(SetupTexture.Setup6mTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+							}),
+				   NetInfoVersion.All,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions, null, NetInfoVersion.None)
+					, prefabName => prefabName + " Small NoBar"
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up nobar concrete tracks");
+				UnityEngine.Debug.LogException(e);
+			}
 
-        private static void SetupTunnelPrefab(NetInfo prefab)
-        {
-            var trainStationTrack = FindOriginalPrefab("Train Station Track");
-            prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
-            prefab.m_class.m_subService = ItemClass.SubService.PublicTransportTrain;
-            prefab.m_class.m_service = ItemClass.Service.PublicTransport;
-            prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels | ItemClass.Layer.Default;
-            prefab.m_canCollide = false;
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomizationSmall).
+						Chain(CustomizationSteps.CommonConcreteCustomization).
+						Chain(CustomizationSteps.SetSmallTrackWidths).
+						Chain(SetupMesh.Setup6mMesh).
+						Chain(SetupMesh.Setup6mMeshBar).
+						Chain(SetupTexture.Setup6mTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+							}),
+				   NetInfoVersion.All,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions, null, NetInfoVersion.None)
+					, prefabName => prefabName + " Small Two-Way"
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up nobar concrete tracks");
+				UnityEngine.Debug.LogException(e);
+			}
 
-            var metroAI = prefab.GetComponent<MetroTrackAI>();
-            GameObject.DestroyImmediate(metroAI);
-            var trackAI = prefab.gameObject.AddComponent<UndergroundTrainStationTrackAI>();
-            trackAI.m_transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Train");
-            prefab.m_netAI = trackAI;
-            trackAI.m_createPassMilestone = trainStationTrack.GetComponent<TrainTrackAI>().m_createPassMilestone;
-            trackAI.m_info = prefab;
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomizationSmall).
+						Chain(CustomizationSteps.CommonConcreteCustomization).
+						Chain(CustomizationSteps.SetSmallTrackWidths).
+						Chain(SetupMesh.Setup6mMesh).
+						Chain(SetupTexture.Setup6mTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+							}),
+				   NetInfoVersion.All,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions, null, NetInfoVersion.None)
+					, prefabName => prefabName + " Small Two-Way NoBar"
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up nobar concrete tracks");
+				UnityEngine.Debug.LogException(e);
+			}
 
-            var field = typeof(PrefabInfo).GetField("m_UICategory", BindingFlags.Instance | BindingFlags.NonPublic);
-            field.SetValue(prefab, field.GetValue(trainStationTrack));
+			try
+			{
+				CreateFullStationPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupStationProps).
+						Chain(CustomizationSteps.CommonCustomization).
+						Chain(CustomizationSteps.CommonConcreteCustomization).
+						Chain(SetupMesh.Setup10mStationMesh, elevatedInfo, metroStationInfo).
+						Chain(SetupTexture.Setup10mTexture), NetInfoVersion.All, true, null,
+					OptionsWrapper<Options>.Options.replaceExistingNetworks ? "Metro Station Track" : null
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up concrete station tracks");
+				UnityEngine.Debug.LogException(e);
+			}
 
-            prefab.m_averageVehicleLaneSpeed = trainStationTrack.m_averageVehicleLaneSpeed;
-            prefab.m_vehicleTypes = VehicleInfo.VehicleType.Train;
-            prefab.m_buildHeight = 0;
+			try
+			{
+				CreateFullStationPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupStationProps).
+						Chain(CustomizationSteps.CommonIsland16mCustomization).
+						Chain(CustomizationSteps.Set16mTrackWidths).
+						Chain(SetupMesh.Setup16mStationMesh, elevatedInfo, metroStationInfo).
+						Chain(SetupTexture.Setup1416mTexture),
+						NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
+					//TODO(earalov): replace wuth NetInfoVersion.All when tunnel/bridge/slope are ready
+					true, prefabName => prefabName + " Island",
+					null
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up concrete island station tracks");
+				UnityEngine.Debug.LogException(e);
+			}
 
-            foreach (var lane in prefab.m_lanes)
-            {
-                if (lane.m_vehicleType == VehicleInfo.VehicleType.None)
-                {
-                    lane.m_stopType = VehicleInfo.VehicleType.Train;
-                }
-                else
-                {
-                    lane.m_vehicleType = VehicleInfo.VehicleType.Train;
-                }
-            }
+			try
+			{
+				CreateFullStationPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupStationProps).
+						Chain(CustomizationSteps.CommonCustomizationSmall).
+						Chain(CustomizationSteps.CommonConcreteCustomization).
+						Chain(CustomizationSteps.SetSmallStationTrackWidths).
+						Chain(SetupMesh.Setup6mStationMesh, elevatedInfo, metroStationInfo).
+						Chain(SetupTexture.Setup6mTexture),
+						NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
+					//TODO(earalov): replace wuth NetInfoVersion.All when tunnel/bridge/slope are ready
+					true, prefabName => prefabName + " Small",
+					null
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up concrete small station tracks");
+				UnityEngine.Debug.LogException(e);
+			}
 
-        }
+		}
+		#endregion
 
-        private static void SetupSunkenPrefab(NetInfo sunkenPrefab)
-        {
+		#region STEEL
+		private void CreateSteelTracks()
+		{
+			var elevatedInfo = FindOriginalNetInfo("Basic Road Elevated");
+			var metroInfo = FindOriginalNetInfo("Metro Track");
+			var metroStationInfo = FindOriginalNetInfo("Metro Station Track");
+			var trainTrackInfo = FindOriginalNetInfo("Train Track");
+
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.SetStandardTrackWidths).
+						Chain(CustomizationSteps.CommonCustomization).
+						Chain(CustomizationSteps.CommonSteelCustomization).
+						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, metroInfo).
+						Chain(SetupSteelMesh.Setup10mSteelBarMesh, elevatedInfo).
+						Chain(SetupSteelTexture.Setup10mSteelTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
+							}),
+					NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions,
+							null,
+							//TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
+							NetInfoVersion.None)
+					, prefabName => "Steel " + prefabName
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up steel tracks");
+				UnityEngine.Debug.LogException(e);
+			}
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomizationLarge).
+						Chain(CustomizationSteps.CommonSteelCustomization).
+						Chain(CustomizationSteps.SetLargeTrackWidths).
+						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, trainTrackInfo).
+						Chain(SetupSteelMesh.Setup10mSteelBarMesh, elevatedInfo).
+						Chain(SetupSteelTexture.Setup10mSteelTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
+							}),
+					NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions,
+							null,
+							//TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
+							NetInfoVersion.None)
+					, prefabName => "Steel " + prefabName + " Large"
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up steel large tracks");
+				UnityEngine.Debug.LogException(e);
+			}
+
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomizationLarge).
+						Chain(CustomizationSteps.CommonSteelCustomization).
+						Chain(CustomizationSteps.SetLargeTrackWidths).
+						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, trainTrackInfo).
+						Chain(SetupSteelMesh.Setup10mSteelNoBarMesh, elevatedInfo, trainTrackInfo).
+						Chain(SetupSteelTexture.Setup10mSteelTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
+							}),
+					NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions,
+							null,
+							//TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
+							NetInfoVersion.None)
+					, prefabName => "Steel " + prefabName + " Large NoBar"
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up steel large nobar tracks");
+				UnityEngine.Debug.LogException(e);
+			}
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.CommonCustomization).
+						Chain(CustomizationSteps.CommonSteelCustomization).
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.SetStandardTrackWidths).
+						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, metroInfo).
+						Chain(SetupSteelMesh.Setup10mSteelNoBarMesh, elevatedInfo, metroInfo).
+						Chain(SetupSteelTexture.Setup10mSteelTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
+							}),
+					NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions,
+							null,
+							//TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
+							NetInfoVersion.None)
+					, prefabName => "Steel " + prefabName + " NoBar"
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up nobar steel tracks");
+				UnityEngine.Debug.LogException(e);
+			}
+
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomizationTwoLaneOneWay).
+						Chain(CustomizationSteps.CommonSteelCustomization).
+						Chain(CustomizationSteps.SetStandardTrackWidths).
+						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, metroInfo).
+						Chain(SetupSteelMesh.Setup10mSteelBarMesh, elevatedInfo).
+						Chain(SetupSteelTexture.Setup10mSteelTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
+							}),
+					NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions,
+							null,
+							//TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
+							NetInfoVersion.None)
+					, prefabName => "Steel " + prefabName + " Two-Lane One-Way"
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up two lane one way steel tracks");
+				UnityEngine.Debug.LogException(e);
+			}
+
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomizationTwoLaneOneWay).
+						Chain(CustomizationSteps.CommonSteelCustomization).
+						Chain(CustomizationSteps.SetStandardTrackWidths).
+						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, metroInfo).
+						Chain(SetupSteelMesh.Setup10mSteelNoBarMesh, elevatedInfo, metroInfo).
+						Chain(SetupSteelTexture.Setup10mSteelTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
+							}),
+					NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions,
+							null,
+							//TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
+							NetInfoVersion.None)
+					, prefabName => "Steel " + prefabName + " Two-Lane One-Way NoBar"
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up two lane one way nobar steel tracks");
+				UnityEngine.Debug.LogException(e);
+			}
+
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomizationSmall).
+						Chain(CustomizationSteps.CommonSteelCustomization).
+						Chain(CustomizationSteps.SetSmallTrackWidths).
+						Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo, trainTrackInfo).
+						Chain(SetupSteelMesh.Setup6mSteelMeshBar, elevatedInfo).
+						Chain(SetupSteelTexture.Setup6mSteelTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
+							}),
+					NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions,
+							null,
+							//TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
+							NetInfoVersion.None)
+					, prefabName => "Steel " + prefabName + " Small"
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up steel small tracks");
+				UnityEngine.Debug.LogException(e);
+			}
+
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomizationSmall).
+						Chain(CustomizationSteps.CommonSteelCustomization).
+						Chain(CustomizationSteps.SetSmallTrackWidths).
+						Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo, trainTrackInfo).
+						Chain(SetupSteelMesh.Setup6mSteelMeshNoBar, elevatedInfo, trainTrackInfo).
+						Chain(SetupSteelTexture.Setup6mSteelTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
+							}),
+					NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions,
+							null,
+							//TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
+							NetInfoVersion.None)
+					, prefabName => "Steel " + prefabName + " Small NoBar"
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up steel small nobar tracks");
+				UnityEngine.Debug.LogException(e);
+			}
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomizationSmall).
+						Chain(CustomizationSteps.CommonSteelCustomization).
+						Chain(CustomizationSteps.SetSmallTrackWidths).
+						Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo, trainTrackInfo).
+						Chain(SetupSteelMesh.Setup6mSteelMeshBar, elevatedInfo).
+						Chain(SetupSteelTexture.Setup6mSteelTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
+							}),
+					NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions,
+							null,
+							//TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
+							NetInfoVersion.None)
+					, prefabName => "Steel " + prefabName + " Small Two-Way"
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up steel small two way tracks");
+				UnityEngine.Debug.LogException(e);
+			}
+
+			try
+			{
+				CreateFullPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomizationSmall).
+						Chain(CustomizationSteps.CommonSteelCustomization).
+						Chain(CustomizationSteps.SetSmallTrackWidths).
+						Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo, trainTrackInfo).
+						Chain(SetupSteelMesh.Setup6mSteelMeshNoBar, elevatedInfo, trainTrackInfo).
+						Chain(SetupSteelTexture.Setup6mSteelTexture).
+						Chain(
+							(info, version) =>
+							{
+								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
+							}),
+					NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
+					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+							LinkToNonGroundVersions,
+							null,
+							//TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
+							NetInfoVersion.None)
+					, prefabName => "Steel " + prefabName + " Small Two-Way NoBar"
+					);
+			}
+
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up steel small two way nobar tracks");
+				UnityEngine.Debug.LogException(e);
+			}
+
+			try
+			{
+				CreateFullStationPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupStationProps).
+						Chain(CustomizationSteps.CommonCustomization).
+						Chain(CustomizationSteps.CommonSteelCustomization).
+						Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo, metroInfo)
+						. //TODO(earalov): probably change to station specific method
+						Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo, metroStationInfo)
+						. //TODO(earalov): probably change to station specific method
+						Chain(SetupSteelTexture.Setup10mSteelTexture),
+					NetInfoVersion.Ground | NetInfoVersion.Elevated,
+					//TODO(earalov): replace wuth NetInfoVersion.All when tunnel/bridge/slope are ready
+					true, prefabName => "Steel " + prefabName,
+					null
+					);
+				CreateFullStationPrefab( //TODO(earalov): remove this setup when tunnel/bridge/slope are ready
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupStationProps).
+						Chain(SetupMesh.Setup10mStationMesh, elevatedInfo, metroStationInfo).
+						Chain(SetupTexture.Setup10mTexture), NetInfoVersion.Tunnel, false,
+					prefabName => "Steel " + prefabName,
+					null
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up steel station tracks");
+				UnityEngine.Debug.LogException(e);
+			}
+
+			try
+			{
+				CreateFullStationPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupStationProps).
+						Chain(CustomizationSteps.CommonIsland16mCustomization).
+						Chain(CustomizationSteps.CommonSteelCustomization).
+						Chain(CustomizationSteps.Set16mTrackWidths).
+						Chain(SetupSteelMesh.Setup16mSteelStationMesh, elevatedInfo, metroStationInfo).
+						Chain(SetupSteelTexture.Setup1416mSteelTexture),
+						NetInfoVersion.Ground | NetInfoVersion.Elevated,
+					//TODO(earalov): replace wuth NetInfoVersion.All when tunnel/bridge/slope are ready
+					true, prefabName => "Steel " + prefabName + " Island",
+					null
+					);
+				CreateFullStationPrefab( //TODO(earalov): remove this setup when tunnel/bridge/slope are ready
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupStationProps).
+						Chain(SetupMesh.Setup16mStationMesh, elevatedInfo, metroStationInfo).
+						Chain(SetupTexture.Setup1416mTexture), NetInfoVersion.Tunnel, false,
+					prefabName => "Steel " + prefabName + " Island",
+					null
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up steel island station tracks");
+				UnityEngine.Debug.LogException(e);
+			}
+
+			try
+			{
+				CreateFullStationPrefab(
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupStationProps).
+						Chain(CustomizationSteps.CommonCustomizationSmall).
+						Chain(CustomizationSteps.CommonSteelCustomization).
+						Chain(CustomizationSteps.SetSmallTrackWidths).
+						Chain(SetupSteelMesh.Setup6mStationSteelMesh, elevatedInfo, metroStationInfo).
+						Chain(SetupSteelTexture.Setup6mSteelTexture),
+						NetInfoVersion.Ground | NetInfoVersion.Elevated,
+					//TODO(earalov): replace wuth NetInfoVersion.All when tunnel/bridge/slope are ready
+					true, prefabName => "Steel " + prefabName + " Small",
+					null
+					);
+				CreateFullStationPrefab( //TODO(earalov): remove this setup when tunnel/bridge/slope are ready
+					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+						Chain(CustomizationSteps.SetupStationProps).
+						Chain(SetupMesh.Setup16mStationMesh, elevatedInfo, metroStationInfo).
+						Chain(SetupTexture.Setup6mTexture), NetInfoVersion.Tunnel, false,
+					prefabName => "Steel " + prefabName + " Small",
+					null
+					);
+			}
+			catch (Exception e)
+			{
+				UnityEngine.Debug.LogError("Exception happened when setting up small steel station tracks");
+				UnityEngine.Debug.LogException(e);
+			}
+		}
+		#endregion
+
+		#region COMMON
+		protected void CreateFullPrefab(Action<NetInfo, NetInfoVersion> customizationStep,
+			NetInfoVersion versions,
+			Action<NetInfo, Action<NetInfo, NetInfoVersion>> setupOtherVersionsStep,
+			Func<string, string> nameModifier = null, Dictionary<NetInfoVersion, string> replacements = null)
+		{
+			if (nameModifier == null)
+			{
+				nameModifier = s => s;
+			}
+			NetInfo groundVersion = null;
+			if ((versions & NetInfoVersion.Ground) != 0)
+			{
+				string replaces = null;
+				replacements?.TryGetValue(NetInfoVersion.Ground, out replaces);
+				groundVersion = CreateNetInfo(nameModifier.Invoke("Metro Track Ground"), "Train Track",
+					ActionExtensions.BeginChain<NetInfo>().
+						Chain(ReplaceAI, NetInfoVersion.Ground).
+						Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
+						Chain(p =>
+						{
+							setupOtherVersionsStep?.Invoke(p, customizationStep);
+							p.GetComponent<TrainTrackAI>().m_connectedElevatedInfo = null;
+							p.GetComponent<TrainTrackAI>().m_connectedInfo = null;
+						}).
+						Chain(SetupTrackModel, customizationStep.Chain(SetCosts)), replaces
+				);
+			}
+			foreach (var version in new[] { NetInfoVersion.Bridge, NetInfoVersion.Tunnel, NetInfoVersion.Elevated, NetInfoVersion.Slope, })
+			{
+				if ((versions & version) == 0)
+				{
+					continue;
+				}
+				string replaces = null;
+				replacements?.TryGetValue(version, out replaces);
+				CreateNetInfo(nameModifier.Invoke("Metro Track " + version), "Train Track " + version,
+					ActionExtensions.BeginChain<NetInfo>().
+						Chain(ReplaceAI, version).
+						Chain(SetupMetroTrackMeta, version).
+						Chain(CommonSteps.SetVersion, groundVersion, version).
+						Chain(SetupTrackModel, customizationStep.Chain(SetCosts)), replaces
+					);
+			}
+		}
+
+		protected void LinkToNonGroundVersions(NetInfo p, Action<NetInfo, NetInfoVersion> customizationStep,
+			Func<string, string> nameModifier = null, NetInfoVersion versions = NetInfoVersion.Slope | NetInfoVersion.Tunnel | NetInfoVersion.Elevated | NetInfoVersion.Bridge)
+		{
+			if (nameModifier == null)
+			{
+				nameModifier = s => s;
+			}
+			foreach (var version in new[] { NetInfoVersion.Bridge, NetInfoVersion.Tunnel, NetInfoVersion.Elevated, NetInfoVersion.Slope, })
+			{
+				if ((versions & version) == 0)
+				{
+					continue;
+				}
+				CommonSteps.SetVersion(FindCustomNetInfo(nameModifier.Invoke("Metro Track " + version)), p, version);
+			}
+		}
+
+		//TODO(earalov): refactor like CreateFullPrefab()
+		private void CreateFullStationPrefab(Action<NetInfo, NetInfoVersion> customizationStep, NetInfoVersion versions, bool provideSunken,
+			Func<string, string> nameModifier = null, string tunnelReplaces = "")
+		{
+			if (nameModifier == null)
+			{
+				nameModifier = s => s;
+			}
+			if ((versions & NetInfoVersion.Ground) != 0)
+			{
+				CreateNetInfo(nameModifier.Invoke("Metro Station Track Ground"), "Train Station Track",
+					ActionExtensions.BeginChain<NetInfo>().
+						Chain(ReplaceAI, NetInfoVersion.Ground).
+						Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
+						Chain(SetupStationTrack, NetInfoVersion.Ground).
+						Chain(CustomizationSteps.SetStandardTrackWidths, NetInfoVersion.Ground).
+						Chain(SetupTrackModel, customizationStep)
+				);
+			}
+			if ((versions & NetInfoVersion.Elevated) != 0)
+			{
+				CreateNetInfo(nameModifier.Invoke("Metro Station Track Elevated"), "Train Station Track",
+					ActionExtensions.BeginChain<NetInfo>().
+						Chain(ReplaceAI, NetInfoVersion.Elevated).
+						Chain(SetupMetroTrackMeta, NetInfoVersion.Elevated).
+						Chain(SetupStationTrack, NetInfoVersion.Elevated).
+						Chain(SetupElevatedStationTrack).
+						Chain(Modifiers.MakePedestrianLanesNarrow).
+						Chain(CustomizationSteps.SetStandardTrackWidths, NetInfoVersion.Elevated).
+						Chain(SetupTrackModel, customizationStep)
+				);
+			}
+			if ((versions & NetInfoVersion.Tunnel) != 0)
+			{
+
+				CreateNetInfo(nameModifier.Invoke("Metro Station Track Tunnel"), "Train Station Track",
+					ActionExtensions.BeginChain<NetInfo>().
+						Chain(ReplaceAI, NetInfoVersion.Tunnel).
+						Chain(SetupMetroTrackMeta, NetInfoVersion.Tunnel).
+						Chain(SetupStationTrack, NetInfoVersion.Tunnel).
+						Chain(SetupTunnelStationTrack).
+						Chain(Modifiers.MakePedestrianLanesNarrow).
+						Chain(SetupTrackModel, customizationStep),
+						tunnelReplaces
+					);
+			}
+			if (provideSunken)
+			{
+				CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Train Station Track", //TODO(earalov): test. check if AI to be replaced with MetroTrackAI
+					ActionExtensions.BeginChain<NetInfo>().
+					Chain(ReplaceAI, NetInfoVersion.Tunnel).
+					Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
+					Chain(SetupStationTrack, NetInfoVersion.Ground).
+					Chain(SetupSunkenStationTrack).
+					Chain(SetupTrackModel, customizationStep)
+				);
+			}
+		}
+
+		private static void ReplaceAI(NetInfo prefab, NetInfoVersion version)
+		{
+			var originalAi = prefab.GetComponent<PlayerNetAI>(); //milestone, construction and maintenance costs to be overriden later
+			var canModify = originalAi.CanModify();
+			int noiseAccumulation;
+			float noiseRadius;
+			originalAi.GetNoiseAccumulation(out noiseAccumulation, out noiseRadius);
+			if (originalAi is TrainTrackTunnelAI || version == NetInfoVersion.Tunnel)
+			{
+				if ((originalAi is TrainTrackTunnelAI && version == NetInfoVersion.Slope))
+				{
+					GameObject.DestroyImmediate(originalAi);
+					var ai = prefab.gameObject.AddComponent<TrainTrackTunnelAIMetro>();
+					ai.m_canModify = canModify;
+					ai.m_noiseAccumulation = noiseAccumulation;
+					ai.m_noiseRadius = noiseRadius;
+					ai.m_info = prefab;
+					prefab.m_netAI = ai;
+				}
+				else
+				{
+					GameObject.DestroyImmediate(originalAi);
+					var ai = prefab.gameObject.AddComponent<MetroTrackAIMetro>();
+					ai.m_info = prefab;
+					ai.m_transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Train");
+					prefab.m_netAI = ai;
+				}
+
+			}
+			else if (version == NetInfoVersion.Bridge || version == NetInfoVersion.Elevated)
+			{
+				GameObject.DestroyImmediate(originalAi);
+				var ai = prefab.gameObject.AddComponent<TrainTrackBridgeAIMetro>();
+				ai.m_canModify = canModify;
+				ai.m_noiseAccumulation = noiseAccumulation;
+				ai.m_noiseRadius = noiseRadius;
+				ai.m_info = prefab;
+				prefab.m_netAI = ai;
+			}
+			else
+			{
+				GameObject.DestroyImmediate(originalAi);
+				var ai = prefab.gameObject.AddComponent<TrainTrackAIMetro>();
+				ai.m_noiseAccumulation = noiseAccumulation;
+				ai.m_noiseRadius = noiseRadius;
+				ai.m_info = prefab;
+				prefab.m_netAI = ai;
+			}
+		}
+
+		public static void SetupElevatedStationTrack(NetInfo prefab)
+		{
+		}
+
+		public static void SetupSunkenStationTrack(NetInfo prefab)
+		{
+			prefab.m_maxHeight = -1;
+			prefab.m_minHeight = -3;
+			prefab.m_lowerTerrain = false;
+			prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels | ItemClass.Layer.Default;
+		}
+
+		public static void SetupTunnelStationTrack(NetInfo prefab)
+		{
+			prefab.m_maxHeight = -1;
+			prefab.m_minHeight = -5;
+			prefab.m_lowerTerrain = false;
+			prefab.m_pavementWidth = 4.5f;
+			prefab.m_halfWidth = 8;
+			prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
+		}
+
+		public static void SetupStationTrack(NetInfo prefab, NetInfoVersion version)
+		{
+			prefab.m_followTerrain = false;
+			prefab.m_flattenTerrain = false;
+			prefab.m_createGravel = false;
+			prefab.m_createPavement = false;
+			prefab.m_createRuining = false;
+			prefab.m_requireSurfaceMaps = false;
+			prefab.m_snapBuildingNodes = false;
+			prefab.m_placementStyle = ItemClass.Placement.Procedural;
+			prefab.m_useFixedHeight = true;
+			prefab.m_availableIn = ItemClass.Availability.Game;
+			prefab.m_intersectClass = null;
+			if (version == NetInfoVersion.Ground)
+			{
+				prefab.m_lowerTerrain = false;
+				prefab.m_clipTerrain = true;
+			}
+			else
+			{
+				prefab.m_clipTerrain = false;
+			}
+		}
+
+		public static NetInfoVersion DetectVersion(string infoName)
+		{
+			if (infoName.Contains("Elevated"))
+			{
+				return NetInfoVersion.Elevated;
+			}
+			if (infoName.Contains("Bridge"))
+			{
+				return NetInfoVersion.Bridge;
+			}
+			if (infoName.Contains("Slope"))
+			{
+				return NetInfoVersion.Slope;
+			}
+			return infoName.Contains("Tunnel") ? NetInfoVersion.Tunnel : NetInfoVersion.Ground;
+		}
+
+		private static void SetupTrackModel(NetInfo prefab, Action<NetInfo, NetInfoVersion> customizationStep)
+		{
+			prefab.m_minHeight = 0; //TODO(earalov): is that minHeight correct for all types of tracks?
+			var version = DetectVersion(prefab.name);
+
+			customizationStep.Invoke(prefab, version);
+		}
 
 
-            var stationAI = sunkenPrefab.GetComponent<TrainTrackAI>();
-            stationAI.m_tunnelInfo = sunkenPrefab;
+		private static void SetupMetroTrackMeta(NetInfo prefab, NetInfoVersion version)
+		{
+			var vanillaMetroTrack = FindOriginalNetInfo("Metro Track");
+			var milestone = vanillaMetroTrack.GetComponent<PlayerNetAI>().m_createPassMilestone;
+			prefab.GetComponent<PlayerNetAI>().m_createPassMilestone = milestone;
+			prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
+			prefab.m_class.m_subService = ItemClass.SubService.PublicTransportMetro;
+			prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
+			prefab.m_class.m_service = ItemClass.Service.PublicTransport;
+			//prefab.m_class.m_level = ItemClass.Level.Level1;
+			prefab.m_UIPriority = vanillaMetroTrack.m_UIPriority;
+			prefab.SetUICategory("PublicTransportMetro");
+			if (version == NetInfoVersion.Tunnel)
+			{
+				prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
+				prefab.m_setVehicleFlags = Vehicle.Flags.Transition | Vehicle.Flags.Underground;
+				prefab.m_setCitizenFlags = CitizenInstance.Flags.Transition | CitizenInstance.Flags.Underground;
+			}
+			else
+			{
+				prefab.m_class.m_layer = ItemClass.Layer.Default;
+			}
+			prefab.m_availableIn = ItemClass.Availability.AssetEditor;
+			prefab.m_class.hideFlags = HideFlags.None;
+			prefab.m_class.name = prefab.name;
+			prefab.m_maxBuildAngle = 60;
+			prefab.m_maxTurnAngleCos = Mathf.Cos(prefab.m_maxBuildAngle);
+			prefab.m_maxTurnAngle = 60;
+			prefab.m_maxTurnAngleCos = Mathf.Cos(prefab.m_maxTurnAngle);
+			prefab.m_averageVehicleLaneSpeed = vanillaMetroTrack.m_averageVehicleLaneSpeed;
+			prefab.m_UnlockMilestone = vanillaMetroTrack.m_UnlockMilestone;
+			prefab.m_createGravel = false;
+			prefab.m_createPavement = false;
+			prefab.m_isCustomContent = true; //this line is responsible for moving tracks to the end of the list and that's not what we're interested in  
 
-            sunkenPrefab.m_clipTerrain = false;
+			var speedLimit = vanillaMetroTrack.m_lanes.First(l => l.m_vehicleType != VehicleInfo.VehicleType.None).m_speedLimit;
 
-            sunkenPrefab.m_createGravel = false;
-            sunkenPrefab.m_createPavement = false;
-            sunkenPrefab.m_createRuining = false;
+			foreach (var lane in prefab.m_lanes)
+			{
+				if (lane.m_vehicleType == VehicleInfo.VehicleType.None)
+				{
+					lane.m_stopType = VehicleInfo.VehicleType.Metro;
+				}
+				else
+				{
+					lane.m_vehicleType = VehicleInfo.VehicleType.Metro;
+					lane.m_speedLimit = speedLimit;
+				}
+			}
 
-            sunkenPrefab.m_flattenTerrain = false;
-            sunkenPrefab.m_followTerrain = false;
+			Modifiers.RemoveElectricityPoles(prefab);
+		}
 
-            sunkenPrefab.m_intersectClass = null;
+		public static void SetCosts(PrefabInfo newPrefab, NetInfoVersion version)
+		{
+			//var metroTrackInfo = FindOriginalNetInfo("Metro Track");
+			//var baseConstructionCost = metroTrackInfo.GetComponent<PlayerNetAI>().m_constructionCost;
+			//var baseMaintenanceCost = metroTrackInfo.GetComponent<PlayerNetAI>().m_maintenanceCost;
+			var newAi = newPrefab.GetComponent<PlayerNetAI>();
 
-            sunkenPrefab.m_maxHeight = -1;
-            sunkenPrefab.m_minHeight = -3;
+			//var multiplier = GetCostMultiplier(version);
+			newAi.m_constructionCost = (int)GetTrackCost(version);
+			newAi.m_maintenanceCost = (int)GetTrackMaintCost(version);
+		}
 
-            sunkenPrefab.m_requireSurfaceMaps = false;
-            sunkenPrefab.m_snapBuildingNodes = false;
-
-            sunkenPrefab.m_placementStyle = ItemClass.Placement.Procedural;
-            sunkenPrefab.m_useFixedHeight = true;
-            sunkenPrefab.m_lowerTerrain = false;
-            sunkenPrefab.m_availableIn = ItemClass.Availability.GameAndAsset;
-        }
-    }
+		private static int GetTrackCost(NetInfoVersion version)
+		{
+			var metroInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+			var trainInfo = PrefabCollection<NetInfo>.FindLoaded("Train Track");
+			double coeff = (double)((PlayerNetAI)metroInfo.m_netAI).m_constructionCost / ((PlayerNetAI)trainInfo.m_netAI).m_constructionCost;
+			var info = PrefabCollection<NetInfo>.FindLoaded($"Train Track{(version != NetInfoVersion.Ground ? " " + version.ToString() : "")}");
+			return (int)Math.Round(((PlayerNetAI)info.m_netAI).m_constructionCost * coeff);
+		}
+		private static int GetTrackMaintCost(NetInfoVersion version)
+		{
+			var metroInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+			var trainInfo = PrefabCollection<NetInfo>.FindLoaded("Train Track");
+			double coeff = (double)((PlayerNetAI)metroInfo.m_netAI).m_maintenanceCost / ((PlayerNetAI)trainInfo.m_netAI).m_maintenanceCost;
+			var info = PrefabCollection<NetInfo>.FindLoaded($"Train Track{(version != NetInfoVersion.Ground ? " " + version.ToString() : "")}");
+			return (int)Math.Round(((PlayerNetAI)info.m_netAI).m_maintenanceCost * coeff);
+		}
+		public static float GetCostMultiplier(NetInfoVersion version)
+		{
+			float multiplier;
+			switch (version)
+			{
+				//case NetInfoVersion.Elevated:
+				//    multiplier = 3f;
+				//    break;
+				//case NetInfoVersion.Bridge:
+				//    multiplier = 4.5f;
+				//    break;
+				//case NetInfoVersion.Tunnel:
+				//case NetInfoVersion.Slope:
+				//    multiplier = 9f;
+				//    break;
+				default:
+					multiplier = 1f;
+					break;
+			}
+			return multiplier;
+		}
+		#endregion
+	}
 }

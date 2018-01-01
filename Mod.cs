@@ -1,10 +1,22 @@
 ﻿using ICities;
+using MetroOverhaul.OptionsFramework.Extensions;
 
-namespace ElevatedTrainStationTrack
+namespace MetroOverhaul
 {
     public class Mod : IUserMod
     {
-        public string Name => "Extra Train Station Tracks";
-        public string Description => "Provides more types of train station tracks";
+#if IS_PATCH
+        public const bool isPatch = true;
+#else
+        public const bool isPatch = false;
+#endif
+
+        public string Name => "Metro Overhaul" + (isPatch ? " [Patch 1.6.2]" : "");
+        public string Description => "Brings metro depots, ground and elevated metro tracks";
+
+        public void OnSettingsUI(UIHelperBase helper)
+        {
+            helper.AddOptionsGroup<Options>();
+        }
     }
 }

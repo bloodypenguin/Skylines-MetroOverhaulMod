@@ -5,11 +5,12 @@ using System.Linq;
 using System.Reflection;
 using ColossalFramework.Plugins;
 using ICities;
-using ObjUnity3D;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using static ColossalFramework.Plugins.PluginManager;
+using ColossalFramework.PlatformServices;
 
-namespace ElevatedTrainStationTrack
+namespace MetroOverhaul
 {
     public static class Util
     {
@@ -31,33 +32,67 @@ namespace ElevatedTrainStationTrack
         {
             return type.GetAllFieldsFromType().Where(p => p.Name == name).FirstOrDefault();
         }
-
-        public static Mesh LoadMesh(string fullPath, string meshName)
+        public static string PackageName(string assetName)
         {
-            var mesh = new Mesh();
-            using (var fileStream = File.Open(fullPath, FileMode.Open))
+            var publishedFileID = PluginInfo.publishedFileID.ToString();
+            if (publishedFileID.Equals(PublishedFileId.invalid.ToString()))
             {
-                mesh.LoadOBJ(OBJLoader.LoadOBJ(fileStream));
+                return assetName;
             }
-            mesh.Optimize();
-            mesh.name = meshName;
-            if (!mesh.name.Contains("LOD"))
-            {
-                mesh.UploadMeshData(true);
-            }
-            return mesh;
+            return publishedFileID;
         }
-
-        public static NetInfo ClonePrefab(NetInfo originalPrefab, string newName, Transform parentTransform)
+        public static T ClonePrefab<T>(T originalPrefab, string newName, Transform parentTransform) where T:PrefabInfo
         {
             var instance = Object.Instantiate(originalPrefab.gameObject);
             instance.name = newName;
             instance.transform.SetParent(parentTransform);
             instance.transform.localPosition = new Vector3(-7500, -7500, -7500);
-            var newPrefab = instance.GetComponent<NetInfo>();
+            var newPrefab = instance.GetComponent<T>();
             instance.SetActive(false);
             newPrefab.m_prefabInitialized = false;
             return newPrefab;
+        }
+        public static string AssemblyPath
+        {
+            get
+            {
+                var modPath = PluginInfo.modPath;
+                if (!Mod.isPatch)
+                {
+                    return modPath;
+                }
+                var index =  modPath.IndexOf("steamapps\\workshop\\content\\255710");
+                var basePath = modPath.Substring(0, index);
+                return basePath + "steamapps\\workshop\\content\\255710\\816260433";
+            }
+        }
+
+        private static PluginInfo PluginInfo
+        {
+            get
+            {
+                var pluginManager = PluginManager.instance;
+                var plugins = pluginManager.GetPluginsInfo();
+
+                foreach (var item in plugins)
+                {
+                    try
+                    {
+                        var instances = item.GetInstances<IUserMod>();
+                        if (!(instances.FirstOrDefault() is Mod))
+                        {
+                            continue;
+                        }
+                        return item;
+                    }
+                    catch
+                    {
+
+                    }
+                }
+                throw new Exception("Failed to find MetroOverhaul assembly!");
+
+            }
         }
 
         public static string AssemblyDirectory
@@ -83,9 +118,14 @@ namespace ElevatedTrainStationTrack
                         
                     }
                 }
-                throw new Exception("Failed to find ElevatedTrainStationTrack assembly!");
+                throw new Exception("Failed to find MetroOverhaul assembly!");
 
             }
+        }
+
+        public static bool IsGameMode()
+        {
+            return ToolManager.instance.m_properties.m_mode == ItemClass.Availability.Game;
         }
     }
 }
