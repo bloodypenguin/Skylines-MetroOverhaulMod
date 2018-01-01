@@ -262,7 +262,6 @@ namespace MetroOverhaul
 							vectorRotateDict.Add(newPath.m_nodes.LastOrDefault(), ChangePathRotation(newPath, newPath.m_nodes.First(), (27f / 35) * bendStrength * -Math.PI / 4));
 							vectorRotateDict.Add(branchVectorConnect, ChangePathRotation(branchPathConnect, newPath.m_nodes.First(), (27f / 35) * bendStrength * -Math.PI / 4));
 							vectorRotateDict.Add(branchVectorStair, ChangePathRotation(branchPathStair, newPath.m_nodes.First(), (27f / 35) * bendStrength * -Math.PI / 4));
-							Next.Debug.Log("TRIGGER0");
 
 							pathList.Add(newPath);
 							pathList.Add(branchPathConnect);
@@ -291,8 +290,6 @@ namespace MetroOverhaul
 				nearestPed = vectorRotateDict[nearestPed];
 			}
 			pathList.Add(ChainPath(pivotPath, nearestPed, Array.IndexOf(pivotPath.m_nodes, pivotPoint), PrefabCollection<NetInfo>.FindLoaded("Pedestrian Connection Surface")));
-			Debug.Log($"0 Go From {pivotPath.m_nodes[0].ToString()} to {nearestPed.ToString()}");
-			Debug.Log($"1 Go From {pivotPath.m_nodes[1].ToString()} to {nearestPed.ToString()}");
 			for (var i = 0; i < stationCount; i++)
 			{
 				if (pathDict.Keys.Count > 0)
