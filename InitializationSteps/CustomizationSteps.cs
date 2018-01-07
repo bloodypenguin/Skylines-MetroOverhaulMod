@@ -179,6 +179,7 @@ namespace MetroOverhaul.InitializationSteps
                 LayoutStyle = LanesLayoutStyle.AsymL1R2
             });
             var theLanes = prefab.m_lanes.ToList();
+            var removedLanes = new List<NetInfo.Lane>();
             for (var i = 0; i < theLanes.Count; i++)
             {
                 if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
@@ -189,7 +190,14 @@ namespace MetroOverhaul.InitializationSteps
                     }
                     else if (Math.Sign(theLanes[i].m_position) < 0)
                     {
-                        theLanes[i].m_position += 2;
+                        if (version == NetInfoVersion.Tunnel)
+                        {
+                            removedLanes.Add(theLanes[i]);
+                        }
+                        else
+                        {
+                            theLanes[i].m_position += 2;
+                        }
                     }
                 }
                 if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)
@@ -207,7 +215,7 @@ namespace MetroOverhaul.InitializationSteps
                     theLanes[i].m_verticalOffset = 0.35f;
                 }
             }
-            prefab.m_lanes = theLanes.ToArray();
+            prefab.m_lanes = theLanes.Except(removedLanes).ToArray();
         }
         public static void CommonCustomizationLarge(NetInfo prefab, NetInfoVersion version)
         {

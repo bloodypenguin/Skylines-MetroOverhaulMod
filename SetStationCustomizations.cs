@@ -20,7 +20,8 @@ namespace MetroOverhaul
         public const int MIN_LENGTH = 88;
         public const int MAX_BEND_STRENGTH = 1;
         public const int MIN_BEND_STRENGTH = -1;
-
+        private static float StairCoeff { get { return (11f / 64f); } }
+        private static float AntiStairCoeff { get { return 1 - StairCoeff; } }
         private static float GENERATED_PATH_MARKER = 0.09999f; //regular paths have snapping distance of 0.1f. This way we differentiate
         private const float TOLERANCE = 0.000001f; //equals 1/10 of difference between 0.1f and GENERATED_PATH_MARKER
 
@@ -156,6 +157,7 @@ namespace MetroOverhaul
             specialNetInfo.m_maxSlope = 100;
             specialNetInfo.m_maxTurnAngle = 180;
             specialNetInfo.m_maxTurnAngleCos = -1;
+
             for (int i = 0; i < pathList.Count; i++)
             {
                 var newPath = pathList.FirstOrDefault(p => p.m_nodes.Any(n => n == pivotPoint)).ShallowClone();
@@ -167,8 +169,8 @@ namespace MetroOverhaul
                         var xCoeff = -(trackPath.m_nodes.First().x - trackPath.m_nodes.Last().x) / Vector3.Distance(trackPath.m_nodes.First(), trackPath.m_nodes.Last());
                         var zCoeff = (trackPath.m_nodes.First().z - trackPath.m_nodes.Last().z) / Vector3.Distance(trackPath.m_nodes.First(), trackPath.m_nodes.Last());
                         var stationLength = Vector3.Distance(trackPath.m_nodes.First(), trackPath.m_nodes.Last());
-                        var stairsLengthX = ((5f * stationLength / 32) + (0.11f * bendStrength) * (5f * stationLength / 32)) * -xCoeff;
-                        var stairsLengthZ = ((5f * stationLength / 32) + (0.11f * bendStrength) * (5f * stationLength / 32)) * zCoeff;
+                        var stairsLengthX = ( ((0.12f * bendStrength) + 1) * (stationLength * StairCoeff)) * -xCoeff;
+                        var stairsLengthZ = ( ((0.12f * bendStrength) + 1) * (stationLength * StairCoeff)) * zCoeff;
                         newPath.m_netInfo.m_maxSlope = 100;
                         newPath.m_netInfo.m_maxTurnAngle = 180;
                         newPath.m_netInfo.m_maxTurnAngleCos = -1;
@@ -177,9 +179,9 @@ namespace MetroOverhaul
                             var newNodes = new List<Vector3>();
                             newNodes.Add(new Vector3()
                             {
-                                x = trackPath.m_nodes.Last().x,
+                                x = trackPath.m_nodes.Last().x - 3 * xCoeff,
                                 y = trackPath.m_nodes.Last().y + 8,
-                                z = trackPath.m_nodes.Last().z
+                                z = trackPath.m_nodes.Last().z + 3 * zCoeff
                             });
                             newNodes.Add(new Vector3()
                             {
@@ -190,29 +192,10 @@ namespace MetroOverhaul
                             newPath.m_nodes = newNodes.ToArray();
                             newPath.m_netInfo = specialNetInfo;
                             MarkPathGenerated(newPath);
-                            var corridorNodes = new List<Vector3>();
-                            corridorNodes.Add(new Vector3()
-                            {
-                                x = newNodes.First().x,
-                                y = trackPath.m_nodes.Last().y + 8,
-                                z = newNodes.First().z
-                            });
-                            corridorNodes.Add(new Vector3()
-                            {
-                                x = corridorNodes.First().x + (10 * xCoeff),
-                                y = trackPath.m_nodes.Last().y + 8,
-                                z = corridorNodes.First().z + (10 * zCoeff)
-                            });
-                            var corridorPath = newPath.ShallowClone();
-                            corridorPath.m_nodes = corridorNodes.ToArray();
-                            corridorPath.m_netInfo = specialNetInfo;
-                            MarkPathGenerated(corridorPath);
 
-                            ChangePathRotation(newPath, newPath.m_nodes.First(), (27f / 35) * bendStrength * -Math.PI / 4);
-                            ChangePathRotation(corridorPath, newPath.m_nodes.First(), (27f / 35) * bendStrength * -Math.PI / 4);
+                            ChangePathRotation(newPath, newPath.m_nodes.First(), AntiStairCoeff * bendStrength * -Math.PI / 4);
                             pathList.Add(newPath);
-                            pathList.Add(corridorPath);
-                            var connectNodes = new Vector3[] { corridorPath.m_nodes.Last() };
+                            var connectNodes = new Vector3[] { newPath.m_nodes.First() };
                             if (!connectList.Contains(connectNodes))
                                 connectList.Add(connectNodes);
                         }
@@ -221,9 +204,9 @@ namespace MetroOverhaul
                             var newNodes = new List<Vector3>();
                             newNodes.Add(new Vector3()
                             {
-                                x = trackPath.m_nodes.Last().x + 5 * zCoeff,
+                                x = trackPath.m_nodes.Last().x + (5 * zCoeff) -(3 * xCoeff),
                                 y = trackPath.m_nodes.Last().y + 8,
-                                z = trackPath.m_nodes.Last().z + 5 * xCoeff
+                                z = trackPath.m_nodes.Last().z + (5 * xCoeff) + (3 * zCoeff)
                             });
                             newNodes.Add(new Vector3()
                             {
@@ -234,29 +217,10 @@ namespace MetroOverhaul
                             newPath.m_nodes = newNodes.ToArray();
                             newPath.m_netInfo = specialNetInfo;
                             MarkPathGenerated(newPath);
-                            var corridorNodes = new List<Vector3>();
-                            corridorNodes.Add(new Vector3()
-                            {
-                                x = newNodes.First().x,
-                                y = trackPath.m_nodes.Last().y + 8,
-                                z = newNodes.First().z
-                            });
-                            corridorNodes.Add(new Vector3()
-                            {
-                                x = corridorNodes.First().x + (10 * xCoeff),
-                                y = trackPath.m_nodes.Last().y + 8,
-                                z = corridorNodes.First().z + (10 * zCoeff)
-                            });
-                            var corridorPath = newPath.ShallowClone();
-                            corridorPath.m_nodes = corridorNodes.ToArray();
-                            corridorPath.m_netInfo = specialNetInfo;
-                            MarkPathGenerated(corridorPath);
 
-                            ChangePathRotation(newPath, newPath.m_nodes.First(), (27f / 35) * bendStrength * -Math.PI / 4);
-                            ChangePathRotation(corridorPath, newPath.m_nodes.First(), (27f / 35) * bendStrength * -Math.PI / 4);
+                            ChangePathRotation(newPath, newPath.m_nodes.First(), AntiStairCoeff * bendStrength * -Math.PI / 4);
                             pathList.Add(newPath);
-                            pathList.Add(corridorPath);
-                            var connectNodes = new Vector3[] { corridorPath.m_nodes.Last() };
+                            var connectNodes = new Vector3[] { newPath.m_nodes.First() };
                             if (!connectList.Contains(connectNodes))
                                 connectList.Add(connectNodes);
                         }
@@ -265,9 +229,9 @@ namespace MetroOverhaul
                             var newNodes = new List<Vector3>();
                             newNodes.Add(new Vector3()
                             {
-                                x = trackPath.m_nodes.Last().x - 7 * zCoeff,
+                                x = trackPath.m_nodes.Last().x - (7 * zCoeff) - (3 * xCoeff),
                                 y = trackPath.m_nodes.Last().y + 8,
-                                z = trackPath.m_nodes.Last().z - 7 * xCoeff
+                                z = trackPath.m_nodes.Last().z - (7 * xCoeff) + (3 * zCoeff)
                             });
                             newNodes.Add(new Vector3()
                             {
@@ -277,45 +241,36 @@ namespace MetroOverhaul
                             });
                             newPath.m_nodes = newNodes.ToArray();
                             newPath.m_netInfo = specialNetInfo;
-                            var branchVectorCorridor1 = new Vector3()
-                            {
-                                x = newNodes.First().x + (10 * xCoeff),
-                                y = trackPath.m_nodes.Last().y + 8,
-                                z = newNodes.First().z - (10 * zCoeff)
-                            };
+
                             var branchVectorConnect = new Vector3()
                             {
-                                x = branchVectorCorridor1.x + 14 * zCoeff,
+                                x = newNodes.First().x + 14 * zCoeff,
                                 y = trackPath.m_nodes.Last().y + 8,
-                                z = branchVectorCorridor1.z + 14 * xCoeff
+                                z = newNodes.First().z + 14 * xCoeff
                             };
-                            var branchVectorCorridor2 = new Vector3()
-                            {
-                                x = branchVectorConnect.x - (10 * xCoeff),
-                                y = trackPath.m_nodes.Last().y + 8,
-                                z = branchVectorConnect.z + (10 * zCoeff)
-                            };
+
                             var branchVectorStair = new Vector3()
                             {
-                                x = branchVectorCorridor2.x + stairsLengthX,
+                                x = branchVectorConnect.x + stairsLengthX,
                                 y = trackPath.m_nodes.Last().y,
-                                z = branchVectorCorridor2.z + stairsLengthZ,
+                                z = branchVectorConnect.z + stairsLengthZ,
                             };
-                            var branchPathCorridor1 = ChainPath(newPath, branchVectorCorridor1, 0);
-                            var branchPathConnect = ChainPath(branchPathCorridor1, branchVectorConnect);
-                            var branchPathCorridor2 = ChainPath(branchPathConnect, branchVectorCorridor2);
-                            var branchPathStair = ChainPath(branchPathCorridor2, branchVectorStair);
+                            var branchPathConnect = ChainPath(newPath, branchVectorConnect, 0);
+                            var branchPathStair = ChainPath(branchPathConnect, branchVectorStair);
                             MarkPathGenerated(newPath);
 
-                            ChangePathRotation(newPath, newPath.m_nodes.First(), (27f / 35) * bendStrength * -Math.PI / 4);
-                            ChangePathRotation(branchPathCorridor1, newPath.m_nodes.First(), (27f / 35) * bendStrength * -Math.PI / 4);
-                            ChangePathRotation(branchPathConnect, newPath.m_nodes.First(), (27f / 35) * bendStrength * -Math.PI / 4);
-                            ChangePathRotation(branchPathCorridor2, newPath.m_nodes.First(), (27f / 35) * bendStrength * -Math.PI / 4);
-                            ChangePathRotation(branchPathStair, newPath.m_nodes.First(), (27f / 35) * bendStrength * -Math.PI / 4);
+                            var trackPivot = new Vector3()
+                            {
+                                x = trackPath.m_nodes.Last().x,
+                                y = trackPath.m_nodes.Last().y + 8,
+                                z = trackPath.m_nodes.Last().z
+                            }
+                            ;
+                            ChangePathRotation(newPath, trackPivot, AntiStairCoeff * bendStrength * -Math.PI / 4);
+                            ChangePathRotation(branchPathConnect, trackPivot, AntiStairCoeff * bendStrength * -Math.PI / 4);
+                            ChangePathRotation(branchPathStair, trackPivot, AntiStairCoeff * bendStrength * -Math.PI / 4);
                             pathList.Add(newPath);
-                            pathList.Add(branchPathCorridor1);
                             pathList.Add(branchPathConnect);
-                            pathList.Add(branchPathCorridor2);
                             pathList.Add(branchPathStair);
 
                             if (!connectList.Contains(branchPathConnect.m_nodes))
@@ -498,7 +453,7 @@ namespace MetroOverhaul
                 var stairPaths = info.m_paths.Where(p => p != null && stationPaths.Contains(p) == false && p.m_nodes.Any(n => n.y == stationPath.m_nodes.First().y)).ToList();
                 for (var j=0; j < stairPaths.Count(); j++)
                 {
-                    BendStationTrack(stairPaths[j], -bendStrength * (5f / 32f));
+                    BendStationTrack(stairPaths[j], -bendStrength * StairCoeff);
                 }
             }
         }
