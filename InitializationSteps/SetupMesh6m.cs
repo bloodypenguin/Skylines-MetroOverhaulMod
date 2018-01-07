@@ -43,20 +43,20 @@ namespace MetroOverhaul.InitializationSteps
             }
             else if (is18m)
             {
-                variations = new List<string> { "_Merge", "_Single_Merge", "_Single" }.ToArray();
-                groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)16, NetInfo.ConnectGroup.CenterTram }.ToArray();
+                variations = new List<string> { "_Merge", "_Merge", "_Single_Merge", "_Single" }.ToArray();
+                groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)64, (NetInfo.ConnectGroup)16, NetInfo.ConnectGroup.CenterTram }.ToArray();
             }
             else
             {
                 if (isMerge)
                 {
-                    variations = new List<string> { "_Merge", "_Merge" }.ToArray();
-                    groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)32 }.ToArray();
+                    variations = new List<string> { "_Merge", "_Merge", "_Merge" }.ToArray();
+                    groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)32, (NetInfo.ConnectGroup)64 }.ToArray();
                 }
                 else
                 {
-                    variations = new List<string> { "", "_Merge" }.ToArray();
-                    groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)32 }.ToArray();
+                    variations = new List<string> { "", "_Merge", "_Merge" }.ToArray();
+                    groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)32, (NetInfo.ConnectGroup)64 }.ToArray();
                 }
             }
 
@@ -503,12 +503,6 @@ namespace MetroOverhaul.InitializationSteps
                         nodeList.Add(nodes3);
                         nodeList.Add(nodes9);
 
-                        nodes1.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
-                        if (isTwoWay)
-                        {
-                            nodes1.m_connectGroup |= (NetInfo.ConnectGroup)16;
-                        }
-
                         segments0
                             .SetMeshes
                             (@"Meshes\6m\Tunnel_Pavement.obj");
@@ -550,7 +544,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
 
                         RoadHelper.HandleAsymSegmentFlags(segments4);
-
+                        nodes1.m_connectGroup = isTwoWay ? (NetInfo.ConnectGroup)16 | NetInfo.ConnectGroup.CenterTram : NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
                         segments3.m_material = defaultBrElMaterial;
                         segments3.m_lodMaterial = defaultBrElLodMaterial;
                         nodes9.m_material = defaultBrElMaterial;
@@ -613,7 +607,8 @@ namespace MetroOverhaul.InitializationSteps
                         RoadHelper.HandleAsymSegmentFlags(segment3);
                         node1.m_material = defaultBrElMaterial;
                         node1.m_lodMaterial = defaultBrElLodMaterial;
-                        node2.m_connectGroup = isTwoWay ? (NetInfo.ConnectGroup)16 : NetInfo.ConnectGroup.CenterTram;
+                        node2.m_connectGroup = isTwoWay ? (NetInfo.ConnectGroup)16 | NetInfo.ConnectGroup.CenterTram : NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
+
                         node2.m_material = defaultMaterial;
                         node2.m_lodMaterial = defaultLODMaterial;
 
@@ -747,7 +742,7 @@ namespace MetroOverhaul.InitializationSteps
                         nodeList.Add(node0);
                         nodeList.Add(node1);
 
-                        node1.m_connectGroup = NetInfo.ConnectGroup.CenterTram;
+                        node1.m_connectGroup = (NetInfo.ConnectGroup)16;
                         segment0
                             .SetMeshes
                             (@"Meshes\6m\Ground_Station_Pavement.obj",
@@ -792,7 +787,7 @@ namespace MetroOverhaul.InitializationSteps
                         var nodeList = new List<NetInfo.Node>();
                         nodeList.Add(node0);
                         nodeList.Add(node1);
-                        node1.m_connectGroup = NetInfo.ConnectGroup.CenterTram;
+                        node1.m_connectGroup = (NetInfo.ConnectGroup)16;
 
                         segment0
                             .SetMeshes
@@ -842,7 +837,7 @@ namespace MetroOverhaul.InitializationSteps
                         nodeList.Add(node1);
                         nodeList.Add(node2);
 
-                        node2.m_connectGroup = NetInfo.ConnectGroup.CenterTram;
+                        node2.m_connectGroup = (NetInfo.ConnectGroup)16;
                         segment1
                             .SetMeshes
                             (@"Meshes\6m\Tunnel_Station_Pavement.obj",

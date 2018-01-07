@@ -736,7 +736,7 @@ namespace MetroOverhaul.InitializationSteps
                                 $@"Meshes\{width}\Ground_Station_Node_Pavement_LOD.obj");
                         node1
                             .SetMeshes
-                            ($@"Meshes\{width}\Elevated_Station_Node_Rail.obj")
+                            ($@"Meshes\{width}\Boosted_Station_Node_Rail.obj")
                             .SetConsistentUVs();
                         node2
                             .SetMeshes

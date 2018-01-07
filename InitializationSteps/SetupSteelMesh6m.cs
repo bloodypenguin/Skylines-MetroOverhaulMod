@@ -40,24 +40,23 @@ namespace MetroOverhaul.InitializationSteps
             {
                 variations = new List<string> { "_Merge", "" }.ToArray();
                 groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, NetInfo.ConnectGroup.WideTram }.ToArray();
-
             }
             else if (is18m)
             {
-                variations = new List<string> { "_Merge", "_Single_Merge", "_Single" }.ToArray();
-                groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)16, NetInfo.ConnectGroup.CenterTram }.ToArray();
+                variations = new List<string> { "_Merge", "_Merge", "_Single_Merge", "_Single" }.ToArray();
+                groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)64, (NetInfo.ConnectGroup)16, NetInfo.ConnectGroup.CenterTram }.ToArray();
             }
             else
             {
                 if (isMerge)
                 {
-                    variations = new List<string> { "_Merge", "_Merge" }.ToArray();
-                    groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)32 }.ToArray();
+                    variations = new List<string> { "_Merge", "_Merge", "_Merge" }.ToArray();
+                    groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)32, (NetInfo.ConnectGroup)64 }.ToArray();
                 }
                 else
                 {
-                    variations = new List<string> { "", "_Merge" }.ToArray();
-                    groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)32 }.ToArray();
+                    variations = new List<string> { "", "_Merge", "_Merge" }.ToArray();
+                    groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)32, (NetInfo.ConnectGroup)64 }.ToArray();
                 }
             }
 
@@ -615,13 +614,7 @@ namespace MetroOverhaul.InitializationSteps
                         nodeList.Add(node2);
                         nodeList.Add(node3);
                         nodeList.Add(node5);
-                        node1.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
-                        node2.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
-                        if (isTwoWay)
-                        {
-                            node1.m_connectGroup |= (NetInfo.ConnectGroup)16;
-                            node2.m_connectGroup |= (NetInfo.ConnectGroup)16;
-                        }
+
                         segment1
                             .SetMeshes
                             (@"Meshes\6m\Ground_Rail.obj");
@@ -672,6 +665,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment4.m_lodMaterial = elevatedLODMaterial;
                         segment5.m_material = elevatedMaterial;
                         segment5.m_lodMaterial = elevatedLODMaterial;
+                        node2.m_connectGroup = isTwoWay ? (NetInfo.ConnectGroup)16 | NetInfo.ConnectGroup.CenterTram : NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
                         node3.m_material = elevatedMaterial;
                         node3.m_lodMaterial = elevatedLODMaterial;
                         node5.m_material = elevatedMaterial;
@@ -755,7 +749,7 @@ namespace MetroOverhaul.InitializationSteps
                         node1.m_lodMaterial = elevatedLODMaterial;
                         node2.m_material = elevatedMaterial;
                         node2.m_lodMaterial = elevatedLODMaterial;
-                        node3.m_connectGroup = isTwoWay ? (NetInfo.ConnectGroup)16 | NetInfo.ConnectGroup.CenterTram : NetInfo.ConnectGroup.CenterTram;
+                        node3.m_connectGroup = isTwoWay ? (NetInfo.ConnectGroup)16 | NetInfo.ConnectGroup.CenterTram : NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
                         node3.m_material = elevatedMaterial;
                         node3.m_lodMaterial = elevatedLODMaterial;
                         node3.m_directConnect = true;

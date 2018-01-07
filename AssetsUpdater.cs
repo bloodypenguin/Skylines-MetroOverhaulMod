@@ -75,19 +75,25 @@ namespace MetroOverhaul
 			return 1;// (version == NetInfoVersion.Tunnel || version == NetInfoVersion.Slope || version == NetInfoVersion.Elevated || version == NetInfoVersion.Bridge) ? 1.5f : 1.0f;
 		}
 
-		private static int GetTrackCost(NetInfoVersion version)
-		{
+        private static int GetTrackCost(NetInfoVersion version)
+        {
+            var metroInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+            var trainInfo = PrefabCollection<NetInfo>.FindLoaded("Train Track");
+            double coeff = (double)((PlayerNetAI)metroInfo.m_netAI).m_constructionCost / ((PlayerNetAI)trainInfo.m_netAI).m_constructionCost;
+            var info = PrefabCollection<NetInfo>.FindLoaded($"Train Track{(version != NetInfoVersion.Ground ? " " + version.ToString() : "")}");
+            return (int)Math.Round(((PlayerNetAI)info.m_netAI).m_constructionCost * coeff);
+        }
+        private static int GetTrackMaintCost(NetInfoVersion version)
+        {
+            var metroInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+            var trainInfo = PrefabCollection<NetInfo>.FindLoaded("Train Track");
+            double coeff = (double)((PlayerNetAI)metroInfo.m_netAI).m_maintenanceCost / ((PlayerNetAI)trainInfo.m_netAI).m_maintenanceCost;
+            var info = PrefabCollection<NetInfo>.FindLoaded($"Train Track{(version != NetInfoVersion.Ground ? " " + version.ToString() : "")}");
+            return (int)Math.Round(((PlayerNetAI)info.m_netAI).m_maintenanceCost * coeff);
+        }
 
-var info = PrefabCollection<NetInfo>.FindLoaded($"Train Track {(version != NetInfoVersion.Ground ? version.ToString() : "")}");
-			return ((PlayerNetAI)info.m_netAI).m_constructionCost;
-		}
-		private static int GetTrackMaintCost(NetInfoVersion version)
-		{
-			var info = PrefabCollection<NetInfo>.FindLoaded($"Train Track {(version != NetInfoVersion.Ground ? version.ToString() : "")}");
-			return ((PlayerNetAI)info.m_netAI).m_maintenanceCost;
-		}
-		//this method is supposed to be called from LoadingExtension
-		public static void UpdateBuildingsMetroPaths(LoadMode mode, bool toVanilla = false)
+        //this method is supposed to be called from LoadingExtension
+        public static void UpdateBuildingsMetroPaths(LoadMode mode, bool toVanilla = false)
 		{
 #if !DEBUG
             if (mode == LoadMode.NewAsset || mode == LoadMode.NewAsset)

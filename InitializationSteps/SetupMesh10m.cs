@@ -517,7 +517,7 @@ namespace MetroOverhaul.InitializationSteps
                                 $@"Meshes\{width}\Ground_Node_Pavement_LOD.obj");
                         node1
                             .SetMeshes
-                            ($@"Meshes\{width}\Elevated_Station_Node_Rail.obj")
+                            ($@"Meshes\{width}\Boosted_Station_Node_Rail.obj")
                             .SetConsistentUVs();
                         node2
                             .SetMeshes
@@ -537,7 +537,6 @@ namespace MetroOverhaul.InitializationSteps
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
                         node2.m_lodMaterial = elevatedLODMaterial;
-
                         node1.m_flagsForbidden = NetNode.Flags.LevelCrossing;
                         node2.m_flagsRequired = NetNode.Flags.LevelCrossing;
                         node3.m_flagsRequired = NetNode.Flags.LevelCrossing;
@@ -589,7 +588,6 @@ namespace MetroOverhaul.InitializationSteps
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
-
                         prefab.m_segments = new[] { segment0, segment1, segment2 };
                         prefab.m_nodes = new[] { node0, node1, node2 };
                         break;
@@ -632,7 +630,7 @@ namespace MetroOverhaul.InitializationSteps
                                 .SetConsistentUVs();
                         node2
                             .SetMeshes
-                            ($@"Meshes\{width}\Elevated_Station_Node_Rail.obj")
+                            ($@"Meshes\{width}\Boosted_Station_Node_Rail.obj")
                             .SetConsistentUVs();
                         node3
                             .SetMeshes
@@ -652,6 +650,10 @@ namespace MetroOverhaul.InitializationSteps
                         node2.m_directConnect = true;
                         node3.m_material = elevatedMaterial;
                         node3.m_lodMaterial = elevatedLODMaterial;
+                        if (prefab.m_connectGroup == (NetInfo.ConnectGroup)64)
+                        {
+                            node1.m_connectGroup |= (NetInfo.ConnectGroup)32;
+                        }
                         prefab.m_segments = new[] { segment0, segment1, segment2, segment3 };
                         prefab.m_nodes = new[] { node0, node1, node2, node3 };
                         break;
