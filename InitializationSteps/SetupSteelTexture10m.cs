@@ -211,7 +211,7 @@ namespace MetroOverhaul.InitializationSteps
                             }
                             else if (node.m_mesh.name.Contains("Pavement") || (node.m_mesh.name.Contains("Fence")) || (node.m_mesh.name.Contains("Bar")))
 							{
-                                if (node.m_mesh.name.Contains("Elevated"))
+                                if (node.m_mesh.name.Contains("Elevated") || node.m_mesh.name.Contains("Bridge_Trans_Pavement_Steel2"))
 								{
 									node.SetTextures(
 										new TextureSet
