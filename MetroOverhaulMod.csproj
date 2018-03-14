@@ -1773,7 +1773,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CHECKLIST.txt" />
     <Content Include="lib\ObjUnity3D.dll" />
     <Content Include="Resources\Textures\Bridge_Node_Pavement_Steel__MainTex.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
