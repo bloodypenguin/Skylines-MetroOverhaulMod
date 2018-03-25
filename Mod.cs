@@ -5,13 +5,7 @@ namespace MetroOverhaul
 {
     public class Mod : IUserMod
     {
-#if IS_PATCH
-        public const bool isPatch = true;
-#else
-        public const bool isPatch = false;
-#endif
-
-        public string Name => "Metro Overhaul" + (isPatch ? " [Patch 1.6.2]" : "");
+        public string Name => "Metro Overhaul";
         public string Description => "Brings metro depots, ground and elevated metro tracks";
 
         public void OnSettingsUI(UIHelperBase helper)

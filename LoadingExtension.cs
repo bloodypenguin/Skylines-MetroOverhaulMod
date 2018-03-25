@@ -141,6 +141,9 @@ namespace MetroOverhaul
                 var transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Metro");
                 transportInfo.m_netLayer = ItemClass.Layer.Default | ItemClass.Layer.MetroTunnels;
                 transportInfo.m_stationLayer = ItemClass.Layer.Default | ItemClass.Layer.MetroTunnels;
+                transportInfo.m_secondaryLayer = 9;
+                transportInfo.m_secondaryLineMaterial = transportInfo.m_lineMaterial;
+                transportInfo.m_secondaryLineMaterial2 = transportInfo.m_lineMaterial2;
             }
             else if (mode == LoadMode.NewAsset || mode == LoadMode.LoadAsset)
             {
