@@ -402,6 +402,7 @@ namespace MetroOverhaul.InitializationSteps
                         RoadHelper.HandleAsymSegmentFlags(segments3);
                         nodeList.AddRange(GenerateSplitTracks(info, version));
                         nodeList.AddRange(GenerateLevelCrossing(info));
+
                         info.m_segments = new[] { segments0, segments1, /*segments2*/segments3 };
                         info.m_nodes = nodeList.ToArray();
                         break;
@@ -423,13 +424,13 @@ namespace MetroOverhaul.InitializationSteps
 
                         if (isTwoWay)
                         {
-                            node2.m_connectGroup = NetInfo.ConnectGroup.CenterTram|(NetInfo.ConnectGroup)16;
-                            node10.m_connectGroup = NetInfo.ConnectGroup.CenterTram|(NetInfo.ConnectGroup)16;
+                            node2.m_connectGroup = NetInfo.ConnectGroup.CenterTram | (NetInfo.ConnectGroup)16;
+                            node10.m_connectGroup = NetInfo.ConnectGroup.CenterTram | (NetInfo.ConnectGroup)16;
                         }
                         else
                         {
-                        node2.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
-                        node10.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
+                            node2.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
+                            node10.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
                         }
 
                         if (isTwoWay)
@@ -950,7 +951,7 @@ namespace MetroOverhaul.InitializationSteps
                         node1.m_lodMaterial = elevatedLODMaterial;
 
                         info.m_segments = info.AddSegments(segment0);
-                        info.m_nodes = info.AddNodes(node0, node1,node2);
+                        info.m_nodes = info.AddNodes(node0, node1, node2);
                         break;
                     }
             }

@@ -93,21 +93,10 @@ namespace MetroOverhaul.InitializationSteps
                         node6.m_material = elevatedMaterial;
                         node6.m_lodMaterial = elevatedLODMaterial;
                         node6.m_flagsRequired = NetNode.Flags.LevelCrossing;
-                        if (isOneWay)
+                        if (isOneWay || isLarge)
                         {
-                            node2.m_connectGroup = (NetInfo.ConnectGroup)32;
                             nodeList.AddRange(GenerateLevelCrossing(info));
                             nodeList.AddRange(GenerateSplitTracks(info, version));
-                        }
-                        else if (isLarge)
-                        {
-                            node2.m_connectGroup = NetInfo.ConnectGroup.WideTram;
-                            nodeList.AddRange(GenerateLevelCrossing(info));
-                            nodeList.AddRange(GenerateSplitTracks(info, version));
-                        }
-                        else
-                        {
-                            node2.m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
                         }
 
                         info.m_segments = new[] { segment0, segment1, segment2 };
@@ -190,19 +179,10 @@ namespace MetroOverhaul.InitializationSteps
                         node5.m_material = elevatedMaterial;
                         node5.m_lodMaterial = elevatedLODMaterial;
                         node2.m_directConnect = true;
-                        if (isOneWay)
+                        if (isOneWay || isLarge)
                         {
-                            node2.m_connectGroup = (NetInfo.ConnectGroup)32;
-                        }
-                        else if (isLarge)
-                        {
-                            node2.m_connectGroup = NetInfo.ConnectGroup.WideTram;
                             nodeList.AddRange(GenerateLevelCrossing(info));
                             nodeList.AddRange(GenerateSplitTracks(info, version));
-                        }
-                        else
-                        {
-                            node2.m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
                         }
                         info.m_segments = new[] { segment0, segment1, segment2 };
                         info.m_nodes = nodeList.ToArray();
@@ -266,19 +246,12 @@ namespace MetroOverhaul.InitializationSteps
                             //segment1.m_material = railMaterial;
                             //node1.m_material = railMaterial;
                         }
-                        if (isOneWay)
+                        if (isOneWay || isLarge)
                         {
-                            node2.m_connectGroup = (NetInfo.ConnectGroup)32;
+                            nodeList.AddRange(GenerateLevelCrossing(info));
+                            nodeList.AddRange(GenerateSplitTracks(info, version));
                         }
-                        else if (isLarge)
-                        {
-                            node2.m_connectGroup = NetInfo.ConnectGroup.WideTram;
-                        }
-                        else
-                        {
-                            node2.m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
-                        }
-						nodeList.AddRange(GenerateLevelCrossing(info));
+                        nodeList.AddRange(GenerateLevelCrossing(info));
 						nodeList.AddRange(GenerateSplitTracks(info, version));
 						info.m_segments = new[] {  segment1, segment2 };
                         info.m_nodes = nodeList.ToArray();

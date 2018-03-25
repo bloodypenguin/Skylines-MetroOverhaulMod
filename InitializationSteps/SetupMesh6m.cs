@@ -312,9 +312,6 @@ namespace MetroOverhaul.InitializationSteps
                             @"Meshes\6m\Ground_Rail_Node_LOD.obj");
 
                         RoadHelper.HandleAsymSegmentFlags(segments3);
-
-                        nodes1.m_flagsForbidden = NetNode.Flags.LevelCrossing;
-
                         nodeList.AddRange(GenerateSplitTracks(info, version));
                         nodeList.AddRange(GenerateLevelCrossing(info));
 
