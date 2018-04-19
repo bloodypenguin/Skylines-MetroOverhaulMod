@@ -40,7 +40,9 @@
   <ItemGroup>
     <Compile Include="AbstractInitializer.cs" />
     <Compile Include="AssetsUpdater.cs" />
+    <Compile Include="Detours\RoadAIDetour.cs" />
     <Compile Include="Detours\PassengerTrainAIDetour.cs" />
+    <Compile Include="Detours\RoadsGroupPanelDetour.cs" />
     <Compile Include="Extensions\ActionExtensions.cs" />
     <Compile Include="Detours\DepotAIDetour.cs" />
     <Compile Include="Detours\MetroTrainAIDetour.cs" />
@@ -74,6 +76,7 @@
     <Compile Include="TrainTrackBridgeAIMetro.cs" />
     <Compile Include="MetroTrackAIMetro.cs" />
     <Compile Include="UI\MetroAboveGroundStationCustomizerUI.cs" />
+    <Compile Include="UI\MetroTrackAssetCustomizerUI.cs" />
     <Compile Include="UI\MetroTrackCustomizerUI.cs" />
     <Compile Include="TrainTrackTunnelAIMetro.cs" />
     <Compile Include="InitializationSteps\LateBuildUpSteel.cs" />
@@ -157,6 +160,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="Transit.Framework.Redirection">
+      <HintPath>Transit.Framework.Redirection\bin\Debug\Transit.Framework.Redirection.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
@@ -741,6 +747,9 @@
     <None Include="Resources\Meshes\14m\Tunnel_Station_Pavement.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\16m\Elevated_Station_Node_Pavement_Insert_Steel.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\16m\Elevated_Station_Node_Pavement_LOD.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -763,6 +772,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\16m\Station_Boosted_Rail_Node.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\16m\Station_Node_Boosted_Rail_Merge.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\16m\Station_Node_Insert_Pavement_Steel.obj">
@@ -795,7 +807,16 @@
     <None Include="Resources\Meshes\16m\Ground_Station_Pavement.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\16m\Station_Node_Insert_Steel_Merge.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\16m\Elevated_Station_Node_Pavement_Insert_Steel_Merge.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\16m\Station_Node_Rail_LOD.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\16m\Station_Node_Rail_Merge.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\16m\Station_Rail.obj">

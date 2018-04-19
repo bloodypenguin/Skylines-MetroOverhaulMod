@@ -84,7 +84,14 @@
             }
             return netInfo.name.Contains("Metro Track");
         }
-
+        public static bool IsMetroStationTrack(this NetInfo netinfo)
+        {
+            if (netinfo?.name == null)
+            {
+                return false;
+            }
+            return netinfo.IsAbovegroundMetroStationTrack() || netinfo.IsUndergroundMetroStationTrack();
+        }
         public static bool IsPedestrianNetwork(this NetInfo info)
         {
             if (info?.name == null || info.IsAbovegroundMetroStationTrack() || info.IsUndergroundMetroStationTrack() || info.IsUndergroundMetroTrack())

@@ -150,6 +150,7 @@ namespace MetroOverhaul.InitializationSteps
                 }
             }
         }
+
         public static void CommonCustomizationSmall(NetInfo prefab, NetInfoVersion version)
         {
             var isTwoWay = prefab.name.Contains("Station") || prefab.name.Contains("Two-Way");
@@ -238,6 +239,7 @@ namespace MetroOverhaul.InitializationSteps
                 var backwardDone = false;
                 if (lane.m_laneType == NetInfo.LaneType.Vehicle)
                 {
+
                     if (!forwardDone && lane.m_direction == NetInfo.Direction.Forward)
                     {
                         lane.m_position = 5.89f;
@@ -259,7 +261,7 @@ namespace MetroOverhaul.InitializationSteps
             prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.NarrowTram;
             if (prefab.m_nodes.Count() > 1)
             {
-                prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
+                prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.NarrowTram | (NetInfo.ConnectGroup)32;
             }
 
             var theLanes = prefab.m_lanes.ToList();

@@ -37,9 +37,14 @@ namespace MetroOverhaul
                 Container = new GameObject("MetroOverhaul").AddComponent<Initializer>();
                 Container.AppMode = loading.currentMode;
             }
+            if (loading.currentMode == AppMode.AssetEditor)
+            {
+                Redirector<RoadsGroupPanelDetour>.Deploy();
+            }
             if (loading.currentMode == AppMode.Game)
             {
                 Redirector<DepotAIDetour>.Deploy();
+                Redirector<RoadAIDetour>.Deploy();
                 if (OptionsWrapper<Options>.Options.improvedMetroTrainAi)
                 {
                     Redirector<MetroTrainAIDetour>.Deploy();
@@ -93,6 +98,8 @@ namespace MetroOverhaul
             }
             UnityEngine.Object.Destroy(Container.gameObject);
             Container = null;
+            Redirector<RoadsGroupPanelDetour>.Revert();
+            Redirector<RoadAIDetour>.Revert();
             Redirector<DepotAIDetour>.Revert();
             Redirector<MetroTrainAI>.Revert();
             Redirector<PassengerTrainAIDetour>.Revert();
@@ -120,22 +127,22 @@ namespace MetroOverhaul
             }
             AssetsUpdater.UpdateBuildingsMetroPaths(mode, false);
 
-            if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame || mode == LoadMode.NewGameFromScenario || indebug)
+            if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame || mode == LoadMode.NewGameFromScenario)
             {
                 SimulationManager.instance.AddAction(DespawnVanillaMetro);
                 var gameObject = new GameObject("MetroOverhaulUISetup");
                 gameObject.AddComponent<UpgradeSetup>();
-//#if DEBUG
-//                gameObject.AddComponent<StyleSelectionStationUI>();
-//#else
-//                gameObject.AddComponent<StyleSelectionUI>();
-//#endif
+                //#if DEBUG
+                //                gameObject.AddComponent<StyleSelectionStationUI>();
+                //#else
+                //                gameObject.AddComponent<StyleSelectionUI>();
+                //#endif
 
                 if (OptionsWrapper<Options>.Options.metroUi)
                 {
                     UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizerUI));
                     UIView.GetAView().AddUIComponent(typeof(MetroTrackCustomizerUI));
-					UIView.GetAView().AddUIComponent(typeof(MetroAboveGroundStationCustomizerUI));
+                    UIView.GetAView().AddUIComponent(typeof(MetroAboveGroundStationCustomizerUI));
                 }
 
                 var transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Metro");
@@ -151,10 +158,10 @@ namespace MetroOverhaul
                 //gameObject.AddComponent<StyleSelectionStationUI>();
 #if DEBUG
                 UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizerUI));
-                UIView.GetAView().AddUIComponent(typeof(MetroTrackCustomizerUI));
-				UIView.GetAView().AddUIComponent(typeof(MetroAboveGroundStationCustomizerUI));
+                UIView.GetAView().AddUIComponent(typeof(MetroTrackAssetCustomizerUI));
+                UIView.GetAView().AddUIComponent(typeof(MetroAboveGroundStationCustomizerUI));
 #endif
-			}
+            }
         }
 
         public override void OnLevelUnloading()

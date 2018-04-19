@@ -16,6 +16,7 @@ namespace MetroOverhaul.InitializationSteps
             var defaultLODMaterial = ttInfo.m_nodes[0].m_lodMaterial;
             var nodeList = new List<NetInfo.Node>();
             var is10m = info.name.Contains("Two-Lane");
+            //var is16m = info.name.Contains("Island");
             var is18m = info.name.Contains("Large");
             var isMerge = info.name.Contains("Two-Way") || info.name.Contains("Station") || is10m || is18m;
             var mergeName = isMerge ? "Merge_" : "";
@@ -46,6 +47,11 @@ namespace MetroOverhaul.InitializationSteps
                 variations = new List<string> { "_Merge", "_Merge", "_Single_Merge", "_Single" }.ToArray();
                 groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)64, (NetInfo.ConnectGroup)16, NetInfo.ConnectGroup.CenterTram }.ToArray();
             }
+            //else if (is16m)
+            //{
+            //    variations = new List<string> { "_Merge" }.ToArray();
+            //    groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)16}.ToArray();
+            //}
             else
             {
                 if (isMerge)
@@ -77,7 +83,6 @@ namespace MetroOverhaul.InitializationSteps
                     var node4 = info.m_nodes[0].ShallowClone(); ;
                     var node5 = info.m_nodes[0].ShallowClone();
                     var node6 = info.m_nodes[0].ShallowClone();
-
 
                     nodeList.Add(node1);
                     nodeList.Add(node1a);
@@ -756,6 +761,7 @@ namespace MetroOverhaul.InitializationSteps
                         node3.m_directConnect = true;
                         RoadHelper.HandleAsymSegmentFlags(segment1);
                         RoadHelper.HandleAsymSegmentFlags(segment3);
+                        RoadHelper.HandleAsymSegmentFlags(segment4);
                         nodeList.AddRange(GenerateSplitTracks(info, version));
                         info.m_segments = new[] { segment0, segment1, segment2, segment3, segment4 };
                         info.m_nodes = nodeList.ToArray();
@@ -974,11 +980,7 @@ namespace MetroOverhaul.InitializationSteps
                         var nodeList = new List<NetInfo.Node>();
                         nodeList.Add(node0);
                         nodeList.Add(node1);
-                        node1.m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
-                        if (isTwoWay)
-                        {
-                            node1.m_connectGroup |= (NetInfo.ConnectGroup)16;
-                        }
+                        node1.m_connectGroup = (NetInfo.ConnectGroup)16;
                         segment0
                             .SetMeshes
                             (@"Meshes\6m\Ground_Station_Pavement.obj",
@@ -1001,7 +1003,8 @@ namespace MetroOverhaul.InitializationSteps
                         node1
                             .SetMeshes
                             (@"Meshes\6m\Boosted_Rail.obj",
-                            @"Meshes\6m\Ground_Rail_Node_LOD.obj");
+                            @"Meshes\6m\Ground_Rail_Node_LOD.obj")
+                            .SetConsistentUVs();
 
                         RoadHelper.HandleAsymSegmentFlags(segment2);
 
@@ -1009,7 +1012,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
-
+                        node1.m_flagsForbidden = NetNode.Flags.LevelCrossing;
                         nodeList.AddRange(GenerateSplitTracks(prefab, version));
                         nodeList.AddRange(GenerateLevelCrossing(prefab));
 
@@ -1030,7 +1033,7 @@ namespace MetroOverhaul.InitializationSteps
                         var node0 = prefab.m_nodes[0].ShallowClone();
                         var node1 = prefab.m_nodes[1].ShallowClone();
                         var node2 = prefab.m_nodes[0].ShallowClone();
-                        var node3 = prefab.m_nodes[3].ShallowClone();
+                        //var node3 = prefab.m_nodes[3].ShallowClone();
 
                         var node10 = prefab.m_nodes[0].ShallowClone();
                         var node11 = prefab.m_nodes[0].ShallowClone();
@@ -1038,18 +1041,13 @@ namespace MetroOverhaul.InitializationSteps
                         nodeList.Add(node0);
                         nodeList.Add(node1);
                         nodeList.Add(node2);
-                        nodeList.Add(node3);
+                        //nodeList.Add(node3);
                         nodeList.Add(node10);
                         nodeList.Add(node11);
-                        node1.m_connectGroup = NetInfo.ConnectGroup.CenterTram;
-                        node2.m_connectGroup = NetInfo.ConnectGroup.CenterTram;
-                        node10.m_connectGroup = NetInfo.ConnectGroup.CenterTram;
-                        if (isTwoWay)
-                        {
-                            node1.m_connectGroup |= (NetInfo.ConnectGroup)16;
-                            node2.m_connectGroup |= (NetInfo.ConnectGroup)16;
-                            node10.m_connectGroup |= (NetInfo.ConnectGroup)16;
-                        }
+                        node1.m_connectGroup = (NetInfo.ConnectGroup)16;
+                        node2.m_connectGroup = (NetInfo.ConnectGroup)16;
+                        node10.m_connectGroup = (NetInfo.ConnectGroup)16;
+                        
                         segment0
                             .SetMeshes
                             (@"Meshes\6m\Elevated_Station_Pavement_Steel.obj",

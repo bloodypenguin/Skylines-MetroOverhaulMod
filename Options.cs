@@ -12,7 +12,6 @@ namespace MetroOverhaul
         private const string GENERAL = "General settings";
         public Options()
         {
-            steelTracks = true;
             improvedPassengerTrainAi = true;
             improvedMetroTrainAi = true;
             metroUi = true;
@@ -29,8 +28,5 @@ namespace MetroOverhaul
 
         [Checkbox("Replace vanilla metro tracks with MOM tracks", WIP)]
         public bool replaceExistingNetworks { set; get; }
-
-        [Checkbox("Steel tracks", STYLES)]
-        public bool steelTracks { set; get; }
     }
 }
