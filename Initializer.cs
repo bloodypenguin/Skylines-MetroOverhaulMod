@@ -24,7 +24,7 @@ namespace MetroOverhaul
             if (AppMode != AppMode.AssetEditor)
             {
                 AssetsUpdater.PreventVanillaMetroTrainSpawning();
-                AssetsUpdater.UpdateVanillaMetroTracks();
+                //AssetsUpdater.UpdateVanillaMetroTracks();
             }
         }
 
@@ -37,9 +37,7 @@ namespace MetroOverhaul
             var metroStationInfo = FindOriginalNetInfo("Metro Station Track");
             try
             {
-                var replacements = OptionsWrapper<Options>.Options.replaceExistingNetworks
-                    ? new Dictionary<NetInfoVersion, string> { { NetInfoVersion.Tunnel, "Metro Track" } }
-                    : null;
+                var replacements = new Dictionary<NetInfoVersion, string> { { NetInfoVersion.Tunnel, "Metro Track" } };
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.SetupTrackProps).
@@ -322,6 +320,7 @@ namespace MetroOverhaul
 
             try
             {
+                var replacements = new Dictionary<NetInfoVersion, string> { { NetInfoVersion.Tunnel, "Metro Station Track" } };
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.SetupStationProps).
@@ -338,7 +337,7 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null, NetInfoVersion.None)
-                    , prefabName => prefabName
+                    , prefabName => prefabName, replacements
                     );
             }
             catch (Exception e)
@@ -925,34 +924,6 @@ namespace MetroOverhaul
                         Chain(SetupTrackModel, customizationStep.Chain(SetCosts)), replaces
                     );
             }
-            //         if ((versions & NetInfoVersion.Elevated) != 0)
-            //{
-            //	CreateNetInfo(nameModifier.Invoke("Metro Station Track Elevated"), "Train Station Track",
-            //		ActionExtensions.BeginChain<NetInfo>().
-            //			Chain(ReplaceAI, NetInfoVersion.Elevated).
-            //			Chain(SetupMetroTrackMeta, NetInfoVersion.Elevated).
-            //			Chain(SetupStationTrack, NetInfoVersion.Elevated).
-            //			Chain(SetupElevatedStationTrack).
-
-            //			Chain(CustomizationSteps.SetStandardTrackWidths, NetInfoVersion.Elevated).
-            //                     Chain(CommonSteps.SetVersion,
-            //			Chain(SetupTrackModel, customizationStep)
-            //	);
-            //}
-            //if ((versions & NetInfoVersion.Tunnel) != 0)
-            //{
-
-            //	CreateNetInfo(nameModifier.Invoke("Metro Station Track Tunnel"), "Train Station Track",
-            //		ActionExtensions.BeginChain<NetInfo>().
-            //			Chain(ReplaceAI, NetInfoVersion.Tunnel).
-            //			Chain(SetupMetroTrackMeta, NetInfoVersion.Tunnel).
-            //			Chain(SetupStationTrack, NetInfoVersion.Tunnel).
-            //			Chain(SetupTunnelStationTrack).
-            //			Chain(Modifiers.MakePedestrianLanesNarrow).
-            //			Chain(SetupTrackModel, customizationStep),
-            //			tunnelReplaces
-            //		);
-            //}
             if (provideSunken)
             {
                 CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Train Station Track", //TODO(earalov): test. check if AI to be replaced with MetroTrackAI
@@ -1104,8 +1075,11 @@ namespace MetroOverhaul
         private static void SetupMetroTrackMeta(NetInfo prefab, NetInfoVersion version)
         {
             var vanillaMetroTrack = FindOriginalNetInfo("Metro Track");
+            if (!prefab.name.Contains("Station"))
+            {
             var milestone = vanillaMetroTrack.GetComponent<PlayerNetAI>().m_createPassMilestone;
             prefab.GetComponent<PlayerNetAI>().m_createPassMilestone = milestone;
+            }
             prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
             prefab.m_class.m_subService = ItemClass.SubService.PublicTransportMetro;
             prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;

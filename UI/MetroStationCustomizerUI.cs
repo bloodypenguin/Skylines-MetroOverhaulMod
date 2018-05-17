@@ -208,7 +208,7 @@ namespace MetroOverhaul.UI
                 if (m_lengthTextbox.text != v.ToString())
                 {
                     m_valueChanged = true;
-                    if (v > SetStationCustomizations.MIN_LENGTH)
+                    if (v >= SetStationCustomizations.MIN_LENGTH)
                     {
                         m_lengthTextbox.text = v.ToString();
                         m_setLength = v;
@@ -389,7 +389,7 @@ namespace MetroOverhaul.UI
                 if (m_angleTextbox.text != v.ToString())
                 {
                     m_valueChanged = true;
-                    if (v <= SetStationCustomizations.MIN_ANGLE)
+                    if (v >= SetStationCustomizations.MIN_ANGLE)
                     {
                         m_angleTextbox.text = SetStationCustomizations.DEF_ANGLE.ToString();
                         m_setAngle = SetStationCustomizations.DEF_ANGLE;

@@ -30,7 +30,7 @@ namespace MetroOverhaul.Extensions
             return info.m_paths != null && info.m_paths.Any(p => p?.m_netInfo != null && p.m_netInfo.IsAbovegroundSmallStationTrack());
         }
 
-        public static bool HasUndergroundMetroStation(this BuildingInfo info)
+        public static bool IsUndergroundMetroStation(this BuildingInfo info)
         {
             return IsMetroDepot(info) && info.m_buildingAI is TransportStationAI && HasUndergroundMetroStationTracks(info);
         }

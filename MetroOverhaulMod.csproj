@@ -40,9 +40,12 @@
   <ItemGroup>
     <Compile Include="AbstractInitializer.cs" />
     <Compile Include="AssetsUpdater.cs" />
+    <Compile Include="BuildingDecoration.cs" />
+    <Compile Include="BuildingManagerx.cs" />
     <Compile Include="Detours\RoadAIDetour.cs" />
     <Compile Include="Detours\PassengerTrainAIDetour.cs" />
     <Compile Include="Detours\RoadsGroupPanelDetour.cs" />
+    <Compile Include="Detours\TransportStationAIDetour.cs" />
     <Compile Include="Extensions\ActionExtensions.cs" />
     <Compile Include="Detours\DepotAIDetour.cs" />
     <Compile Include="Detours\MetroTrainAIDetour.cs" />
@@ -72,6 +75,7 @@
     <Compile Include="Redirection\Attributes\RedirectReverseAttribute.cs" />
     <Compile Include="Redirection\Attributes\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Extensions\TypeExtension.cs" />
+    <Compile Include="SetUpdateStationCustomizations.cs" />
     <Compile Include="TrainTrackAIMetro.cs" />
     <Compile Include="TrainTrackBridgeAIMetro.cs" />
     <Compile Include="MetroTrackAIMetro.cs" />

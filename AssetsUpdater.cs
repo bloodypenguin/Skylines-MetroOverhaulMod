@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ColossalFramework;
+using ColossalFramework.Math;
 using ICities;
+using MetroOverhaul.Detours;
 using MetroOverhaul.Extensions;
 using MetroOverhaul.NEXT;
 using MetroOverhaul.OptionsFramework;
@@ -11,7 +14,9 @@ namespace MetroOverhaul
 {
     public class AssetsUpdater
     {
-
+        private static NetManager ninstance = Singleton<NetManager>.instance;
+        private static BuildingManager binstance = Singleton<BuildingManager>.instance;
+        private static TerrainManager tinstance = Singleton<TerrainManager>.instance;
         public void UpdateExistingAssets(LoadMode mode)
         {
             UpdateMetroTrainEffects();
@@ -21,15 +26,8 @@ namespace MetroOverhaul
             }
             try
             {
-                //UpdateTrainTracks();
-            }
-            catch (Exception e)
-            {
-                UnityEngine.Debug.LogException(e);
-            }
-            try
-            {
-                UpdateMetroStationsMeta();
+                //UpdateMetroStationsMeta();
+                DipVanillaMetroTracks();
             }
             catch (Exception e)
             {
@@ -37,38 +35,41 @@ namespace MetroOverhaul
             }
         }
 
-        private static void UpdateTrainTracks()
+        //        private static void UpdateTrainTracks()
+        //        {
+        //            var vanillaTracksNames = new[] { "Train Track", "Train Track Elevated", "Train Track Bridge", "Train Track Slope", "Train Track Tunnel" };
+        //            var vanillaTracksCosts = vanillaTracksNames.ToDictionary(Initializer.DetectVersion, GetTrackCost);
+        //            var toGroundMultipliers = vanillaTracksCosts.ToDictionary(keyValue => keyValue.Key,
+        //                keyValue => keyValue.Value == vanillaTracksCosts[NetInfoVersion.Ground] ? 1f : keyValue.Value / (float)vanillaTracksCosts[NetInfoVersion.Ground]);
+
+        //            var baseMultiplier = GetTrackCost("Metro Track Ground") / (float)GetTrackCost("Train Track");
+        //            for (ushort i = 0; i < PrefabCollection<NetInfo>.LoadedCount(); i++)
+        //            {
+        //                var netInfo = PrefabCollection<NetInfo>.GetLoaded(i);
+        //                var ai = netInfo?.m_netAI as PlayerNetAI;
+        //                if (ai == null || netInfo.m_class.m_service != ItemClass.Service.PublicTransport || netInfo.m_class.m_subService != ItemClass.SubService.PublicTransportTrain)
+        //                {
+        //                    continue;
+        //                }
+        //                var version = Initializer.DetectVersion(netInfo.name);
+        //                var wasCost = GetTrackCost(netInfo);
+        //                if (wasCost == 0)
+        //                {
+        //                    continue;
+        //                }
+        //                var newCost = wasCost / toGroundMultipliers[version] *
+        //                                     Initializer.GetCostMultiplier(version) * GetAdditionalCostMultiplier(version) * baseMultiplier;
+        //#if DEBUG
+        //                UnityEngine.Debug.Log($"Updating asset {netInfo.name} cost. Was cost: {wasCost}. New cost: {newCost}");
+        //#endif
+        //                ai.m_constructionCost = (int)newCost;
+        //                ai.m_maintenanceCost = (int)(newCost / 10f);
+        //            }
+        //        }
+        private static void DipVanillaMetroTracks()
         {
-            var vanillaTracksNames = new[] { "Train Track", "Train Track Elevated", "Train Track Bridge", "Train Track Slope", "Train Track Tunnel" };
-            var vanillaTracksCosts = vanillaTracksNames.ToDictionary(Initializer.DetectVersion, GetTrackCost);
-            var toGroundMultipliers = vanillaTracksCosts.ToDictionary(keyValue => keyValue.Key,
-                keyValue => keyValue.Value == vanillaTracksCosts[NetInfoVersion.Ground] ? 1f : keyValue.Value / (float)vanillaTracksCosts[NetInfoVersion.Ground]);
 
-            var baseMultiplier = GetTrackCost("Metro Track Ground") / (float)GetTrackCost("Train Track");
-            for (ushort i = 0; i < PrefabCollection<NetInfo>.LoadedCount(); i++)
-            {
-                var netInfo = PrefabCollection<NetInfo>.GetLoaded(i);
-                var ai = netInfo?.m_netAI as PlayerNetAI;
-                if (ai == null || netInfo.m_class.m_service != ItemClass.Service.PublicTransport || netInfo.m_class.m_subService != ItemClass.SubService.PublicTransportTrain)
-                {
-                    continue;
-                }
-                var version = Initializer.DetectVersion(netInfo.name);
-                var wasCost = GetTrackCost(netInfo);
-                if (wasCost == 0)
-                {
-                    continue;
-                }
-                var newCost = wasCost / toGroundMultipliers[version] *
-                                     Initializer.GetCostMultiplier(version) * GetAdditionalCostMultiplier(version) * baseMultiplier;
-#if DEBUG
-                UnityEngine.Debug.Log($"Updating asset {netInfo.name} cost. Was cost: {wasCost}. New cost: {newCost}");
-#endif
-                ai.m_constructionCost = (int)newCost;
-                ai.m_maintenanceCost = (int)(newCost / 10f);
-            }
         }
-
         private static float GetAdditionalCostMultiplier(NetInfoVersion version)
         {
             return (version == NetInfoVersion.Tunnel || version == NetInfoVersion.Slope || version == NetInfoVersion.Elevated || version == NetInfoVersion.Bridge) ? 1.5f : 1.0f;
@@ -94,12 +95,13 @@ namespace MetroOverhaul
                 return;
             }
 #endif
-            for (uint i = 0; i < PrefabCollection<BuildingInfo>.LoadedCount(); i++)
+
+            try
             {
-                try
+                for (uint i = 0; i < PrefabCollection<BuildingInfo>.LoadedCount(); i++)
                 {
                     var prefab = PrefabCollection<BuildingInfo>.GetPrefab(i);
-                    if (prefab == null)
+                    if (prefab == null || !(prefab.m_buildingAI is DepotAI))
                     {
                         continue;
                     }
@@ -111,47 +113,563 @@ namespace MetroOverhaul
                         }
                     }
                     SetupTunnelTracks(prefab, toVanilla);
-
                 }
-                catch (Exception e)
+                if (toVanilla)
                 {
-                    UnityEngine.Debug.LogException(e);
+                    TransportManager tmInstance = Singleton<TransportManager>.instance;
+                    for (ushort i = 0; i < tmInstance.m_lines.m_buffer.Count(); i++)
+                    {
+                        TransportLine line = tmInstance.m_lines.m_buffer[i];
+                        if (line.Info.m_class.m_service == ItemClass.Service.PublicTransport && line.Info.m_class.m_subService == ItemClass.SubService.PublicTransportMetro)
+                        {
+                            ushort vehicleID = line.m_vehicles;
+                            while (vehicleID > 0)
+                            {
+                                Singleton<VehicleManager>.instance.ReleaseVehicle(vehicleID);
+                                vehicleID = Singleton<VehicleManager>.instance.m_vehicles.m_buffer[vehicleID].m_nextLineVehicle;
+                            }
+                        }
+                    }
+
+                    for (ushort i = 0; i < binstance.m_buildings.m_buffer.Count(); i++)
+                    {
+                        Building building = BuildingFrom(i);
+                        BuildingInfo info = building.Info;
+                        if (info != null && info.m_buildingAI is DepotAI && building.m_parentBuilding == 0)
+                        {
+                            if (HasUndergroundMOMorVanilla(i))
+                            {
+                                connectList = null;
+                                PrepareBuilding(ref info);
+                                PopulateDictionaries(i);
+                                if (info.m_subBuildings != null)
+                                {
+                                    foreach (BuildingInfo.SubInfo subInfo in info.m_subBuildings)
+                                    {
+                                        BuildingInfo sInfo = subInfo?.m_buildingInfo;
+                                        if (sInfo != null)
+                                        {
+                                            PrepareBuilding(ref sInfo);
+                                            PopulateDictionaries(i);
+                                        }
+                                    }
+                                }
+                                binstance.UpdateBuildingInfo(i,  info);
+                                RevertBuilding(ref info);
+                                building = BuildingFrom(i);
+                                ReconsileOrphanedSegments(building);
+                                if (info.m_subBuildings != null)
+                                {
+                                    foreach (BuildingInfo.SubInfo subInfo in info.m_subBuildings)
+                                    {
+                                        BuildingInfo sInfo = subInfo?.m_buildingInfo;
+                                        if (sInfo != null)
+                                        {
+                                            RevertBuilding(ref sInfo);
+                                            ReconsileOrphanedSegments(building);
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    for (ushort i = 0; i < Singleton<NetManager>.instance.m_nodes.m_buffer.Count(); i++)
+                    {
+                        NetNode n = Singleton<NetManager>.instance.m_nodes.m_buffer[i];
+                        NetInfo info = n.Info;
+                        if ((info.IsUndergroundMetroTrack()))
+                        {
+                            DipPath(i, n);
+                        }
+                    }
+                    for (ushort i = 0; i < ninstance.m_nodes.m_buffer.Count(); i++)
+                    {
+                        NetNode node = NodeFrom(i);
+                        if (node.Info.IsMetroTrack())
+                        {
+                            ninstance.m_nodes.m_buffer[i].Info = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+                            ninstance.UpdateNode(i);
+                        }
+                        else if (node.Info.IsMetroStationTrack())
+                        {
+                            ninstance.m_nodes.m_buffer[i].Info = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track");
+                            ninstance.UpdateNode(i);
+                        }
+                    }
+                    for (ushort i = 0; i < ninstance.m_segments.m_buffer.Count(); i++)
+                    {
+                        NetSegment segment = SegmentFrom(i);
+                        if (segment.Info.IsMetroTrack())
+                        {
+                            ninstance.m_segments.m_buffer[i].Info = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+                            ninstance.UpdateSegment(i);
+                        }
+                        else if (segment.Info.IsMetroStationTrack())
+                        {
+                            ninstance.m_segments.m_buffer[i].Info = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track");
+                            ninstance.UpdateSegment(i);
+                        }
+                    }
+                }
+                else
+                {
+                    for (ushort i = 0; i < binstance.m_buildings.m_buffer.Count(); i++)
+                    {
+                        Building b = BuildingFrom(i);
+                        BuildingInfo info = b.Info;
+                        if (b.m_parentBuilding == 0)
+                        {
+                            if (info != null && info.m_buildingAI is DepotAI)
+                            {
+                                connectList = null;
+                                if (info.m_subBuildings != null && info.m_subBuildings.Any(sb => sb != null && sb.m_buildingInfo != null && sb.m_buildingInfo.HasUndergroundMetroStationTracks()))
+                                {
+                                    ushort subBuildingID = b.m_subBuilding;
+                                    while (subBuildingID > 0)
+                                    {
+                                        if (BuildingFrom(subBuildingID).Info.HasUndergroundMetroStationTracks())
+                                            UpdateBuilding(subBuildingID, info);
+                                        subBuildingID = BuildingFrom(subBuildingID).m_subBuilding;
+                                    }
+                                }
+                                if (HasUndergroundMOMorVanilla(i, true))
+                                {
+                                    UpdateBuilding(i);
+                                }
+                            }
+                        }
+                    }
+
+
+                    for (ushort i = 0; i < Singleton<NetManager>.instance.m_nodes.m_buffer.Count(); i++)
+                    {
+                        NetNode n = Singleton<NetManager>.instance.m_nodes.m_buffer[i];
+                        NetInfo info = n.Info;
+                        if ((info.IsUndergroundMetroTrack()))
+                        {
+                            DipPath(i, n);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
+        }
+        private static bool HasUndergroundMOMorVanilla(ushort buildingID, bool isDeep = true)
+        {
+            Building building = BuildingFrom(buildingID);
+            BuildingInfo info = building.Info;
+            if (info != null)
+            {
+                if (info.m_paths != null)
+                {
+                    for (int i = 0; i < info.m_paths.Count(); i++)
+                    {
+                        NetInfo ninfo = info.m_paths[i]?.m_netInfo;
+                        if (ninfo != null && (ninfo.IsUndergroundMetroStationTrack() || ninfo.name == "Metro Station Track"))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                if (isDeep)
+                {
+                    if (info.m_subBuildings != null && info.m_subBuildings.Count() > 0)
+                    {
+                        for (int i = 0; i < info.m_subBuildings.Count(); i++)
+                        {
+                            BuildingInfo sinfo = info.m_subBuildings[i]?.m_buildingInfo;
+                            if (sinfo != null && sinfo.m_paths != null)
+                            {
+                                for (int j = 0; j < sinfo.m_paths.Count(); j++)
+                                {
+                                    NetInfo sninfo = sinfo.m_paths[j]?.m_netInfo;
+                                    if (sninfo != null && (sninfo.IsUndergroundMetroStationTrack() || sninfo.name == "Metro Station Track"))
+                                    {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        private static void PrepareBuilding(ref BuildingInfo info)
+        {
+            cpmNetDict = null;
+            RemoveCreatePassMileStone(ref info);
+            for (int j = 0; j < info.m_paths.Count(); j++)
+            {
+                BuildingInfo.PathInfo path = info.m_paths[j];
+                NetInfo nInfo = path.m_netInfo;
+                if (nInfo.name == "Metro Station Track")
+                {
+                    if (nInfo.m_netAI == null)
+                    {
+                        var ai = nInfo.gameObject.AddComponent<MetroTrackAI>();
+                        ai.m_info = nInfo;
+                        nInfo.m_netAI = ai;
+                    }
+                    if (!OptionsWrapper<Options>.Options.ghostMode)
+                        info.m_paths[j].m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel");
+                }
+                if (OptionsWrapper<Options>.Options.ghostMode)
+                {
+                    if (path.m_netInfo.IsMetroStationTrack())
+                    {
+                        info.m_paths[j].m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track");
+                    }
+                    else if (path.m_netInfo.IsMetroTrack())
+                    {
+                        info.m_paths[j].m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+                    }
+                }
+            }
+
+
+        }
+        private static void RemoveCreatePassMileStone(ref BuildingInfo info)
+        {
+            PlayerBuildingAI pbai = info.GetComponent<PlayerBuildingAI>();
+            if (pbai != null)
+            {
+                if (pbai.m_createPassMilestone != null)
+                {
+                    if (cpmBuildingDict == null)
+                    {
+                        cpmBuildingDict = new Dictionary<string, List<ManualMilestone>>();
+                    }
+                    if (cpmBuildingDict.ContainsKey(info.name) == false)
+                        cpmBuildingDict.Add(info.name, new List<ManualMilestone>());
+                    cpmBuildingDict[info.name].Add(pbai.m_createPassMilestone);
+                    cpmBuildingDict[info.name].Add(pbai.m_createPassMilestone2);
+                    cpmBuildingDict[info.name].Add(pbai.m_createPassMilestone3);
+                    pbai.m_createPassMilestone = null;
+                    pbai.m_createPassMilestone2 = null;
+                    pbai.m_createPassMilestone3 = null;
+                    info.m_buildingAI = pbai;
+                }
+                foreach (BuildingInfo.PathInfo path in info.m_paths)
+                {
+                    if (path.m_netInfo != null)
+                        RemoveCreatePassMileStone(path.m_netInfo);
+                }
+                if (info.m_subBuildings != null)
+                {
+                    foreach (var subBuilding in info.m_subBuildings)
+                    {
+                        if (subBuilding.m_buildingInfo != null)
+                        {
+                            RemoveCreatePassMileStone(ref subBuilding.m_buildingInfo);
+                        }
+                    }
+                }
+
+            }
+        }
+        private static void RemoveCreatePassMileStone(NetInfo info)
+        {
+            PlayerNetAI pnai = info.GetComponent<PlayerNetAI>();
+            if (pnai != null)
+            {
+                if (pnai.m_createPassMilestone != null)
+                {
+                    if (cpmNetDict == null)
+                    {
+                        cpmNetDict = new Dictionary<string, ManualMilestone>();
+                    }
+                    if (cpmNetDict.ContainsKey(info.name) == false)
+                        cpmNetDict.Add(info.name, pnai.m_createPassMilestone);
+                    pnai.m_createPassMilestone = null;
                 }
             }
         }
+        private static void RevertBuilding(ref BuildingInfo info)
+        {
+            if (cpmNetDict != null)
+            {
+                for (int j = 0; j < info.m_paths.Count(); j++)
+                {
+                    NetInfo ninfo = info.m_paths[j].m_netInfo;
+                    if (cpmNetDict.ContainsKey(ninfo.name))
+                    {
+                        if (ninfo.m_netAI != null)
+                        {
+                            PlayerNetAI pnai = ninfo.GetComponent<PlayerNetAI>();
+                            if (pnai != null)
+                            {
+                                pnai.m_createPassMilestone = cpmNetDict[ninfo.name];
+                            }
+                        }
+                    }
+                }
+            }
+            if (cpmBuildingDict != null)
+            {
+                if (cpmBuildingDict.ContainsKey(info.name))
+                {
+                    PlayerBuildingAI pbai = info.GetComponent<PlayerBuildingAI>();
+                    if (pbai != null)
+                    {
+                        pbai.m_createPassMilestone = cpmBuildingDict[info.name][0];
+                        pbai.m_createPassMilestone2 = cpmBuildingDict[info.name][1];
+                        pbai.m_createPassMilestone3 = cpmBuildingDict[info.name][2];
+                        info.m_buildingAI = pbai;
+                        if (info.m_subBuildings != null && info.m_subBuildings.Count() > 0)
+                        {
+                            foreach (BuildingInfo.SubInfo subBuilding in info.m_subBuildings)
+                            {
+                                if (subBuilding.m_buildingInfo != null)
+                                    RevertBuilding(ref subBuilding.m_buildingInfo);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        private static Dictionary<string, ManualMilestone> cpmNetDict = null;
+        private static Dictionary<string, List<ManualMilestone>> cpmBuildingDict = null;
+        private static void UpdateBuilding(ushort buildingID, BuildingInfo superInfo = null)
+        {
+            Building building = BuildingFrom(buildingID);
+            BuildingInfo info = building.Info;
 
+            PopulateDictionaries(buildingID);
+            PrepareBuilding(ref info);
+            if (info.HasUndergroundMetroStationTracks())
+            {
+                SetStationCustomizations.ModifyStation(info, SetStationCustomizations.DEF_DEPTH, SetStationCustomizations.MIN_LENGTH, SetStationCustomizations.DEF_ANGLE, SetStationCustomizations.DEF_BEND_STRENGTH, superInfo);
+            }
+            binstance.UpdateBuildingInfo(buildingID, info);
+            RevertBuilding(ref info);
+            building = BuildingFrom(buildingID);
+            ReconsileOrphanedSegments(building);
+        }
+
+        private static Building BuildingFrom(ushort buildingID)
+        {
+            return Singleton<BuildingManager>.instance.m_buildings.m_buffer[buildingID];
+        }
+        private static NetNode NodeFrom(ushort nodeID)
+        {
+            return Singleton<NetManager>.instance.m_nodes.m_buffer[nodeID];
+        }
+        private static NetSegment SegmentFrom(ushort segmentID)
+        {
+            return Singleton<NetManager>.instance.m_segments.m_buffer[segmentID];
+        }
+        private static List<ushort> GetNodesFromBuilding(ushort buildingID)
+        {
+            List<ushort> nodeIDs = new List<ushort>();
+            Building building = BuildingFrom(buildingID);
+            ushort nodeID = building.m_netNode;
+            while (nodeID != 0)
+            {
+                nodeIDs.Add(nodeID);
+                nodeID = NodeFrom(nodeID).m_nextBuildingNode;
+            }
+            return nodeIDs;
+        }
+        private struct ConnectData
+        {
+            public ushort connectingSegment { get; set; }
+            public ushort nonStationNodeID { get; set; }
+            public Vector3 oldPosition { get; set; }
+        }
+        //private static Dictionary<ushort, KeyValuePair<Vector3, ushort>> ConnectMap { get; set; }
+
+        private static List<ushort> GetMetroNodes(Building building)
+        {
+            ushort nodeID = building.m_netNode;
+            List<ushort> stationNodeIDs = null;
+            while (nodeID > 0)
+            {
+                NetNode node = NodeFrom(nodeID);
+                if (node.Info != null)
+                {
+                    if (node.Info.IsUndergroundMetroStationTrack() || node.Info.name == "Metro Station Track" || node.Info.IsUndergroundMetroTrack() || node.Info.name == "Metro Track")
+                    {
+                        if (stationNodeIDs == null)
+                        {
+                            stationNodeIDs = new List<ushort>();
+                        }
+                        stationNodeIDs.Add(nodeID);
+                    }
+                    nodeID = NodeFrom(nodeID).m_nextBuildingNode;
+                }
+            }
+            return stationNodeIDs;
+        }
+        private static List<ushort> GetStationNodes(Building building)
+        {
+            ushort nodeID = building.m_netNode;
+            List<ushort> stationNodeIDs = null;
+            while (nodeID > 0)
+            {
+                NetNode node = NodeFrom(nodeID);
+                if (node.Info.IsUndergroundMetroStationTrack() || node.Info.name == "Metro Station Track")
+                {
+                    if (stationNodeIDs == null)
+                    {
+                        stationNodeIDs = new List<ushort>();
+                    }
+                    stationNodeIDs.Add(nodeID);
+                }
+                nodeID = NodeFrom(nodeID).m_nextBuildingNode;
+            }
+            return stationNodeIDs;
+        }
+        private static List<ConnectData> connectList;
+        private static void PopulateDictionaries(ushort buildingID)
+        {
+            Building building = BuildingFrom(buildingID);
+            List<ushort> nodeIDs = GetMetroNodes(building);
+            if (nodeIDs != null)
+            {
+                for (int i = 0; i < nodeIDs.Count; i++)
+                {
+                    ushort nodeID = nodeIDs[i];
+                    NetNode node = NodeFrom(nodeID);
+                    var count = 0;
+                    for (int j = 0; j < 8; j++)
+                    {
+                        ushort segmentID = node.GetSegment(j);
+                        if (segmentID > 0)
+                        {
+                            NetSegment segment = SegmentFrom(segmentID);
+                            if (!nodeIDs.Contains(segment.m_startNode) || !nodeIDs.Contains(segment.m_endNode))
+                            {
+                                count++;
+                                if (connectList == null)
+                                {
+                                    connectList = new List<ConnectData>();
+                                }
+
+                                ushort otherNodeID = segment.m_startNode == nodeID ? segment.m_endNode : segment.m_startNode;
+                                if (otherNodeID > 0)
+                                {
+                                    ConnectData cd = new ConnectData()
+                                    {
+                                        nonStationNodeID = otherNodeID,
+                                        oldPosition = node.m_position
+                                    };
+                                    if (!connectList.Contains(cd))
+                                    {
+                                        connectList.Add(cd);
+                                    }
+                                    ninstance.ReleaseSegment(segmentID, false);
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        private static void ReconsileOrphanedSegments(Building building)
+        {
+            if (connectList != null && connectList.Count > 0)
+            {
+                List<ushort> stationNodeIDs = GetMetroNodes(building);
+                if (stationNodeIDs != null)
+                {
+                    foreach (ushort sNodeID in stationNodeIDs)
+                    {
+                        NetNode sNode = NodeFrom(sNodeID);
+                        for (var i = 0; i < connectList.Count(); i++)
+                        {
+                            ConnectData cd = connectList[i];
+                            if (sNode.m_position.x == cd.oldPosition.x && /* node.m_position.y = kvp.key.y - DEF_Depth */sNode.m_position.z == cd.oldPosition.z)
+                            {
+                                ushort startNode = cd.nonStationNodeID;
+                                ushort endNode = sNodeID;
+
+                                ushort newSegmentID = 0;
+                                if (startNode > 0 && CreateConnectionSegment(out newSegmentID, startNode, endNode))
+                                    cd.connectingSegment = newSegmentID;
+                                connectList[i] = cd;
+                                ninstance.UpdateSegment(newSegmentID);
+                                break;
+                            }
+                        }
+                    }
+                    var count = 0;
+                    for (int i = 0; i < connectList.Count(); i++)
+                    {
+                        if (connectList[i].oldPosition != Vector3.zero && connectList[i].nonStationNodeID > 0 && connectList[i].connectingSegment == 0)
+                        {
+                            count++;
+                            ushort closestNodeID = stationNodeIDs.OrderBy(snID => Vector3.Distance(NodeFrom(snID).m_position, connectList[i].oldPosition)).FirstOrDefault();
+                            ushort startNode = connectList[i].nonStationNodeID;
+                            ushort endNode = closestNodeID;
+
+                            ushort newSegmentID = 0;
+                            if (startNode > 0 && CreateConnectionSegment(out newSegmentID, startNode, endNode))
+                                ninstance.UpdateSegment(newSegmentID);
+                        }
+                    }
+                }
+
+            }
+        }
+        private static bool CreateConnectionSegment(out ushort segment, ushort startNode, ushort endNode)
+        {
+            NetManager instance = Singleton<NetManager>.instance;
+            Vector3 position = instance.m_nodes.m_buffer[(int)startNode].m_position;
+            Vector3 startDirection = VectorUtils.NormalizeXZ(instance.m_nodes.m_buffer[(int)endNode].m_position - position);
+            if (instance.CreateSegment(out segment, ref Singleton<SimulationManager>.instance.m_randomizer, PrefabCollection<NetInfo>.FindLoaded("Metro Track Tunnel"), startNode, endNode, startDirection, -startDirection, Singleton<SimulationManager>.instance.m_currentBuildIndex, Singleton<SimulationManager>.instance.m_currentBuildIndex, false))
+            {
+                //instance.m_segments.m_buffer[(int)segment].m_flags |= NetSegment.Flags.Untouchable;
+                instance.UpdateSegment(segment);
+                Singleton<SimulationManager>.instance.m_currentBuildIndex += 2U;
+                return true;
+            }
+            segment = (ushort)0;
+            return false;
+        }
+        private static void DipPath(ushort nodeID, NetNode node, bool isUndip = false)
+        {
+            float depth = 0;
+            if (isUndip)
+            {
+                depth = -(SetStationCustomizations.DEF_DEPTH - 4);
+            }
+            else
+            {
+                depth = SetStationCustomizations.DEF_DEPTH - 4;
+            }
+
+            Vector3 location = new Vector3(node.m_position.x, node.m_position.y - depth, node.m_position.z);
+            ninstance.MoveNode(nodeID, location);
+            ninstance.UpdateNode(nodeID);
+        }
         private static void SetupTunnelTracks(BuildingInfo info, bool toVanilla = false)
         {
             if (info?.m_paths == null)
             {
                 return;
             }
-            foreach (var path in info.m_paths)
+            if (toVanilla)
             {
-                if (path?.m_netInfo?.name == null)
+                foreach (var path in info.m_paths)
                 {
-                    continue;
-                }
-                if (toVanilla)
-                {
-                    if (path.m_netInfo.name.Contains("Metro Station Track Tunnel"))
+                    if (path?.m_netInfo?.name == null)
+                    {
+                        continue;
+                    }
+
+                    if (path.m_netInfo.IsMetroStationTrack())
                     {
                         path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track");
                     }
-                    else if (path.m_netInfo.name.Contains("Metro Track Tunnel"))
+                    else if (path.m_netInfo.IsMetroTrack())
                     {
                         path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
-                    }
-                }
-                else
-                {
-                    if (path.m_netInfo.name == "Metro Station Track")
-                    {
-                        path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel");
-                    }
-                    else if (path.m_netInfo.name == "Metro Track")
-                    {
-                        path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track Tunnel");
                     }
                 }
             }
@@ -182,8 +700,9 @@ namespace MetroOverhaul
                         transportStationAi.m_maxVehicleCount = 0;
                     }
                     info.m_UnlockMilestone = vanillaMetroStation.m_UnlockMilestone;
-                    ((DepotAI)info.m_buildingAI).m_createPassMilestone = ((DepotAI)vanillaMetroStation.m_buildingAI)
-                        .m_createPassMilestone;
+                    ((DepotAI)info.m_buildingAI).m_createPassMilestone = ((DepotAI)vanillaMetroStation.m_buildingAI).m_createPassMilestone;
+                    ((DepotAI)info.m_buildingAI).m_createPassMilestone2 = ((DepotAI)vanillaMetroStation.m_buildingAI).m_createPassMilestone2;
+                    ((DepotAI)info.m_buildingAI).m_createPassMilestone3 = ((DepotAI)vanillaMetroStation.m_buildingAI).m_createPassMilestone3;
                 }
                 catch (Exception e)
                 {

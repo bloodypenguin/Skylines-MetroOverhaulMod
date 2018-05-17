@@ -94,9 +94,7 @@
         }
         public static bool IsPedestrianNetwork(this NetInfo info)
         {
-            if (info?.name == null || info.IsAbovegroundMetroStationTrack() || info.IsUndergroundMetroStationTrack() || info.IsUndergroundMetroTrack())
-                return false;
-            return info.name.Contains("Pedestrian");
+            return info != null && (info.name == "Pedestrian Connection Surface" || info.name == "Pedestrian Connection Inside" || info.name == "Pedestrian Connection Underground");
         }
     }
 }

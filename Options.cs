@@ -7,7 +7,7 @@ namespace MetroOverhaul
     [Options("MetroOverhaul")]
     public class Options
     {
-        private const string WIP = "WIP features";
+        private const string UNSUBPREP = "Unsubscribe Prep";
         private const string STYLES = "Additional styles";
         private const string GENERAL = "General settings";
         public Options()
@@ -15,7 +15,7 @@ namespace MetroOverhaul
             improvedPassengerTrainAi = true;
             improvedMetroTrainAi = true;
             metroUi = true;
-            replaceExistingNetworks = false;
+            ghostMode = false;
         }
         [Checkbox("Metro track customization UI (requires reloading from main menu)", GENERAL)]
         public bool metroUi { set; get; }
@@ -26,7 +26,7 @@ namespace MetroOverhaul
         [Checkbox("Improved MetroTrainAI (Allows trains to properly spawn at surface)", GENERAL, nameof(MetroTrainAIDetour), nameof(MetroTrainAIDetour.ChangeDeployState))]
         public bool improvedMetroTrainAi { set; get; }
 
-        [Checkbox("Replace vanilla metro tracks with MOM tracks", WIP)]
-        public bool replaceExistingNetworks { set; get; }
+        [Checkbox("GHOST MODE (Prior to unsubscribing this mod, all affected cities must be saved with this option on. OTHERWISE KEEP IT OFF)", UNSUBPREP)]
+        public bool ghostMode { set; get; }
     }
 }
