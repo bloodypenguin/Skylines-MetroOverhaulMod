@@ -180,7 +180,7 @@ namespace MetroOverhaul
                         NetInfo info = n.Info;
                         if ((info.IsUndergroundMetroTrack()))
                         {
-                            DipPath(i, n);
+                            DipPath(i, n,true);
                         }
                     }
                     for (ushort i = 0; i < ninstance.m_nodes.m_buffer.Count(); i++)
