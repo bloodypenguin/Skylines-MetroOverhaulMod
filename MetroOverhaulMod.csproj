@@ -45,7 +45,6 @@
     <Compile Include="Detours\RoadAIDetour.cs" />
     <Compile Include="Detours\PassengerTrainAIDetour.cs" />
     <Compile Include="Detours\RoadsGroupPanelDetour.cs" />
-    <Compile Include="Detours\TransportStationAIDetour.cs" />
     <Compile Include="Extensions\ActionExtensions.cs" />
     <Compile Include="Detours\DepotAIDetour.cs" />
     <Compile Include="Detours\MetroTrainAIDetour.cs" />
