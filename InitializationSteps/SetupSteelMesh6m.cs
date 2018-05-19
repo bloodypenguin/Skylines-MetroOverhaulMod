@@ -15,9 +15,8 @@ namespace MetroOverhaul.InitializationSteps
             var defaultMaterial = ttInfo.m_nodes[0].m_material;
             var defaultLODMaterial = ttInfo.m_nodes[0].m_lodMaterial;
             var nodeList = new List<NetInfo.Node>();
-            var is10m = info.name.Contains("Two-Lane");
-            //var is16m = info.name.Contains("Island");
-            var is18m = info.name.Contains("Large");
+            var is10m = info.m_halfWidth > 4.9 && info.m_halfWidth < 5.1;
+            var is18m = info.m_halfWidth > 17.9 && info.m_halfWidth < 18.1;
             var isMerge = info.name.Contains("Two-Way") || info.name.Contains("Station") || is10m || is18m;
             var mergeName = isMerge ? "Merge_" : "";
             var widthName = "";
@@ -207,8 +206,8 @@ namespace MetroOverhaul.InitializationSteps
 
         public static List<NetInfo.Node> GenerateLevelCrossing(NetInfo info)
         {
-            var is10m = info.name.Contains("Two-Lane");
-            var is18m = info.name.Contains("Large");
+            var is10m = info.m_halfWidth > 4.9 && info.m_halfWidth < 5.1;
+            var is18m = info.m_halfWidth > 17.9 && info.m_halfWidth < 18.1;
             var isMerge = info.name.Contains("Two-Way") || info.name.Contains("Station") || is10m;
             var isOneWay = info.name.Contains("One-Way");
             var mergeName = isMerge ? "Merge_" : "";
@@ -240,29 +239,6 @@ namespace MetroOverhaul.InitializationSteps
             {
                 width = "6m";
             }
-
-            var nodes0 = info.m_nodes[pavementIndex].ShallowClone();
-            var nodes1 = info.m_nodes[1].ShallowClone();
-            var nodes2 = info.m_nodes[pavementIndex].ShallowClone();
-
-            nodeList.Add(nodes0);
-            nodeList.Add(nodes1);
-            nodeList.Add(nodes2);
-
-            nodes0
-                .SetMeshes
-                ($@"Meshes\{width}\LevelCrossing_Pavement.obj",
-                @"Meshes\6m\LevelCrossing_LOD.obj");
-            nodes1
-                .SetFlags(NetNode.Flags.LevelCrossing, NetNode.Flags.None)
-                .SetMeshes
-                ($@"Meshes\{width}\LevelCrossing_Rail.obj", @"Meshes\10m\Blank.obj")
-                .SetConsistentUVs();
-            nodes2
-                .SetMeshes
-                ($@"Meshes\{width}\LevelCrossing_Rail_Insert.obj", @"Meshes\10m\Blank.obj")
-                .SetConsistentUVs();
-
             string[] variations = null;
             NetInfo.ConnectGroup myGroup;
             NetInfo.ConnectGroup[] groups = null;
@@ -300,54 +276,91 @@ namespace MetroOverhaul.InitializationSteps
                     groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)32 }.ToArray();
                 }
             }
+
+            var nodes0 = info.m_nodes[pavementIndex].ShallowClone();
+            var nodes1 = info.m_nodes[1].ShallowClone();
+            var nodes2 = info.m_nodes[pavementIndex].ShallowClone();
+
+            nodeList.Add(nodes0);
+            nodeList.Add(nodes1);
+            nodeList.Add(nodes2);
+
+            nodes0
+                .SetMeshes
+                ($@"Meshes\{width}\LevelCrossing_Pavement.obj",
+                $@"Meshes\{width}\LevelCrossing_Pavement_LOD.obj");
+            if (is10m)
+            {
+                nodes1
+                .SetFlags(NetNode.Flags.LevelCrossing, NetNode.Flags.None)
+                .SetMeshes
+                ($@"Meshes\{width}\LevelCrossing_Rail.obj")
+                .SetConsistentUVs();
+            }
+            else
+            {
+                nodes1
+                .SetFlags(NetNode.Flags.LevelCrossing, NetNode.Flags.None)
+                .SetMeshes
+                ($@"Meshes\{width}\LevelCrossing_Rail.obj",
+                $@"Meshes\{width}\LevelCrossing_Rail_LOD.obj")
+                .SetConsistentUVs();
+            }
+            nodes2
+                .SetMeshes
+                ($@"Meshes\{width}\LevelCrossing_Rail_Insert.obj", @"Meshes\10m\Blank.obj")
+                .SetConsistentUVs();
             nodes1.m_directConnect = true;
             nodes2.m_directConnect = true;
             nodes1.m_connectGroup = myGroup;
             nodes2.m_connectGroup = myGroup;
-            for (var i = 0; i < variations.Length; i++)
+            if (isOneWay || is18m)
             {
-                var node1 = info.m_nodes[1].ShallowClone();
-                var node2 = info.m_nodes[1].ShallowClone();
-                var node3 = info.m_nodes[pavementIndex].ShallowClone();
-                var node4 = info.m_nodes[pavementIndex].ShallowClone();
-                nodeList.Add(node1);
-                nodeList.Add(node2);
-                nodeList.Add(node3);
-                nodeList.Add(node4);
+                for (var i = 0; i < variations.Length; i++)
+                {
+                    var node1 = info.m_nodes[1].ShallowClone();
+                    var node2 = info.m_nodes[1].ShallowClone();
+                    var node3 = info.m_nodes[pavementIndex].ShallowClone();
+                    var node4 = info.m_nodes[pavementIndex].ShallowClone();
+                    nodeList.Add(node1);
+                    nodeList.Add(node2);
+                    nodeList.Add(node3);
+                    nodeList.Add(node4);
 
-                node1
-                    .SetFlags(NetNode.Flags.LevelCrossing, NetNode.Flags.None)
-                    .SetMeshes
-                    ($@"Meshes\{width}\LevelCrossing_Rail{variations[i]}_Start.obj", @"Meshes\10m\Blank.obj")
-                    .SetConsistentUVs();
-                node2
-                    .SetFlags(NetNode.Flags.LevelCrossing, NetNode.Flags.None)
-                    .SetMeshes
-                    ($@"Meshes\{width}\LevelCrossing_Rail{variations[i]}_End.obj", @"Meshes\10m\Blank.obj")
-                    .SetConsistentUVs();
-                node3
-                    .SetMeshes
-                    ($@"Meshes\{width}\LevelCrossing_Rail_Insert{variations[i]}_Start.obj", @"Meshes\10m\Blank.obj")
-                    .SetConsistentUVs();
-                node4
-                    .SetMeshes
-                    ($@"Meshes\{width}\LevelCrossing_Rail_Insert{variations[i]}_End.obj", @"Meshes\10m\Blank.obj")
-                    .SetConsistentUVs();
-                node1.m_directConnect = true;
-                node2.m_directConnect = true;
-                node3.m_directConnect = true;
-                node4.m_directConnect = true;
-                node1.m_connectGroup = groups[i] | NetInfo.ConnectGroup.OnewayStart;
-                node2.m_connectGroup = groups[i] | NetInfo.ConnectGroup.OnewayEnd;
-                node3.m_connectGroup = groups[i] | NetInfo.ConnectGroup.OnewayStart;
-                node4.m_connectGroup = groups[i] | NetInfo.ConnectGroup.OnewayEnd;
-                var brElInfo = Prefabs.Find<NetInfo>("Basic Road Elevated");
-                node3.m_material = brElInfo.m_segments[0].m_material;
-                node3.m_lodMaterial = brElInfo.m_segments[0].m_lodMaterial;
-                node4.m_material = brElInfo.m_segments[0].m_material;
-                node4.m_lodMaterial = brElInfo.m_segments[0].m_lodMaterial;
-
+                    node1
+                        .SetFlags(NetNode.Flags.LevelCrossing, NetNode.Flags.None)
+                        .SetMeshes
+                        ($@"Meshes\{width}\LevelCrossing_Rail{variations[i]}_Start.obj", @"Meshes\10m\Blank.obj")
+                        .SetConsistentUVs();
+                    node2
+                        .SetFlags(NetNode.Flags.LevelCrossing, NetNode.Flags.None)
+                        .SetMeshes
+                        ($@"Meshes\{width}\LevelCrossing_Rail{variations[i]}_End.obj", @"Meshes\10m\Blank.obj")
+                        .SetConsistentUVs();
+                    node3
+                        .SetMeshes
+                        ($@"Meshes\{width}\LevelCrossing_Rail_Insert{variations[i]}_Start.obj", @"Meshes\10m\Blank.obj")
+                        .SetConsistentUVs();
+                    node4
+                        .SetMeshes
+                        ($@"Meshes\{width}\LevelCrossing_Rail_Insert{variations[i]}_End.obj", @"Meshes\10m\Blank.obj")
+                        .SetConsistentUVs();
+                    node1.m_directConnect = true;
+                    node2.m_directConnect = true;
+                    node3.m_directConnect = true;
+                    node4.m_directConnect = true;
+                    node1.m_connectGroup = groups[i] | NetInfo.ConnectGroup.OnewayStart;
+                    node2.m_connectGroup = groups[i] | NetInfo.ConnectGroup.OnewayEnd;
+                    node3.m_connectGroup = groups[i] | NetInfo.ConnectGroup.OnewayStart;
+                    node4.m_connectGroup = groups[i] | NetInfo.ConnectGroup.OnewayEnd;
+                    var brElInfo = Prefabs.Find<NetInfo>("Basic Road Elevated");
+                    node3.m_material = brElInfo.m_segments[0].m_material;
+                    node3.m_lodMaterial = brElInfo.m_segments[0].m_lodMaterial;
+                    node4.m_material = brElInfo.m_segments[0].m_material;
+                    node4.m_lodMaterial = brElInfo.m_segments[0].m_lodMaterial;
+                }
             }
+
             return nodeList;
         }
         public static void Setup6mSteelMesh(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
@@ -1047,7 +1060,7 @@ namespace MetroOverhaul.InitializationSteps
                         node1.m_connectGroup = (NetInfo.ConnectGroup)16;
                         node2.m_connectGroup = (NetInfo.ConnectGroup)16;
                         node10.m_connectGroup = (NetInfo.ConnectGroup)16;
-                        
+
                         segment0
                             .SetMeshes
                             (@"Meshes\6m\Elevated_Station_Pavement_Steel.obj",

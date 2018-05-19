@@ -94,8 +94,12 @@ namespace MetroOverhaul.InitializationSteps
 									new TextureSet
 										(@"Textures\Ground_Level_Crossing_Rail__MainTex.png",
 											@"Textures\Ground_Segment_Rail__AlphaMap.png",
-											@"Textures\Ground_Level_Crossing_Rail__XYSMap.png"));
-							}
+											@"Textures\Ground_Level_Crossing_Rail__XYSMap.png"),
+                                    new LODTextureSet
+                                           (@"Textures\Ground_Level_Crossing_Rail__MainTex_LOD.png",
+                                            @"Textures\Ground_Level_Crossing_Rail__AlphaMap_LOD.png",
+                                            @"Textures\Ground_Level_Crossing_Rail__XYSMap_LOD.png"));
+                            }
 
 							else if (node.m_mesh.name.Contains("Pavement_Steel"))
 							{

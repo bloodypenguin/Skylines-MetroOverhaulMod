@@ -26,7 +26,7 @@ namespace MetroOverhaul
         [Checkbox("Improved MetroTrainAI (Allows trains to properly spawn at surface)", GENERAL, nameof(MetroTrainAIDetour), nameof(MetroTrainAIDetour.ChangeDeployState))]
         public bool improvedMetroTrainAi { set; get; }
 
-        [Checkbox("GHOST MODE (Prior to unsubscribing this mod, all affected cities must be saved with this option on. OTHERWISE KEEP IT OFF)", UNSUBPREP)]
+        [Checkbox("GHOST MODE (Load your MOM city with this ON and save before unsubscribing)", UNSUBPREP)]
         public bool ghostMode { set; get; }
     }
 }

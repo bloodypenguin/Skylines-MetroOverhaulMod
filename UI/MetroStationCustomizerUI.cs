@@ -132,9 +132,9 @@ namespace MetroOverhaul.UI
 
             CreateUI();
             m_setDepth = SetStationCustomizations.DEF_DEPTH;
-            m_setLength = 144;
-            m_setAngle = 0;
-            m_setBendStrength = 0;
+            m_setLength = SetStationCustomizations.DEF_LENGTH;
+            m_setAngle = SetStationCustomizations.DEF_ANGLE;
+            m_setBendStrength = SetStationCustomizations.DEF_BEND_STRENGTH;
             m_oldAngle = 0;
         }
 

@@ -31,7 +31,6 @@ namespace MetroOverhaul
         private const float TOLERANCE = 0.000001f; //equals 1/10 of difference between 0.1f and GENERATED_PATH_MARKER
         private static NetManager ninstance = Singleton<NetManager>.instance;
         private static BuildingManager binstance = Singleton<BuildingManager>.instance;
-        private static TerrainManager tinstance = Singleton<TerrainManager>.instance;
         private static List<ushort> m_Nodes;
         public static void ModifyStation(ushort buildingID, float targetDepth, float targetStationTrackLength, double angle, float bendStrength, BuildingInfo superInfo = null)
         {
