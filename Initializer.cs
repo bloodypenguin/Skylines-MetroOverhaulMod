@@ -24,7 +24,7 @@ namespace MetroOverhaul
             if (AppMode != AppMode.AssetEditor)
             {
                 AssetsUpdater.PreventVanillaMetroTrainSpawning();
-                //AssetsUpdater.UpdateVanillaMetroTracks();
+                AssetsUpdater.UpdateVanillaMetroTracks();
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ColossalFramework.Threading;
 using ColossalFramework.UI;
 using MetroOverhaul.Extensions;
@@ -12,16 +13,19 @@ namespace MetroOverhaul.UI
         private const int LENGTH_STEP = 8;
         private const int ANGLE_STEP = 15;
         private const float BEND_STRENGTH_STEP = 0.5f;
-        private float m_setDepth;
-        private float m_setLength;
-        private float m_setBendStrength;
-        private float m_setAngle;
+        //private float m_setDepth;
+        //private float m_setLength;
+        //private float m_setBendStrength;
+        //private float m_setAngle;
         private float m_oldAngle;
         private bool m_valueChanged = false;
-        private UITextField m_lengthTextbox = new UITextField();
-        private UITextField m_depthTextbox = new UITextField();
-        private UITextField m_angleTextbox = new UITextField();
-        private UITextField m_bendStrengthTextbox = new UITextField();
+        private ToggleType m_Toggle = ToggleType.None;
+        private Dictionary<ToggleType, UIButton> toggleBtnDict = new Dictionary<ToggleType, UIButton>();
+        private Dictionary<ToggleType, float> SetDict = new Dictionary<ToggleType, float>();
+        private UIButton m_BtnToggleLength = new UIButton();
+        private UIButton m_BtnToggleDepth = new UIButton();
+        private UIButton m_BtnToggleAngle = new UIButton();
+        private UIButton m_BtnToggleBend = new UIButton();
         private BulldozeTool m_bulldozeTool;
         private BuildingTool m_buildingTool;
         private NetTool m_netTool;
@@ -31,6 +35,7 @@ namespace MetroOverhaul.UI
         private bool m_activated = false;
         private StationTrackType m_TrackType = StationTrackType.SidePlatform;
         private StationTrackType m_PrevTrackType = StationTrackType.SidePlatform;
+        private Task m_T = null;
         public static MetroStationCustomizerUI instance;
         public override void Update()
         {
@@ -131,11 +136,185 @@ namespace MetroOverhaul.UI
             }
 
             CreateUI();
-            m_setDepth = SetStationCustomizations.DEF_DEPTH;
-            m_setLength = SetStationCustomizations.DEF_LENGTH;
-            m_setAngle = SetStationCustomizations.DEF_ANGLE;
-            m_setBendStrength = SetStationCustomizations.DEF_BEND_STRENGTH;
+
+            SetDict.Add(ToggleType.Depth, SetStationCustomizations.DEF_DEPTH);
+            SetDict.Add(ToggleType.Length, SetStationCustomizations.DEF_LENGTH);
+            SetDict.Add(ToggleType.Angle, SetStationCustomizations.DEF_ANGLE);
+            SetDict.Add(ToggleType.Bend, SetStationCustomizations.DEF_BEND_STRENGTH);
+
             m_oldAngle = 0;
+        }
+        private int m_SliderCount = 0;
+        private void OnToggleValueChanged(UIComponent c, float v)
+        {
+
+        }
+        private void CreateSlider(ToggleType type, int min, int max, int def, float step)
+        {
+            UIButton toggleBtn = toggleBtnDict[type];
+            string typeString = type.ToString();
+            UILabel TitleLabel = AddUIComponent<UILabel>();
+            TitleLabel.relativePosition = new Vector3() { x = 8, y = 30 + m_SliderCount * 40, z = 0 };
+            TitleLabel.text = "Station " + typeString;
+            TitleLabel.isInteractive = false;
+
+            UIPanel sliderPanel = AddUIComponent<UIPanel>();
+            sliderPanel.atlas = atlas;
+            sliderPanel.backgroundSprite = "GenericPanel";
+            sliderPanel.color = new Color32(150, 150, 150, 255);
+            sliderPanel.size = new Vector2(width - 16, 16);
+            sliderPanel.relativePosition = new Vector2(8, 50 + m_SliderCount * 40);
+
+            UIPanel sliderLeftPanel = sliderPanel.AddUIComponent<UIPanel>();
+            sliderLeftPanel.name = typeString + " panel left";
+            sliderLeftPanel.height = sliderPanel.height;
+            sliderLeftPanel.width = (0.7f * sliderPanel.width) - 5;
+            sliderLeftPanel.relativePosition = new Vector2(0, 0);
+
+            UISlider slider = sliderLeftPanel.AddUIComponent<UISlider>();
+            slider.name = typeString + " Slider";
+            slider.maxValue = max;
+            slider.minValue = min;
+            slider.value = def;
+            slider.stepSize = step;
+            slider.relativePosition = new Vector2(0, 0);
+            slider.size = sliderLeftPanel.size;
+            slider.eventValueChanged += (c, v) =>
+            {
+                if (toggleBtn.text != v.ToString())
+                {
+                    m_valueChanged = true;
+                    if (v >= min)
+                    {
+                        toggleBtn.text = v.ToString();
+                        SetDict[type] = v;
+                    }
+                    else
+                    {
+                        toggleBtn.text = def.ToString();
+                        SetDict[type] = def;
+                    }
+                }
+            };
+            slider.eventMouseUp += (c, e) =>
+            {
+                if (m_valueChanged)
+                {
+                    m_valueChanged = false;
+                    m_T.Run();
+                }
+
+            };
+            slider.eventClicked += (c, v) =>
+            {
+                if (m_Toggle != ToggleType.None)
+                {
+                    toggleBtnDict[m_Toggle].color = new Color32(150, 150, 150, 255);
+                    toggleBtnDict[m_Toggle].normalBgSprite = "ButtonMenu";
+                    toggleBtnDict[m_Toggle].useDropShadow = false;
+                    toggleBtnDict[m_Toggle].opacity = 75;
+                }
+                if (m_Toggle != type)
+                {
+                    m_Toggle = type;
+                    toggleBtn.color = new Color32(163, 255, 16, 255);
+                    toggleBtn.normalBgSprite = "ButtonMenu";
+                    toggleBtn.useDropShadow = true;
+                    toggleBtn.opacity = 95;
+                }
+                else
+                {
+                    Focus();
+                    m_Toggle = ToggleType.None;
+                }
+            };
+            slider.eventKeyDown += (c, v) =>
+            {
+                switch (v.keycode)
+                {
+                    case KeyCode.LeftArrow:
+                        slider.value = Math.Max(min, SetDict[type] - step);
+                        break;
+                    case KeyCode.RightArrow:
+                        slider.value = Math.Min(max, SetDict[type] + step);
+                        break;
+                    case KeyCode.UpArrow:
+                        slider.value = max;
+                        break;
+                    case KeyCode.DownArrow:
+                        slider.value = min;
+                        break;
+                    case KeyCode.Alpha0:
+                        slider.value = def;
+                        break;
+                }
+                m_T.Run();
+            };
+            UISlicedSprite sliderBgSprite = sliderLeftPanel.AddUIComponent<UISlicedSprite>();
+            sliderBgSprite.isInteractive = false;
+            sliderBgSprite.atlas = atlas;
+            sliderBgSprite.spriteName = "BudgetSlider";
+            sliderBgSprite.size = sliderLeftPanel.size;
+            sliderBgSprite.relativePosition = new Vector2(0, 0);
+
+            UISlicedSprite sliderMkSprite = sliderLeftPanel.AddUIComponent<UISlicedSprite>();
+            sliderMkSprite.atlas = atlas;
+            sliderMkSprite.spriteName = "SliderBudget";
+            sliderMkSprite.isInteractive = false;
+            slider.thumbObject = sliderMkSprite;
+
+            toggleBtn = sliderPanel.AddUIComponent<UIButton>();
+            toggleBtn.normalBgSprite = "ButtonMenu";
+            toggleBtn.text = def.ToString();
+            toggleBtn.height = sliderPanel.height;
+            toggleBtn.width = sliderPanel.size.x - sliderLeftPanel.size.x;
+            toggleBtn.relativePosition = new Vector2(sliderLeftPanel.width, 0);
+            toggleBtn.eventClicked += (c, v) =>
+            {
+                if (m_Toggle != ToggleType.None)
+                {
+                    toggleBtnDict[m_Toggle].color = new Color32(150, 150, 150, 255);
+                    toggleBtnDict[m_Toggle].normalBgSprite = "ButtonMenu";
+                    toggleBtnDict[m_Toggle].useDropShadow = false;
+                    toggleBtnDict[m_Toggle].opacity = 75;
+                }
+                if (m_Toggle != type)
+                {
+                    m_Toggle = type;
+                    toggleBtn.color = new Color32(163, 255, 16, 255);
+                    toggleBtn.normalBgSprite = "ButtonMenu";
+                    toggleBtn.useDropShadow = true;
+                    toggleBtn.opacity = 95;
+                }
+                else
+                {
+                    Focus();
+                    m_Toggle = ToggleType.None;
+                }
+            };
+            toggleBtn.eventKeyDown += (c, v) =>
+            {
+                switch (v.keycode)
+                {
+                    case KeyCode.LeftArrow:
+                        slider.value = Math.Max(min, SetDict[type] - step);
+                        break;
+                    case KeyCode.RightArrow:
+                        slider.value = Math.Min(max, SetDict[type] + step);
+                        break;
+                    case KeyCode.UpArrow:
+                        slider.value = max;
+                        break;
+                    case KeyCode.DownArrow:
+                        slider.value = min;
+                        break;
+                    case KeyCode.Alpha0:
+                        slider.value = def;
+                        break;
+                }
+                m_T.Run();
+            };
+            m_SliderCount++;
         }
 
         private void CreateUI()
@@ -145,7 +324,7 @@ namespace MetroOverhaul.UI
 #endif
             Action stationMechanicsTask = DoStationMechanics;
             Task t = Task.Create(stationMechanicsTask);
-
+            m_T = t;
             backgroundSprite = "GenericPanel";
             color = new Color32(68, 84, 68, 170);
             width = 280;
@@ -177,366 +356,16 @@ namespace MetroOverhaul.UI
             titleLabel.text = "Subway Station Options";
             titleLabel.isInteractive = false;
 
-            UILabel lengthTitleLabel = AddUIComponent<UILabel>();
-            lengthTitleLabel.relativePosition = new Vector3() { x = 8, y = 30, z = 0 };
-            lengthTitleLabel.text = "Station Length";
-            lengthTitleLabel.isInteractive = false;
+            toggleBtnDict.Add(ToggleType.Depth, m_BtnToggleDepth);
+            toggleBtnDict.Add(ToggleType.Length, m_BtnToggleLength);
+            toggleBtnDict.Add(ToggleType.Angle, m_BtnToggleAngle);
+            toggleBtnDict.Add(ToggleType.Bend, m_BtnToggleBend);
 
-            UIPanel lengthSliderPanel = AddUIComponent<UIPanel>();
-            lengthSliderPanel.atlas = atlas;
-            lengthSliderPanel.backgroundSprite = "GenericPanel";
-            lengthSliderPanel.color = new Color32(150, 150, 150, 255);
-            lengthSliderPanel.size = new Vector2(width - 16, 16);
-            lengthSliderPanel.relativePosition = new Vector2(8, 50);
+            CreateSlider(ToggleType.Length, SetStationCustomizations.MIN_LENGTH, SetStationCustomizations.MAX_LENGTH, SetStationCustomizations.DEF_LENGTH, LENGTH_STEP);
+            CreateSlider(ToggleType.Depth, SetStationCustomizations.MIN_DEPTH, SetStationCustomizations.MAX_DEPTH, SetStationCustomizations.DEF_DEPTH, DEPTH_STEP);
+            CreateSlider(ToggleType.Angle, SetStationCustomizations.MIN_ANGLE, SetStationCustomizations.MAX_ANGLE, SetStationCustomizations.DEF_ANGLE, ANGLE_STEP);
+            CreateSlider(ToggleType.Bend, SetStationCustomizations.MIN_BEND_STRENGTH, SetStationCustomizations.MAX_BEND_STRENGTH, SetStationCustomizations.DEF_BEND_STRENGTH, BEND_STRENGTH_STEP);
 
-            UIPanel lengthSliderLeftPanel = lengthSliderPanel.AddUIComponent<UIPanel>();
-            lengthSliderLeftPanel.name = "length panel left";
-            lengthSliderLeftPanel.height = lengthSliderPanel.height;
-            lengthSliderLeftPanel.width = (0.7f * lengthSliderPanel.width) - 5;
-            lengthSliderLeftPanel.relativePosition = new Vector2(0, 0);
-
-            UISlider lengthSlider = lengthSliderLeftPanel.AddUIComponent<UISlider>();
-            lengthSlider.name = "Length Slider";
-            lengthSlider.maxValue = SetStationCustomizations.MAX_LENGTH;
-            lengthSlider.minValue = SetStationCustomizations.MIN_LENGTH;
-            lengthSlider.value = SetStationCustomizations.DEF_LENGTH;
-            lengthSlider.stepSize = LENGTH_STEP;
-            lengthSlider.relativePosition = new Vector2(0, 0);
-            lengthSlider.size = lengthSliderLeftPanel.size;
-            lengthSlider.eventValueChanged += (c, v) =>
-            {
-                if (m_lengthTextbox.text != v.ToString())
-                {
-                    m_valueChanged = true;
-                    if (v >= SetStationCustomizations.MIN_LENGTH)
-                    {
-                        m_lengthTextbox.text = v.ToString();
-                        m_setLength = v;
-                    }
-                    else
-                    {
-                        m_lengthTextbox.text = SetStationCustomizations.DEF_LENGTH.ToString();
-                        m_setLength = SetStationCustomizations.DEF_LENGTH;
-                    }
-                }
-            };
-            lengthSlider.eventMouseUp += (c, e) =>
-            {
-                if (m_valueChanged)
-                {
-                    m_valueChanged = false;
-                    t.Run();
-                }
-
-            };
-
-            UISlicedSprite lengthSliderBgSprite = lengthSliderLeftPanel.AddUIComponent<UISlicedSprite>();
-            lengthSliderBgSprite.isInteractive = false;
-            lengthSliderBgSprite.atlas = atlas;
-            lengthSliderBgSprite.spriteName = "BudgetSlider";
-            lengthSliderBgSprite.size = lengthSliderLeftPanel.size;
-            lengthSliderBgSprite.relativePosition = new Vector2(0, 0);
-
-            UISlicedSprite lengthSliderMkSprite = lengthSliderLeftPanel.AddUIComponent<UISlicedSprite>();
-            lengthSliderMkSprite.atlas = atlas;
-            lengthSliderMkSprite.spriteName = "SliderBudget";
-            lengthSliderMkSprite.isInteractive = false;
-            lengthSlider.thumbObject = lengthSliderMkSprite;
-
-            m_lengthTextbox = lengthSliderPanel.AddUIComponent<UITextField>();
-            m_lengthTextbox.text = SetStationCustomizations.DEF_LENGTH.ToString();
-            m_lengthTextbox.height = lengthSliderPanel.height;
-            m_lengthTextbox.width = lengthSliderPanel.size.x - lengthSliderLeftPanel.size.x;
-            m_lengthTextbox.relativePosition = new Vector2(lengthSliderLeftPanel.width, 0);
-            m_lengthTextbox.eventTextChanged += (c, v) =>
-            {
-                float val = 0;
-                if (float.TryParse(v, out val))
-                {
-                    m_setLength = val;
-                    if (lengthSlider.value != val)
-                        lengthSlider.value = val;
-                }
-                else
-                {
-                    m_setLength = SetStationCustomizations.DEF_LENGTH;
-                    if (lengthSlider.value != SetStationCustomizations.DEF_LENGTH)
-                        lengthSlider.value = SetStationCustomizations.DEF_LENGTH;
-                }
-            };
-
-            UILabel depthTitleLabel = AddUIComponent<UILabel>();
-            depthTitleLabel.relativePosition = new Vector3() { x = 8, y = 70, z = 0 };
-            depthTitleLabel.text = "Station Depth";
-            depthTitleLabel.height = 10;
-            depthTitleLabel.isInteractive = false;
-
-            UIPanel depthSliderPanel = AddUIComponent<UIPanel>();
-            depthSliderPanel.atlas = atlas;
-            depthSliderPanel.backgroundSprite = "GenericPanel";
-            depthSliderPanel.color = new Color32(150, 150, 150, 255);
-            depthSliderPanel.size = new Vector2(width - 16, 16);
-            depthSliderPanel.relativePosition = new Vector2(8, 90);
-
-            UIPanel depthSliderLeftPanel = depthSliderPanel.AddUIComponent<UIPanel>();
-            depthSliderLeftPanel.name = "depth panel left";
-            depthSliderLeftPanel.height = depthSliderPanel.height;
-            depthSliderLeftPanel.width = (0.7f * depthSliderPanel.width) - 5;
-            depthSliderLeftPanel.relativePosition = new Vector2(0, 0);
-
-            UISlider depthSlider = depthSliderLeftPanel.AddUIComponent<UISlider>();
-            depthSlider.name = "Depth Slider";
-            depthSlider.maxValue = SetStationCustomizations.MAX_DEPTH;
-            depthSlider.minValue = SetStationCustomizations.MIN_DEPTH;
-            depthSlider.value = SetStationCustomizations.DEF_DEPTH;
-            depthSlider.stepSize = DEPTH_STEP;
-            depthSlider.relativePosition = new Vector2(0, 0);
-            depthSlider.size = depthSliderLeftPanel.size;
-            depthSlider.eventValueChanged += (c, v) =>
-            {
-
-                if (m_depthTextbox.text != v.ToString())
-                {
-                    m_valueChanged = true;
-                    if (v >= SetStationCustomizations.MIN_DEPTH)
-                    {
-                        m_depthTextbox.text = v.ToString();
-                        m_setDepth = v;
-                    }
-                    else
-                    {
-                        m_depthTextbox.text = SetStationCustomizations.DEF_DEPTH.ToString();
-                        m_setDepth = SetStationCustomizations.DEF_DEPTH;
-                    }
-                }
-            };
-
-            depthSlider.eventMouseUp += (c, e) =>
-            {
-                if (m_valueChanged)
-                {
-                    m_valueChanged = false;
-                    t.Run();
-                }
-
-            };
-
-            UISlicedSprite depthSliderBgSprite = depthSliderLeftPanel.AddUIComponent<UISlicedSprite>();
-            depthSliderBgSprite.isInteractive = false;
-            depthSliderBgSprite.atlas = atlas;
-            depthSliderBgSprite.spriteName = "BudgetSlider";
-            depthSliderBgSprite.size = depthSliderLeftPanel.size;
-            depthSliderBgSprite.relativePosition = new Vector2(0, 0);
-
-            UISlicedSprite depthSliderMkSprite = depthSliderLeftPanel.AddUIComponent<UISlicedSprite>();
-            depthSliderMkSprite.atlas = atlas;
-            depthSliderMkSprite.spriteName = "SliderBudget";
-            depthSliderMkSprite.isInteractive = false;
-            depthSlider.thumbObject = depthSliderMkSprite;
-
-            m_depthTextbox = depthSliderPanel.AddUIComponent<UITextField>();
-            m_depthTextbox.text = SetStationCustomizations.DEF_DEPTH.ToString();
-            m_depthTextbox.height = depthSliderPanel.height;
-            m_depthTextbox.width = depthSliderPanel.size.x - depthSliderLeftPanel.size.x;
-            m_depthTextbox.relativePosition = new Vector2(depthSliderLeftPanel.width, 0);
-            m_depthTextbox.eventTextChanged += (c, v) =>
-            {
-                float val = 0;
-                if (float.TryParse(v, out val))
-                {
-                    m_setDepth = val;
-                    if (depthSlider.value != val)
-                        depthSlider.value = val;
-                }
-                else
-                {
-                    m_setDepth = SetStationCustomizations.DEF_DEPTH;
-                    if (depthSlider.value != SetStationCustomizations.DEF_DEPTH)
-                        depthSlider.value = SetStationCustomizations.DEF_DEPTH;
-                }
-            };
-
-            UILabel angleTitleLabel = AddUIComponent<UILabel>();
-            angleTitleLabel.relativePosition = new Vector3() { x = 8, y = 110, z = 0 };
-            angleTitleLabel.text = "Station Angle";
-            angleTitleLabel.height = 10;
-            angleTitleLabel.isInteractive = false;
-
-            UIPanel angleSliderPanel = AddUIComponent<UIPanel>();
-            angleSliderPanel.atlas = atlas;
-            angleSliderPanel.backgroundSprite = "GenericPanel";
-            angleSliderPanel.color = new Color32(150, 150, 150, 255);
-            angleSliderPanel.size = new Vector2(width - 16, 16);
-            angleSliderPanel.relativePosition = new Vector2(8, 130);
-
-            UIPanel angleSliderLeftPanel = angleSliderPanel.AddUIComponent<UIPanel>();
-            angleSliderLeftPanel.name = "Angle panel left";
-            angleSliderLeftPanel.height = angleSliderPanel.height;
-            angleSliderLeftPanel.width = (0.7f * angleSliderPanel.width) - 5;
-            angleSliderLeftPanel.relativePosition = new Vector2(0, 0);
-
-            UISlider angleSlider = angleSliderLeftPanel.AddUIComponent<UISlider>();
-            angleSlider.name = "Angle Slider";
-            angleSlider.maxValue = SetStationCustomizations.MAX_ANGLE;
-            angleSlider.minValue = SetStationCustomizations.MIN_ANGLE;
-            angleSlider.value = SetStationCustomizations.DEF_ANGLE;
-            angleSlider.stepSize = ANGLE_STEP;
-            angleSlider.relativePosition = new Vector2(0, 0);
-            angleSlider.size = angleSliderLeftPanel.size;
-            angleSlider.eventValueChanged += (c, v) =>
-            {
-
-                if (m_angleTextbox.text != v.ToString())
-                {
-                    m_valueChanged = true;
-                    if (v >= SetStationCustomizations.MIN_ANGLE)
-                    {
-                        m_angleTextbox.text = SetStationCustomizations.DEF_ANGLE.ToString();
-                        m_setAngle = SetStationCustomizations.DEF_ANGLE;
-                    }
-                    else
-                    {
-                        m_angleTextbox.text = v.ToString();
-                        m_setAngle = v;
-                    }
-                }
-            };
-
-            angleSlider.eventMouseUp += (c, e) =>
-            {
-                if (m_valueChanged)
-                {
-                    m_valueChanged = false;
-                    t.Run();
-                }
-
-            };
-
-            UISlicedSprite angleSliderBgSprite = angleSliderLeftPanel.AddUIComponent<UISlicedSprite>();
-            angleSliderBgSprite.isInteractive = false;
-            angleSliderBgSprite.atlas = atlas;
-            angleSliderBgSprite.spriteName = "BudgetSlider";
-            angleSliderBgSprite.size = angleSliderLeftPanel.size;
-            angleSliderBgSprite.relativePosition = new Vector2(0, 0);
-
-            UISlicedSprite angleSliderMkSprite = angleSliderLeftPanel.AddUIComponent<UISlicedSprite>();
-            angleSliderMkSprite.atlas = atlas;
-            angleSliderMkSprite.spriteName = "SliderBudget";
-            angleSliderMkSprite.isInteractive = false;
-            angleSlider.thumbObject = angleSliderMkSprite;
-
-            m_angleTextbox = angleSliderPanel.AddUIComponent<UITextField>();
-            m_angleTextbox.text = SetStationCustomizations.DEF_ANGLE.ToString();
-            m_angleTextbox.height = angleSliderPanel.height;
-            m_angleTextbox.width = angleSliderPanel.size.x - angleSliderLeftPanel.size.x;
-            m_angleTextbox.relativePosition = new Vector2(angleSliderLeftPanel.width, 0);
-            m_angleTextbox.eventTextChanged += (c, v) =>
-            {
-                float val = 0;
-                if (float.TryParse(v, out val))
-                {
-                    m_setAngle = val;
-                    if (angleSlider.value != val)
-                        angleSlider.value = val;
-                }
-                else
-                {
-                    m_setAngle = SetStationCustomizations.DEF_ANGLE;
-                    if (angleSlider.value != SetStationCustomizations.DEF_ANGLE)
-                        angleSlider.value = SetStationCustomizations.DEF_ANGLE;
-                }
-            };
-
-
-            UILabel bendStrengthTitleLabel = AddUIComponent<UILabel>();
-            bendStrengthTitleLabel.relativePosition = new Vector3() { x = 8, y = 150, z = 0 };
-            bendStrengthTitleLabel.text = "Station Bend";
-            bendStrengthTitleLabel.height = 10;
-            bendStrengthTitleLabel.isInteractive = false;
-
-            UIPanel bendStrengthSliderPanel = AddUIComponent<UIPanel>();
-            bendStrengthSliderPanel.atlas = atlas;
-            bendStrengthSliderPanel.backgroundSprite = "GenericPanel";
-            bendStrengthSliderPanel.color = new Color32(150, 150, 150, 255);
-            bendStrengthSliderPanel.size = new Vector2(width - 16, 16);
-            bendStrengthSliderPanel.relativePosition = new Vector2(8, 170);
-
-            UIPanel bendStrengthSliderLeftPanel = bendStrengthSliderPanel.AddUIComponent<UIPanel>();
-            bendStrengthSliderLeftPanel.name = "bendStrength panel left";
-            bendStrengthSliderLeftPanel.height = bendStrengthSliderPanel.height;
-            bendStrengthSliderLeftPanel.width = (0.7f * bendStrengthSliderPanel.width) - 5;
-            bendStrengthSliderLeftPanel.relativePosition = new Vector2(0, 0);
-
-            UISlider bendStrengthSlider = bendStrengthSliderLeftPanel.AddUIComponent<UISlider>();
-            bendStrengthSlider.name = "bendStrength Slider";
-            bendStrengthSlider.maxValue = SetStationCustomizations.MAX_BEND_STRENGTH;
-            bendStrengthSlider.minValue = SetStationCustomizations.MIN_BEND_STRENGTH;
-            bendStrengthSlider.value = SetStationCustomizations.DEF_BEND_STRENGTH;
-            bendStrengthSlider.stepSize = BEND_STRENGTH_STEP;
-            bendStrengthSlider.relativePosition = new Vector2(0, 0);
-            bendStrengthSlider.size = bendStrengthSliderLeftPanel.size;
-            bendStrengthSlider.eventValueChanged += (c, v) =>
-            {
-
-                if (m_bendStrengthTextbox.text != v.ToString())
-                {
-                    m_valueChanged = true;
-                    if (v >= SetStationCustomizations.MIN_BEND_STRENGTH && v <= SetStationCustomizations.MAX_BEND_STRENGTH)
-                    {
-                        m_bendStrengthTextbox.text = v.ToString();
-                        m_setBendStrength = v;
-                    }
-                    else
-                    {
-                        m_bendStrengthTextbox.text =SetStationCustomizations.DEF_BEND_STRENGTH.ToString();
-                        m_setBendStrength = SetStationCustomizations.DEF_BEND_STRENGTH;
-                    }
-                }
-            };
-
-            bendStrengthSlider.eventMouseUp += (c, e) =>
-            {
-                if (m_valueChanged)
-                {
-                    m_valueChanged = false;
-                    t.Run();
-                }
-
-            };
-            UISlicedSprite bendStrengthSliderBgSprite = bendStrengthSliderLeftPanel.AddUIComponent<UISlicedSprite>();
-            bendStrengthSliderBgSprite.isInteractive = false;
-            bendStrengthSliderBgSprite.atlas = atlas;
-            bendStrengthSliderBgSprite.spriteName = "BudgetSlider";
-            bendStrengthSliderBgSprite.size = bendStrengthSliderLeftPanel.size;
-            bendStrengthSliderBgSprite.relativePosition = new Vector2(0, 0);
-
-            UISlicedSprite bendStrengthSliderMkSprite = bendStrengthSliderLeftPanel.AddUIComponent<UISlicedSprite>();
-            bendStrengthSliderMkSprite.atlas = atlas;
-            bendStrengthSliderMkSprite.spriteName = "SliderBudget";
-            bendStrengthSliderMkSprite.isInteractive = false;
-            bendStrengthSlider.thumbObject = bendStrengthSliderMkSprite;
-
-            m_bendStrengthTextbox = bendStrengthSliderPanel.AddUIComponent<UITextField>();
-            m_bendStrengthTextbox.text = SetStationCustomizations.DEF_BEND_STRENGTH.ToString();
-            m_bendStrengthTextbox.height = bendStrengthSliderPanel.height;
-            m_bendStrengthTextbox.width = bendStrengthSliderPanel.size.x - bendStrengthSliderLeftPanel.size.x;
-            m_bendStrengthTextbox.relativePosition = new Vector2(bendStrengthSliderLeftPanel.width, 0);
-            m_bendStrengthTextbox.eventTextChanged += (c, v) =>
-            {
-                float val = 0;
-                if (float.TryParse(v, out val))
-                {
-                    m_setBendStrength = val;
-                    if (bendStrengthSlider.value != val)
-                        bendStrengthSlider.value = val;
-                }
-                else
-                {
-                    m_setBendStrength = 0;
-                    if (bendStrengthSlider.value != 0)
-                        bendStrengthSlider.value = 0;
-                }
-            };
             UICheckBox useIslandPlatformCheckBox = AddUIComponent<UICheckBox>();
             UICheckBox UseSidePlatformCheckBox = AddUIComponent<UICheckBox>();
             UICheckBox UseSingleTrackCheckBox = AddUIComponent<UICheckBox>();
@@ -760,9 +589,9 @@ namespace MetroOverhaul.UI
 
         private void DoStationMechanics()
         {
-            var angleDelta = Math.PI / 180 * (m_setAngle - m_oldAngle);
-            m_oldAngle = m_setAngle;
-            SetStationCustomizations.ModifyStation(m_currentBuilding, m_setDepth,  m_setLength, angleDelta, m_setBendStrength, m_currentSuperBuilding);
+            var angleDelta = Math.PI / 180 * (SetDict[ToggleType.Angle] - m_oldAngle);
+            m_oldAngle = SetDict[ToggleType.Angle];
+            SetStationCustomizations.ModifyStation(m_currentBuilding, SetDict[ToggleType.Depth], SetDict[ToggleType.Length], angleDelta, SetDict[ToggleType.Bend], m_currentSuperBuilding);
         }
     }
     public enum StationTrackType
@@ -770,5 +599,13 @@ namespace MetroOverhaul.UI
         SidePlatform,
         IslandPlatform,
         SingleTrack
+    }
+    public enum ToggleType
+    {
+        None,
+        Length,
+        Depth,
+        Angle,
+        Bend
     }
 }

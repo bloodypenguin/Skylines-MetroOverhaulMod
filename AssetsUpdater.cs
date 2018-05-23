@@ -26,7 +26,6 @@ namespace MetroOverhaul
             }
             try
             {
-                UpdateVanillaMetroTracks();
                 UpdateMetroStationsMeta();
             }
             catch (Exception e)
@@ -206,6 +205,18 @@ namespace MetroOverhaul
                         }
                     }
                 }
+                else
+                {
+                    for (uint i = 0; i < PrefabCollection<BuildingInfo>.LoadedCount(); i++)
+                    {
+                        var prefab = PrefabCollection<BuildingInfo>.GetPrefab(i);
+                        if (prefab == null || !(prefab.m_buildingAI is DepotAI) || prefab.m_class?.m_service != ItemClass.Service.PublicTransport || prefab.m_class?.m_subService != ItemClass.SubService.PublicTransportMetro)
+                        {
+                            continue;
+                        }
+                        PrepareBuilding(ref prefab);
+                    }
+                }
 
             }
             catch (Exception e)
@@ -282,8 +293,11 @@ namespace MetroOverhaul
         }
         private static void PrepareBuilding(ref BuildingInfo info)
         {
-            m_CpmNetDict = null;
-            RemoveCreatePassMileStone(ref info);
+            if (m_NeedsConvert)
+            {
+                m_CpmNetDict = null;
+                RemoveCreatePassMileStone(ref info);
+            }
             for (int j = 0; j < info.m_paths.Count(); j++)
             {
                 BuildingInfo.PathInfo path = info.m_paths[j];
@@ -296,18 +310,19 @@ namespace MetroOverhaul
                         ai.m_info = nInfo;
                         nInfo.m_netAI = ai;
                     }
-                    if (OptionsWrapper<Options>.Options.ghostMode)
+                    if (m_NeedsConvert)
                     {
-                        info.m_paths[j].m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track");
-                    }
-                    else
-                    {
-                        info.m_paths[j].m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel");
+                        if (OptionsWrapper<Options>.Options.ghostMode)
+                        {
+                            info.m_paths[j].m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track");
+                        }
+                        else
+                        {
+                            info.m_paths[j].m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel");
+                        }
                     }
                 }
             }
-
-
         }
         private static void RemoveCreatePassMileStone(ref BuildingInfo info)
         {
@@ -420,16 +435,6 @@ namespace MetroOverhaul
             PrepareBuilding(ref info);
             if (!OptionsWrapper<Options>.Options.ghostMode && HasUndergroundMOMorVanilla(buildingID, false))
             {
-                Debug.Log($"Info={info.name}");
-                if (superInfo != null)
-                {
-                    Debug.Log($"Super={superInfo.name}");
-                }
-                else
-                {
-                    Debug.Log("Super=Info");
-                }
-
                 SetStationCustomizations.ModifyStation(info, SetStationCustomizations.DEF_DEPTH, SetStationCustomizations.MIN_LENGTH, SetStationCustomizations.DEF_ANGLE, SetStationCustomizations.DEF_BEND_STRENGTH, superInfo);
             }
             info = BuildingFrom(buildingID).Info;
