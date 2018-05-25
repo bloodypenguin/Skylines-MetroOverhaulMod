@@ -20,12 +20,13 @@ namespace MetroOverhaul.UI
         private float m_oldAngle;
         private bool m_valueChanged = false;
         private ToggleType m_Toggle = ToggleType.None;
+        private static Dictionary<ToggleType, SliderData> SliderDataDict { get; set; }
         private Dictionary<ToggleType, UIButton> toggleBtnDict = new Dictionary<ToggleType, UIButton>();
         private Dictionary<ToggleType, float> SetDict = new Dictionary<ToggleType, float>();
-        private UIButton m_BtnToggleLength = new UIButton();
-        private UIButton m_BtnToggleDepth = new UIButton();
-        private UIButton m_BtnToggleAngle = new UIButton();
-        private UIButton m_BtnToggleBend = new UIButton();
+        //private UIButton m_lengthTextbox = new UIButton();
+        //private UITextField m_depthTextbox = new UITextField();
+        //private UITextField m_angleTextbox = new UITextField();
+        //private UITextField m_bendStrengthTextbox = new UITextField();
         private BulldozeTool m_bulldozeTool;
         private BuildingTool m_buildingTool;
         private NetTool m_netTool;
@@ -136,22 +137,16 @@ namespace MetroOverhaul.UI
             }
 
             CreateUI();
-
-            SetDict.Add(ToggleType.Depth, SetStationCustomizations.DEF_DEPTH);
-            SetDict.Add(ToggleType.Length, SetStationCustomizations.DEF_LENGTH);
-            SetDict.Add(ToggleType.Angle, SetStationCustomizations.DEF_ANGLE);
-            SetDict.Add(ToggleType.Bend, SetStationCustomizations.DEF_BEND_STRENGTH);
-
+            SetDict[ToggleType.Depth] = SetStationCustomizations.DEF_DEPTH;
+            SetDict[ToggleType.Length] = SetStationCustomizations.DEF_LENGTH;
+            SetDict[ToggleType.Angle] = SetStationCustomizations.DEF_ANGLE;
+            SetDict[ToggleType.Bend] = SetStationCustomizations.DEF_BEND_STRENGTH;
             m_oldAngle = 0;
         }
         private int m_SliderCount = 0;
-        private void OnToggleValueChanged(UIComponent c, float v)
+        private void CreateSlider(ToggleType type)
         {
-
-        }
-        private void CreateSlider(ToggleType type, int min, int max, int def, float step)
-        {
-            UIButton toggleBtn = toggleBtnDict[type];
+            SliderData sData = SliderDataDict[type];
             string typeString = type.ToString();
             UILabel TitleLabel = AddUIComponent<UILabel>();
             TitleLabel.relativePosition = new Vector3() { x = 8, y = 30 + m_SliderCount * 40, z = 0 };
@@ -162,6 +157,8 @@ namespace MetroOverhaul.UI
             sliderPanel.atlas = atlas;
             sliderPanel.backgroundSprite = "GenericPanel";
             sliderPanel.color = new Color32(150, 150, 150, 255);
+            sliderPanel.playAudioEvents = true;
+
             sliderPanel.size = new Vector2(width - 16, 16);
             sliderPanel.relativePosition = new Vector2(8, 50 + m_SliderCount * 40);
 
@@ -171,28 +168,62 @@ namespace MetroOverhaul.UI
             sliderLeftPanel.width = (0.7f * sliderPanel.width) - 5;
             sliderLeftPanel.relativePosition = new Vector2(0, 0);
 
+            UITextField sliderTextField = sliderPanel.AddUIComponent<UITextField>();
+            sliderTextField.text = sData.Def.ToString();
+            sliderTextField.height = sliderPanel.height;
+            sliderTextField.width = sliderPanel.size.x - sliderLeftPanel.size.x;
+            sliderTextField.relativePosition = new Vector2(sliderLeftPanel.width, 0);
+
             UISlider slider = sliderLeftPanel.AddUIComponent<UISlider>();
             slider.name = typeString + " Slider";
-            slider.maxValue = max;
-            slider.minValue = min;
-            slider.value = def;
-            slider.stepSize = step;
+            slider.maxValue = sData.Max;
+            slider.minValue = sData.Min;
+            slider.value = sData.Def;
+            slider.stepSize = sData.Step;
             slider.relativePosition = new Vector2(0, 0);
             slider.size = sliderLeftPanel.size;
+
+            slider.eventMouseDown += (c, v) =>
+            {
+                c.color = new Color(163, 255, 16, 255);
+            };
+
+            slider.eventKeyDown += (c, e) =>
+            {
+                switch (e.keycode)
+                {
+                    case KeyCode.LeftArrow:
+                        slider.value = Math.Max(sData.Min, SetDict[type] - sData.Step);
+                        break;
+                    case KeyCode.RightArrow:
+                        slider.value = Math.Min(sData.Max, SetDict[type] + sData.Step);
+                        break;
+                    case KeyCode.UpArrow:
+                        slider.value = sData.Max;
+                        break;
+                    case KeyCode.DownArrow:
+                        slider.value = sData.Min;
+                        break;
+                    case KeyCode.Alpha0:
+                        slider.value = sData.Def;
+                        break;
+                }
+                m_T.Run();
+            };
             slider.eventValueChanged += (c, v) =>
             {
-                if (toggleBtn.text != v.ToString())
+                if (sliderTextField.text != v.ToString())
                 {
                     m_valueChanged = true;
-                    if (v >= min)
+                    if (v >= sData.Min)
                     {
-                        toggleBtn.text = v.ToString();
+                        sliderTextField.text = v.ToString();
                         SetDict[type] = v;
                     }
                     else
                     {
-                        toggleBtn.text = def.ToString();
-                        SetDict[type] = def;
+                        sliderTextField.text = sData.Def.ToString();
+                        SetDict[type] = sData.Def;
                     }
                 }
             };
@@ -205,51 +236,7 @@ namespace MetroOverhaul.UI
                 }
 
             };
-            slider.eventClicked += (c, v) =>
-            {
-                if (m_Toggle != ToggleType.None)
-                {
-                    toggleBtnDict[m_Toggle].color = new Color32(150, 150, 150, 255);
-                    toggleBtnDict[m_Toggle].normalBgSprite = "ButtonMenu";
-                    toggleBtnDict[m_Toggle].useDropShadow = false;
-                    toggleBtnDict[m_Toggle].opacity = 75;
-                }
-                if (m_Toggle != type)
-                {
-                    m_Toggle = type;
-                    toggleBtn.color = new Color32(163, 255, 16, 255);
-                    toggleBtn.normalBgSprite = "ButtonMenu";
-                    toggleBtn.useDropShadow = true;
-                    toggleBtn.opacity = 95;
-                }
-                else
-                {
-                    Focus();
-                    m_Toggle = ToggleType.None;
-                }
-            };
-            slider.eventKeyDown += (c, v) =>
-            {
-                switch (v.keycode)
-                {
-                    case KeyCode.LeftArrow:
-                        slider.value = Math.Max(min, SetDict[type] - step);
-                        break;
-                    case KeyCode.RightArrow:
-                        slider.value = Math.Min(max, SetDict[type] + step);
-                        break;
-                    case KeyCode.UpArrow:
-                        slider.value = max;
-                        break;
-                    case KeyCode.DownArrow:
-                        slider.value = min;
-                        break;
-                    case KeyCode.Alpha0:
-                        slider.value = def;
-                        break;
-                }
-                m_T.Run();
-            };
+
             UISlicedSprite sliderBgSprite = sliderLeftPanel.AddUIComponent<UISlicedSprite>();
             sliderBgSprite.isInteractive = false;
             sliderBgSprite.atlas = atlas;
@@ -263,60 +250,10 @@ namespace MetroOverhaul.UI
             sliderMkSprite.isInteractive = false;
             slider.thumbObject = sliderMkSprite;
 
-            toggleBtn = sliderPanel.AddUIComponent<UIButton>();
-            toggleBtn.normalBgSprite = "ButtonMenu";
-            toggleBtn.text = def.ToString();
-            toggleBtn.height = sliderPanel.height;
-            toggleBtn.width = sliderPanel.size.x - sliderLeftPanel.size.x;
-            toggleBtn.relativePosition = new Vector2(sliderLeftPanel.width, 0);
-            toggleBtn.eventClicked += (c, v) =>
-            {
-                if (m_Toggle != ToggleType.None)
-                {
-                    toggleBtnDict[m_Toggle].color = new Color32(150, 150, 150, 255);
-                    toggleBtnDict[m_Toggle].normalBgSprite = "ButtonMenu";
-                    toggleBtnDict[m_Toggle].useDropShadow = false;
-                    toggleBtnDict[m_Toggle].opacity = 75;
-                }
-                if (m_Toggle != type)
-                {
-                    m_Toggle = type;
-                    toggleBtn.color = new Color32(163, 255, 16, 255);
-                    toggleBtn.normalBgSprite = "ButtonMenu";
-                    toggleBtn.useDropShadow = true;
-                    toggleBtn.opacity = 95;
-                }
-                else
-                {
-                    Focus();
-                    m_Toggle = ToggleType.None;
-                }
-            };
-            toggleBtn.eventKeyDown += (c, v) =>
-            {
-                switch (v.keycode)
-                {
-                    case KeyCode.LeftArrow:
-                        slider.value = Math.Max(min, SetDict[type] - step);
-                        break;
-                    case KeyCode.RightArrow:
-                        slider.value = Math.Min(max, SetDict[type] + step);
-                        break;
-                    case KeyCode.UpArrow:
-                        slider.value = max;
-                        break;
-                    case KeyCode.DownArrow:
-                        slider.value = min;
-                        break;
-                    case KeyCode.Alpha0:
-                        slider.value = def;
-                        break;
-                }
-                m_T.Run();
-            };
+
+
             m_SliderCount++;
         }
-
         private void CreateUI()
         {
 #if DEBUG
@@ -356,15 +293,44 @@ namespace MetroOverhaul.UI
             titleLabel.text = "Subway Station Options";
             titleLabel.isInteractive = false;
 
-            toggleBtnDict.Add(ToggleType.Depth, m_BtnToggleDepth);
-            toggleBtnDict.Add(ToggleType.Length, m_BtnToggleLength);
-            toggleBtnDict.Add(ToggleType.Angle, m_BtnToggleAngle);
-            toggleBtnDict.Add(ToggleType.Bend, m_BtnToggleBend);
+            SliderDataDict = new Dictionary<ToggleType, SliderData>();
+            SliderDataDict.Add(ToggleType.Depth, new SliderData()
+            {
+                Def = SetStationCustomizations.DEF_DEPTH,
+                Max = SetStationCustomizations.MAX_DEPTH,
+                Min = SetStationCustomizations.MIN_DEPTH,
+                SetVal = SetStationCustomizations.DEF_DEPTH,
+                Step = DEPTH_STEP
+            });
+            SliderDataDict.Add(ToggleType.Length, new SliderData()
+            {
+                Def = SetStationCustomizations.DEF_LENGTH,
+                Max = SetStationCustomizations.MIN_LENGTH,
+                Min = SetStationCustomizations.MAX_LENGTH,
+                SetVal = SetStationCustomizations.DEF_LENGTH,
+                Step = LENGTH_STEP
+            });
+            SliderDataDict.Add(ToggleType.Angle, new SliderData()
+            {
+                Def = SetStationCustomizations.DEF_ANGLE,
+                Max = SetStationCustomizations.MAX_ANGLE,
+                Min = SetStationCustomizations.MIN_ANGLE,
+                SetVal = SetStationCustomizations.DEF_ANGLE,
+                Step = ANGLE_STEP
+            });
+            SliderDataDict.Add(ToggleType.Bend, new SliderData()
+            {
+                Def = SetStationCustomizations.DEF_BEND_STRENGTH,
+                Max = SetStationCustomizations.MAX_BEND_STRENGTH,
+                Min = SetStationCustomizations.MIN_BEND_STRENGTH,
+                SetVal = SetStationCustomizations.DEF_BEND_STRENGTH,
+                Step = BEND_STRENGTH_STEP
+            });
 
-            CreateSlider(ToggleType.Length, SetStationCustomizations.MIN_LENGTH, SetStationCustomizations.MAX_LENGTH, SetStationCustomizations.DEF_LENGTH, LENGTH_STEP);
-            CreateSlider(ToggleType.Depth, SetStationCustomizations.MIN_DEPTH, SetStationCustomizations.MAX_DEPTH, SetStationCustomizations.DEF_DEPTH, DEPTH_STEP);
-            CreateSlider(ToggleType.Angle, SetStationCustomizations.MIN_ANGLE, SetStationCustomizations.MAX_ANGLE, SetStationCustomizations.DEF_ANGLE, ANGLE_STEP);
-            CreateSlider(ToggleType.Bend, SetStationCustomizations.MIN_BEND_STRENGTH, SetStationCustomizations.MAX_BEND_STRENGTH, SetStationCustomizations.DEF_BEND_STRENGTH, BEND_STRENGTH_STEP);
+            CreateSlider(ToggleType.Length);
+            CreateSlider(ToggleType.Depth);
+            CreateSlider(ToggleType.Angle);
+            CreateSlider(ToggleType.Bend);    
 
             UICheckBox useIslandPlatformCheckBox = AddUIComponent<UICheckBox>();
             UICheckBox UseSidePlatformCheckBox = AddUIComponent<UICheckBox>();
@@ -592,6 +558,18 @@ namespace MetroOverhaul.UI
             var angleDelta = Math.PI / 180 * (SetDict[ToggleType.Angle] - m_oldAngle);
             m_oldAngle = SetDict[ToggleType.Angle];
             SetStationCustomizations.ModifyStation(m_currentBuilding, SetDict[ToggleType.Depth], SetDict[ToggleType.Length], angleDelta, SetDict[ToggleType.Bend], m_currentSuperBuilding);
+        }
+    }
+    public struct SliderData
+    {
+        public float Max { get; set; }
+        public float Min { get; set; }
+        public float Def { get; set; }
+        public float Step { get; set; }
+        public float SetVal { get; set; }
+        public void SetTheVal(float val)
+        {
+            SetVal = val;
         }
     }
     public enum StationTrackType
