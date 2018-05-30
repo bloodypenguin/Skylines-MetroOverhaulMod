@@ -40,7 +40,6 @@
   <ItemGroup>
     <Compile Include="AbstractInitializer.cs" />
     <Compile Include="AssetsUpdater.cs" />
-    <Compile Include="Detours\RoadAIDetour.cs" />
     <Compile Include="Detours\PassengerTrainAIDetour.cs" />
     <Compile Include="Detours\RoadsGroupPanelDetour.cs" />
     <Compile Include="Extensions\ActionExtensions.cs" />

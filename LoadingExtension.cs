@@ -44,7 +44,6 @@ namespace MetroOverhaul
                 if (loading.currentMode == AppMode.Game)
                 {
                     Redirector<DepotAIDetour>.Deploy();
-                    Redirector<RoadAIDetour>.Deploy();
                     if (OptionsWrapper<Options>.Options.improvedMetroTrainAi)
                     {
                         Redirector<MetroTrainAIDetour>.Deploy();
@@ -101,7 +100,6 @@ namespace MetroOverhaul
                 UnityEngine.Object.Destroy(Container.gameObject);
                 Container = null;
                 Redirector<RoadsGroupPanelDetour>.Revert();
-                Redirector<RoadAIDetour>.Revert();
                 Redirector<DepotAIDetour>.Revert();
                 Redirector<MetroTrainAI>.Revert();
                 Redirector<PassengerTrainAIDetour>.Revert();
