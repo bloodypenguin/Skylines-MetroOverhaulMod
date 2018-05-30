@@ -21,6 +21,8 @@ namespace MetroOverhaul.UI
         private bool m_valueChanged = false;
         private ToggleType m_Toggle = ToggleType.None;
         private static Dictionary<ToggleType, SliderData> SliderDataDict { get; set; }
+        private static Dictionary<ToggleType, UISlider> SliderDict { get; set; }
+        private static Dictionary<ToggleType, UIPanel> PanelDict { get; set; }
         private Dictionary<ToggleType, UIButton> toggleBtnDict = new Dictionary<ToggleType, UIButton>();
         private Dictionary<ToggleType, float> SetDict = new Dictionary<ToggleType, float>();
         //private UIButton m_lengthTextbox = new UIButton();
@@ -144,6 +146,48 @@ namespace MetroOverhaul.UI
             m_oldAngle = 0;
         }
         private int m_SliderCount = 0;
+        private void OnToggleKeyDown(UIComponent c, UIKeyEventParameter e)
+        {
+            if (SliderDataDict != null && m_Toggle != ToggleType.None)
+            {
+                SliderData sData = SliderDataDict[m_Toggle];
+
+                switch (e.keycode)
+                {
+                    case KeyCode.LeftArrow:
+                        SliderDict[m_Toggle].value = Math.Max(sData.Min, SetDict[m_Toggle] - sData.Step);
+                        break;
+                    case KeyCode.RightArrow:
+                        SliderDict[m_Toggle].value = Math.Min(sData.Max, SetDict[m_Toggle] + sData.Step);
+                        break;
+                    case KeyCode.UpArrow:
+                        SliderDict[m_Toggle].value = sData.Max;
+                        break;
+                    case KeyCode.DownArrow:
+                        SliderDict[m_Toggle].value = sData.Min;
+                        break;
+                    case KeyCode.RightControl:
+                        SliderDict[m_Toggle].value = sData.Def;
+                        break;
+                }
+                
+                m_T.Run();
+            }
+        }
+        private void OnToggleMouseDown(UIComponent c, UIMouseEventParameter e, ToggleType type)
+        {
+            m_Toggle = type;
+            if (SliderDataDict != null && type != ToggleType.None)
+            {
+                foreach (UIPanel pnl in PanelDict.Values)
+                {
+                    pnl.color = new Color32(150, 150, 150,210);
+                }
+                PanelDict[type].color = new Color32(30, 200, 50, 255);
+                SliderDict[type].Focus();
+                m_T.Run();
+            }
+        }
         private void CreateSlider(ToggleType type)
         {
             SliderData sData = SliderDataDict[type];
@@ -151,65 +195,64 @@ namespace MetroOverhaul.UI
             UILabel TitleLabel = AddUIComponent<UILabel>();
             TitleLabel.relativePosition = new Vector3() { x = 8, y = 30 + m_SliderCount * 40, z = 0 };
             TitleLabel.text = "Station " + typeString;
-            TitleLabel.isInteractive = false;
+            TitleLabel.isInteractive = true;
+            TitleLabel.name = "lbl" + typeString;
+            TitleLabel.eventMouseDown += delegate (UIComponent sender, UIMouseEventParameter e) { OnToggleMouseDown(sender, e, type); };
+            TitleLabel.eventKeyDown += delegate (UIComponent sender, UIKeyEventParameter e) { OnToggleKeyDown(sender, e); };
 
             UIPanel sliderPanel = AddUIComponent<UIPanel>();
+            PanelDict[type] = sliderPanel;
             sliderPanel.atlas = atlas;
             sliderPanel.backgroundSprite = "GenericPanel";
-            sliderPanel.color = new Color32(150, 150, 150, 255);
+            sliderPanel.name = "pnl"+typeString;
+            sliderPanel.color = new Color32(150, 150, 150, 210);
             sliderPanel.playAudioEvents = true;
-
-            sliderPanel.size = new Vector2(width - 16, 16);
-            sliderPanel.relativePosition = new Vector2(8, 50 + m_SliderCount * 40);
+            sliderPanel.size = new Vector2(width - 16, 20);
+            sliderPanel.relativePosition = new Vector2(8, 48 + m_SliderCount * 40);
+            sliderPanel.eventMouseDown += delegate (UIComponent sender, UIMouseEventParameter e) { OnToggleMouseDown(sender, e, type); };
+            sliderPanel.eventKeyDown += delegate (UIComponent sender, UIKeyEventParameter e) { OnToggleKeyDown(sender, e); };
 
             UIPanel sliderLeftPanel = sliderPanel.AddUIComponent<UIPanel>();
-            sliderLeftPanel.name = typeString + " panel left";
-            sliderLeftPanel.height = sliderPanel.height;
+            sliderLeftPanel.name = "pnlLeft"+typeString;
+            sliderLeftPanel.height = sliderPanel.height - 4;
             sliderLeftPanel.width = (0.7f * sliderPanel.width) - 5;
-            sliderLeftPanel.relativePosition = new Vector2(0, 0);
+            sliderLeftPanel.relativePosition = new Vector2(2, 2);
 
             UITextField sliderTextField = sliderPanel.AddUIComponent<UITextField>();
+            sliderTextField.isInteractive = false;
+            sliderTextField.name = "tf" + typeString;
             sliderTextField.text = sData.Def.ToString();
             sliderTextField.height = sliderPanel.height;
             sliderTextField.width = sliderPanel.size.x - sliderLeftPanel.size.x;
-            sliderTextField.relativePosition = new Vector2(sliderLeftPanel.width, 0);
+            sliderTextField.relativePosition = new Vector2(sliderLeftPanel.width, 2);
+            sliderTextField.eventMouseDown += delegate (UIComponent sender, UIMouseEventParameter e) { OnToggleMouseDown(sender, e, type); };
+
+            UISlicedSprite sliderBgSprite = sliderLeftPanel.AddUIComponent<UISlicedSprite>();
+            sliderBgSprite.isInteractive = false;
+            sliderBgSprite.atlas = atlas;
+            sliderBgSprite.name = "ssBgSprite" + typeString;
+            sliderBgSprite.spriteName = "BudgetSlider";
+            sliderBgSprite.size = sliderLeftPanel.size;
+            sliderBgSprite.relativePosition = new Vector2(0, 0);
+
+            UISlicedSprite sliderMkSprite = sliderLeftPanel.AddUIComponent<UISlicedSprite>();
+            sliderMkSprite.atlas = atlas;
+            sliderMkSprite.name = "ssMkSprite" + typeString;
+            sliderMkSprite.spriteName = "SliderBudget";
+            sliderMkSprite.isInteractive = false;
 
             UISlider slider = sliderLeftPanel.AddUIComponent<UISlider>();
+            SliderDict[type] = slider;
             slider.name = typeString + " Slider";
+            slider.isInteractive = true;
             slider.maxValue = sData.Max;
             slider.minValue = sData.Min;
             slider.value = sData.Def;
             slider.stepSize = sData.Step;
             slider.relativePosition = new Vector2(0, 0);
             slider.size = sliderLeftPanel.size;
+            slider.thumbObject = sliderMkSprite;
 
-            slider.eventMouseDown += (c, v) =>
-            {
-                c.color = new Color(163, 255, 16, 255);
-            };
-
-            slider.eventKeyDown += (c, e) =>
-            {
-                switch (e.keycode)
-                {
-                    case KeyCode.LeftArrow:
-                        slider.value = Math.Max(sData.Min, SetDict[type] - sData.Step);
-                        break;
-                    case KeyCode.RightArrow:
-                        slider.value = Math.Min(sData.Max, SetDict[type] + sData.Step);
-                        break;
-                    case KeyCode.UpArrow:
-                        slider.value = sData.Max;
-                        break;
-                    case KeyCode.DownArrow:
-                        slider.value = sData.Min;
-                        break;
-                    case KeyCode.Alpha0:
-                        slider.value = sData.Def;
-                        break;
-                }
-                m_T.Run();
-            };
             slider.eventValueChanged += (c, v) =>
             {
                 if (sliderTextField.text != v.ToString())
@@ -229,6 +272,7 @@ namespace MetroOverhaul.UI
             };
             slider.eventMouseUp += (c, e) =>
             {
+                OnToggleMouseDown(c, e, type);
                 if (m_valueChanged)
                 {
                     m_valueChanged = false;
@@ -236,21 +280,6 @@ namespace MetroOverhaul.UI
                 }
 
             };
-
-            UISlicedSprite sliderBgSprite = sliderLeftPanel.AddUIComponent<UISlicedSprite>();
-            sliderBgSprite.isInteractive = false;
-            sliderBgSprite.atlas = atlas;
-            sliderBgSprite.spriteName = "BudgetSlider";
-            sliderBgSprite.size = sliderLeftPanel.size;
-            sliderBgSprite.relativePosition = new Vector2(0, 0);
-
-            UISlicedSprite sliderMkSprite = sliderLeftPanel.AddUIComponent<UISlicedSprite>();
-            sliderMkSprite.atlas = atlas;
-            sliderMkSprite.spriteName = "SliderBudget";
-            sliderMkSprite.isInteractive = false;
-            slider.thumbObject = sliderMkSprite;
-
-
 
             m_SliderCount++;
         }
@@ -305,8 +334,8 @@ namespace MetroOverhaul.UI
             SliderDataDict.Add(ToggleType.Length, new SliderData()
             {
                 Def = SetStationCustomizations.DEF_LENGTH,
-                Max = SetStationCustomizations.MIN_LENGTH,
-                Min = SetStationCustomizations.MAX_LENGTH,
+                Max = SetStationCustomizations.MAX_LENGTH,
+                Min = SetStationCustomizations.MIN_LENGTH,
                 SetVal = SetStationCustomizations.DEF_LENGTH,
                 Step = LENGTH_STEP
             });
@@ -326,6 +355,8 @@ namespace MetroOverhaul.UI
                 SetVal = SetStationCustomizations.DEF_BEND_STRENGTH,
                 Step = BEND_STRENGTH_STEP
             });
+            SliderDict = new Dictionary<ToggleType, UISlider>();
+            PanelDict = new Dictionary<ToggleType, UIPanel>();
 
             CreateSlider(ToggleType.Length);
             CreateSlider(ToggleType.Depth);
@@ -545,6 +576,10 @@ namespace MetroOverhaul.UI
             if (!m_activated)
             {
                 return;
+            }
+            foreach (UIPanel pnl in PanelDict.Values)
+            {
+                pnl.color = new Color32(150, 150, 150, 210);
             }
             m_currentBuilding = null;
             m_currentSuperBuilding = null;
