@@ -20,7 +20,7 @@ namespace MetroOverhaul
         [Checkbox("Metro track customization UI (requires reloading from main menu)", GENERAL)]
         public bool metroUi { set; get; }
         
-        [Checkbox("No depot mode (Trains will spawn at stations. Please bulldoze existing depots after enabling)", GENERAL)]
+        [Checkbox("No depot required mode (requires reloading from main menu)", GENERAL)]
         public bool depotsNotRequiredMode { set; get; }
 
         [Checkbox("Improved PassengerTrainAI (Allows trains to return to depots)", GENERAL, typeof(PassengerTrainAIDetour), nameof(PassengerTrainAIDetour.ChangeDeployState))]
