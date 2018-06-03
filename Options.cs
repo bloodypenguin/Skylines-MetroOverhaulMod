@@ -8,7 +8,6 @@ namespace MetroOverhaul
     public class Options
     {
         private const string UNSUBPREP = "Unsubscribe Prep";
-        private const string STYLES = "Additional styles";
         private const string GENERAL = "General settings";
         public Options()
         {
@@ -16,6 +15,7 @@ namespace MetroOverhaul
             improvedMetroTrainAi = true;
             metroUi = true;
             ghostMode = false;
+            depotsNotRequiredMode = false;
         }
         [Checkbox("Metro track customization UI (requires reloading from main menu)", GENERAL)]
         public bool metroUi { set; get; }
