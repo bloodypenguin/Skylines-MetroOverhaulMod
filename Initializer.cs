@@ -332,7 +332,7 @@ namespace MetroOverhaul
                             (info, version) =>
                             {
                                 LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
-                            }), false,
+                            }),
                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
@@ -359,7 +359,7 @@ namespace MetroOverhaul
                             (info, version) =>
                             {
                                 LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
-                            }), false,
+                            }),
                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
@@ -387,7 +387,7 @@ namespace MetroOverhaul
                             (info, version) =>
                             {
                                 LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
-                            }), false,
+                            }),
                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
@@ -746,7 +746,7 @@ namespace MetroOverhaul
                             (info, version) =>
                             {
                                 LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
-                            }), false,
+                            }),
                    NetInfoVersion.Ground | NetInfoVersion.Elevated,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
@@ -774,7 +774,7 @@ namespace MetroOverhaul
                             (info, version) =>
                             {
                                 LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
-                            }), false,
+                            }),
                    NetInfoVersion.Ground | NetInfoVersion.Elevated,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
@@ -802,7 +802,7 @@ namespace MetroOverhaul
                             (info, version) =>
                             {
                                 LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
-                            }), false,
+                            }),
                    NetInfoVersion.Ground | NetInfoVersion.Elevated,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
@@ -882,7 +882,7 @@ namespace MetroOverhaul
         }
 
         //TODO(earalov): refactor like CreateFullPrefab()
-        private void CreateFullStationPrefab(Action<NetInfo, NetInfoVersion> customizationStep, bool provideSunken,
+        private void CreateFullStationPrefab(Action<NetInfo, NetInfoVersion> customizationStep,
             NetInfoVersion versions,
             Action<NetInfo, Action<NetInfo, NetInfoVersion>> setupOtherVersionsStep,
             Func<string, string> nameModifier = null, Dictionary<NetInfoVersion, string> replacements = null)
@@ -924,17 +924,14 @@ namespace MetroOverhaul
                         Chain(SetupTrackModel, customizationStep.Chain(SetCosts)), replaces
                     );
             }
-            if (provideSunken)
-            {
-                CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Train Station Track", //TODO(earalov): test. check if AI to be replaced with MetroTrackAI
-                    ActionExtensions.BeginChain<NetInfo>().
+            CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Train Station Track", //TODO(earalov): test. check if AI to be replaced with MetroTrackAI
+                ActionExtensions.BeginChain<NetInfo>().
                     Chain(ReplaceAI, NetInfoVersion.Tunnel).
                     Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
                     Chain(SetupStationTrack, NetInfoVersion.Ground).
                     Chain(SetupSunkenStationTrack).
                     Chain(SetupTrackModel, customizationStep)
-                );
-            }
+            );
         }
 
         private static void ReplaceAI(NetInfo prefab, NetInfoVersion version)
