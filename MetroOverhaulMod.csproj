@@ -127,7 +127,6 @@
     <Compile Include="NEXT\Texturing\TextureSet.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="OptionsFramework\OptionsWrapper.cs" />
-    <Compile Include="OptionsFramework\Util.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Redirection\RedirectionHelper.cs" />
     <Compile Include="Redirection\RedirectionUtil.cs" />
