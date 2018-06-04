@@ -161,7 +161,11 @@ namespace MetroOverhaul
             specialNetInfo.m_maxSlope = 100;
             specialNetInfo.m_maxTurnAngle = 180;
             specialNetInfo.m_maxTurnAngleCos = -1;
-            var aPath = new BuildingInfo.PathInfo();
+            var aPath = pathList.FirstOrDefault(p => IsPedestrianPath(p));
+            if (aPath == null)
+            {
+                aPath = new BuildingInfo.PathInfo();
+            }
             aPath.m_netInfo = specialNetInfo;
             for (int i = 0; i < pathList.Count; i++)
             {
@@ -204,7 +208,7 @@ namespace MetroOverhaul
                                 z = newNodes[0].z + stairsLengthZ,
                             });
                             newPath.m_nodes = newNodes.ToArray();
-                            newPath.m_netInfo = specialNetInfo;
+                            newPath.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Pedestrian Connection Surface");
                             MarkPathGenerated(newPath);
                             
                             ChangePathRotation(newPath, newPath.m_nodes[0], AntiStairCoeff * bendStrength * -Math.PI / 4);
@@ -231,7 +235,7 @@ namespace MetroOverhaul
                                 z = newNodes[0].z + stairsLengthZ,
                             });
                             newPath.m_nodes = newNodes.ToArray();
-                            newPath.m_netInfo = specialNetInfo;
+                            newPath.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Pedestrian Connection Surface");
                             MarkPathGenerated(newPath);
 
                             ChangePathRotation(newPath, newPath.m_nodes[0], AntiStairCoeff * bendStrength * -Math.PI / 4);
@@ -273,7 +277,7 @@ namespace MetroOverhaul
                             };
                             var branchPathConnect = ChainPath(newPath, branchVectorConnect, 0);
                             
-                            var branchPathStair = ChainPath(branchPathConnect, branchVectorStair, -1, specialNetInfo);
+                            var branchPathStair = ChainPath(branchPathConnect, branchVectorStair, -1, PrefabCollection<NetInfo>.FindLoaded("Pedestrian Connection Surface"));
                             MarkPathGenerated(newPath);
                             
                             var trackPivot = new Vector3()
