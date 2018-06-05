@@ -485,17 +485,20 @@ namespace MetroOverhaul.UI
 
         private void RestoreStationTrackStyles(BuildingInfo info)
         {
-            for (var i = 0; i < info.m_paths.Length; i++)
-            {
-                var path = info.m_paths[i];
-                if (path?.m_netInfo?.name != null && path.m_netInfo.IsUndergroundMetroStationTrack())
-                {
-                    if (m_PrevTrackType != StationTrackType.SidePlatform)
-                    {
-                        path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel");
-                    }
-                }
-            }
+			if (info.m_paths != null && info.m_paths.Length > 0)
+			{
+				for (var i = 0; i < info.m_paths.Length; i++)
+				{
+					var path = info.m_paths[i];
+					if (path?.m_netInfo?.name != null && path.m_netInfo.IsUndergroundMetroStationTrack())
+					{
+						if (m_PrevTrackType != StationTrackType.SidePlatform)
+						{
+							path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel");
+						}
+					}
+				}
+			}
         }
 
         private void TunnelStationTrackToggleStyles(BuildingInfo info)
