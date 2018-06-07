@@ -271,22 +271,22 @@ namespace MetroOverhaul.InitializationSteps
                 {
                     if (Math.Sign(theLanes[i].m_position) > 0)
                     {
-                        theLanes[i].m_position = 2;
+                        theLanes[i].m_position = 3.5f;
                     }
                     else if (Math.Sign(theLanes[i].m_position) < 0)
                     {
-                        theLanes[i].m_position = -2;
+                        theLanes[i].m_position = -3.5f;
                     }
                 }
                 if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)
                 {
                     if (Math.Sign(theLanes[i].m_position) > 0)
                     {
-                        theLanes[i].m_position += 3;
+                        theLanes[i].m_position += 4.5f;
                     }
                     else if (Math.Sign(theLanes[i].m_position) < 0)
                     {
-                        theLanes[i].m_position += -3;
+                        theLanes[i].m_position += -4.5f;
                     }
                     theLanes[i].m_verticalOffset = 0.35f;
                 }
@@ -389,24 +389,24 @@ namespace MetroOverhaul.InitializationSteps
                     break;
             }
         }
-        public static void Set16mTrackWidths(NetInfo prefab, NetInfoVersion version)
+        public static void Set19mTrackWidths(NetInfo prefab, NetInfoVersion version)
         {
             switch (version)
             {
                 case NetInfoVersion.Ground:
-                    prefab.m_halfWidth = 8;
+                    prefab.m_halfWidth = 9.5f;
                     prefab.m_pavementWidth = 1.5f;
                     break;
                 case NetInfoVersion.Elevated:
-                    prefab.m_halfWidth = 8;
+                    prefab.m_halfWidth = 9.5f;
                     prefab.m_pavementWidth = 1.5f;
                     break;
                 case NetInfoVersion.Bridge:
-                    prefab.m_halfWidth = 7.9999f;
+                    prefab.m_halfWidth = 9.4999f;
                     prefab.m_pavementWidth = 1.5f;
                     break;
                 case NetInfoVersion.Tunnel:
-                    prefab.m_halfWidth = 9;
+                    prefab.m_halfWidth = 10.5f;
                     prefab.m_pavementWidth = 2.5f;
                     break;
             }

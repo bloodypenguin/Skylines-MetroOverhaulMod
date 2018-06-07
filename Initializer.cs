@@ -352,9 +352,9 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.SetupStationProps).
                         Chain(CustomizationSteps.CommonIsland16mCustomization).
-                        Chain(CustomizationSteps.Set16mTrackWidths).
-                        Chain(SetupMesh.Setup16mStationMesh, elevatedInfo, metroStationInfo).
-                        Chain(SetupTexture.Setup1416mTexture).
+                        Chain(CustomizationSteps.Set19mTrackWidths).
+                        Chain(SetupMesh.Setup19mStationMesh, elevatedInfo, metroStationInfo).
+                        Chain(SetupTexture.Setup19mTexture).
                         Chain(
                             (info, version) =>
                             {
@@ -767,9 +767,9 @@ namespace MetroOverhaul
                         Chain(CustomizationSteps.SetupStationProps).
                         Chain(CustomizationSteps.CommonIsland16mCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
-                        Chain(CustomizationSteps.Set16mTrackWidths).
-                        Chain(SetupSteelMesh.Setup16mSteelStationMesh, elevatedInfo, metroStationInfo).
-                        Chain(SetupSteelTexture.Setup1416mSteelTexture).
+                        Chain(CustomizationSteps.Set19mTrackWidths).
+                        Chain(SetupSteelMesh.Setup19mSteelStationMesh, elevatedInfo, metroStationInfo).
+                        Chain(SetupSteelTexture.Setup19mSteelTexture).
                         Chain(
                             (info, version) =>
                             {
