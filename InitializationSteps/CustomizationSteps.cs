@@ -22,8 +22,15 @@ namespace MetroOverhaul.InitializationSteps
             var propsList = new List<NetLaneProps.Prop>();
             var thePropInfo = PrefabCollection<PropInfo>.FindLoaded("Tunnel Light Small Road") ??
                               PrefabCollection<PropInfo>.FindLoaded("Wall Light White");
+            if (prefab.name.Contains("Steel"))
+            {
+                propsList.AddBasicProp(thePropInfo, new Vector3(-5.5f, 6, 0), 270);
+            }
+            else
+            {
+                propsList.AddBasicProp(thePropInfo, new Vector3(-3.5f, 6, 0), 270);
+            }
 
-            propsList.AddBasicProp(thePropInfo, new Vector3(-3.5f, 6, 0), 270);
             propLane.m_laneProps.m_props = propsList.ToArray();
             lanes.Add(propLane);
             prefab.m_lanes = lanes.ToArray();

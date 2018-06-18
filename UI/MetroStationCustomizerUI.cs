@@ -234,12 +234,14 @@ namespace MetroOverhaul.UI
             sliderBgSprite.spriteName = "BudgetSlider";
             sliderBgSprite.size = sliderLeftPanel.size;
             sliderBgSprite.relativePosition = new Vector2(0, 0);
+            sliderBgSprite.zOrder = 0;
 
             UISlicedSprite sliderMkSprite = sliderLeftPanel.AddUIComponent<UISlicedSprite>();
             sliderMkSprite.atlas = atlas;
             sliderMkSprite.name = "ssMkSprite" + typeString;
             sliderMkSprite.spriteName = "SliderBudget";
-            sliderMkSprite.isInteractive = false;
+            sliderMkSprite.isInteractive = true;
+            sliderMkSprite.zOrder = 1;
 
             UISlider slider = sliderLeftPanel.AddUIComponent<UISlider>();
             SliderDict[type] = slider;
@@ -252,7 +254,12 @@ namespace MetroOverhaul.UI
             slider.relativePosition = new Vector2(0, 0);
             slider.size = sliderLeftPanel.size;
             slider.thumbObject = sliderMkSprite;
-
+            slider.zOrder = 2;
+            slider.eventMouseWheel += (c, v) =>
+            {
+                slider.value += v.wheelDelta > 0 ? sData.Step : -sData.Step;
+                OnToggleMouseDown(c, v, type);
+            };
             slider.eventValueChanged += (c, v) =>
             {
                 if (sliderTextField.text != v.ToString())
@@ -494,7 +501,7 @@ namespace MetroOverhaul.UI
 					{
 						if (m_PrevTrackType != StationTrackType.SidePlatform)
 						{
-							path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel");
+							path.AssignNetInfo("Metro Station Track Tunnel");
 						}
 					}
 				}
@@ -527,7 +534,7 @@ namespace MetroOverhaul.UI
 
                             if (m_PrevTrackType != StationTrackType.SidePlatform)
                             {
-                                path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel");
+                                path.AssignNetInfo("Metro Station Track Tunnel");
                             }
                         }
                         break;
@@ -542,7 +549,7 @@ namespace MetroOverhaul.UI
 
                             if (m_PrevTrackType != StationTrackType.IslandPlatform)
                             {
-                                path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel Island");
+                                path.AssignNetInfo("Metro Station Track Tunnel Island");
                             }
                         }
                         break;
@@ -557,7 +564,7 @@ namespace MetroOverhaul.UI
 
                             if (m_PrevTrackType != StationTrackType.SingleTrack)
                             {
-                                path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel Small");
+                                path.AssignNetInfo("Metro Station Track Tunnel Small");
                             }
                         }
                         break;

@@ -229,7 +229,7 @@ namespace MetroOverhaul
                                 z = newNodes.First().z + stairsLengthZ,
                             });
                             newPath.m_nodes = newNodes.ToArray();
-                            newPath.m_netInfo = specialNetInfo;
+                            newPath.AssignNetInfo(specialNetInfo);
                             MarkPathGenerated(newPath);
 
                             ChangePathRotation(newPath, newPath.m_nodes.First(), AntiStairCoeff * bendStrength * -Math.PI / 4);
@@ -254,7 +254,7 @@ namespace MetroOverhaul
                                 z = newNodes.First().z + stairsLengthZ,
                             });
                             newPath.m_nodes = newNodes.ToArray();
-                            newPath.m_netInfo = specialNetInfo;
+                            newPath.AssignNetInfo(specialNetInfo);
                             MarkPathGenerated(newPath);
 
                             ChangePathRotation(newPath, newPath.m_nodes.First(), AntiStairCoeff * bendStrength * -Math.PI / 4);
@@ -279,7 +279,7 @@ namespace MetroOverhaul
                                 z = newNodes.First().z + stairsLengthZ,
                             });
                             newPath.m_nodes = newNodes.ToArray();
-                            newPath.m_netInfo = specialNetInfo;
+                            newPath.AssignNetInfo(specialNetInfo);
 
                             var branchVectorConnect = new Vector3()
                             {
@@ -342,7 +342,7 @@ namespace MetroOverhaul
                 {
                     branch = ChainPath(closestPath, currentVector, Array.IndexOf(closestPath.m_nodes, closestVector));
                 }
-                branch.m_netInfo = FindNetInfo("Pedestrian Connection Underground");
+                branch.AssignNetInfo("Pedestrian Connection Underground");
                 pathList.Add(branch);
                 var nodeArrayToLose = pool.FirstOrDefault(na => na.Any(n => n == closestVector));
                 Debug.Log("derpBStart");
@@ -363,7 +363,7 @@ namespace MetroOverhaul
                     Debug.Log("derpCEnd");
                     var closestPath = pathList.FirstOrDefault(p => p.m_nodes.Any(n => n == closestVector));
                     var branch = ChainPath(closestPath, node, Array.IndexOf(closestPath.m_nodes, closestVector));
-                    branch.m_netInfo = FindNetInfo("Pedestrian Connection Underground");
+                    branch.AssignNetInfo("Pedestrian Connection Underground");
                     pathList.Add(branch);
                 }
             }
@@ -438,7 +438,7 @@ namespace MetroOverhaul
             }
             if (info != null)
             {
-                newPath.m_netInfo = info;
+                newPath.AssignNetInfo(info);
             }
             var startNode = startPath.m_nodes[startNodeIndex];
             newNodes.Add(startNode);
@@ -839,7 +839,7 @@ namespace MetroOverhaul
             var dir = new Vector3();
 
             MarkPathGenerated(newPath);
-            newPath.m_netInfo = FindNetInfo("Pedestrian Connection Underground");
+            newPath.AssignNetInfo("Pedestrian Connection Underground");
             var steps = (float)Math.Floor((depth + 4) / 12) * 4;
             if (steps == 0)
             {

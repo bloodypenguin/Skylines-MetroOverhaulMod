@@ -314,11 +314,11 @@ namespace MetroOverhaul
                     {
                         if (OptionsWrapper<Options>.Options.ghostMode)
                         {
-                            info.m_paths[j].m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track");
+                            info.m_paths[j].AssignNetInfo("Metro Station Track");
                         }
                         else
                         {
-                            info.m_paths[j].m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Tunnel");
+                            info.m_paths[j].AssignNetInfo("Metro Station Track Tunnel");
                         }
                     }
                 }
@@ -644,11 +644,11 @@ namespace MetroOverhaul
 
                     if (path.m_netInfo.IsMetroStationTrack())
                     {
-                        path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track");
+                        path.AssignNetInfo("Metro Station Track");
                     }
                     else if (path.m_netInfo.IsMetroTrack())
                     {
-                        path.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+                        path.AssignNetInfo("Metro Track");
                     }
                 }
             }
