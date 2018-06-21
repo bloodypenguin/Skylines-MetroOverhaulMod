@@ -108,7 +108,31 @@ namespace MetroOverhaul
                             SetStationCustomizations.ModifyStation(prefab, SetStationCustomizations.DEF_DEPTH, SetStationCustomizations.DEF_LENGTH, SetStationCustomizations.DEF_ANGLE, SetStationCustomizations.DEF_BEND_STRENGTH);
                         }
                     }
-                    SetupTunnelTracks(prefab, toVanilla);
+                    else
+                    {
+                        SetupTunnelTracks(prefab, toVanilla);
+                    }
+                }
+                for (ushort i = 0; i < binstance.m_buildings.m_buffer.Count(); i++)
+                {
+                    Building b = binstance.m_buildings.m_buffer[i];
+                    BuildingInfo info = b.Info;
+                    if (info == null || !(info.m_buildingAI is DepotAI))
+                    {
+                        continue;
+                    }
+                    foreach (var n in GetStationNodes(b))
+                    {
+                        if (NodeFrom(n).m_position.y == b.m_position.y - 4)
+                        {
+                            m_NeedsConvert = true;
+                            break;
+                        }
+                    }
+                    if (m_NeedsConvert)
+                    {
+                        break;
+                    }
                 }
                 for (ushort i = 0; i < Singleton<NetManager>.instance.m_nodes.m_buffer.Count(); i++)
                 {
@@ -118,23 +142,12 @@ namespace MetroOverhaul
                     {
                         continue;
                     }
-                    bool proceed = false;
                     if (m_NeedsConvert && (info.IsUndergroundMetroTrack() || info.name == "Metro Track"))
                     {
-                        proceed = true;
+                        m_NeedsConvert = true;
+                        DipPath(i, n, toVanilla);
                     }
                     else if (toVanilla && info.IsUndergroundMetroTrack())
-                    {
-                        proceed = true;
-                    }
-                    else if (!toVanilla)
-                    {
-                        if ((info.name == "Metro Track"))
-                        {
-                            proceed = true;
-                        }
-                    }
-                    if (proceed)
                     {
                         m_NeedsConvert = true;
                         DipPath(i, n, toVanilla);
@@ -629,23 +642,20 @@ namespace MetroOverhaul
             {
                 return;
             }
-            if (toVanilla)
+            foreach (var path in info.m_paths)
             {
-                foreach (var path in info.m_paths)
+                if (path?.m_netInfo?.name == null)
                 {
-                    if (path?.m_netInfo?.name == null)
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    if (path.m_netInfo.IsMetroStationTrack())
-                    {
-                        path.AssignNetInfo("Metro Station Track");
-                    }
-                    else if (path.m_netInfo.IsMetroTrack())
-                    {
-                        path.AssignNetInfo("Metro Track");
-                    }
+                if (path.m_netInfo.IsMetroStationTrack())
+                {
+                    path.AssignNetInfo("Metro Station Track");
+                }
+                else if (path.m_netInfo.IsMetroTrack())
+                {
+                    path.AssignNetInfo("Metro Track");
                 }
             }
         }
