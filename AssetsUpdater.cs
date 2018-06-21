@@ -133,10 +133,6 @@ namespace MetroOverhaul
                         {
                             proceed = true;
                         }
-                        else if (info.IsUndergroundMetroTrack() && tinstance.SampleRawHeightSmooth(n.m_position) < n.m_position.y + 8)
-                        {
-                            proceed = true;
-                        }
                     }
                     if (proceed)
                     {
