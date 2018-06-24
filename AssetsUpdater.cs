@@ -94,9 +94,9 @@ namespace MetroOverhaul
 
             try
             {
-                for (uint i = 0; i < PrefabCollection<BuildingInfo>.LoadedCount(); i++)
+				for (uint i = 0; i < PrefabCollection<BuildingInfo>.LoadedCount(); i++)
                 {
-                    var prefab = PrefabCollection<BuildingInfo>.GetPrefab(i);
+					var prefab = PrefabCollection<BuildingInfo>.GetPrefab(i);
                     if (prefab == null || !(prefab.m_buildingAI is DepotAI))
                     {
                         continue;
@@ -113,28 +113,32 @@ namespace MetroOverhaul
                         SetupTunnelTracks(prefab, toVanilla);
                     }
                 }
-                for (ushort i = 0; i < binstance.m_buildings.m_buffer.Count(); i++)
+				for (ushort i = 0; i < binstance.m_buildings.m_buffer.Count(); i++)
                 {
                     Building b = binstance.m_buildings.m_buffer[i];
-                    BuildingInfo info = b.Info;
-                    if (info == null || !(info.m_buildingAI is DepotAI))
+					BuildingInfo info = b.Info;
+					if (info == null || !(info.m_buildingAI is DepotAI))
                     {
                         continue;
                     }
-                    foreach (var n in GetStationNodes(b))
-                    {
-                        if (NodeFrom(n).m_position.y == b.m_position.y - 4)
-                        {
-                            m_NeedsConvert = true;
-                            break;
-                        }
-                    }
+					List<ushort> stationNodes = GetStationNodes(b);
+					if (stationNodes != null)
+					{
+						foreach (var n in stationNodes)
+						{
+							if (NodeFrom(n).m_position.y == b.m_position.y - 4)
+							{
+								m_NeedsConvert = true;
+								break;
+							}
+						}
+					}
                     if (m_NeedsConvert)
                     {
-                        break;
+						break;
                     }
                 }
-                for (ushort i = 0; i < Singleton<NetManager>.instance.m_nodes.m_buffer.Count(); i++)
+				for (ushort i = 0; i < Singleton<NetManager>.instance.m_nodes.m_buffer.Count(); i++)
                 {
                     NetNode n = Singleton<NetManager>.instance.m_nodes.m_buffer[i];
                     NetInfo info = n.Info;
@@ -153,7 +157,7 @@ namespace MetroOverhaul
                         DipPath(i, n, toVanilla);
                     }
                 }
-                if (m_NeedsConvert)
+				if (m_NeedsConvert)
                 {
                     for (ushort i = 0; i < binstance.m_buildings.m_buffer.Count(); i++)
                     {
@@ -226,7 +230,6 @@ namespace MetroOverhaul
                         PrepareBuilding(ref prefab);
                     }
                 }
-
             }
             catch (Exception e)
             {
@@ -501,7 +504,7 @@ namespace MetroOverhaul
             while (nodeID > 0)
             {
                 NetNode node = NodeFrom(nodeID);
-                if (node.Info.IsUndergroundMetroStationTrack() || node.Info.name == "Metro Station Track")
+                if (node.Info != null && (node.Info.IsUndergroundMetroStationTrack() || node.Info.name == "Metro Station Track"))
                 {
                     if (stationNodeIDs == null)
                     {
