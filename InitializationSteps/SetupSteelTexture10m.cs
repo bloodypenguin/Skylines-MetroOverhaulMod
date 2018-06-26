@@ -94,8 +94,12 @@ namespace MetroOverhaul.InitializationSteps
 									new TextureSet
 										(@"Textures\Ground_Level_Crossing_Rail__MainTex.png",
 											@"Textures\Ground_Segment_Rail__AlphaMap.png",
-											@"Textures\Ground_Level_Crossing_Rail__XYSMap.png"));
-							}
+											@"Textures\Ground_Level_Crossing_Rail__XYSMap.png"),
+                                    new LODTextureSet
+                                           (@"Textures\Ground_Level_Crossing_Rail__MainTex_LOD.png",
+                                            @"Textures\Ground_Level_Crossing_Rail__AlphaMap_LOD.png",
+                                            @"Textures\Ground_Level_Crossing_Rail__XYSMap_LOD.png"));
+                            }
 
 							else if (node.m_mesh.name.Contains("Pavement_Steel"))
 							{
@@ -135,9 +139,10 @@ namespace MetroOverhaul.InitializationSteps
 				case NetInfoVersion.Elevated:
 				case NetInfoVersion.Bridge:
 					{
-						foreach (var segment in info.m_segments)
-						{
-							var elevatedBridge = segment.m_mesh.name.Contains("Elevated") ? "Elevated" : "Bridge";
+                        for (var i = 0; i < info.m_segments.Length; i++)
+                        {
+                            var segment = info.m_segments[i];
+                            var elevatedBridge = segment.m_mesh.name.Contains("Elevated") ? "Elevated" : "Bridge";
 							if (segment.m_mesh.name.Contains("Station"))
 							{
 
@@ -184,8 +189,9 @@ namespace MetroOverhaul.InitializationSteps
 											@"Textures\Ground_Segment_Rail__XYSMap.png"));
 							}
 						}
-						foreach (var node in info.m_nodes)
+						for (var i = 0; i < info.m_nodes.Length; i++)
                         {
+                            var node = info.m_nodes[i];
                             if (node.m_mesh.name.Contains("LevelCrossing_Pavement"))
                             {
                                 node.SetTextures(
@@ -209,7 +215,7 @@ namespace MetroOverhaul.InitializationSteps
                             }
                             else if (node.m_mesh.name.Contains("Pavement") || (node.m_mesh.name.Contains("Fence")) || (node.m_mesh.name.Contains("Bar")))
 							{
-                                if (node.m_mesh.name.Contains("Elevated"))
+                                if (node.m_mesh.name.Contains("Elevated") || node.m_mesh.name.Contains("Bridge_Trans_Pavement_Steel2"))
 								{
 									node.SetTextures(
 										new TextureSet
@@ -246,7 +252,7 @@ namespace MetroOverhaul.InitializationSteps
 											@"Textures\ThirdRail__AlphaMap_LOD.png",
 											@"Textures\ThirdRail__XYSMap_LOD.png"));
 							}
-							else if (node.m_mesh.name.Contains("Boosted_Rail_Steel"))
+							else if (node.m_mesh.name.Contains("Boosted_Rail_Steel") || node.m_mesh.name.Contains("Boosted_Station_Node_Rail_Steel"))
 							{
 								node.SetTextures(
 									new TextureSet

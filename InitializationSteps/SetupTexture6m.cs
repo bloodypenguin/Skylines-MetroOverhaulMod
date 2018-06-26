@@ -74,15 +74,7 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\Ground_Segment_Pavement__AlphaMap_LOD.png",
                                             @"Textures\Ground_Segment_Pavement__XYSMap_LOD.png"));
                             }
-                            else if (node.m_mesh.name.Contains("LevelCrossing_Rail"))
-                            {
-                                node.SetTextures(
-                                    new TextureSet
-                                        (@"Textures\Ground_Level_Crossing_Rail__MainTex.png",
-                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Level_Crossing_Rail__XYSMap.png"));
-                            }
-                            else if (node.m_mesh.name.Contains("LevelCrossing"))
+                            else if (node.m_mesh.name.Contains("LevelCrossing_Pavement"))
                             {
                                 node.SetTextures(
                                     new TextureSet
@@ -93,6 +85,18 @@ namespace MetroOverhaul.InitializationSteps
                                         (@"Textures\Ground_Level_Crossing__MainTex_LOD.png",
                                             @"Textures\Ground_Level_Crossing__AlphaMap_LOD.png",
                                             @"Textures\Ground_Segment_Pavement__XYSMap_LOD.png"));
+                            }
+                            else if (node.m_mesh.name.Contains("LevelCrossing_Rail"))
+                            {
+                                node.SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Ground_Level_Crossing_Rail__MainTex.png",
+                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                                            @"Textures\Ground_Level_Crossing_Rail__XYSMap.png"),
+                                    new LODTextureSet
+                                           (@"Textures\Ground_Level_Crossing_Rail__MainTex_LOD.png",
+                                            @"Textures\Ground_Level_Crossing_Rail__AlphaMap_LOD.png",
+                                            @"Textures\Ground_Level_Crossing_Rail__XYSMap_LOD.png"));
                             }
                             else if (node.m_mesh.name.Contains("Pavement") || (node.m_mesh.name.Contains("Fence")))
                             {

@@ -234,7 +234,7 @@ namespace MetroOverhaul.UI
 						{
 							trackName = trackName.Substring(6);
 						}
-						paths[i].m_netInfo = PrefabCollection<NetInfo>.FindLoaded(trackName);
+                        paths[i].AssignNetInfo(trackName);
 					}
 					else if (trackStyle == 1)
 					{
@@ -242,8 +242,8 @@ namespace MetroOverhaul.UI
 						{
 							trackName = "Steel " + trackName;
 						}
-						paths[i].m_netInfo = PrefabCollection<NetInfo>.FindLoaded(trackName);
-					}
+                        paths[i].AssignNetInfo(trackName);
+                    }
 				}
 
 			}

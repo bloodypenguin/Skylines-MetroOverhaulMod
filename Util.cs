@@ -41,7 +41,7 @@ namespace MetroOverhaul
             }
             return publishedFileID;
         }
-        public static T ClonePrefab<T>(T originalPrefab, string newName, Transform parentTransform) where T:PrefabInfo
+        public static T ClonePrefab<T>(T originalPrefab, string newName, Transform parentTransform) where T : PrefabInfo
         {
             var instance = Object.Instantiate(originalPrefab.gameObject);
             instance.name = newName;
@@ -52,20 +52,8 @@ namespace MetroOverhaul
             newPrefab.m_prefabInitialized = false;
             return newPrefab;
         }
-        public static string AssemblyPath
-        {
-            get
-            {
-                var modPath = PluginInfo.modPath;
-                if (!Mod.isPatch)
-                {
-                    return modPath;
-                }
-                var index =  modPath.IndexOf("steamapps\\workshop\\content\\255710");
-                var basePath = modPath.Substring(0, index);
-                return basePath + "steamapps\\workshop\\content\\255710\\816260433";
-            }
-        }
+        public static string AssemblyPath => PluginInfo.modPath;
+
 
         private static PluginInfo PluginInfo
         {
@@ -115,7 +103,7 @@ namespace MetroOverhaul
                     }
                     catch
                     {
-                        
+
                     }
                 }
                 throw new Exception("Failed to find MetroOverhaul assembly!");

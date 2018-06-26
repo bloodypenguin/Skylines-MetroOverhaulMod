@@ -22,8 +22,15 @@ namespace MetroOverhaul.InitializationSteps
             var propsList = new List<NetLaneProps.Prop>();
             var thePropInfo = PrefabCollection<PropInfo>.FindLoaded("Tunnel Light Small Road") ??
                               PrefabCollection<PropInfo>.FindLoaded("Wall Light White");
+            if (prefab.name.Contains("Steel"))
+            {
+                propsList.AddBasicProp(thePropInfo, new Vector3(-5.5f, 6, 0), 270);
+            }
+            else
+            {
+                propsList.AddBasicProp(thePropInfo, new Vector3(-3.5f, 6, 0), 270);
+            }
 
-            propsList.AddBasicProp(thePropInfo, new Vector3(-3.5f, 6, 0), 270);
             propLane.m_laneProps.m_props = propsList.ToArray();
             lanes.Add(propLane);
             prefab.m_lanes = lanes.ToArray();
@@ -101,11 +108,23 @@ namespace MetroOverhaul.InitializationSteps
 
         public static void CommonCustomization(NetInfo prefab, NetInfoVersion version)
         {
-            prefab.m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
-            prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.NarrowTram;
-            if (prefab.m_nodes.Count() > 1)
+            if (prefab.name.Contains("Station"))
             {
-                prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
+                prefab.m_connectGroup = (NetInfo.ConnectGroup)64;
+                prefab.m_nodeConnectGroups = (NetInfo.ConnectGroup)64 | (NetInfo.ConnectGroup)32 | NetInfo.ConnectGroup.NarrowTram;
+                if (prefab.m_nodes.Count() > 1)
+                {
+                    prefab.m_nodes[1].m_connectGroup = (NetInfo.ConnectGroup)64 | (NetInfo.ConnectGroup)32 | NetInfo.ConnectGroup.NarrowTram;
+                }
+            }
+            else
+            {
+                prefab.m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
+                prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.NarrowTram;
+                if (prefab.m_nodes.Count() > 1)
+                {
+                    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
+                }
             }
             foreach (var lane in prefab.m_lanes)
             {
@@ -119,7 +138,7 @@ namespace MetroOverhaul.InitializationSteps
         public static void CommonCustomizationTwoLaneOneWay(NetInfo prefab, NetInfoVersion version)
         {
             prefab.m_connectGroup = (NetInfo.ConnectGroup)32;
-            prefab.m_nodeConnectGroups = (NetInfo.ConnectGroup)32 | NetInfo.ConnectGroup.NarrowTram | NetInfo.ConnectGroup.WideTram;
+            prefab.m_nodeConnectGroups = (NetInfo.ConnectGroup)32 | (NetInfo.ConnectGroup)64 | NetInfo.ConnectGroup.NarrowTram | NetInfo.ConnectGroup.WideTram;
 
             if (prefab.m_nodes.Count() > 1)
             {
@@ -138,13 +157,14 @@ namespace MetroOverhaul.InitializationSteps
                 }
             }
         }
+
         public static void CommonCustomizationSmall(NetInfo prefab, NetInfoVersion version)
         {
             var isTwoWay = prefab.name.Contains("Station") || prefab.name.Contains("Two-Way");
             if (isTwoWay)
             {
                 prefab.m_connectGroup = (NetInfo.ConnectGroup)16;
-                prefab.m_nodeConnectGroups = (NetInfo.ConnectGroup)16 | (NetInfo.ConnectGroup)32 | NetInfo.ConnectGroup.NarrowTram | NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.CenterTram;
+                prefab.m_nodeConnectGroups = (NetInfo.ConnectGroup)16 | (NetInfo.ConnectGroup)32 | (NetInfo.ConnectGroup)64 | NetInfo.ConnectGroup.NarrowTram | NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.CenterTram;
                 if (prefab.m_nodes.Count() > 1)
                 {
                     prefab.m_nodes[1].m_connectGroup = (NetInfo.ConnectGroup)16 | NetInfo.ConnectGroup.CenterTram;
@@ -153,7 +173,7 @@ namespace MetroOverhaul.InitializationSteps
             else
             {
                 prefab.m_connectGroup = NetInfo.ConnectGroup.CenterTram;
-                prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.NarrowTram | NetInfo.ConnectGroup.CenterTram;
+                prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.NarrowTram | NetInfo.ConnectGroup.CenterTram | (NetInfo.ConnectGroup)64;
                 if (prefab.m_nodes.Count() > 1)
                 {
                     prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
@@ -167,6 +187,7 @@ namespace MetroOverhaul.InitializationSteps
                 LayoutStyle = LanesLayoutStyle.AsymL1R2
             });
             var theLanes = prefab.m_lanes.ToList();
+            var removedLanes = new List<NetInfo.Lane>();
             for (var i = 0; i < theLanes.Count; i++)
             {
                 if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
@@ -177,7 +198,14 @@ namespace MetroOverhaul.InitializationSteps
                     }
                     else if (Math.Sign(theLanes[i].m_position) < 0)
                     {
-                        theLanes[i].m_position += 2;
+                        if (version == NetInfoVersion.Tunnel)
+                        {
+                            removedLanes.Add(theLanes[i]);
+                        }
+                        else
+                        {
+                            theLanes[i].m_position += 2;
+                        }
                     }
                 }
                 if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)
@@ -195,7 +223,7 @@ namespace MetroOverhaul.InitializationSteps
                     theLanes[i].m_verticalOffset = 0.35f;
                 }
             }
-            prefab.m_lanes = theLanes.ToArray();
+            prefab.m_lanes = theLanes.Except(removedLanes).ToArray();
         }
         public static void CommonCustomizationLarge(NetInfo prefab, NetInfoVersion version)
         {
@@ -218,6 +246,7 @@ namespace MetroOverhaul.InitializationSteps
                 var backwardDone = false;
                 if (lane.m_laneType == NetInfo.LaneType.Vehicle)
                 {
+
                     if (!forwardDone && lane.m_direction == NetInfo.Direction.Forward)
                     {
                         lane.m_position = 5.89f;
@@ -239,7 +268,7 @@ namespace MetroOverhaul.InitializationSteps
             prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.NarrowTram;
             if (prefab.m_nodes.Count() > 1)
             {
-                prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
+                prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.NarrowTram | (NetInfo.ConnectGroup)32;
             }
 
             var theLanes = prefab.m_lanes.ToList();
@@ -249,22 +278,22 @@ namespace MetroOverhaul.InitializationSteps
                 {
                     if (Math.Sign(theLanes[i].m_position) > 0)
                     {
-                        theLanes[i].m_position = 2;
+                        theLanes[i].m_position = 3.5f;
                     }
                     else if (Math.Sign(theLanes[i].m_position) < 0)
                     {
-                        theLanes[i].m_position = -2;
+                        theLanes[i].m_position = -3.5f;
                     }
                 }
                 if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)
                 {
                     if (Math.Sign(theLanes[i].m_position) > 0)
                     {
-                        theLanes[i].m_position += 3;
+                        theLanes[i].m_position += 4.5f;
                     }
                     else if (Math.Sign(theLanes[i].m_position) < 0)
                     {
-                        theLanes[i].m_position += -3;
+                        theLanes[i].m_position += -4.5f;
                     }
                     theLanes[i].m_verticalOffset = 0.35f;
                 }
@@ -367,24 +396,24 @@ namespace MetroOverhaul.InitializationSteps
                     break;
             }
         }
-        public static void Set16mTrackWidths(NetInfo prefab, NetInfoVersion version)
+        public static void Set19mTrackWidths(NetInfo prefab, NetInfoVersion version)
         {
             switch (version)
             {
                 case NetInfoVersion.Ground:
-                    prefab.m_halfWidth = 8;
+                    prefab.m_halfWidth = 9.5f;
                     prefab.m_pavementWidth = 1.5f;
                     break;
                 case NetInfoVersion.Elevated:
-                    prefab.m_halfWidth = 8;
+                    prefab.m_halfWidth = 9.5f;
                     prefab.m_pavementWidth = 1.5f;
                     break;
                 case NetInfoVersion.Bridge:
-                    prefab.m_halfWidth = 7.9999f;
+                    prefab.m_halfWidth = 9.4999f;
                     prefab.m_pavementWidth = 1.5f;
                     break;
                 case NetInfoVersion.Tunnel:
-                    prefab.m_halfWidth = 9;
+                    prefab.m_halfWidth = 10.5f;
                     prefab.m_pavementWidth = 2.5f;
                     break;
             }

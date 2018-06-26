@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MetroOverhaul.NEXT;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -22,11 +23,11 @@ namespace MetroOverhaul
                 }
                 lane.m_laneProps = ScriptableObject.CreateInstance<NetLaneProps>();
                 lane.m_laneProps.m_props = (from prop in props
-                    where prop != null
-                    let mProp = prop.m_prop
-                    where mProp != null
-                    where mProp.name != "RailwayPowerline"
-                    select prop).ToArray();
+                                            where prop != null
+                                            let mProp = prop.m_prop
+                                            where mProp != null
+                                            where mProp.name != "RailwayPowerline"
+                                            select prop).ToArray();
             }
         }
 
@@ -41,17 +42,21 @@ namespace MetroOverhaul
             prefab.m_createPavement = true;
         }
 
-        public static void MakePedestrianLanesNarrow(NetInfo prefab)
+        public static void MakePedestrianLanesNarrow(NetInfo prefab, NetInfoVersion version)
         {
-            if (prefab?.m_lanes == null)
+            if (version == NetInfoVersion.Tunnel)
             {
-                return;
+                if (prefab?.m_lanes == null)
+                {
+                    return;
+                }
+                foreach (var lane in prefab.m_lanes.Where(lane => lane != null && lane.m_laneType == NetInfo.LaneType.Pedestrian))
+                {
+                    lane.m_width = 2;
+                    lane.m_position = Math.Sign(lane.m_position) * (4 + .5f * lane.m_width);
+                }
             }
-            foreach (var lane in prefab.m_lanes.Where(lane => lane != null && lane.m_laneType == NetInfo.LaneType.Pedestrian))
-            {
-                lane.m_width = 2;
-                lane.m_position = Math.Sign(lane.m_position) * (4 + .5f * lane.m_width);
-            }
+
         }
     }
 

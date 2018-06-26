@@ -59,6 +59,7 @@ namespace MetroOverhaul
             int num2 = 0;
             uint num3 = 0u;
             int num4 = 0;
+            int num5 = 0;
             NetManager instance = Singleton<NetManager>.instance;
             for (int i = 0; i < 8; i++)
             {
@@ -78,8 +79,13 @@ namespace MetroOverhaul
                         {
                             flags |= NetNode.Flags.Transition;
                         }
+                        
                         if (info.m_class.m_service == ItemClass.Service.Road)
                         {
+                            if (info.name.ToLower().Contains("tram"))
+                            {
+                                num5++;
+                            }
                             num++;
                         }
                         else if (info.m_class.m_service == ItemClass.Service.PublicTransport)
@@ -89,7 +95,7 @@ namespace MetroOverhaul
                     }
                 }
             }
-            if (num2 >= 2 && num >= 1)
+            if (num2 >= 2 && num >= 1 && num5 == 0)
             {
                 flags |= (NetNode.Flags.LevelCrossing | NetNode.Flags.TrafficLights);
             }
@@ -103,6 +109,53 @@ namespace MetroOverhaul
             }
             data.m_flags = flags;
         }
-
+        public override ToolBase.ToolErrors CheckBuildPosition(bool test, bool visualize, bool overlay, bool autofix, ref NetTool.ControlPoint startPoint, ref NetTool.ControlPoint middlePoint, ref NetTool.ControlPoint endPoint, out BuildingInfo ownerBuilding, out Vector3 ownerPosition, out Vector3 ownerDirection, out int productionRate)
+        {
+            ToolBase.ToolErrors toolErrors = base.CheckBuildPosition(test, visualize, overlay, autofix, ref startPoint, ref middlePoint, ref endPoint, out ownerBuilding, out ownerPosition, out ownerDirection, out productionRate);
+            if (test)
+            {
+                NetManager instance = Singleton<NetManager>.instance;
+                ushort num = middlePoint.m_segment;
+                if ((int)startPoint.m_segment == (int)num || (int)endPoint.m_segment == (int)num)
+                    num = (ushort)0;
+                //if ((int)num != 0 && (Singleton<NetManager>.instance.m_segments.m_buffer[(int)num].m_flags & NetSegment.Flags.Collapsed) == NetSegment.Flags.None)
+                //{
+                //    NetInfo info = instance.m_segments.m_buffer[(int)num].Info;
+                //    if (this.m_connectedInfo == info)
+                //        toolErrors |= ToolBase.ToolErrors.CannotUpgrade;
+                //    if (this.m_elevatedInfo == info)
+                //        toolErrors |= ToolBase.ToolErrors.CannotUpgrade;
+                //    if (this.m_bridgeInfo == info)
+                //        toolErrors |= ToolBase.ToolErrors.CannotUpgrade;
+                //    if (this.m_tunnelInfo == info)
+                //        toolErrors |= ToolBase.ToolErrors.CannotUpgrade;
+                //    if (this.m_slopeInfo == info)
+                //        toolErrors |= ToolBase.ToolErrors.CannotUpgrade;
+                //}
+                if ((int)startPoint.m_node != 0)
+                {
+                    for (int index = 0; index < 8; ++index)
+                    {
+                        ushort segment = instance.m_nodes.m_buffer[(int)startPoint.m_node].GetSegment(index);
+                        if ((int)segment != 0 && (instance.m_segments.m_buffer[(int)segment].Info.m_vehicleTypes & VehicleInfo.VehicleType.Tram) != VehicleInfo.VehicleType.None)
+                            toolErrors |= ToolBase.ToolErrors.CannotCrossTrack;
+                    }
+                }
+                else if ((int)startPoint.m_segment != 0 && (instance.m_segments.m_buffer[(int)startPoint.m_segment].Info.m_vehicleTypes & VehicleInfo.VehicleType.Tram) != VehicleInfo.VehicleType.None)
+                    toolErrors |= ToolBase.ToolErrors.CannotCrossTrack;
+                if ((int)endPoint.m_node != 0)
+                {
+                    for (int index = 0; index < 8; ++index)
+                    {
+                        ushort segment = instance.m_nodes.m_buffer[(int)endPoint.m_node].GetSegment(index);
+                        if ((int)segment != 0 && (instance.m_segments.m_buffer[(int)segment].Info.m_vehicleTypes & VehicleInfo.VehicleType.Tram) != VehicleInfo.VehicleType.None)
+                            toolErrors |= ToolBase.ToolErrors.CannotCrossTrack;
+                    }
+                }
+                else if ((int)endPoint.m_segment != 0 && (instance.m_segments.m_buffer[(int)endPoint.m_segment].Info.m_vehicleTypes & VehicleInfo.VehicleType.Tram) != VehicleInfo.VehicleType.None)
+                    toolErrors |= ToolBase.ToolErrors.CannotCrossTrack;
+            }
+            return toolErrors;
+        }
     }
 }
