@@ -34,11 +34,11 @@ namespace MetroOverhaul.InitializationSteps
                         var nodeList = new List<NetInfo.Node>();
                         nodeList.Add(node0);
                         nodeList.Add(node1);
-                        nodeList.Add(node2);
-                        nodeList.Add(node3);
+                        //nodeList.Add(node2);
+                        //nodeList.Add(node3);
                         nodeList.Add(node4);
                         nodeList.Add(node5);
-                        nodeList.Add(node6);
+                        //nodeList.Add(node6);
                         segment0
                             .SetFlagsDefault()
                             .SetMeshes
@@ -91,9 +91,9 @@ namespace MetroOverhaul.InitializationSteps
                         node6.m_material = elevatedMaterial;
                         node6.m_lodMaterial = elevatedLODMaterial;
                         node6.m_flagsRequired = NetNode.Flags.LevelCrossing;
+                        nodeList.AddRange(GenerateLevelCrossing(info));
                         if (isOneWay || isLarge)
                         {
-                            nodeList.AddRange(GenerateLevelCrossing(info));
                             nodeList.AddRange(GenerateSplitTracks(info, version));
                         }
 

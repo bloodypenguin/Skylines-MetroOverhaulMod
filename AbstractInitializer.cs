@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ColossalFramework;
+using MetroOverhaul.OptionsFramework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -39,6 +41,10 @@ namespace MetroOverhaul
 
         public void Update()
         {
+            if (OptionsWrapper<Options>.Options.ghostMode)
+            {
+                //return;
+            }
             if (_isInitialized)
             {
                 return;
@@ -57,9 +63,17 @@ namespace MetroOverhaul
             }
             Loading.QueueLoadingAction(() =>
             {
+
                 InitializeImpl();
-                PrefabCollection<NetInfo>.InitializePrefabs("Rail Extensions", _customNetInfos.Values.ToArray(), _netReplacements.ToArray());
+                PrefabCollection<NetInfo>.InitializePrefabs("Rail Extensions", _customNetInfos.Values.ToArray(), !OptionsWrapper<Options>.Options.ghostMode ? _netReplacements.ToArray() : null);
                 PrefabCollection<BuildingInfo>.InitializePrefabs("Rail Building Extensions", _customBuildingInfos.Values.ToArray(), null);
+                //if (OptionsWrapper<Options>.Options.ghostMode)
+                //{
+                //    PrefabCollection<NetInfo>.DestroyPrefabs("Rail Extensions", _customNetInfos.Values.ToArray(), _netReplacements.ToArray());
+                //    PrefabCollection<BuildingInfo>.DestroyPrefabs("Rail Building Extensions", _customBuildingInfos.Values.ToArray(), null);
+                //    PrefabCollection<NetInfo>.BindPrefabs();
+                //    PrefabCollection<BuildingInfo>.BindPrefabs();
+                //}
             });
             _isInitialized = true;
         }

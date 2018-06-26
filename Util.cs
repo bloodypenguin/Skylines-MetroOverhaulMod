@@ -41,7 +41,7 @@ namespace MetroOverhaul
             }
             return publishedFileID;
         }
-        public static T ClonePrefab<T>(T originalPrefab, string newName, Transform parentTransform) where T:PrefabInfo
+        public static T ClonePrefab<T>(T originalPrefab, string newName, Transform parentTransform) where T : PrefabInfo
         {
             var instance = Object.Instantiate(originalPrefab.gameObject);
             instance.name = newName;
@@ -53,6 +53,7 @@ namespace MetroOverhaul
             return newPrefab;
         }
         public static string AssemblyPath => PluginInfo.modPath;
+
 
         private static PluginInfo PluginInfo
         {
@@ -102,7 +103,7 @@ namespace MetroOverhaul
                     }
                     catch
                     {
-                        
+
                     }
                 }
                 throw new Exception("Failed to find MetroOverhaul assembly!");

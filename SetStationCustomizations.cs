@@ -2,24 +2,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text;
 using MetroOverhaul.Extensions;
 using UnityEngine;
-using MetroOverhaul.UI;
 
 namespace MetroOverhaul
 {
     public static class SetStationCustomizations
     {
-        public const int MAX_DEPTH = 36;
-        public const int MIN_DEPTH = 12;
-        public const int MAX_ANGLE = 360;
-        public const int MIN_ANGLE = 0;
-        public const int MAX_LENGTH = 144;
-        public const int MIN_LENGTH = 88;
-        public const int MAX_BEND_STRENGTH = 1;
-        public const int MIN_BEND_STRENGTH = -1;
+        public const float MAX_DEPTH = 36;
+        public const float MIN_DEPTH = 12;
+        public const float DEF_DEPTH = 15;
+        public const float MAX_ANGLE = 360;
+        public const float MIN_ANGLE = 0;
+        public const float DEF_ANGLE = 0;
+        public const float MAX_LENGTH = 192;
+        public const float MIN_LENGTH = 88;
+        public const float DEF_LENGTH = 144;
+        public const float MAX_BEND_STRENGTH = 1;
+        public const float MIN_BEND_STRENGTH = -1;
+        public const float DEF_BEND_STRENGTH = 0;
         private static float StairCoeff { get { return (11f / 64f); } }
         private static float AntiStairCoeff { get { return 1 - StairCoeff; } }
         private static float GENERATED_PATH_MARKER = 0.09999f; //regular paths have snapping distance of 0.1f. This way we differentiate
@@ -40,26 +41,27 @@ namespace MetroOverhaul
             ResizeUndergroundStationTracks(info, targetStationTrackLength);
             //if (BuildingHasPedestrianConnectionSurface(info))
             //{
-            var pivotPoint = ChangeStationDepthAndRotation(info, targetDepth, angle);
+            //Vector3 pivotPoint = GetMeanVector(info.m_paths.Where(p => p.m_netInfo.IsUndergroundMetroStationTrack()));
+            var connectPoints = ChangeStationDepthAndRotation(info, targetDepth, angle);
             if (superInfo != null)
             {
-                if (info.m_paths.Any(p => p.m_nodes.Any(n => n.y >= 0)) == false)
+                if (info.m_paths.Any(p => IsPedestrianPath(p) && p.m_nodes.Any(n => n.y >= 0)) == false)
                 {
-                    var highestIsolatedPath = info.m_paths.OrderBy(p => p.m_nodes.Max(n => n.y)).LastOrDefault();
-                    Debug.Log($"HIGHESTISOLATEDPATH NODES: {highestIsolatedPath.m_nodes.First().ToString()} and {highestIsolatedPath.m_nodes.Last().ToString()}");
+                    var highestIsolatedPath = info.m_paths.Where(p => IsPedestrianPath(p)).OrderBy(p => p.m_nodes.Max(n => n.y)).LastOrDefault();
                     if (highestIsolatedPath != null)
                     {
+                        var rendevous = connectPoints.First();
                         var pathList = info.m_paths.ToList();
-                        var closestSuperPath = superInfo.m_paths.OrderBy(p => p.m_nodes.Min(n => Vector3.Distance(n, pivotPoint))).FirstOrDefault();
-                        var closestSuperNode = closestSuperPath.m_nodes.OrderBy(n => Vector3.Distance(n, pivotPoint)).FirstOrDefault();
-                        var aux = ChainPath(closestSuperPath, pivotPoint, Array.IndexOf(closestSuperPath.m_nodes, closestSuperNode));
+                        var closestSuperPath = superInfo.m_paths.Where(p=>IsPedestrianPath(p)).OrderBy(p => p.m_nodes.Min(n => Vector3.Distance(n, rendevous))).FirstOrDefault();
+                        var closestSuperNode = closestSuperPath.m_nodes.OrderBy(n => Vector3.Distance(n, rendevous)).FirstOrDefault();
+                        var aux = ChainPath(closestSuperPath, rendevous, Array.IndexOf(closestSuperPath.m_nodes, closestSuperNode));
                         SetCurveTargets(aux);
                         pathList.Add(aux);
                         info.m_paths = pathList.ToArray();
                     }
                 }
             }
-            ReconfigureStationAccess(info, pivotPoint, bendStrength);
+            ReconfigureStationAccess(info, connectPoints, bendStrength);
             //}
             //else
             //{
@@ -86,7 +88,7 @@ namespace MetroOverhaul
         {
 
         }
-        private static void ReconfigureStationAccess(BuildingInfo info, Vector3 pivotPoint, float bendStrength)
+        private static void ReconfigureStationAccess(BuildingInfo info, List<Vector3> connectPoints, float bendStrength)
         {
             var pathList = new List<BuildingInfo.PathInfo>();
             var connectList = new List<Vector3[]>();
@@ -117,6 +119,7 @@ namespace MetroOverhaul
                     }
                 }
             }
+            
             for (int i = 0; i < info.m_paths.Length; i++)
             {
                 var thePath = info.m_paths[i];
@@ -153,27 +156,42 @@ namespace MetroOverhaul
                 }
                 pathList.Add(thePath);
             }
-            var specialNetInfo = PrefabCollection<NetInfo>.FindLoaded("Pedestrian Connection Surface");
+            
+            var specialNetInfo = FindNetInfo("Pedestrian Connection Inside");
             specialNetInfo.m_maxSlope = 100;
             specialNetInfo.m_maxTurnAngle = 180;
             specialNetInfo.m_maxTurnAngleCos = -1;
-
+            var aPath = pathList.FirstOrDefault(p => IsPedestrianPath(p));
+            if (aPath == null)
+            {
+                aPath = new BuildingInfo.PathInfo();
+            }
+            aPath.AssignNetInfo(specialNetInfo);
             for (int i = 0; i < pathList.Count; i++)
             {
-                var newPath = pathList.FirstOrDefault(p => p.m_nodes.Any(n => n == pivotPoint)).ShallowClone();
+                var newPath = aPath.ShallowClone();
+                
                 var trackPath = pathList[i];
+                
                 if (trackPath.m_netInfo != null && trackPath.m_netInfo.IsUndergroundMetroStationTrack())
                 {
                     if (newPath != null)
                     {
-                        var xCoeff = -(trackPath.m_nodes.First().x - trackPath.m_nodes.Last().x) / Vector3.Distance(trackPath.m_nodes.First(), trackPath.m_nodes.Last());
-                        var zCoeff = (trackPath.m_nodes.First().z - trackPath.m_nodes.Last().z) / Vector3.Distance(trackPath.m_nodes.First(), trackPath.m_nodes.Last());
-                        var stationLength = Vector3.Distance(trackPath.m_nodes.First(), trackPath.m_nodes.Last());
-                        var stairsLengthX = ( ((0.12f * bendStrength) + 1) * (stationLength * StairCoeff)) * -xCoeff;
-                        var stairsLengthZ = ( ((0.12f * bendStrength) + 1) * (stationLength * StairCoeff)) * zCoeff;
+                        
+                        var xCoeff = -(trackPath.m_nodes[0].x - trackPath.m_nodes.Last().x) / Vector3.Distance(trackPath.m_nodes[0], trackPath.m_nodes.Last());
+                        
+                        var zCoeff = (trackPath.m_nodes[0].z - trackPath.m_nodes.Last().z) / Vector3.Distance(trackPath.m_nodes[0], trackPath.m_nodes.Last());
+                        
+                        var stationLength = Vector3.Distance(trackPath.m_nodes[0], trackPath.m_nodes.Last());
+                        
+                        var stairsLengthX = (((0.12f * bendStrength) + 1) * (stationLength * StairCoeff)) * -xCoeff;
+                        
+                        var stairsLengthZ = (((0.12f * bendStrength) + 1) * (stationLength * StairCoeff)) * zCoeff;
+                        
                         newPath.m_netInfo.m_maxSlope = 100;
                         newPath.m_netInfo.m_maxTurnAngle = 180;
                         newPath.m_netInfo.m_maxTurnAngleCos = -1;
+                        
                         if (trackPath.m_netInfo.IsUndergroundIslandPlatformStationTrack())
                         {
                             var newNodes = new List<Vector3>();
@@ -185,17 +203,19 @@ namespace MetroOverhaul
                             });
                             newNodes.Add(new Vector3()
                             {
-                                x = newNodes.First().x + stairsLengthX,
+                                x = newNodes[0].x + stairsLengthX,
                                 y = trackPath.m_nodes.Last().y,
-                                z = newNodes.First().z + stairsLengthZ,
+                                z = newNodes[0].z + stairsLengthZ,
                             });
                             newPath.m_nodes = newNodes.ToArray();
-                            newPath.m_netInfo = specialNetInfo;
+                            newPath.AssignNetInfo("Pedestrian Connection Surface");
                             MarkPathGenerated(newPath);
-
-                            ChangePathRotation(newPath, newPath.m_nodes.First(), AntiStairCoeff * bendStrength * -Math.PI / 4);
+                            
+                            ChangePathRotation(newPath, newPath.m_nodes[0], AntiStairCoeff * bendStrength * -Math.PI / 4);
                             pathList.Add(newPath);
-                            var connectNodes = new Vector3[] { newPath.m_nodes.First() };
+                            
+                            var connectNodes = new Vector3[] { newPath.m_nodes[0] };
+                            
                             if (!connectList.Contains(connectNodes))
                                 connectList.Add(connectNodes);
                         }
@@ -204,23 +224,23 @@ namespace MetroOverhaul
                             var newNodes = new List<Vector3>();
                             newNodes.Add(new Vector3()
                             {
-                                x = trackPath.m_nodes.Last().x + (5 * zCoeff) -(3 * xCoeff),
+                                x = trackPath.m_nodes.Last().x + (5 * zCoeff) - (3 * xCoeff),
                                 y = trackPath.m_nodes.Last().y + 8,
                                 z = trackPath.m_nodes.Last().z + (5 * xCoeff) + (3 * zCoeff)
                             });
                             newNodes.Add(new Vector3()
                             {
-                                x = newNodes.First().x + stairsLengthX,
+                                x = newNodes[0].x + stairsLengthX,
                                 y = trackPath.m_nodes.Last().y,
-                                z = newNodes.First().z + stairsLengthZ,
+                                z = newNodes[0].z + stairsLengthZ,
                             });
                             newPath.m_nodes = newNodes.ToArray();
-                            newPath.m_netInfo = specialNetInfo;
+                            newPath.AssignNetInfo("Pedestrian Connection Surface");
                             MarkPathGenerated(newPath);
 
-                            ChangePathRotation(newPath, newPath.m_nodes.First(), AntiStairCoeff * bendStrength * -Math.PI / 4);
+                            ChangePathRotation(newPath, newPath.m_nodes[0], AntiStairCoeff * bendStrength * -Math.PI / 4);
                             pathList.Add(newPath);
-                            var connectNodes = new Vector3[] { newPath.m_nodes.First() };
+                            var connectNodes = new Vector3[] { newPath.m_nodes[0] };
                             if (!connectList.Contains(connectNodes))
                                 connectList.Add(connectNodes);
                         }
@@ -235,18 +255,18 @@ namespace MetroOverhaul
                             });
                             newNodes.Add(new Vector3()
                             {
-                                x = newNodes.First().x + stairsLengthX,
+                                x = newNodes[0].x + stairsLengthX,
                                 y = trackPath.m_nodes.Last().y,
-                                z = newNodes.First().z + stairsLengthZ,
+                                z = newNodes[0].z + stairsLengthZ,
                             });
                             newPath.m_nodes = newNodes.ToArray();
-                            newPath.m_netInfo = specialNetInfo;
-
+                            newPath.AssignNetInfo(specialNetInfo);
+                            
                             var branchVectorConnect = new Vector3()
                             {
-                                x = newNodes.First().x + 14 * zCoeff,
+                                x = newNodes[0].x + 14 * zCoeff,
                                 y = trackPath.m_nodes.Last().y + 8,
-                                z = newNodes.First().z + 14 * xCoeff
+                                z = newNodes[0].z + 14 * xCoeff
                             };
 
                             var branchVectorStair = new Vector3()
@@ -256,9 +276,10 @@ namespace MetroOverhaul
                                 z = branchVectorConnect.z + stairsLengthZ,
                             };
                             var branchPathConnect = ChainPath(newPath, branchVectorConnect, 0);
-                            var branchPathStair = ChainPath(branchPathConnect, branchVectorStair);
+                            
+                            var branchPathStair = ChainPath(branchPathConnect, branchVectorStair, -1, PrefabCollection<NetInfo>.FindLoaded("Pedestrian Connection Surface"));
                             MarkPathGenerated(newPath);
-
+                            
                             var trackPivot = new Vector3()
                             {
                                 x = trackPath.m_nodes.Last().x,
@@ -267,9 +288,11 @@ namespace MetroOverhaul
                             }
                             ;
                             ChangePathRotation(newPath, trackPivot, AntiStairCoeff * bendStrength * -Math.PI / 4);
+                            
                             ChangePathRotation(branchPathConnect, trackPivot, AntiStairCoeff * bendStrength * -Math.PI / 4);
                             ChangePathRotation(branchPathStair, trackPivot, AntiStairCoeff * bendStrength * -Math.PI / 4);
                             pathList.Add(newPath);
+                            
                             pathList.Add(branchPathConnect);
                             pathList.Add(branchPathStair);
 
@@ -283,79 +306,55 @@ namespace MetroOverhaul
             {
                 CheckPedestrianConnections(info);
             }
-            var currentVector = pivotPoint;
-            var pool = new List<Vector3[]>();
-            pool.AddRange(connectList);
-            for (var i = 0; i < connectList.Count; i++)
+            pathList = CleanPaths(pathList);
+            var currentVector = connectPoints.FirstOrDefault();
+            if (connectPoints != null && connectPoints.Count > 0)
             {
-                var closestVector = pool.SelectMany(n => n).OrderBy(n => (currentVector.x - n.x) + (100 * (pivotPoint.y - n.y)) + (currentVector.z - n.z)).FirstOrDefault();
-                var closestPath = pathList.FirstOrDefault(p => p.m_nodes.Any(n => n == closestVector));
-                var branch = ChainPath(closestPath, currentVector, Array.IndexOf(closestPath.m_nodes, closestVector));
-                pathList.Add(branch);
-                var nodeArrayToLose = pool.FirstOrDefault(na => na.Any(n => n == closestVector));
-                currentVector = nodeArrayToLose.OrderBy(n => Vector3.Distance(closestVector, n)).LastOrDefault();
-                if (nodeArrayToLose != null)
+                var pool = new List<Vector3[]>();
+                var pivotPath = pathList.FirstOrDefault(p => p.m_nodes.Any(n => n == connectPoints.FirstOrDefault()));
+                pool.AddRange(connectList);
+                
+                for (var i = 0; i < connectList.Count; i++)
                 {
-                    pool.Remove(nodeArrayToLose);
+                    var closestVector = pool.SelectMany(n => n).OrderBy(n => (currentVector.x - n.x) + (100 * (connectPoints.FirstOrDefault().y - n.y)) + (currentVector.z - n.z)).FirstOrDefault();
+                    
+                    var closestPath = pathList.FirstOrDefault(p => p.m_nodes.Any(n => n == closestVector));
+                    BuildingInfo.PathInfo branch = null;
+                    if (currentVector == connectPoints.FirstOrDefault())
+                    {
+                        branch = ChainPath(pivotPath, closestVector, Array.IndexOf(pivotPath.m_nodes, connectPoints.FirstOrDefault()), PrefabCollection<NetInfo>.FindLoaded("Pedestrian Connection Surface"));
+                    }
+                    else
+                    {
+                        branch = ChainPath(closestPath, currentVector, Array.IndexOf(closestPath.m_nodes, closestVector));
+                    }
+                    branch.AssignNetInfo("Pedestrian Connection Underground");
+                    pathList.Add(branch);
+                    var nodeArrayToLose = pool.FirstOrDefault(na => na.Any(n => n == closestVector));
+                    if (nodeArrayToLose != null)
+                    {  
+                        currentVector = nodeArrayToLose.OrderBy(n => Vector3.Distance(closestVector, n)).LastOrDefault();
+                        pool.Remove(nodeArrayToLose);
+                    }
+                }
+                
+                if (connectPoints.Count > 1)
+                {
+                    for (var i = 1; i < connectPoints.Count(); i++)
+                    {
+                        Vector3 node = connectPoints[i];
+                        Vector3 closestVector = connectList.SelectMany(n => n).OrderBy(n => (node.x - n.x) + (100 * (node.y - n.y)) + (node.z - n.z)).FirstOrDefault();
+                        var closestPath = pathList.FirstOrDefault(p => p.m_nodes.Any(n => n == closestVector));
+                        var branch = ChainPath(closestPath, node, Array.IndexOf(closestPath.m_nodes, closestVector));
+                        branch.AssignNetInfo("Pedestrian Connection Underground");
+                        pathList.Add(branch);
+                    }
                 }
             }
-            info.m_paths = CleanPaths(pathList).ToArray();
-            //pathList = CleanPaths(pathList);
-            //var currentVector = Vector3.zero;
-            //BuildingInfo.PathInfo currentPath = null;
-            //var stationCount = pathList.Where(p => p.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack()).Count();
-            //var pivotPath = pathList.FirstOrDefault(p => p.m_nodes.Any(n => n == pivotPoint));
-            //var nearestTrack = pathDict.Keys.OrderBy(n => currentVector.x - n.x + 100 * (pivotPoint.y - n.y) + currentVector.z - n.z).FirstOrDefault();
-            //var nearestPed = pathDict[nearestTrack].OrderBy(n => Vector3.Distance(pivotPoint, n)).FirstOrDefault();
-            //if (vectorRotateDict.ContainsKey(nearestPed))
-            //{
-            //	nearestPed = vectorRotateDict[nearestPed];
-            //}
-            //         pathList.Add(ChainPath(pivotPath, nearestPed, Array.IndexOf(pivotPath.m_nodes, pivotPoint), PrefabCollection<NetInfo>.FindLoaded("Pedestrian Connection Surface")));
-            //for (var i = 0; i < stationCount; i++)
-            //{
-            //	if (pathDict.Keys.Count > 0)
-            //	{
-            //		if (i == 0)
-            //		{
-            //                     var furthestTrackVector = pathDict.Keys.OrderBy(n => Vector3.Distance(pivotPoint, n)).LastOrDefault();
-            //			var furthestPedVector = pathDict[furthestTrackVector].OrderBy(n => Vector3.Distance(pivotPoint, n)).LastOrDefault();
-            //			var otherPedVector = furthestPedVector;
-            //			if (pathDict[furthestTrackVector].Count > 1)
-            //				otherPedVector = pathDict[furthestTrackVector].OrderBy(n => Vector3.Distance(pivotPoint, n)).FirstOrDefault();
-            //			currentPath = pathList.FirstOrDefault(p => p.m_nodes.Any(n => n == otherPedVector));
-            //			if (pathDict.ContainsKey(furthestTrackVector))
-            //			{
-            //				pathDict.Remove(furthestTrackVector);
-            //			}
-            //			currentVector = otherPedVector;
-            //		}
-            //		else
-            //		{
-            //                     var nearestTrackVector = pathDict.Keys.OrderBy(n => currentVector.x - n.x + 100 * (currentVector.y - n.y) + currentVector.z - n.z).FirstOrDefault();
-            //			var nearestPedVector = pathDict[nearestTrackVector].OrderBy(n => Vector3.Distance(currentVector, n)).FirstOrDefault();
-            //			var otherPedVector = nearestPedVector;
-            //			if (pathDict[nearestTrackVector].Count > 1)
-            //				otherPedVector = pathDict[nearestTrackVector].OrderBy(n => Vector3.Distance(currentVector, n)).LastOrDefault();
-            //			currentPath = pathList.FirstOrDefault(p => p.m_nodes.Any(n => n == currentVector));
-            //			var chainIndex = Array.IndexOf(currentPath.m_nodes, currentVector);
-            //			var longPath = ChainPath(currentPath, nearestPedVector, chainIndex);
-            //			if (vectorRotateDict.ContainsKey(nearestPedVector))
-            //			{
-            //				nearestPedVector = vectorRotateDict[nearestPedVector];
-            //			}
-            //			pathList.Add(longPath);
 
-            //			if (pathDict.ContainsKey(nearestTrackVector))
-            //			{
-            //				pathDict.Remove(nearestTrackVector);
-            //			}
-            //			currentVector = otherPedVector;
-            //		}
-            //	}
-            //}
-            //         info.m_paths = CleanPaths(pathList).ToArray();
+            info.m_paths = CleanPaths(pathList).ToArray();
         }
+
         private static List<BuildingInfo.PathInfo> CleanPaths(List<BuildingInfo.PathInfo> pathList)
         {
             var tinyPaths = pathList.Where(p => Vector3.Distance(p.m_nodes.First(), p.m_nodes.Last()) <= 4).ToList();
@@ -403,45 +402,48 @@ namespace MetroOverhaul
                     }
                     nodeList.Add(newNode);
                 }
-
                 path.m_nodes = nodeList.ToArray();
                 SetCurveTargets(path);
                 finalPathList.Add(path);
             }
             return finalPathList;
         }
-
+        private static NetInfo FindNetInfo(string prefabName)
+        {
+            return PrefabCollection<NetInfo>.FindLoaded(prefabName);
+        }
         private static BuildingInfo.PathInfo ChainPath(BuildingInfo.PathInfo startPath, Vector3 endNode, int startNodeIndex = -1, NetInfo info = null)
         {
+
             var newNodes = new List<Vector3>();
             var newPath = startPath.ShallowClone();
             if (startNodeIndex == -1 || startNodeIndex >= startPath.m_nodes.Count())
             {
                 startNodeIndex = startPath.m_nodes.Count() - 1;
             }
+            if (info != null)
+            {
+                newPath.AssignNetInfo(info);
+            }
             var startNode = startPath.m_nodes[startNodeIndex];
             newNodes.Add(startNode);
             newNodes.Add(endNode);
 
             newPath.m_nodes = newNodes.ToArray();
-            if (info == null)
-            {
-                info = PrefabCollection<NetInfo>.FindLoaded("Pedestrian Connection Surface");
-            }
-            newPath.m_netInfo = info;
             MarkPathGenerated(newPath);
             return newPath;
         }
+
         private static void BendStationTrack(BuildingInfo.PathInfo stationPath, float bendStrength)
         {
-                
-                var middle = GetMiddle(stationPath);
 
-                var newX = (stationPath.m_nodes.First().z - stationPath.m_nodes.Last().z) / 2;
-                var newY = (stationPath.m_nodes.First().y + stationPath.m_nodes.Last().y) / 2;
-                var newZ = -(stationPath.m_nodes.First().x - stationPath.m_nodes.Last().x) / 2;
-                var newCurve = middle + (bendStrength * new Vector3(newX, newY, newZ));
-                stationPath.m_curveTargets[0] = newCurve;
+            var middle = GetMiddle(stationPath);
+
+            var newX = (stationPath.m_nodes.First().z - stationPath.m_nodes.Last().z) / 2;
+            var newY = (stationPath.m_nodes.First().y + stationPath.m_nodes.Last().y) / 2;
+            var newZ = -(stationPath.m_nodes.First().x - stationPath.m_nodes.Last().x) / 2;
+            var newCurve = middle + (bendStrength * new Vector3(newX, newY, newZ));
+            stationPath.m_curveTargets[0] = newCurve;
         }
         private static void BendStationTrack(BuildingInfo info, float bendStrength)
         {
@@ -451,43 +453,12 @@ namespace MetroOverhaul
                 var stationPath = stationPaths[i];
                 BendStationTrack(stationPath, bendStrength);
                 var stairPaths = info.m_paths.Where(p => p != null && stationPaths.Contains(p) == false && p.m_nodes.Any(n => n.y == stationPath.m_nodes.First().y)).ToList();
-                for (var j=0; j < stairPaths.Count(); j++)
+                for (var j = 0; j < stairPaths.Count(); j++)
                 {
                     BendStationTrack(stairPaths[j], -bendStrength * StairCoeff);
                 }
             }
         }
-        //private static void BendStationTrack(BuildingInfo.PathInfo[] assetPaths, int pathIndex, float targetDepth, List<int> processedConnectedPaths)
-        //{
-        //var path = assetPaths[pathIndex];
-        //if (path.m_netInfo == null || !path.m_netInfo.IsUndergroundMetroStationTrack())
-        //{
-        //    return;
-        //}
-        //if (path.m_nodes.Length < 2)
-        //{
-        //    return;
-        //}
-        //var beginning = path.m_nodes.First();
-        //var end = path.m_nodes.Last();
-        //path.m_nodes[0] = new Vector3
-        //{
-        //    x = path.m_nodes[0].x,
-        //    y = -MIN_DEPTH,
-        //    z = path.m_nodes[0].z,
-        //};
-        //path.m_nodes[path.m_nodes.Length - 1] = new Vector3
-        //{
-        //    x = path.m_nodes[path.m_nodes.Length - 1].x,
-        //    y = -MIN_DEPTH,
-        //    z = path.m_nodes[path.m_nodes.Length - 1].z,
-        //};
-        //var newBeginning = path.m_nodes.First();
-        //var newEnd = path.m_nodes.Last();
-
-        //ChangeConnectedPaths(assetPaths, beginning, newBeginning - beginning, processedConnectedPaths);
-        //ChangeConnectedPaths(assetPaths, end, newEnd - end, processedConnectedPaths);
-        //}
 
         private static void CleanUpPaths(BuildingInfo info)
         {
@@ -568,7 +539,7 @@ namespace MetroOverhaul
                 }
             }
         }
-        private static Vector3 ChangeStationDepthAndRotation(BuildingInfo info, float targetDepth, double angle)
+        private static List<Vector3> ChangeStationDepthAndRotation(BuildingInfo info, float targetDepth, double angle)
         {
             var pathList = new List<BuildingInfo.PathInfo>();
             var highestStation = float.MinValue;
@@ -584,38 +555,17 @@ namespace MetroOverhaul
                 highestStation = Math.Max(highest, highestStation);
             }
             var offsetDepthDist = targetDepth + highestStation;
-            var lowestHighPaths = info.m_paths.Where(p => p.m_nodes.Any(n => n.y >= 0) && p.m_nodes.Any(nd => nd.y < 0)).ToList();
+
+            var lowestHighPaths = info.m_paths.Where(p => IsPedestrianPath(p) && p.m_nodes.Any(n => n.y > -4) && p.m_nodes.Any(nd => nd.y <= -4)).ToList();
             if (lowestHighPaths.Count == 0)
             {
-                lowestHighPaths.Add(info.m_paths.Where(p => p.m_netInfo.name == "Pedestrian Connection Surface" || p.m_netInfo.name == "Pedestrian Connection Inside")
+                lowestHighPaths.Add(info.m_paths.Where(p => IsPedestrianPath(p))
                     .OrderByDescending(p => p.m_nodes[0].y)
                     .FirstOrDefault());
             }
             if (lowestHighPaths.Count > 0)
             {
-                for (var i = 0; i < lowestHighPaths.Count(); i++)
-                {
-                    var path = lowestHighPaths[i];
-                    var currCoords = path.m_nodes.OrderBy(n => n.z).LastOrDefault();
-                    totalNode += currCoords;
-                }
-                totalNode /= lowestHighPaths.Count();
-
-                for (var i = 0; i < lowestHighPaths.Count; i++)
-                {
-                    var path = lowestHighPaths[i];
-                    var currCoords = path.m_nodes.OrderBy(n => n.z).LastOrDefault();
-                    var newPath = path.ShallowClone();
-                    newPath.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Pedestrian Connection Underground");
-                    var newNodes = new List<Vector3>();
-                    newNodes.Add(currCoords);
-                    newNodes.Add(totalNode);
-                    newPath.m_nodes = newNodes.ToArray();
-                    SetCurveTargets(newPath);
-                    MarkPathGenerated(newPath);
-                    pathList.Add(newPath);
-
-                }
+                Vector3 pivotPoint = GetMeanVector(info.m_paths.Where(p => p.m_netInfo.IsUndergroundMetroStationTrack()));
                 for (var i = 0; i < info.m_paths.Count(); i++)
                 {
                     var path = info.m_paths[i];
@@ -623,11 +573,11 @@ namespace MetroOverhaul
                     {
                         if (!lowestHighPaths.Contains(path))
                         {
-                            if (!path.m_netInfo.IsUndergroundMetroStationTrack())
+                            if (IsPedestrianPath(path))
                             {
                                 continue;
                             }
-                            ChangePathRotation(path, totalNode, angle);
+                            ChangePathRotation(path, pivotPoint, angle);
                             DipPath(path, offsetDepthDist);
                         }
                     }
@@ -635,115 +585,45 @@ namespace MetroOverhaul
                 }
                 info.m_paths = pathList.ToArray();
             }
-            return totalNode;
+            var lowestHighNodes = new List<Vector3>();
+            if (lowestHighPaths != null && lowestHighPaths.Count > 0)
+            {
+                foreach (BuildingInfo.PathInfo p in lowestHighPaths)
+                {
+                    if (p != null && p.m_nodes != null && p.m_nodes.Count() > 0)
+                    {
+                        lowestHighNodes.Add(p.m_nodes.OrderByDescending(n => n.y).ThenBy(n => n.z).LastOrDefault());
+                    }
+
+                }
+            }
+            return lowestHighNodes;
         }
-        //private static void ChangeStationDepthAndRotationx(BuildingInfo info, float targetDepth, double angle)
-        //{
-        //	var highestLow = float.MinValue;
-        //	var highestStation = float.MinValue;
-        //	foreach (var path in info.m_paths)
-        //	{
 
-        //		if (path.m_netInfo?.m_netAI == null || !path.m_netInfo.IsUndergroundMetroStationTrack())
-        //		{
-        //			continue;
-        //		}
-        //		var highest = path.m_nodes.OrderByDescending(n => n.y).FirstOrDefault().y;
-        //		highestStation = Math.Max(highest, highestStation);
-        //	}
-        //	var offsetDepthDist = targetDepth + highestStation;
-        //	float lowestHigh = 0;
-        //	var lowestHighPaths = info.m_paths.Where(p => p.m_nodes.Any(n => n.y >= 0) && p.m_nodes.Any(nd => nd.y < 0)).ToList();
+        private static Vector3 GetMeanVector(IEnumerable<BuildingInfo.PathInfo> pathList)
+        {
+            List<Vector3> vectorList = pathList.SelectMany(p => p.m_nodes).ToList();
+            return GetMeanVector(vectorList);
+        }
+        private static Vector3 GetMeanVector(List<Vector3> vectorList)
+        {
+            if (vectorList.Count > 0)
+            {
+                float x = 0f;
+                float y = 0f;
+                float z = 0f;
+                foreach (Vector3 v in vectorList)
+                {
+                    x += v.x;
+                    y += v.y;
+                    z += v.z;
+                }
+                return new Vector3(x / vectorList.Count, y / vectorList.Count, z / vectorList.Count);
+            }
+            return Vector3.zero;
 
-        //	if (lowestHighPaths.Count == 0)
-        //	{
-        //		lowestHighPaths.Add(info.m_paths.Where(p => p.m_netInfo.name == "Pedestrian Connection Surface" || p.m_netInfo.name == "Pedestrian Connection Inside")
-        //			.OrderByDescending(p => p.m_nodes[0].y)
-        //			.FirstOrDefault());
-        //	}
 
-        //	Vector3? pivotPoint = null;
-        //	if (lowestHighPaths.Count > 0)
-        //	{
-        //		var lowestHighNode = lowestHighPaths[0].m_nodes.OrderBy(n => n.y).FirstOrDefault();
-        //		lowestHigh = lowestHighNode.y;
-        //		if (lowestHighPaths.Count == 1)
-        //		{
-        //			pivotPoint = lowestHighPaths[0].m_nodes.Last();
-        //		}
-        //		highestLow = info.m_paths.Where(p => lowestHighPaths.Contains(p) == false).SelectMany(p => p.m_nodes).Where(n => n.x == lowestHighNode.x && n.z == lowestHighNode.z).OrderByDescending(o => o.y).FirstOrDefault().y;
-        //	} //TODO(earalov): properly handle integrated metro station (it has no own networks)
-        //	var stepDepthDist = targetDepth + lowestHigh + highestStation - highestLow;
-        //	var updatedPaths = new List<BuildingInfo.PathInfo>();
-
-        //	if (info.m_paths.Count() == 2)
-        //	{
-        //		CheckPedestrianConnections(info);
-        //	}
-
-        //	var tinyPaths = info.m_paths.Where(p => Vector3.Distance(p.m_nodes.First(), p.m_nodes.Last()) <= 4).ToList();
-        //	var mergePathDict = new Dictionary<Vector3, Vector3>();
-        //	if (tinyPaths.Count > 0)
-        //	{
-        //		foreach (var path in tinyPaths)
-        //		{
-        //			var average = (path.m_nodes.First() + path.m_nodes.Last()) / 2;
-
-        //			if (!(mergePathDict.ContainsKey(path.m_nodes.First())))
-        //			{
-        //				mergePathDict.Add(path.m_nodes.First(), average);
-        //			}
-        //			else if (!mergePathDict.ContainsKey(path.m_nodes.Last()))
-        //			{
-        //				mergePathDict.Add(path.m_nodes.Last(), mergePathDict[path.m_nodes.First()]);
-        //			}
-        //			if (!(mergePathDict.ContainsKey(path.m_nodes.Last())))
-        //			{
-        //				mergePathDict.Add(path.m_nodes.Last(), average);
-        //			}
-        //			else if (!mergePathDict.ContainsKey(path.m_nodes.First()))
-        //			{
-        //				mergePathDict.Add(path.m_nodes.First(), mergePathDict[path.m_nodes.Last()]);
-        //			}
-        //		}
-        //	}
-        //	foreach (var path in info.m_paths)
-        //	{
-        //		if (tinyPaths.Contains(path))
-        //		{
-        //			continue;
-        //		}
-        //		var moveNodes = path.m_nodes.Where(n => mergePathDict.ContainsKey(n)).ToList();
-        //		if (moveNodes.Count() > 0)
-        //		{
-        //			var lowestHighPathIndex = lowestHighPaths.IndexOf(path);
-        //			for (var i = 0; i < moveNodes.Count(); i++)
-        //			{
-        //				Next.Debug.Log($"Node changed from {moveNodes[i].x},{moveNodes[i].y}, {moveNodes[i].z} to {mergePathDict[moveNodes[i]].x},{mergePathDict[moveNodes[i]].y},{mergePathDict[moveNodes[i]].z}");
-        //				if (lowestHighPathIndex > -1)
-        //				{
-        //					lowestHighPaths[lowestHighPathIndex].m_nodes[i] = mergePathDict[moveNodes[i]];
-        //				}
-        //				moveNodes[i] = mergePathDict[moveNodes[i]];
-        //			}
-        //		}
-
-        //		if (AllNodesUnderGround(path))
-        //		{
-        //			if (path.m_netInfo.IsUndergroundMetroStationTrack())
-        //			{
-        //				ChangePathRotation(path, pivotPoint, angle);
-        //				DipPath(path, offsetDepthDist);
-        //			}
-        //			else if (!lowestHighPaths.Contains(path))
-        //			{
-        //				continue;
-        //			}
-        //		}
-        //		updatedPaths.Add(path);
-        //	}
-        //	info.m_paths = updatedPaths.ToArray();
-        //}
+        }
         private static void DipPath(BuildingInfo.PathInfo path, float depthOffsetDist)
         {
             ShiftPath(path, new Vector3(0, -depthOffsetDist, 0));
@@ -761,7 +641,10 @@ namespace MetroOverhaul
             }
         }
 
-
+        private static bool IsPedestrianPath(BuildingInfo.PathInfo path)
+        {
+            return path.m_netInfo.IsPedestrianNetwork();
+        }
         private static void SetCurveTargets(BuildingInfo.PathInfo path)
         {
             if (path.m_nodes.Length < 2)
@@ -769,7 +652,7 @@ namespace MetroOverhaul
                 return;
             }
             var newCurveTargets = new List<Vector3>();
-            if (path.m_curveTargets.Length > 0)
+            if (path.m_curveTargets != null && path.m_curveTargets.Length > 0)
                 newCurveTargets.AddRange(path.m_curveTargets);
             else
                 newCurveTargets.Add(new Vector3());
@@ -796,7 +679,7 @@ namespace MetroOverhaul
             var dir = new Vector3();
 
             MarkPathGenerated(newPath);
-            newPath.m_netInfo = PrefabCollection<NetInfo>.FindLoaded("Pedestrian Connection Underground");
+            newPath.AssignNetInfo("Pedestrian Connection Underground");
             var steps = (float)Math.Floor((depth + 4) / 12) * 4;
             if (steps == 0)
             {
@@ -907,28 +790,35 @@ namespace MetroOverhaul
             if (pvtPnt != null)
             {
                 Vector3 pivotPoint = (Vector3)pvtPnt;
-                for (var nodeIndex = 0; nodeIndex < path.m_nodes.Count(); nodeIndex++)
+                if (path.m_nodes != null && path.m_nodes.Length > 0)
                 {
-                    var oldNode = path.m_nodes[nodeIndex];
-                    newNode = new Vector3
+                    for (var nodeIndex = 0; nodeIndex < path.m_nodes.Count(); nodeIndex++)
                     {
-                        x = (float)(pivotPoint.x + (oldNode.x - pivotPoint.x) * Math.Cos(angle) - (oldNode.z - pivotPoint.z) * Math.Sin(angle)),
-                        y = oldNode.y,
-                        z = (float)(pivotPoint.z + (oldNode.x - pivotPoint.x) * Math.Sin(angle) + (oldNode.z - pivotPoint.z) * Math.Cos(angle))
-                    };
-                    path.m_nodes[nodeIndex] = newNode;
+                        var oldNode = path.m_nodes[nodeIndex];
+                        newNode = new Vector3
+                        {
+                            x = (float)(pivotPoint.x + (oldNode.x - pivotPoint.x) * Math.Cos(angle) - (oldNode.z - pivotPoint.z) * Math.Sin(angle)),
+                            y = oldNode.y,
+                            z = (float)(pivotPoint.z + (oldNode.x - pivotPoint.x) * Math.Sin(angle) + (oldNode.z - pivotPoint.z) * Math.Cos(angle))
+                        };
+                        path.m_nodes[nodeIndex] = newNode;
+                    }
                 }
-                for (var curveIndex = 0; curveIndex < path.m_curveTargets.Count(); curveIndex++)
+                if (path.m_curveTargets != null && path.m_curveTargets.Length > 0)
                 {
-                    var oldCurve = path.m_curveTargets[curveIndex];
-                    var newCurve = new Vector3
+                    for (var curveIndex = 0; curveIndex < path.m_curveTargets.Count(); curveIndex++)
                     {
-                        x = (float)(pivotPoint.x + (oldCurve.x - pivotPoint.x) * Math.Cos(angle) - (oldCurve.z - pivotPoint.z) * Math.Sin(angle)),
-                        y = oldCurve.y,
-                        z = (float)(pivotPoint.z + (oldCurve.x - pivotPoint.x) * Math.Sin(angle) + (oldCurve.z - pivotPoint.z) * Math.Cos(angle)),
-                    };
-                    path.m_curveTargets[curveIndex] = newCurve;
+                        var oldCurve = path.m_curveTargets[curveIndex];
+                        var newCurve = new Vector3
+                        {
+                            x = (float)(pivotPoint.x + (oldCurve.x - pivotPoint.x) * Math.Cos(angle) - (oldCurve.z - pivotPoint.z) * Math.Sin(angle)),
+                            y = oldCurve.y,
+                            z = (float)(pivotPoint.z + (oldCurve.x - pivotPoint.x) * Math.Sin(angle) + (oldCurve.z - pivotPoint.z) * Math.Cos(angle)),
+                        };
+                        path.m_curveTargets[curveIndex] = newCurve;
+                    }
                 }
+
             }
             return newNode;
         }
@@ -958,7 +848,7 @@ namespace MetroOverhaul
                         path.m_nodes[i] = new Vector3
                         {
                             x = path.m_nodes[i].x,
-                            y = -MIN_DEPTH,
+                            y = -DEF_DEPTH,
                             z = path.m_nodes[i].z
                         };
                         SetCurveTargets(path);
@@ -1013,16 +903,16 @@ namespace MetroOverhaul
 
         private static bool AllNodesUnderGround(BuildingInfo.PathInfo path)
         {
-            return path.m_nodes.All(n => n.y < 0);
+            return path.m_nodes.All(n => n.y <= -4);
         }
         private static bool BuildingHasPedestrianConnectionSurface(BuildingInfo info)
         {
-            return info.m_paths.Count(p => p.m_netInfo != null && p.m_netInfo.name == "Pedestrian Connection Surface" || p.m_netInfo.name == "Pedestrian Connection Inside") >= 1;
+            return info.m_paths.Count(p => IsPedestrianPath(p)) >= 1;
         }
         private static List<Vector3> GetIsoltedNodes(BuildingInfo info)
         {
             return info.m_paths
-                .Where(p => p.m_netInfo != null && p.m_netInfo.name == "Pedestrian Connection Surface" || p.m_netInfo.name == "Pedestrian Connection Inside")
+                .Where(p => IsPedestrianPath(p))
                 .SelectMany(p => p.m_nodes).GroupBy(x => x)
                 .Where(g => g.Count() == 1)
                 .Select(y => y.Key)
