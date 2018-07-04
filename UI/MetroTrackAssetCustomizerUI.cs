@@ -79,6 +79,7 @@ namespace MetroOverhaul.UI
         private UIButton btnSinglePlatform;
         private UIButton btnSingleTrack;
         private UIButton btnDoubleTrack;
+        private UIButton btnQuadTrack;
         private UIButton btnOneWay;
         private UIButton btnTwoWay;
 
@@ -297,11 +298,17 @@ namespace MetroOverhaul.UI
                   SetNetToolPrefab();
               });
 
-            btnDoubleTrack = CreateButton("Double", new Vector3(8 + (0.5f * width) - 16, 150), (c, v) =>
+            btnDoubleTrack = CreateButton("Double", new Vector3(8 + (0.33333f * width) - 16, 150), (c, v) =>
               {
                   trackSize = 1;
                   SetNetToolPrefab();
               });
+
+            btnQuadTrack = CreateButton("Quad", new Vector3(8 + (0.66666f * width) - 16, 150), (c, v) =>
+            {
+                trackSize = 2;
+                SetNetToolPrefab();
+            });
 
             btnOneWay = CreateButton("OneWay", new Vector3(8, 200), (c, v) =>
              {
@@ -461,9 +468,11 @@ namespace MetroOverhaul.UI
             {
                 ToggleButtonPairs(btnTrack, btnStation);
                 if (trackSize == 0)
-                    ToggleButtonPairs(btnSingleTrack, btnDoubleTrack);
+                    ToggleButtonPairs(btnSingleTrack, btnDoubleTrack, btnQuadTrack);
                 else if (trackSize == 1)
-                    ToggleButtonPairs(btnDoubleTrack, btnSingleTrack);
+                    ToggleButtonPairs(btnDoubleTrack, btnSingleTrack, btnQuadTrack);
+                else if (trackSize == 2)
+                    ToggleButtonPairs(btnQuadTrack, btnSingleTrack, btnDoubleTrack);
                 if (trackDirection == 0)
                     ToggleButtonPairs(btnOneWay, btnTwoWay);
                 else if (trackDirection == 1)

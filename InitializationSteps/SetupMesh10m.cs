@@ -522,12 +522,12 @@ namespace MetroOverhaul.InitializationSteps
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
-                            ($@"Meshes\10m\Station_Rail.obj")
+                            ($@"Meshes\{width}\Boosted_Rail.obj")
                             .SetConsistentUVs();
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes
-                            ($@"Meshes\10m\Station_ThirdRail.obj", $@"Meshes\{width}\Blank.obj")
+                            ($@"Meshes\{width}\ThirdRail.obj", $@"Meshes\{width}\Blank.obj")
                             .SetConsistentUVs();
                         node0
                             .SetMeshes
@@ -634,12 +634,12 @@ namespace MetroOverhaul.InitializationSteps
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes
-                            ($@"Meshes\10m\Station_Boosted_Rail.obj")
+                            ($@"Meshes\{width}\Boosted_Rail.obj")
                             .SetConsistentUVs();
                         segment3
                             .SetFlagsDefault()
                             .SetMeshes
-                            ($@"Meshes\10m\Station_ThirdRail.obj", $@"Meshes\{width}\Blank.obj")
+                            ($@"Meshes\{width}\ThirdRail.obj", $@"Meshes\{width}\Blank.obj")
                             .SetConsistentUVs();
                         node1
                             .SetMeshes
@@ -648,7 +648,7 @@ namespace MetroOverhaul.InitializationSteps
                                 .SetConsistentUVs();
                         node2
                             .SetMeshes
-                            ($@"Meshes\{width}\Boosted_Station_Node_Rail.obj")
+                            ($@"Meshes\{width}\Boosted_Rail.obj")
                             .SetConsistentUVs();
                         node3
                             .SetMeshes

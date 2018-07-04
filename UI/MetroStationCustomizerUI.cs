@@ -13,22 +13,17 @@ namespace MetroOverhaul.UI
         private const int LENGTH_STEP = 8;
         private const int ANGLE_STEP = 15;
         private const float BEND_STRENGTH_STEP = 0.5f;
-        //private float m_setDepth;
-        //private float m_setLength;
-        //private float m_setBendStrength;
-        //private float m_setAngle;
         private float m_oldAngle;
         private bool m_valueChanged = false;
         private ToggleType m_Toggle = ToggleType.None;
         private static Dictionary<ToggleType, SliderData> SliderDataDict { get; set; }
         private static Dictionary<ToggleType, UISlider> SliderDict { get; set; }
+        private static Dictionary<StationTrackType, CheckBoxData> CheckBoxDataDict { get; set; }
+        private static Dictionary<StationTrackType, UICheckBox> CheckBoxDict { get; set; }
+        private static Dictionary<StationTrackType, UISprite> SpriteDict { get; set; }
         private static Dictionary<ToggleType, UIPanel> PanelDict { get; set; }
         private Dictionary<ToggleType, UIButton> toggleBtnDict = new Dictionary<ToggleType, UIButton>();
         private Dictionary<ToggleType, float> SetDict = new Dictionary<ToggleType, float>();
-        //private UIButton m_lengthTextbox = new UIButton();
-        //private UITextField m_depthTextbox = new UITextField();
-        //private UITextField m_angleTextbox = new UITextField();
-        //private UITextField m_bendStrengthTextbox = new UITextField();
         private BulldozeTool m_bulldozeTool;
         private BuildingTool m_buildingTool;
         private NetTool m_netTool;
@@ -170,7 +165,7 @@ namespace MetroOverhaul.UI
                         SliderDict[m_Toggle].value = sData.Def;
                         break;
                 }
-                
+
                 m_T.Run();
             }
         }
@@ -181,7 +176,7 @@ namespace MetroOverhaul.UI
             {
                 foreach (UIPanel pnl in PanelDict.Values)
                 {
-                    pnl.color = new Color32(150, 150, 150,210);
+                    pnl.color = new Color32(150, 150, 150, 210);
                 }
                 PanelDict[type].color = new Color32(30, 200, 50, 255);
                 SliderDict[type].Focus();
@@ -204,7 +199,7 @@ namespace MetroOverhaul.UI
             PanelDict[type] = sliderPanel;
             sliderPanel.atlas = atlas;
             sliderPanel.backgroundSprite = "GenericPanel";
-            sliderPanel.name = "pnl"+typeString;
+            sliderPanel.name = "pnl" + typeString;
             sliderPanel.color = new Color32(150, 150, 150, 210);
             sliderPanel.playAudioEvents = true;
             sliderPanel.size = new Vector2(width - 16, 20);
@@ -213,7 +208,7 @@ namespace MetroOverhaul.UI
             sliderPanel.eventKeyDown += delegate (UIComponent sender, UIKeyEventParameter e) { OnToggleKeyDown(sender, e); };
 
             UIPanel sliderLeftPanel = sliderPanel.AddUIComponent<UIPanel>();
-            sliderLeftPanel.name = "pnlLeft"+typeString;
+            sliderLeftPanel.name = "pnlLeft" + typeString;
             sliderLeftPanel.height = sliderPanel.height - 4;
             sliderLeftPanel.width = (0.7f * sliderPanel.width) - 5;
             sliderLeftPanel.relativePosition = new Vector2(2, 2);
@@ -301,7 +296,7 @@ namespace MetroOverhaul.UI
             backgroundSprite = "GenericPanel";
             color = new Color32(68, 84, 68, 170);
             width = 280;
-            height = 270;
+            height = 300;
             opacity = 60;
             position = Vector2.zero;
             isVisible = false;
@@ -362,150 +357,140 @@ namespace MetroOverhaul.UI
                 SetVal = SetStationCustomizations.DEF_BEND_STRENGTH,
                 Step = BEND_STRENGTH_STEP
             });
+            CheckBoxDataDict = new Dictionary<StationTrackType, CheckBoxData>();
+            CheckBoxDataDict.Add(StationTrackType.SidePlatform, new CheckBoxData()
+            {
+                Name = "Side Platform",
+                TrackName = "Metro Station Track Tunnel"
+            });
+            CheckBoxDataDict.Add(StationTrackType.IslandPlatform, new CheckBoxData()
+            {
+                Name = "Island Platform",
+                TrackName = "Metro Station Track Tunnel Island"
+            });
+            CheckBoxDataDict.Add(StationTrackType.SingleTrack, new CheckBoxData()
+            {
+                Name = "Single Platform",
+                TrackName = "Metro Station Track Tunnel Small"
+            });
+            CheckBoxDataDict.Add(StationTrackType.LargeSidePlatform, new CheckBoxData()
+            {
+                Name = "Large Side Platform",
+                TrackName = "Metro Station Track Tunnel Large"
+            });
+
             SliderDict = new Dictionary<ToggleType, UISlider>();
             PanelDict = new Dictionary<ToggleType, UIPanel>();
+            CheckBoxDict = new Dictionary<StationTrackType, UICheckBox>();
+            SpriteDict = new Dictionary<StationTrackType, UISprite>();
 
             CreateSlider(ToggleType.Length);
             CreateSlider(ToggleType.Depth);
             CreateSlider(ToggleType.Angle);
-            CreateSlider(ToggleType.Bend);    
+            CreateSlider(ToggleType.Bend);
 
-            UICheckBox useIslandPlatformCheckBox = AddUIComponent<UICheckBox>();
-            UICheckBox UseSidePlatformCheckBox = AddUIComponent<UICheckBox>();
-            UICheckBox UseSingleTrackCheckBox = AddUIComponent<UICheckBox>();
-
-            UseSidePlatformCheckBox.text = "Side Platform";
-            UseSidePlatformCheckBox.size = new Vector2(width - 16, 16);
-            UseSidePlatformCheckBox.relativePosition = new Vector2(8, 200);
-            UseSidePlatformCheckBox.isInteractive = true;
-            UseSidePlatformCheckBox.eventCheckChanged += (c, v) =>
-            {
-                if (UseSidePlatformCheckBox.isChecked)
-                {
-                    m_PrevTrackType = m_TrackType;
-                    m_TrackType = StationTrackType.SidePlatform;
-                    useIslandPlatformCheckBox.isChecked = false;
-                    UseSingleTrackCheckBox.isChecked = false;
-                    TunnelStationTrackToggleStyles(m_currentBuilding);
-                    t.Run();
-                }
-                else
-                {
-                    if (useIslandPlatformCheckBox.isChecked == false && UseSingleTrackCheckBox.isChecked == false)
-                    {
-                        UseSidePlatformCheckBox.isChecked = true;
-                    }
-                }
-            };
-
-            m_UseSidePlatformCheckBoxClicker = UseSidePlatformCheckBox.AddUIComponent<UISprite>();
-            m_UseSidePlatformCheckBoxClicker.atlas = atlas;
-            m_UseSidePlatformCheckBoxClicker.spriteName = "check-unchecked";
-            m_UseSidePlatformCheckBoxClicker.relativePosition = new Vector2(0, 0);
-            m_UseSidePlatformCheckBoxClicker.size = new Vector2(16, 16);
-            m_UseSidePlatformCheckBoxClicker.isInteractive = true;
-
-            UILabel UseSidePlatformLabel = UseSidePlatformCheckBox.AddUIComponent<UILabel>();
-            UseSidePlatformLabel.relativePosition = new Vector2(20, 0);
-            UseSidePlatformLabel.text = "Side Platform";
-            UseSidePlatformLabel.height = 16;
-            UseSidePlatformLabel.isInteractive = true;
-
-
-            useIslandPlatformCheckBox.text = "Island Platform";
-            useIslandPlatformCheckBox.size = new Vector2(width - 16, 16);
-            useIslandPlatformCheckBox.relativePosition = new Vector2(8, 220);
-            useIslandPlatformCheckBox.isInteractive = true;
-            useIslandPlatformCheckBox.eventCheckChanged += (c, v) =>
-            {
-                if (useIslandPlatformCheckBox.isChecked)
-                {
-                    m_PrevTrackType = m_TrackType;
-                    m_TrackType = StationTrackType.IslandPlatform;
-                    UseSingleTrackCheckBox.isChecked = false;
-                    UseSidePlatformCheckBox.isChecked = false;
-                    TunnelStationTrackToggleStyles(m_currentBuilding);
-                    t.Run();
-                }
-                else
-                {
-                    if (UseSidePlatformCheckBox.isChecked == false && UseSingleTrackCheckBox.isChecked == false)
-                    {
-                        useIslandPlatformCheckBox.isChecked = true;
-                    }
-                }
-            };
-
-            m_UseIslandPlatformCheckBoxClicker = useIslandPlatformCheckBox.AddUIComponent<UISprite>();
-            m_UseIslandPlatformCheckBoxClicker.atlas = atlas;
-            m_UseIslandPlatformCheckBoxClicker.spriteName = "check-unchecked";
-            m_UseIslandPlatformCheckBoxClicker.relativePosition = new Vector2(0, 0);
-            m_UseIslandPlatformCheckBoxClicker.size = new Vector2(16, 16);
-            m_UseIslandPlatformCheckBoxClicker.isInteractive = true;
-
-            UILabel useIslandPlatformLabel = useIslandPlatformCheckBox.AddUIComponent<UILabel>();
-            useIslandPlatformLabel.relativePosition = new Vector2(20, 0);
-            useIslandPlatformLabel.text = "Island Platform";
-            useIslandPlatformLabel.height = 16;
-            useIslandPlatformLabel.isInteractive = true;
-
-            UseSingleTrackCheckBox.text = "Single Track";
-            UseSingleTrackCheckBox.size = new Vector2(width - 16, 16);
-            UseSingleTrackCheckBox.relativePosition = new Vector2(8, 240);
-            UseSingleTrackCheckBox.isInteractive = true;
-            UseSingleTrackCheckBox.eventCheckChanged += (c, v) =>
-            {
-                if (UseSingleTrackCheckBox.isChecked)
-                {
-                    m_PrevTrackType = m_TrackType;
-                    m_TrackType = StationTrackType.SingleTrack;
-                    useIslandPlatformCheckBox.isChecked = false;
-                    UseSidePlatformCheckBox.isChecked = false;
-                    TunnelStationTrackToggleStyles(m_currentBuilding);
-                    t.Run();
-                }
-                else
-                {
-                    if (UseSidePlatformCheckBox.isChecked == false && useIslandPlatformCheckBox.isChecked == false)
-                    {
-                        UseSingleTrackCheckBox.isChecked = true;
-                    }
-                }
-            };
-
-            m_UseSingleTrackCheckBoxClicker = UseSingleTrackCheckBox.AddUIComponent<UISprite>();
-            m_UseSingleTrackCheckBoxClicker.atlas = atlas;
-            m_UseSingleTrackCheckBoxClicker.spriteName = "check-unchecked";
-            m_UseSingleTrackCheckBoxClicker.relativePosition = new Vector2(0, 0);
-            m_UseSingleTrackCheckBoxClicker.size = new Vector2(16, 16);
-            m_UseSingleTrackCheckBoxClicker.isInteractive = true;
-
-            UILabel UseSingleTrackLabel = UseSingleTrackCheckBox.AddUIComponent<UILabel>();
-            UseSingleTrackLabel.relativePosition = new Vector2(20, 0);
-            UseSingleTrackLabel.text = "Single Track";
-            UseSingleTrackLabel.height = 16;
-            UseSingleTrackLabel.isInteractive = true;
+            CreateCheckBox(StationTrackType.SidePlatform);
+            CreateCheckBox(StationTrackType.IslandPlatform);
+            CreateCheckBox(StationTrackType.SingleTrack);
+            CreateCheckBox(StationTrackType.LargeSidePlatform);
         }
-        private UISprite m_UseIslandPlatformCheckBoxClicker = null;
-        private UISprite m_UseSingleTrackCheckBoxClicker = null;
-        private UISprite m_UseSidePlatformCheckBoxClicker = null;
+        private int m_CheckBoxCount = 0;
+        private void CreateCheckBox(StationTrackType type)
+        {
+            UICheckBox checkbox = AddUIComponent<UICheckBox>();
+            CheckBoxDict[type] = checkbox;
+            UISprite sprite = CheckBoxDict[type].AddUIComponent<UISprite>();
+            SpriteDict[type] = sprite;
+            CheckBoxData cbd = CheckBoxDataDict[type];
+            checkbox.text = cbd.Name;
+            checkbox.size = new Vector2(width - 16, 16);
+            checkbox.relativePosition = new Vector2(8, 200 + 20 * m_CheckBoxCount);
+            checkbox.isInteractive = true;
+            checkbox.eventCheckChanged += (c, v) =>
+            {
+                ToggleCheckBox(type);
+            };
+
+            sprite.atlas = atlas;
+            sprite.spriteName = "check-unchecked";
+            sprite.relativePosition = new Vector2(0, 0);
+            sprite.size = new Vector2(16, 16);
+            sprite.isInteractive = true;
+
+            UILabel label = CheckBoxDict[type].AddUIComponent<UILabel>();
+            label.relativePosition = new Vector2(20, 0);
+            label.text = cbd.Name;
+            label.height = 16;
+            label.isInteractive = true;
+
+            m_CheckBoxCount++;
+        }
+        private string MakeName(StationTrackType type)
+        {
+            string name = type.ToString();
+            for (var i = 0; i < name.Length; i++)
+            {
+                if (i > 0)
+                {
+                    char c = name[i];
+                    if (char.IsUpper(c))
+                    {
+                        name = name.Insert(i, " ");
+                    }
+                }
+            }
+            return name;
+        }
+        private void ToggleCheckBox(StationTrackType type)
+        {
+            if (CheckBoxDict[type].isChecked)
+            {
+                foreach (var kvp in CheckBoxDict)
+                {
+                    if (kvp.Key != type)
+                    {
+                        kvp.Value.isChecked = false;
+                    }
+                }
+                m_PrevTrackType = m_TrackType;
+                m_TrackType = type;
+                TunnelStationTrackToggleStyles(m_currentBuilding);
+                m_T.Run();
+            }
+            else
+            {
+                var othersFalse = true;
+                foreach (var kvp in CheckBoxDict)
+                {
+                    if (kvp.Key != type && kvp.Value.isChecked)
+                    {
+                        othersFalse = false;
+                        break;
+                    }
+                }
+                if (othersFalse)
+                {
+                    CheckBoxDict[type].isChecked = true;
+                }
+            }
+        }
 
         private void RestoreStationTrackStyles(BuildingInfo info)
         {
-			if (info.m_paths != null && info.m_paths.Length > 0)
-			{
-				for (var i = 0; i < info.m_paths.Length; i++)
-				{
-					var path = info.m_paths[i];
-					if (path?.m_netInfo?.name != null && path.m_netInfo.IsUndergroundMetroStationTrack())
-					{
-						if (m_PrevTrackType != StationTrackType.SidePlatform)
-						{
-							path.AssignNetInfo("Metro Station Track Tunnel");
-						}
-					}
-				}
-			}
+            if (info.m_paths != null && info.m_paths.Length > 0)
+            {
+                for (var i = 0; i < info.m_paths.Length; i++)
+                {
+                    var path = info.m_paths[i];
+                    if (path?.m_netInfo?.name != null && path.m_netInfo.IsUndergroundMetroStationTrack())
+                    {
+                        if (m_PrevTrackType != StationTrackType.SidePlatform)
+                        {
+                            path.AssignNetInfo("Metro Station Track Tunnel");
+                        }
+                    }
+                }
+            }
         }
 
         private void TunnelStationTrackToggleStyles(BuildingInfo info)
@@ -521,53 +506,21 @@ namespace MetroOverhaul.UI
                 {
                     continue;
                 }
-                switch (m_TrackType)
+                foreach (var kvp in SpriteDict)
                 {
-                    case StationTrackType.SidePlatform:
-                        {
-                            if (m_UseSidePlatformCheckBoxClicker.spriteName == "check-unchecked")
-                            {
-                                m_UseSidePlatformCheckBoxClicker.spriteName = "check-checked";
-                                m_UseIslandPlatformCheckBoxClicker.spriteName = "check-unchecked";
-                                m_UseSingleTrackCheckBoxClicker.spriteName = "check-unchecked";
-                            }
-
-                            if (m_PrevTrackType != StationTrackType.SidePlatform)
-                            {
-                                path.AssignNetInfo("Metro Station Track Tunnel");
-                            }
-                        }
-                        break;
-                    case StationTrackType.IslandPlatform:
-                        {
-                            if (m_UseIslandPlatformCheckBoxClicker.spriteName == "check-unchecked")
-                            {
-                                m_UseIslandPlatformCheckBoxClicker.spriteName = "check-checked";
-                                m_UseSidePlatformCheckBoxClicker.spriteName = "check-unchecked";
-                                m_UseSingleTrackCheckBoxClicker.spriteName = "check-unchecked";
-                            }
-
-                            if (m_PrevTrackType != StationTrackType.IslandPlatform)
-                            {
-                                path.AssignNetInfo("Metro Station Track Tunnel Island");
-                            }
-                        }
-                        break;
-                    case StationTrackType.SingleTrack:
-                        {
-                            if (m_UseSingleTrackCheckBoxClicker.spriteName == "check-unchecked")
-                            {
-                                m_UseSingleTrackCheckBoxClicker.spriteName = "check-checked";
-                                m_UseIslandPlatformCheckBoxClicker.spriteName = "check-unchecked";
-                                m_UseSidePlatformCheckBoxClicker.spriteName = "check-unchecked";
-                            }
-
-                            if (m_PrevTrackType != StationTrackType.SingleTrack)
-                            {
-                                path.AssignNetInfo("Metro Station Track Tunnel Small");
-                            }
-                        }
-                        break;
+                    if (kvp.Key == m_TrackType)
+                    {
+                        if (kvp.Value.spriteName == "check-unchecked")
+                            kvp.Value.spriteName = "check-checked";
+                    }
+                    else
+                    {
+                        kvp.Value.spriteName = "check-unchecked";
+                    }
+                    if (m_PrevTrackType != m_TrackType)
+                    {
+                        path.AssignNetInfo(CheckBoxDataDict[m_TrackType].TrackName);
+                    }
                 }
             }
         }
@@ -617,11 +570,17 @@ namespace MetroOverhaul.UI
             SetVal = val;
         }
     }
+    public struct CheckBoxData
+    {
+        public string Name { get; set; }
+        public string TrackName { get; set; }
+    }
     public enum StationTrackType
     {
         SidePlatform,
         IslandPlatform,
-        SingleTrack
+        SingleTrack,
+        LargeSidePlatform
     }
     public enum ToggleType
     {

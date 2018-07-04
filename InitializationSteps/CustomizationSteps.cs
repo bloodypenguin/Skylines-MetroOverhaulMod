@@ -229,7 +229,6 @@ namespace MetroOverhaul.InitializationSteps
         {
             prefab.m_connectGroup = NetInfo.ConnectGroup.WideTram;
             prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.NarrowTram | (NetInfo.ConnectGroup)16 | NetInfo.ConnectGroup.CenterTram;
-
             if (prefab.m_nodes.Count() > 1)
             {
                 prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.WideTram;
@@ -239,27 +238,58 @@ namespace MetroOverhaul.InitializationSteps
                 IsTwoWay = true,
                 LanesToAdd = 2
             });
-            for (var i = 0; i < prefab.m_lanes.Count(); i++)
+            var isStation = prefab.name.Contains("Station");
+            var vanillaMetroTrack = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+            var speedLimit = vanillaMetroTrack.m_lanes.First(l => l.m_vehicleType != VehicleInfo.VehicleType.None).m_speedLimit;
+            var theLanes = prefab.m_lanes.ToList();
+            var count = 0;
+            for (var i = 0; i < theLanes.Count(); i++)
             {
-                var lane = prefab.m_lanes[i];
-                var forwardDone = false;
-                var backwardDone = false;
-                if (lane.m_laneType == NetInfo.LaneType.Vehicle)
+                if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)
                 {
-
-                    if (!forwardDone && lane.m_direction == NetInfo.Direction.Forward)
+                    switch (count)
                     {
-                        lane.m_position = 5.89f;
-                        forwardDone = true;
+                        case 0:
+                            theLanes[i].m_position = -5.885f;
+                            theLanes[i].m_stopType = VehicleInfo.VehicleType.Metro;
+                            theLanes[i].m_direction = NetInfo.Direction.Backward;
+                            theLanes[i].m_speedLimit = speedLimit;
+                            break;
+                        case 1:
+                            theLanes[i].m_position = -1.966f;
+                            theLanes[i].m_stopType = VehicleInfo.VehicleType.None;
+                            theLanes[i].m_direction = NetInfo.Direction.Backward;
+                            theLanes[i].m_speedLimit = isStation ? speedLimit + 3 : speedLimit;
+                            break;
+                        case 2:
+                            theLanes[i].m_position = 1.966f;
+                            theLanes[i].m_stopType = VehicleInfo.VehicleType.None;
+                            theLanes[i].m_direction = NetInfo.Direction.Forward;
+                            theLanes[i].m_speedLimit = isStation ? speedLimit + 3 : speedLimit;
+                            break;
+                        case 3:
+                            theLanes[i].m_position = 5.886f;
+                            theLanes[i].m_stopType = VehicleInfo.VehicleType.Metro;
+                            theLanes[i].m_direction = NetInfo.Direction.Forward;
+                            theLanes[i].m_speedLimit = speedLimit;
+                            break;
                     }
-                    else if (!backwardDone && lane.m_direction == NetInfo.Direction.Backward)
+                    count++;
+                    theLanes[i].m_verticalOffset = 0.35f;
+                }
+                else if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
+                {
+                    if (theLanes[i].m_position > 0)
                     {
-                        lane.m_position = -5.89f;
-                        backwardDone = true;
+                        theLanes[i].m_position += 4;
+                    }
+                    else if (theLanes[i].m_position < 0)
+                    {
+                        theLanes[i].m_position -= 4;
                     }
                 }
-                lane.m_verticalOffset = 0.35f;
             }
+            prefab.m_lanes = theLanes.ToArray();
         }
 
         public static void CommonIsland16mCustomization(NetInfo prefab, NetInfoVersion version)
@@ -326,6 +356,24 @@ namespace MetroOverhaul.InitializationSteps
                     break;
             }
         }
+        public static void SetStandardStationTrackWidths(NetInfo prefab, NetInfoVersion version)
+        {
+            switch (version)
+            {
+                case NetInfoVersion.Ground:
+                    prefab.m_halfWidth = 5;
+                    prefab.m_pavementWidth = 2f;
+                    break;
+                case NetInfoVersion.Elevated:
+                    prefab.m_halfWidth = prefab.name.Contains("Steel") ? 5.0001f : 5; //Todo make proper enum for the styles
+                    prefab.m_pavementWidth = 1.5f;
+                    break;
+                case NetInfoVersion.Tunnel:
+                    prefab.m_pavementWidth = 4.5f;
+                    prefab.m_halfWidth = 8;
+                    break;
+            }
+        }
         public static void SetLargeTrackWidths(NetInfo prefab, NetInfoVersion version)
         {
             switch (version)
@@ -349,6 +397,24 @@ namespace MetroOverhaul.InitializationSteps
                 case NetInfoVersion.Ground:
                     prefab.m_halfWidth = 9;
                     prefab.m_pavementWidth = 2f;
+                    break;
+            }
+        }
+        public static void SetLargeStationTrackWidths(NetInfo prefab, NetInfoVersion version)
+        {
+            switch (version)
+            {
+                case NetInfoVersion.Ground:
+                    prefab.m_halfWidth = 9;
+                    prefab.m_pavementWidth = 2f;
+                    break;
+                case NetInfoVersion.Elevated:
+                    prefab.m_halfWidth = prefab.name.Contains("Steel") ? 9.0001f : 9; //Todo make proper enum for the styles
+                    prefab.m_pavementWidth = 1.5f;
+                    break;
+                case NetInfoVersion.Tunnel:
+                    prefab.m_halfWidth = 12;
+                    prefab.m_pavementWidth = 4.5f;
                     break;
             }
         }

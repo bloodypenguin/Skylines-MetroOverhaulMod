@@ -60,6 +60,7 @@ namespace MetroOverhaul.UI
         private UIButton btnClassicStyle;
         private UIButton btnSingleTrack;
         private UIButton btnDoubleTrack;
+        private UIButton btnQuadTrack;
         private UIButton btnOneWay;
         private UIButton btnTwoWay;
 
@@ -196,7 +197,7 @@ namespace MetroOverhaul.UI
 
             backgroundSprite = "GenericPanel";
             color = new Color32(73, 68, 84, 170);
-            width = 200;
+            width = 250;
             height = 270;
             opacity = 90;
             position = Vector2.zero;
@@ -242,11 +243,17 @@ namespace MetroOverhaul.UI
                   SetNetToolPrefab();
               });
 
-            btnDoubleTrack = CreateButton("Double", new Vector3(8 + (0.5f * width) - 16, 100), (c, v) =>
+            btnDoubleTrack = CreateButton("Double", new Vector3(8 + (0.33333f * width) - 16, 150), (c, v) =>
               {
                   trackSize = 1;
                   SetNetToolPrefab();
               });
+
+            btnQuadTrack = CreateButton("Quad", new Vector3(8 + (0.66666f * width) - 16, 150), (c, v) =>
+            {
+                trackSize = 2;
+                SetNetToolPrefab();
+            });
 
             btnOneWay = CreateButton("OneWay", new Vector3(8, 150), (c, v) =>
              {
@@ -354,75 +361,33 @@ namespace MetroOverhaul.UI
 
             return button;
         }
-
+        private void ToggleButtonPairs(UIButton active, params UIButton[] inactives)
+        {
+            active.color = new Color32(163, 255, 16, 255);
+            active.normalBgSprite = "ButtonMenuFocused";
+            active.useDropShadow = true;
+            active.opacity = 95;
+            foreach (UIButton inactive in inactives)
+            {
+                inactive.color = new Color32(150, 150, 150, 255);
+                inactive.normalBgSprite = "ButtonMenu";
+                inactive.useDropShadow = false;
+                inactive.opacity = 75;
+            }
+        }
         private void SetNetToolPrefab()
         {
-            if (trackStyle == 0)
-            {
-                btnModernStyle.color = new Color32(163, 255, 16, 255);
-                btnModernStyle.normalBgSprite = "ButtonMenuFocused";
-                btnModernStyle.useDropShadow = true;
-                btnModernStyle.opacity = 95;
-                btnClassicStyle.color = new Color32(150, 150, 150, 255);
-                btnClassicStyle.normalBgSprite = "ButtonMenu";
-                btnClassicStyle.useDropShadow = false;
-                btnClassicStyle.opacity = 75;
-            }
-            else if (trackStyle == 1)
-            {
-                btnClassicStyle.color = new Color32(163, 255, 16, 255);
-                btnClassicStyle.normalBgSprite = "ButtonMenuFocused";
-                btnClassicStyle.useDropShadow = true;
-                btnClassicStyle.opacity = 95;
-                btnModernStyle.color = new Color32(150, 150, 150, 255);
-                btnModernStyle.normalBgSprite = "ButtonMenu";
-                btnModernStyle.useDropShadow = false;
-                btnModernStyle.opacity = 75;
-            }
             if (trackSize == 0)
-            {
-                btnSingleTrack.color = new Color32(163, 255, 16, 255);
-                btnSingleTrack.normalBgSprite = "ButtonMenuFocused";
-                btnSingleTrack.useDropShadow = true;
-                btnSingleTrack.opacity = 95;
-                btnDoubleTrack.color = new Color32(150, 150, 150, 255);
-                btnDoubleTrack.normalBgSprite = "ButtonMenu";
-                btnDoubleTrack.useDropShadow = false;
-                btnDoubleTrack.opacity = 75;
-            }
+                ToggleButtonPairs(btnSingleTrack, btnDoubleTrack, btnQuadTrack);
             else if (trackSize == 1)
-            {
-                btnDoubleTrack.color = new Color32(163, 255, 16, 255);
-                btnDoubleTrack.normalBgSprite = "ButtonMenuFocused";
-                btnDoubleTrack.useDropShadow = true;
-                btnDoubleTrack.opacity = 95;
-                btnSingleTrack.color = new Color32(150, 150, 150, 255);
-                btnSingleTrack.normalBgSprite = "ButtonMenu";
-                btnSingleTrack.useDropShadow = false;
-                btnSingleTrack.opacity = 75;
-            }
+                ToggleButtonPairs(btnDoubleTrack, btnSingleTrack, btnQuadTrack);
+            else if (trackSize == 2)
+                ToggleButtonPairs(btnQuadTrack, btnSingleTrack, btnDoubleTrack);
             if (trackDirection == 0)
-            {
-                btnOneWay.color = new Color32(163, 255, 16, 255);
-                btnOneWay.normalBgSprite = "ButtonMenuFocused";
-                btnOneWay.useDropShadow = true;
-                btnOneWay.opacity = 95;
-                btnTwoWay.color = new Color32(150, 150, 150, 255);
-                btnTwoWay.normalBgSprite = "ButtonMenu";
-                btnOneWay.useDropShadow = false;
-                btnTwoWay.opacity = 75;
-            }
+                ToggleButtonPairs(btnOneWay, btnTwoWay);
             else if (trackDirection == 1)
-            {
-                btnTwoWay.color = new Color32(163, 255, 16, 255);
-                btnTwoWay.normalBgSprite = "ButtonMenuFocused";
-                btnTwoWay.useDropShadow = true;
-                btnTwoWay.opacity = 95;
-                btnOneWay.color = new Color32(150, 150, 150, 255);
-                btnOneWay.normalBgSprite = "ButtonMenu";
-                btnOneWay.useDropShadow = false;
-                btnOneWay.opacity = 75;
-            }
+                ToggleButtonPairs(btnTwoWay, btnOneWay);
+
             NetInfo prefab = null;
             switch (trackStyle)
             {
