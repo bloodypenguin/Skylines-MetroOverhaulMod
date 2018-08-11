@@ -170,7 +170,7 @@ namespace MetroOverhaul.UI
                         SliderDict[m_Toggle].value = sData.Def;
                         break;
                 }
-                
+
                 m_T.Run();
             }
         }
@@ -181,7 +181,7 @@ namespace MetroOverhaul.UI
             {
                 foreach (UIPanel pnl in PanelDict.Values)
                 {
-                    pnl.color = new Color32(150, 150, 150,210);
+                    pnl.color = new Color32(150, 150, 150, 210);
                 }
                 PanelDict[type].color = new Color32(30, 200, 50, 255);
                 SliderDict[type].Focus();
@@ -204,7 +204,7 @@ namespace MetroOverhaul.UI
             PanelDict[type] = sliderPanel;
             sliderPanel.atlas = atlas;
             sliderPanel.backgroundSprite = "GenericPanel";
-            sliderPanel.name = "pnl"+typeString;
+            sliderPanel.name = "pnl" + typeString;
             sliderPanel.color = new Color32(150, 150, 150, 210);
             sliderPanel.playAudioEvents = true;
             sliderPanel.size = new Vector2(width - 16, 20);
@@ -213,7 +213,7 @@ namespace MetroOverhaul.UI
             sliderPanel.eventKeyDown += delegate (UIComponent sender, UIKeyEventParameter e) { OnToggleKeyDown(sender, e); };
 
             UIPanel sliderLeftPanel = sliderPanel.AddUIComponent<UIPanel>();
-            sliderLeftPanel.name = "pnlLeft"+typeString;
+            sliderLeftPanel.name = "pnlLeft" + typeString;
             sliderLeftPanel.height = sliderPanel.height - 4;
             sliderLeftPanel.width = (0.7f * sliderPanel.width) - 5;
             sliderLeftPanel.relativePosition = new Vector2(2, 2);
@@ -265,16 +265,10 @@ namespace MetroOverhaul.UI
                 if (sliderTextField.text != v.ToString())
                 {
                     m_valueChanged = true;
-                    if (v >= sData.Min)
-                    {
-                        sliderTextField.text = v.ToString();
-                        SetDict[type] = v;
-                    }
-                    else
-                    {
-                        sliderTextField.text = sData.Def.ToString();
-                        SetDict[type] = sData.Def;
-                    }
+                    v = Math.Min(Math.Max(sData.Min, v), sData.Max);
+                    sliderTextField.text = v.ToString();
+                    SetDict[type] = v;
+                    //m_T.Run();
                 }
             };
             slider.eventMouseUp += (c, e) =>
@@ -283,9 +277,7 @@ namespace MetroOverhaul.UI
                 if (m_valueChanged)
                 {
                     m_valueChanged = false;
-                    m_T.Run();
                 }
-
             };
 
             m_SliderCount++;
@@ -368,7 +360,7 @@ namespace MetroOverhaul.UI
             CreateSlider(ToggleType.Length);
             CreateSlider(ToggleType.Depth);
             CreateSlider(ToggleType.Angle);
-            CreateSlider(ToggleType.Bend);    
+            CreateSlider(ToggleType.Bend);
 
             UICheckBox useIslandPlatformCheckBox = AddUIComponent<UICheckBox>();
             UICheckBox UseSidePlatformCheckBox = AddUIComponent<UICheckBox>();
@@ -492,20 +484,20 @@ namespace MetroOverhaul.UI
 
         private void RestoreStationTrackStyles(BuildingInfo info)
         {
-			if (info.m_paths != null && info.m_paths.Length > 0)
-			{
-				for (var i = 0; i < info.m_paths.Length; i++)
-				{
-					var path = info.m_paths[i];
-					if (path?.m_netInfo?.name != null && path.m_netInfo.IsUndergroundMetroStationTrack())
-					{
-						if (m_PrevTrackType != StationTrackType.SidePlatform)
-						{
-							path.AssignNetInfo("Metro Station Track Tunnel");
-						}
-					}
-				}
-			}
+            if (info.m_paths != null && info.m_paths.Length > 0)
+            {
+                for (var i = 0; i < info.m_paths.Length; i++)
+                {
+                    var path = info.m_paths[i];
+                    if (path?.m_netInfo?.name != null && path.m_netInfo.IsUndergroundMetroStationTrack())
+                    {
+                        if (m_PrevTrackType != StationTrackType.SidePlatform)
+                        {
+                            path.AssignNetInfo("Metro Station Track Tunnel");
+                        }
+                    }
+                }
+            }
         }
 
         private void TunnelStationTrackToggleStyles(BuildingInfo info)
@@ -600,9 +592,9 @@ namespace MetroOverhaul.UI
 
         private void DoStationMechanics()
         {
-            var angleDelta = Math.PI / 180 * (SetDict[ToggleType.Angle] - m_oldAngle);
-            m_oldAngle = SetDict[ToggleType.Angle];
-            SetStationCustomizations.ModifyStation(m_currentBuilding, SetDict[ToggleType.Depth], SetDict[ToggleType.Length], angleDelta, SetDict[ToggleType.Bend], m_currentSuperBuilding);
+            //var angleDelta = Math.PI / 180 * (SetDict[ToggleType.Angle] - m_oldAngle);
+            //m_oldAngle = SetDict[ToggleType.Angle];
+            SetStationCustomizations.ModifyStation(m_currentBuilding, SetDict[ToggleType.Depth], SetDict[ToggleType.Length], (int)SetDict[ToggleType.Angle], SetDict[ToggleType.Bend], m_currentSuperBuilding);
         }
     }
     public struct SliderData

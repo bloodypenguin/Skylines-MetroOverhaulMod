@@ -105,7 +105,7 @@ namespace MetroOverhaul
                     {
                         if (!OptionsWrapper<Options>.Options.metroUi)
                         {
-                            SetStationCustomizations.ModifyStation(prefab, SetStationCustomizations.DEF_DEPTH, SetStationCustomizations.DEF_LENGTH, SetStationCustomizations.DEF_ANGLE, SetStationCustomizations.DEF_BEND_STRENGTH);
+                            SetStationCustomizations.ModifyStation(prefab, SetStationCustomizations.DEF_DEPTH, SetStationCustomizations.DEF_LENGTH, (int)SetStationCustomizations.DEF_ANGLE, SetStationCustomizations.DEF_BEND_STRENGTH);
                         }
                     }
                     else
@@ -447,7 +447,7 @@ namespace MetroOverhaul
             PrepareBuilding(ref info);
             if (!OptionsWrapper<Options>.Options.ghostMode && HasUndergroundMOMorVanilla(buildingID, false))
             {
-                SetStationCustomizations.ModifyStation(info, SetStationCustomizations.DEF_DEPTH, SetStationCustomizations.MIN_LENGTH, SetStationCustomizations.DEF_ANGLE, SetStationCustomizations.DEF_BEND_STRENGTH, superInfo);
+                SetStationCustomizations.ModifyStation(info, SetStationCustomizations.DEF_DEPTH, SetStationCustomizations.MIN_LENGTH, (int)SetStationCustomizations.DEF_ANGLE, SetStationCustomizations.DEF_BEND_STRENGTH, superInfo);
             }
             info = BuildingFrom(buildingID).Info;
             binstance.UpdateBuildingInfo(buildingID, info);
