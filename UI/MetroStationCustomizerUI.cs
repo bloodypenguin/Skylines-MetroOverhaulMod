@@ -567,6 +567,7 @@ namespace MetroOverhaul.UI
         {
             m_oldAngle = 0;
             m_activated = true;
+            DoStationMechanicsResetAngles();
             m_currentBuilding = bInfo;
             m_currentSuperBuilding = superInfo;
             isVisible = true;
@@ -583,6 +584,8 @@ namespace MetroOverhaul.UI
             {
                 pnl.color = new Color32(150, 150, 150, 210);
             }
+            DoStationMechanicsResetAngles();
+            SetStationCustomizations.m_PremierPath = -1;
             m_currentBuilding = null;
             m_currentSuperBuilding = null;
             isVisible = false;
@@ -592,9 +595,11 @@ namespace MetroOverhaul.UI
 
         private void DoStationMechanics()
         {
-            //var angleDelta = Math.PI / 180 * (SetDict[ToggleType.Angle] - m_oldAngle);
-            //m_oldAngle = SetDict[ToggleType.Angle];
             SetStationCustomizations.ModifyStation(m_currentBuilding, SetDict[ToggleType.Depth], SetDict[ToggleType.Length], (int)SetDict[ToggleType.Angle], SetDict[ToggleType.Bend], m_currentSuperBuilding);
+        }
+        private void DoStationMechanicsResetAngles()
+        {
+            SetStationCustomizations.ModifyStation(m_currentBuilding, SetDict[ToggleType.Depth], SetDict[ToggleType.Length], 0, SetDict[ToggleType.Bend], m_currentSuperBuilding);
         }
     }
     public struct SliderData
