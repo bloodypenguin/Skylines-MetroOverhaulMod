@@ -243,13 +243,13 @@ namespace MetroOverhaul.UI
                   SetNetToolPrefab();
               });
 
-            btnDoubleTrack = CreateButton("Double", new Vector3(8 + (0.33333f * width) - 16, 150), (c, v) =>
+            btnDoubleTrack = CreateButton("Double", new Vector3(8 + (0.3f * width) - 16, 150), (c, v) =>
               {
                   trackSize = 1;
                   SetNetToolPrefab();
               });
 
-            btnQuadTrack = CreateButton("Quad", new Vector3(8 + (0.66666f * width) - 16, 150), (c, v) =>
+            btnQuadTrack = CreateButton("Quad", new Vector3(8 + (0.6f * width) - 16, 150), (c, v) =>
             {
                 trackSize = 2;
                 SetNetToolPrefab();
