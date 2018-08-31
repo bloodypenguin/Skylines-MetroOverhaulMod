@@ -195,8 +195,8 @@ namespace MetroOverhaul
                 if (pathList[i].m_netInfo != null && pathList[i].m_netInfo.IsUndergroundMetroStationTrack())
                 {
                     var trackPath = pathList[i];
-                    var middleBend = GetMiddle(trackPath);
-                    var middle = GetMiddle(trackPath);
+                    var middleBend = GetMiddle(trackPath, true);
+                    var middle = GetMiddle(trackPath, false);
                     var bendVector = middleBend - middle;
 
                     //var trackNodes = new List<Vector3>();
@@ -457,12 +457,8 @@ namespace MetroOverhaul
             return newPath;
         }
 
-        private static void BendStationTrack(BuildingInfo.PathInfo stationPath, float aBendStrength = 0)
+        private static void BendStationTrack(BuildingInfo.PathInfo stationPath, float aBendStrength)
         {
-            if (aBendStrength == 0)
-            {
-                aBendStrength = m_BendStrength;
-            }
             var middle = GetMiddle(stationPath);
             var newX = (stationPath.m_nodes.First().z - stationPath.m_nodes.Last().z) / 2;
             var newY = (stationPath.m_nodes.First().y + stationPath.m_nodes.Last().y) / 2;
@@ -476,7 +472,7 @@ namespace MetroOverhaul
             for (var i = 0; i < stationPaths.Count(); i++)
             {
                 var stationPath = stationPaths[i];
-                BendStationTrack(stationPath);
+                BendStationTrack(stationPath, m_BendStrength);
                 var stairPaths = m_Info.m_paths.Where(p => p != null && stationPaths.Contains(p) == false && p.m_nodes.Any(n => n.y == stationPath.m_nodes.First().y)).ToList();
                 for (var j = 0; j < stairPaths.Count(); j++)
                 {
@@ -504,7 +500,7 @@ namespace MetroOverhaul
             }
             var spawnPoints = (from path in paths
                                where IsVehicleStop(path)
-                               select GetMiddle(path)).Distinct().ToArray();
+                               select GetMiddle(path, true)).Distinct().ToArray();
 
             switch (spawnPoints.Length)
             {
@@ -931,13 +927,14 @@ namespace MetroOverhaul
             return m_Info.m_paths.Where(p => p.m_netInfo.IsUndergroundMetroStationTrack() && p.m_nodes.Any(n => pairs.Contains(n))).ToArray();
         }
 
-        private static Vector3 GetMiddle(BuildingInfo.PathInfo path)
+        private static Vector3 GetMiddle(BuildingInfo.PathInfo path, bool useBendStrength = false)
         {
+            var aBendStrength = useBendStrength ? m_BendStrength : 0;
             var midPoint = (path.m_nodes.First() + path.m_nodes.Last()) / 2;
             var distance = Vector3.Distance(midPoint, path.m_nodes.First());
             var xCoeff = -(path.m_nodes.First().x - path.m_nodes.Last().x) / Vector3.Distance(path.m_nodes.First(), path.m_nodes.Last());
             var zCoeff = (path.m_nodes.First().z - path.m_nodes.Last().z) / Vector3.Distance(path.m_nodes.First(), path.m_nodes.Last());
-            var bendCoeff = m_BendStrength * (Math.Sqrt(2) - 1);
+            var bendCoeff = aBendStrength * (Math.Sqrt(2) - 1);
             var adjMidPoint = new Vector3()
             {
                 x = midPoint.x + (float)(-zCoeff * distance * bendCoeff),
