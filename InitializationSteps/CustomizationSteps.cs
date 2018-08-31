@@ -306,13 +306,14 @@ namespace MetroOverhaul.InitializationSteps
             {
                 if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
                 {
+                    theLanes[i].m_width = 3.5f;
                     if (Math.Sign(theLanes[i].m_position) > 0)
                     {
-                        theLanes[i].m_position = 3.5f;
+                        theLanes[i].m_position = 2.95f;
                     }
                     else if (Math.Sign(theLanes[i].m_position) < 0)
                     {
-                        theLanes[i].m_position = -3.5f;
+                        theLanes[i].m_position = -2.95f;
                     }
                 }
                 if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)

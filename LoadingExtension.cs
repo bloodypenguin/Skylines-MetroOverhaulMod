@@ -159,7 +159,7 @@ namespace MetroOverhaul
                     transportInfo.m_secondaryLineMaterial = transportInfo.m_lineMaterial;
                     transportInfo.m_secondaryLineMaterial2 = transportInfo.m_lineMaterial2;
                 }
-                else if (mode == LoadMode.NewAsset || mode == LoadMode.LoadAsset)
+                else 
                 {
                     var gameObject = new GameObject("MetroOverhaulUISetup");
                     //gameObject.AddComponent<StyleSelectionStationUI>();
