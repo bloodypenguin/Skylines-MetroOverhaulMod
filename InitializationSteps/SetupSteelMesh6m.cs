@@ -43,7 +43,7 @@ namespace MetroOverhaul.InitializationSteps
             }
             else if (is18m)
             {
-                variations = new List<string> { "_Merge", "_Merge", "_Single", "_Single_Merge" }.ToArray();
+                variations = new List<string> { "_Merge", "_Merge", "_Single_Merge", "_Single" }.ToArray();
                 groups = new List<NetInfo.ConnectGroup> { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)64, (NetInfo.ConnectGroup)16, NetInfo.ConnectGroup.CenterTram }.ToArray();
             }
             else
