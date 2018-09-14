@@ -233,6 +233,7 @@ namespace MetroOverhaul.InitializationSteps
             {
                 prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.WideTram;
             }
+
             prefab.SetRoadLanes(version, new LanesConfiguration()
             {
                 IsTwoWay = true,
@@ -279,14 +280,7 @@ namespace MetroOverhaul.InitializationSteps
                 }
                 else if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
                 {
-                    if (theLanes[i].m_position > 0)
-                    {
-                        theLanes[i].m_position += 4;
-                    }
-                    else if (theLanes[i].m_position < 0)
-                    {
-                        theLanes[i].m_position -= 4;
-                    }
+                    theLanes[i].m_position = Math.Sign(theLanes[i].m_position) * 9;
                 }
             }
             prefab.m_lanes = theLanes.ToArray();

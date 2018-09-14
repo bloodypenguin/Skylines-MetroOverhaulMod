@@ -208,6 +208,10 @@ namespace MetroOverhaul.InitializationSteps
                         nodeList.Add(node2);
                         nodeList.Add(node3);
                         nodeList.Add(node4);
+                        segment0
+                            .SetMeshes
+                            ($@"Meshes\19m\Tunnel_Station_Pavement_Gray.obj",
+							$@"Meshes\19m\Tunnel_Station_Pavement_Gray_LOD.obj");
                         segment1
                             .SetMeshes
                             (@"Meshes\19m\Tunnel_Station_Pavement.obj",
@@ -224,6 +228,10 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                             (@"Meshes\19m\ThirdRail.obj", @"Meshes\10m\Blank.obj")
                             .SetConsistentUVs();
+                        node0
+                            .SetMeshes
+                            ($@"Meshes\19m\Tunnel_Station_Pavement_Gray.obj",
+							$@"Meshes\19m\Tunnel_Station_Pavement_Gray_LOD.obj");
                         node1
                             .SetMeshes
                             (@"Meshes\19m\Tunnel_Station_Node_Pavement.obj",

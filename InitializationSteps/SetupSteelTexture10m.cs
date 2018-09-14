@@ -16,16 +16,16 @@ namespace MetroOverhaul.InitializationSteps
 					{
 						foreach (var segment in info.m_segments)
 						{
-							if (segment.m_mesh.name.Contains("Pavement_Steel"))
+							if (segment.m_mesh.name.Contains("Pavement"))
 							{
 								segment.SetTextures(
 									new TextureSet
 										($@"Textures\Ground_Segment_Pavement_Steel{large}__MainTex.png",
-											$@"Textures\Ground_Segment_Pavement{steel}{large}__AlphaMap.png",
+											$@"Textures\Ground_Segment_Pavement{large}__AlphaMap.png",
 											@"Textures\Ground_Segment_Pavement_Steel__XYSMap.png"),
 									new LODTextureSet
 										($@"Textures\Ground_Segment_Pavement_Steel{large}__MainTex_LOD.png",
-											$@"Textures\Ground_Segment_Pavement{steel}{large}__AlphaMap_LOD.png",
+											$@"Textures\Ground_Segment_Pavement{large}__AlphaMap_LOD.png",
 											@"Textures\Ground_Segment_Pavement_Steel__XYSMap_LOD.png"));
 							}
 							else if (segment.m_mesh.name.Contains("Fence"))
@@ -101,16 +101,16 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\Ground_Level_Crossing_Rail__XYSMap_LOD.png"));
                             }
 
-							else if (node.m_mesh.name.Contains("Pavement_Steel"))
+							else if (node.m_mesh.name.Contains("Pavement"))
 							{
 								node.SetTextures(
 									new TextureSet
 										($@"Textures\Ground_Node_Pavement{steel}{large}__MainTex.png",
-											$@"Textures\Ground_Node_Pavement{steel}{large}__AlphaMap.png",
+											$@"Textures\Ground_Node_Pavement{large}__AlphaMap.png",
 											@"Textures\Ground_Segment_Pavement_Steel__XYSMap.png"),
 									new LODTextureSet
 										($@"Textures\Ground_Node_Pavement{steel}{large}__MainTex_LOD.png",
-											$@"Textures\Ground_Node_Pavement{steel}{large}__AlphaMap_LOD.png",
+											$@"Textures\Ground_Node_Pavement{large}__AlphaMap_LOD.png",
 											@"Textures\Ground_Segment_Pavement_Steel__XYSMap_LOD.png"));
 							}
 							else if (node.m_mesh.name.Contains("ThirdRail"))
@@ -145,7 +145,6 @@ namespace MetroOverhaul.InitializationSteps
                             var elevatedBridge = segment.m_mesh.name.Contains("Elevated") ? "Elevated" : "Bridge";
 							if (segment.m_mesh.name.Contains("Station"))
 							{
-
 								segment.SetTextures(
 									new TextureSet
 										($@"Textures\{elevatedBridge}_Station_Segment_Pavement_Steel__MainTex.png",
@@ -278,9 +277,22 @@ namespace MetroOverhaul.InitializationSteps
 				case NetInfoVersion.Slope:
 				case NetInfoVersion.Tunnel:
 					{
-						foreach (var segment in info.m_segments)
+						for(var i = 0; i < info.m_segments.Length; i++)
 						{
-							if (segment.m_mesh.name.Contains("Pavement_Steel") || (segment.m_mesh.name.Contains("Fence_Steel")))
+                            var segment = info.m_segments[i];
+                            if (segment.m_mesh.name.Contains("Ground"))
+                            {
+                                segment.SetTextures(
+                                    new TextureSet
+                                        ($@"Textures\Ground_Segment_Pavement_Steel{large}__MainTex.png",
+                                            $@"Textures\Ground_Segment_Pavement{large}__AlphaMap.png",
+                                            @"Textures\Ground_Segment_Pavement_Steel__XYSMap.png"),
+                                    new LODTextureSet
+                                        ($@"Textures\Ground_Segment_Pavement_Steel{large}__MainTex_LOD.png",
+                                            $@"Textures\Ground_Segment_Pavement{large}__AlphaMap_LOD.png",
+                                            @"Textures\Ground_Segment_Pavement_Steel__XYSMap_LOD.png"));
+                            }
+                            else if (segment.m_mesh.name.Contains("Pavement_Steel") || (segment.m_mesh.name.Contains("Fence_Steel")))
 							{
 								segment.SetTextures(
 									new TextureSet
@@ -313,9 +325,22 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\Ground_Segment_Rail_Steel__XYSMap.png"));
 							}
 						}
-						foreach (var node in info.m_nodes)
+						for (var i = 0; i < info.m_nodes.Length; i++)
                         {
-                            if (node.m_mesh.name.Contains("LevelCrossing_Pavement"))
+                            var node = info.m_nodes[i];
+                            if (node.m_mesh.name.Contains("Ground"))
+                            {
+                                node.SetTextures(
+                                    new TextureSet
+                                        ($@"Textures\Ground_Node_Pavement{large}__MainTex.png",
+                                            $@"Textures\Ground_Node_Pavement{large}__AlphaMap.png",
+                                            @"Textures\Ground_Segment_Pavement_Steel__XYSMap.png"),
+                                    new LODTextureSet
+                                        ($@"Textures\Ground_Node_Pavement{large}__MainTex_LOD.png",
+                                            $@"Textures\Ground_Node_Pavement{large}__AlphaMap_LOD.png",
+                                            @"Textures\Ground_Segment_Pavement_Steel__XYSMap_LOD.png"));
+                            }
+                            else if (node.m_mesh.name.Contains("LevelCrossing_Pavement"))
                             {
                                 node.SetTextures(
                                     new TextureSet
@@ -336,19 +361,7 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
                                             @"Textures\Ground_Level_Crossing_Rail__XYSMap.png"));
                             }
-                            else if ( node.m_mesh.name.Contains("Tunnel_Trans") )
-                            {
-                                node.SetTextures(
-                                    new TextureSet
-                                        (@"Textures\Tunnel_Node_Pavement__MainTex.png",
-                                            @"Textures\Elevated_Node_Pavement__AlphaMap.png",
-                                            @"Textures\Tunnel_Segment_Pavement__XYSMap.png"),
-                                    new LODTextureSet
-                                        (@"Textures\Tunnel_Node_Pavement__MainTex_LOD.png",
-                                            @"Textures\Elevated_Node_Pavement__AlphaMap_LOD.png",
-                                            @"Textures\Tunnel_Segment_Pavement__XYSMap_LOD.png"));
-                            }
-                            else if ( node.m_mesh.name.Contains("Tunnel_Node") || node.m_mesh.name.Contains("Slope_U_Node"))
+                            else if ( node.m_mesh.name.Contains("Tunnel_Node") || node.m_mesh.name.Contains("Slope_U_Node") || node.m_mesh.name.Contains("Tunnel_Trans"))
                             {
                                 node.SetTextures(
                                     new TextureSet

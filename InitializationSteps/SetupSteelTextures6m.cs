@@ -286,7 +286,19 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         foreach (var segment in info.m_segments)
                         {
-                            if (segment.m_mesh.name.Contains("Pavement_Steel") || (segment.m_mesh.name.Contains("Fence_Steel")))
+                            if (segment.m_mesh.name.Contains("Ground"))
+                            {
+                                segment.SetTextures(
+                                    new TextureSet
+                                        (@"Textures\Ground_Segment_Pavement_Steel_Small__MainTex.png",
+                                            @"Textures\Ground_Segment_Pavement_Small__AlphaMap.png",
+                                            @"Textures\Tunnel_Segment_Pavement_Steel__XYSMap.png"),
+                                    new LODTextureSet
+                                        (@"Textures\Ground_Segment_Pavement_Steel_Small__MainTex_LOD.png",
+                                            @"Textures\Ground_Segment_Pavement_Small__AlphaMap_LOD.png",
+                                            @"Textures\Tunnel_Segment_Pavement_Steel__XYSMap_LOD.png"));
+                            }
+                            else if (segment.m_mesh.name.Contains("Pavement_Steel") || (segment.m_mesh.name.Contains("Fence_Steel")))
                             {
                                 segment.SetTextures(
                                     new TextureSet

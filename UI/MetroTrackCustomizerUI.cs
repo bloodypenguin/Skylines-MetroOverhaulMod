@@ -9,94 +9,9 @@ using System.Collections.Generic;
 
 namespace MetroOverhaul.UI
 {
-	public class MetroTrackCustomizerUI : UIPanel
-	{
-		public int trackStyle = 0;
-		public int trackSize = 1;
-		public int trackDirection = 1;
-		public bool fence = false;
-		public bool extraElevated = false;
-		private BulldozeTool m_bulldozeTool;
-		private NetTool m_netTool;
-		private UIButton m_upgradeButtonTemplate;
-		private NetInfo m_currentNetInfo;
-		private bool m_activated = false;
-		public static MetroTrackCustomizerUI instance;
-
-		UISprite m_useFenceCheckBoxClicker = null;
-		UISprite m_useExtraElevatedPillarClicker = null;
-
-		private NetInfo concretePrefab;
-		private NetInfo concretePrefabNoBar;
-
-		private NetInfo concreteTwoLaneOneWayPrefab;
-		private NetInfo concreteTwoLaneOneWayPrefabNoBar;
-
-		private NetInfo concreteLargePrefab;
-		private NetInfo concreteLargePrefabNoBar;
-
-		private NetInfo concreteSmallPrefab;
-		private NetInfo concreteSmallPrefabNoBar;
-
-		private NetInfo concreteSmallTwoWayPrefab;
-		private NetInfo concreteSmallTwoWayPrefabNoBar;
-
-		private NetInfo steelPrefab;
-		private NetInfo steelPrefabNoBar;
-
-		private NetInfo steelTwoLaneOneWayPrefab;
-		private NetInfo steelTwoLaneOneWayPrefabNoBar;
-
-		private NetInfo steelLargePrefab;
-		private NetInfo steelLargePrefabNoBar;
-
-		private NetInfo steelSmallPrefab;
-		private NetInfo steelSmallPrefabNoBar;
-
-		private NetInfo steelSmallTwoWayPrefab;
-		private NetInfo steelSmallTwoWayPrefabNoBar;
-
-		private UIButton btnModernStyle;
-		private UIButton btnClassicStyle;
-		private UIButton btnSingleTrack;
-		private UIButton btnDoubleTrack;
-		private UIButton btnQuadTrack;
-		private UIButton btnOneWay;
-		private UIButton btnTwoWay;
-
-		public override void Awake()
-		{
-			concretePrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground");
-			concretePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground NoBar");
-
-			concreteTwoLaneOneWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Two-Lane One-Way");
-			concreteTwoLaneOneWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Two-Lane One-Way NoBar");
-
-			concreteLargePrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Large");
-			concreteLargePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Large NoBar");
-
-			concreteSmallPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small");
-			concreteSmallPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small NoBar");
-
-			concreteSmallTwoWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small Two-Way");
-			concreteSmallTwoWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small Two-Way NoBar");
-
-			steelPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground");
-			steelPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground NoBar");
-
-			steelTwoLaneOneWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Two-Lane One-Way");
-			steelTwoLaneOneWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Two-Lane One-Way NoBar");
-
-			steelSmallPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small");
-			steelSmallPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small NoBar");
-
-			steelSmallTwoWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small Two-Way");
-			steelSmallTwoWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small Two-Way NoBar");
-
-			steelLargePrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Large");
-			steelLargePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Large NoBar");
-		}
-
+	public class MetroTrackCustomizerUI : MetroCustomizerBase
+    {
+		
 		public override void Update()
 		{
 			if (m_netTool == null)
@@ -205,26 +120,7 @@ namespace MetroOverhaul.UI
 			isInteractive = true;
 			padding = new RectOffset() { bottom = 8, left = 8, right = 8, top = 8 };
 
-			UIPanel dragHandlePanel = AddUIComponent<UIPanel>();
-			dragHandlePanel.atlas = atlas;
-			dragHandlePanel.backgroundSprite = "GenericPanel";
-			dragHandlePanel.width = width;
-			dragHandlePanel.height = 20;
-			dragHandlePanel.opacity = 100;
-			dragHandlePanel.color = new Color32(21, 140, 34, 255);
-			dragHandlePanel.relativePosition = Vector3.zero;
-
-			UIDragHandle dragHandle = dragHandlePanel.AddUIComponent<UIDragHandle>();
-			dragHandle.width = width;
-			dragHandle.height = dragHandle.parent.height;
-			dragHandle.relativePosition = Vector3.zero;
-			dragHandle.target = this;
-
-			UILabel titleLabel = dragHandlePanel.AddUIComponent<UILabel>();
-			titleLabel.relativePosition = new Vector3() { x = 5, y = 5, z = 0 };
-			titleLabel.textAlignment = UIHorizontalAlignment.Center;
-			titleLabel.text = "Track Options";
-			titleLabel.isInteractive = false;
+            CreateDragHandle("Track Options");
 
 			btnModernStyle = CreateButton("Modern", 2, (c, v) =>
 			{
@@ -333,56 +229,13 @@ namespace MetroOverhaul.UI
 			useExtraElevatedPillarLabel.height = 16;
 			useExtraElevatedPillarLabel.isInteractive = true;
 		}
-		private int m_rowIndex = 1;
-		private int m_colIndex = 0;
-		private UIButton CreateButton(string text, int columnCount, MouseEventHandler eventClick)
-		{
-			var button = this.AddUIComponent<UIButton>();
-			button.relativePosition = new Vector3(Math.Max(8, 8 + ((m_colIndex / columnCount) * width) - 16), m_rowIndex * 50);
-			button.width = 160 / columnCount;
-			button.height = 30;
-			button.normalBgSprite = "ButtonMenu";
-			button.color = new Color32(150, 150, 150, 255);
-			button.disabledBgSprite = "ButtonMenuDisabled";
-			button.hoveredBgSprite = "ButtonMenuHovered";
-			button.hoveredColor = new Color32(163, 255, 16, 255);
-			button.focusedBgSprite = "ButtonMenu";
-			button.focusedColor = new Color32(163, 255, 16, 255);
-			button.pressedBgSprite = "ButtonMenuPressed";
-			button.pressedColor = new Color32(163, 255, 16, 255);
-			button.textColor = new Color32(255, 255, 255, 255);
-			button.normalBgSprite = "ButtonMenu";
-			button.focusedBgSprite = "ButtonMenuFocused";
-			button.playAudioEvents = true;
-			button.opacity = 75;
-			button.dropShadowColor = new Color32(0, 0, 0, 255);
-			button.dropShadowOffset = new Vector2(-1, -1);
-			button.text = text;
-			button.eventClick += eventClick;
-			m_colIndex++;
-			if (m_colIndex == columnCount)
-			{
-				m_colIndex = 1;
-				m_rowIndex++;
-			}
-			return button;
-		}
-		private void ToggleButtonPairs(UIButton active, params UIButton[] inactives)
-		{
-			active.color = new Color32(163, 255, 16, 255);
-			active.normalBgSprite = "ButtonMenuFocused";
-			active.useDropShadow = true;
-			active.opacity = 95;
-			foreach (UIButton inactive in inactives)
-			{
-				inactive.color = new Color32(150, 150, 150, 255);
-				inactive.normalBgSprite = "ButtonMenu";
-				inactive.useDropShadow = false;
-				inactive.opacity = 75;
-			}
-		}
+
 		private void SetNetToolPrefab()
 		{
+            if (trackStyle == 0)
+                ToggleButtonPairs(btnModernStyle, btnClassicStyle);
+            else if (trackStyle == 1)
+                ToggleButtonPairs(btnClassicStyle, btnModernStyle);
 			if (trackSize == 0)
 				ToggleButtonPairs(btnSingleTrack, btnDoubleTrack, btnQuadTrack);
 			else if (trackSize == 1)

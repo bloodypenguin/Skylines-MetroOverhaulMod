@@ -10,119 +10,8 @@ using ColossalFramework;
 
 namespace MetroOverhaul.UI
 {
-    public class MetroTrackAssetCustomizerUI : UIPanel
+    public class MetroTrackAssetCustomizerUI : MetroCustomizerBase
     {
-        public int trackStyle = 0;
-        public int trackSize = 1;
-        public int trackDirection = 1;
-        public int isStation = 1;
-        public int stationType = 0;
-        public bool fence = false;
-        public bool extraElevated = false;
-        private BulldozeTool m_bulldozeTool;
-        private NetTool m_netTool;
-        private UIButton m_upgradeButtonTemplate;
-        private NetInfo m_currentNetInfo;
-        private bool m_activated = false;
-        public static MetroTrackAssetCustomizerUI instance;
-
-        UISprite m_useFenceCheckBoxClicker = null;
-        UISprite m_useExtraElevatedPillarClicker = null;
-        UICheckBox m_useFenceCheckBox = null;
-        UICheckBox m_useExtraElevatedPillarsCheckBox = null;
-
-        private NetInfo concretePrefab;
-        private NetInfo concretePrefabNoBar;
-
-        private NetInfo concreteTwoLaneOneWayPrefab;
-        private NetInfo concreteTwoLaneOneWayPrefabNoBar;
-
-        private NetInfo concreteLargePrefab;
-        private NetInfo concreteLargePrefabNoBar;
-
-        private NetInfo concreteSmallPrefab;
-        private NetInfo concreteSmallPrefabNoBar;
-
-        private NetInfo concreteSmallTwoWayPrefab;
-        private NetInfo concreteSmallTwoWayPrefabNoBar;
-
-        private NetInfo concreteSidePlatformStationPrefab;
-        private NetInfo concreteIslandPlatformStationPrefab;
-        private NetInfo concreteSinglePlatformStationPrefab;
-
-        private NetInfo steelPrefab;
-        private NetInfo steelPrefabNoBar;
-
-        private NetInfo steelTwoLaneOneWayPrefab;
-        private NetInfo steelTwoLaneOneWayPrefabNoBar;
-
-        private NetInfo steelLargePrefab;
-        private NetInfo steelLargePrefabNoBar;
-
-        private NetInfo steelSmallPrefab;
-        private NetInfo steelSmallPrefabNoBar;
-
-        private NetInfo steelSmallTwoWayPrefab;
-        private NetInfo steelSmallTwoWayPrefabNoBar;
-
-        private NetInfo steelSidePlatformStationPrefab;
-        private NetInfo steelIslandPlatformStationPrefab;
-        private NetInfo steelSinglePlatformStationPrefab;
-
-
-        private UIButton btnModernStyle;
-        private UIButton btnClassicStyle;
-        private UIButton btnStation;
-        private UIButton btnTrack;
-        private UIButton btnSidePlatform;
-        private UIButton btnIslandPlatform;
-        private UIButton btnSinglePlatform;
-        private UIButton btnSingleTrack;
-        private UIButton btnDoubleTrack;
-        private UIButton btnQuadTrack;
-        private UIButton btnOneWay;
-        private UIButton btnTwoWay;
-
-        public override void Awake()
-        {
-            concretePrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground");
-            concretePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground NoBar");
-
-            concreteTwoLaneOneWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Two-Lane One-Way");
-            concreteTwoLaneOneWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Two-Lane One-Way NoBar");
-
-            concreteLargePrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Large");
-            concreteLargePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Large NoBar");
-
-            concreteSmallPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small");
-            concreteSmallPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small NoBar");
-
-            concreteSmallTwoWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small Two-Way");
-            concreteSmallTwoWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small Two-Way NoBar");
-
-            concreteSidePlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground");
-            concreteIslandPlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Island");
-            concreteSinglePlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Small");
-
-            steelPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground");
-            steelPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground NoBar");
-
-            steelTwoLaneOneWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Two-Lane One-Way");
-            steelTwoLaneOneWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Two-Lane One-Way NoBar");
-
-            steelSmallPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small");
-            steelSmallPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small NoBar");
-
-            steelSmallTwoWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small Two-Way");
-            steelSmallTwoWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small Two-Way NoBar");
-
-            steelLargePrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Large");
-            steelLargePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Large NoBar");
-
-            steelSidePlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground");
-            steelIslandPlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Island");
-            steelSinglePlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Small");
-        }
 
         public override void Update()
         {
@@ -234,89 +123,74 @@ namespace MetroOverhaul.UI
             isInteractive = true;
             padding = new RectOffset() { bottom = 8, left = 8, right = 8, top = 8 };
 
-            UIPanel dragHandlePanel = AddUIComponent<UIPanel>();
-            dragHandlePanel.atlas = atlas;
-            dragHandlePanel.backgroundSprite = "GenericPanel";
-            dragHandlePanel.width = width;
-            dragHandlePanel.height = 20;
-            dragHandlePanel.opacity = 100;
-            dragHandlePanel.color = new Color32(21, 140, 34, 255);
-            dragHandlePanel.relativePosition = Vector3.zero;
+            CreateDragHandle("Track/Station Options");
 
-            UIDragHandle dragHandle = dragHandlePanel.AddUIComponent<UIDragHandle>();
-            dragHandle.width = width;
-            dragHandle.height = dragHandle.parent.height;
-            dragHandle.relativePosition = Vector3.zero;
-            dragHandle.target = this;
-
-            UILabel titleLabel = dragHandlePanel.AddUIComponent<UILabel>();
-            titleLabel.relativePosition = new Vector3() { x = 5, y = 5, z = 0 };
-            titleLabel.textAlignment = UIHorizontalAlignment.Center;
-            titleLabel.text = "Track/Station Options";
-            titleLabel.isInteractive = false;
-
-
-            btnModernStyle = CreateButton("Modern", new Vector3(8, 50), (c, v) =>
+            btnModernStyle = CreateButton("Modern", 2, (c, v) =>
             {
                 trackStyle = 0;
                 SetNetToolPrefab();
             });
 
-            btnClassicStyle = CreateButton("Classic", new Vector3(8 + (0.5f * width) - 16, 50), (c, v) =>
+            btnClassicStyle = CreateButton("Classic", 2, (c, v) =>
               {
                   trackStyle = 1;
                   SetNetToolPrefab();
               });
-            btnStation = CreateButton("Stn Trk", new Vector3(8, 100), (c, v) =>
+            btnStation = CreateButton("Stn Trk", 2, (c, v) =>
             {
                 isStation = 1;
                 SetNetToolPrefab();
             });
-            btnTrack = CreateButton("Track", new Vector3(8 + (0.5f * width) - 16, 100), (c, v) =>
+            btnTrack = CreateButton("Track", 2, (c, v) =>
             {
                 isStation = 0;
                 SetNetToolPrefab();
             });
-            btnSidePlatform = CreateButton("Side", new Vector3(8, 150), (c, v) =>
+            btnSidePlatform = CreateButton("Side", 4, (c, v) =>
              {
                  stationType = 0;
                  SetNetToolPrefab();
              });
-            btnIslandPlatform = CreateButton("Island", new Vector3(8 + (0.33333f * width) - 16, 150), (c, v) =>
+            btnIslandPlatform = CreateButton("Island", 4, (c, v) =>
             {
                 stationType = 1;
                 SetNetToolPrefab();
             });
-            btnSinglePlatform = CreateButton("Single", new Vector3(8 + (0.66666f * width) - 32, 150), (c, v) =>
+            btnSinglePlatform = CreateButton("Single", 4, (c, v) =>
             {
                 stationType = 2;
                 SetNetToolPrefab();
             });
-            btnSingleTrack = CreateButton("Single", new Vector3(8, 150), (c, v) =>
+            btnQuadPlatform = CreateButton("Quad", 4, (c, v) =>
+            {
+                stationType = 3;
+                SetNetToolPrefab();
+            }, true);
+            btnSingleTrack = CreateButton("Single", 3, (c, v) =>
               {
                   trackSize = 0;
                   SetNetToolPrefab();
               });
 
-            btnDoubleTrack = CreateButton("Double", new Vector3(8 + (0.33333f * width) - 16, 150), (c, v) =>
+            btnDoubleTrack = CreateButton("Double", 3, (c, v) =>
               {
                   trackSize = 1;
                   SetNetToolPrefab();
               });
 
-            btnQuadTrack = CreateButton("Quad", new Vector3(8 + (0.66666f * width) - 16, 150), (c, v) =>
+            btnQuadTrack = CreateButton("Quad", 3, (c, v) =>
             {
                 trackSize = 2;
                 SetNetToolPrefab();
             });
 
-            btnOneWay = CreateButton("OneWay", new Vector3(8, 200), (c, v) =>
-             {
-                 trackDirection = 0;
-                 SetNetToolPrefab();
-             });
+            btnOneWay = CreateButton("OneWay", 2, (c, v) =>
+              {
+                  trackDirection = 0;
+                  SetNetToolPrefab();
+              });
 
-            btnTwoWay = CreateButton("TwoWay", new Vector3(8 + (0.5f * width) - 16, 200), (c, v) =>
+            btnTwoWay = CreateButton("TwoWay", 2, (c, v) =>
               {
                   trackDirection = 1;
                   SetNetToolPrefab();
@@ -404,48 +278,7 @@ namespace MetroOverhaul.UI
             }
             return m_InGameAtlas;
         }
-        private UIButton CreateButton(string text, Vector3 pos, MouseEventHandler eventClick)
-        {
-            var button = this.AddUIComponent<UIButton>();
-            button.atlas = InGameAtlas();
-            button.width = 80;
-            button.height = 30;
-            button.normalBgSprite = "ButtonMenu";
-            button.color = new Color32(150, 150, 150, 255);
-            button.disabledBgSprite = "ButtonMenuDisabled";
-            button.hoveredBgSprite = "ButtonMenuHovered";
-            button.hoveredColor = new Color32(163, 255, 16, 255);
-            button.focusedBgSprite = "ButtonMenu";
-            button.focusedColor = new Color32(163, 255, 16, 255);
-            button.pressedBgSprite = "ButtonMenuPressed";
-            button.pressedColor = new Color32(163, 255, 16, 255);
-            button.textColor = new Color32(255, 255, 255, 255);
-            button.normalBgSprite = "ButtonMenu";
-            button.focusedBgSprite = "ButtonMenuFocused";
-            button.playAudioEvents = true;
-            button.opacity = 75;
-            button.dropShadowColor = new Color32(0, 0, 0, 255);
-            button.dropShadowOffset = new Vector2(-1, -1);
-            button.text = text;
-            button.relativePosition = pos;
-            button.eventClick += eventClick;
 
-            return button;
-        }
-        private void ToggleButtonPairs(UIButton active, params UIButton[] inactives)
-        {
-            active.color = new Color32(163, 255, 16, 255);
-            active.normalBgSprite = "ButtonMenuFocused";
-            active.useDropShadow = true;
-            active.opacity = 95;
-            foreach (UIButton inactive in inactives)
-            {
-                inactive.color = new Color32(150, 150, 150, 255);
-                inactive.normalBgSprite = "ButtonMenu";
-                inactive.useDropShadow = false;
-                inactive.opacity = 75;
-            }
-        }
         private void SetNetToolPrefab()
         {
             if (trackStyle == 0)
@@ -455,6 +288,7 @@ namespace MetroOverhaul.UI
 
             btnSingleTrack.isVisible = isStation == 0;
             btnDoubleTrack.isVisible = isStation == 0;
+            btnQuadTrack.isVisible = isStation == 0;
             btnOneWay.isVisible = isStation == 0;
             btnTwoWay.isVisible = isStation == 0;
             m_useFenceCheckBox.isVisible = isStation == 0;
@@ -463,6 +297,7 @@ namespace MetroOverhaul.UI
             btnSidePlatform.isVisible = isStation == 1;
             btnIslandPlatform.isVisible = isStation == 1;
             btnSinglePlatform.isVisible = isStation == 1;
+            btnQuadPlatform.isVisible = isStation == 1;
 
             if (isStation == 0)
             {
@@ -473,6 +308,7 @@ namespace MetroOverhaul.UI
                     ToggleButtonPairs(btnDoubleTrack, btnSingleTrack, btnQuadTrack);
                 else if (trackSize == 2)
                     ToggleButtonPairs(btnQuadTrack, btnSingleTrack, btnDoubleTrack);
+
                 if (trackDirection == 0)
                     ToggleButtonPairs(btnOneWay, btnTwoWay);
                 else if (trackDirection == 1)
@@ -482,11 +318,13 @@ namespace MetroOverhaul.UI
             {
                 ToggleButtonPairs(btnStation, btnTrack);
                 if (stationType == 0)
-                    ToggleButtonPairs(btnSidePlatform, btnIslandPlatform, btnSinglePlatform);
+                    ToggleButtonPairs(btnSidePlatform, btnIslandPlatform, btnSinglePlatform, btnQuadPlatform);
                 else if (stationType == 1)
-                    ToggleButtonPairs(btnIslandPlatform, btnSidePlatform, btnSinglePlatform);
+                    ToggleButtonPairs(btnIslandPlatform, btnSidePlatform, btnSinglePlatform, btnQuadPlatform);
                 else if (stationType == 2)
-                    ToggleButtonPairs(btnSinglePlatform, btnIslandPlatform, btnSidePlatform);
+                    ToggleButtonPairs(btnSinglePlatform, btnIslandPlatform, btnSidePlatform, btnQuadPlatform);
+                else if (stationType == 3)
+                    ToggleButtonPairs(btnQuadPlatform, btnSinglePlatform, btnIslandPlatform, btnSidePlatform);
             }
             NetInfo prefab = null;
             switch (trackStyle)
@@ -496,49 +334,42 @@ namespace MetroOverhaul.UI
                         switch (isStation)
                         {
                             case 0:
-                                {
                                     switch (trackSize)
                                     {
                                         case 0:
-                                            {
                                                 if (trackDirection == 0)
                                                     prefab = fence ? concreteSmallPrefab : concreteSmallPrefabNoBar;
                                                 else
                                                     prefab = fence ? concreteSmallTwoWayPrefab : concreteSmallTwoWayPrefabNoBar;
-                                            }
                                             break;
                                         case 1:
-                                            {
                                                 if (trackDirection == 0)
                                                     prefab = fence ? concreteTwoLaneOneWayPrefab : concreteTwoLaneOneWayPrefabNoBar;
                                                 else
                                                     prefab = fence ? concretePrefab : concretePrefabNoBar;
-                                            }
                                             break;
                                         case 2:
-                                            {
                                                 if (trackDirection == 0) { }
                                                 else
                                                     prefab = fence ? concreteLargePrefab : concreteLargePrefabNoBar;
-                                            }
                                             break;
                                     }
                                     break;
-                                }
                             case 1:
+                                switch (stationType)
                                 {
-                                    switch (stationType)
-                                    {
-                                        case 0:
-                                            prefab = concreteSidePlatformStationPrefab;
-                                            break;
-                                        case 1:
-                                            prefab = concreteIslandPlatformStationPrefab;
-                                            break;
-                                        case 2:
-                                            prefab = concreteSinglePlatformStationPrefab;
-                                            break;
-                                    }
+                                    case 0:
+                                        prefab = concreteSidePlatformStationPrefab;
+                                        break;
+                                    case 1:
+                                        prefab = concreteIslandPlatformStationPrefab;
+                                        break;
+                                    case 2:
+                                        prefab = concreteSinglePlatformStationPrefab;
+                                        break;
+                                    case 3:
+                                        prefab = concreteLargePlatformStationPrefab;
+                                        break;
                                 }
                                 break;
                         }
@@ -603,6 +434,9 @@ namespace MetroOverhaul.UI
                                             break;
                                         case 2:
                                             prefab = steelSinglePlatformStationPrefab;
+                                            break;
+                                        case 3:
+                                            prefab = steelLargePlatformStationPrefab;
                                             break;
                                     }
                                 }

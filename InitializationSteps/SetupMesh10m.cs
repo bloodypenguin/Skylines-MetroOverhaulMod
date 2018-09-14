@@ -12,7 +12,7 @@ namespace MetroOverhaul.InitializationSteps
         {
             var isOneWay = info.name.Contains("One-Way");
             var isLarge = info.name.Contains("Large");
-            var width = isLarge ? "18m":"10m";
+            var width = isLarge ? "18m" : "10m";
             var brElInfo = Prefabs.Find<NetInfo>("Basic Road Elevated");
             var elevatedbrMaterial = brElInfo.m_segments[0].m_lodMaterial;
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
@@ -151,7 +151,7 @@ namespace MetroOverhaul.InitializationSteps
                         node2
                             .SetFlags(NetNode.Flags.Transition, NetNode.Flags.None)
                             .SetMeshes
-                            ($@"Meshes\10m\Elevated_Trans_Pavement.obj",
+                            ($@"Meshes\{width}\Elevated_Trans_Pavement.obj",
                                 $@"Meshes\{width}\Elevated_Node_Pavement_LOD.obj");
                         node4
                             .SetMeshes
@@ -225,7 +225,7 @@ namespace MetroOverhaul.InitializationSteps
                         node2
                             .SetFlags(NetNode.Flags.Transition, NetNode.Flags.None)
                             .SetMeshes
-                            ($@"Meshes\10m\Bridge_Trans_Pavement.obj",
+                            ($@"Meshes\{width}\Bridge_Trans_Pavement.obj",
                             $@"Meshes\{width}\Bridge_Node_Pavement_LOD.obj")
                             .SetConsistentUVs();
                         node4
@@ -362,7 +362,10 @@ namespace MetroOverhaul.InitializationSteps
                         nodeList.Add(node0);
                         nodeList.Add(node1);
                         nodeList.Add(node2);
-
+                        segment0
+                            .SetMeshes
+                            ($@"Meshes\{width}\Tunnel_Pavement_Gray.obj",
+							$@"Meshes\{width}\Tunnel_Pavement_Gray_LOD.obj");
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
@@ -378,6 +381,10 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                             ($@"Meshes\{width}\ThirdRail.obj", $@"Meshes\{width}\Blank.obj")
                             .SetConsistentUVs();
+                        node0
+                            .SetMeshes
+                            ($@"Meshes\{width}\Tunnel_Pavement_Gray.obj",
+							$@"Meshes\{width}\Tunnel_Pavement_Gray_LOD.obj");
                         node1
                             .SetMeshes
                             ($@"Meshes\{width}\Tunnel_Node_Pavement.obj",
@@ -402,7 +409,15 @@ namespace MetroOverhaul.InitializationSteps
                         node1.m_lodMaterial = elevatedLODMaterial;
                         node2.m_material = elevatedMaterial;
                         node2.m_lodMaterial = elevatedLODMaterial;
-                        node2.m_connectGroup = isOneWay ? (NetInfo.ConnectGroup)32 | NetInfo.ConnectGroup.NarrowTram : NetInfo.ConnectGroup.NarrowTram;
+                        if (isLarge)
+                        {
+                            node2.m_connectGroup = NetInfo.ConnectGroup.WideTram;
+                        }
+                        else
+                        {
+                            node2.m_connectGroup = isOneWay ? (NetInfo.ConnectGroup)32 | NetInfo.ConnectGroup.NarrowTram : NetInfo.ConnectGroup.NarrowTram;
+                        }
+
                         node2.m_directConnect = true;
                         node3.m_material = elevatedMaterial;
                         node3.m_lodMaterial = elevatedLODMaterial;
@@ -522,7 +537,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
-                            ($@"Meshes\{width}\Boosted_Rail.obj")
+                            ($@"Meshes\{width}\Rail.obj")
                             .SetConsistentUVs();
                         segment2
                             .SetFlagsDefault()
@@ -625,7 +640,10 @@ namespace MetroOverhaul.InitializationSteps
                         nodeList.Add(node1);
                         nodeList.Add(node2);
                         nodeList.Add(node3);
-
+                        segment0
+                            .SetMeshes
+                            ($@"Meshes\{width}\Tunnel_Station_Pavement_Gray.obj",
+							$@"Meshes\{width}\Tunnel_Station_Pavement_Gray_LOD.obj");
                         segment1
                             .SetMeshes
                             ($@"Meshes\{width}\Tunnel_Station_Pavement.obj",
@@ -634,13 +652,17 @@ namespace MetroOverhaul.InitializationSteps
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes
-                            ($@"Meshes\{width}\Boosted_Rail.obj")
+                            ($@"Meshes\{width}\Boosted_Station_Rail.obj")
                             .SetConsistentUVs();
                         segment3
                             .SetFlagsDefault()
                             .SetMeshes
                             ($@"Meshes\{width}\ThirdRail.obj", $@"Meshes\{width}\Blank.obj")
                             .SetConsistentUVs();
+                        node0
+                            .SetMeshes
+                            ($@"Meshes\{width}\Tunnel_Station_Pavement_Gray.obj",
+							$@"Meshes\{width}\Tunnel_Station_Pavement_Gray_LOD.obj");
                         node1
                             .SetMeshes
                             ($@"Meshes\{width}\Tunnel_Station_Node_Pavement.obj",
@@ -648,7 +670,7 @@ namespace MetroOverhaul.InitializationSteps
                                 .SetConsistentUVs();
                         node2
                             .SetMeshes
-                            ($@"Meshes\{width}\Boosted_Rail.obj")
+                            ($@"Meshes\{width}\Boosted_Station_Node_Rail.obj")
                             .SetConsistentUVs();
                         node3
                             .SetMeshes

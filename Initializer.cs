@@ -841,6 +841,33 @@ namespace MetroOverhaul
                 Next.Debug.Log("Exception happened when setting up small steel station tracks");
                 UnityEngine.Debug.LogException(e);
             }
+
+            try
+            {
+                CreateFullStationPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupStationProps).
+                        Chain(CustomizationSteps.CommonSteelCustomization).
+                        Chain(CustomizationSteps.SetLargeStationTrackWidths).
+                        Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo, metroStationInfo).
+                        Chain(SetupSteelTexture.Setup10mSteelTexture).
+                        Chain(
+                            (info, version) =>
+                            {
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
+                            }),
+                   NetInfoVersion.Ground | NetInfoVersion.Elevated,
+                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                    , prefabName => "Steel " + prefabName + " Large"
+                    );
+            }
+            catch (Exception e)
+            {
+                Next.Debug.Log("Exception happened when setting up large steel station tracks");
+                UnityEngine.Debug.LogException(e);
+            }
         }
         #endregion
 

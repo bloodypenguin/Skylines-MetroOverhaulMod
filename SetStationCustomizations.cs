@@ -278,6 +278,49 @@ namespace MetroOverhaul
                         if (!connectList.Contains(connectNodes))
                             connectList.Add(connectNodes);
                     }
+                    else if (trackPath.m_netInfo.IsUndergroundSidePlatformLargeMetroStationTrack())
+                    {
+                        var newNodes = new List<Vector3>();
+                        newNodes.Add(new Vector3()
+                        {
+                            x = crossing.x - (11 * zCoeff) - (3 * xCoeff),
+                            y = trackPath.m_nodes.Last().y + 8,
+                            z = crossing.z - (11 * xCoeff) + (3 * zCoeff)
+                        });
+                        newNodes[0] = new Vector3(newNodes[0].x - bendVector.x, newNodes[0].y, newNodes[0].z + bendVector.z);
+                        newNodes.Add(new Vector3()
+                        {
+                            x = newNodes[0].x + (22 * zCoeff),
+                            y = trackPath.m_nodes.Last().y + 8,
+                            z = newNodes[0].z + (22 * xCoeff)
+                        });
+
+                        newPath.m_nodes = newNodes.ToArray();
+                        newPath.m_forbidLaneConnection = new[] { true, true };
+                        //ChangePathRotation(newPath, AntiStairCoeff * m_BendStrength * -Math.PI / 4);
+                        newPath.AssignNetInfo(specialNetInfo);
+
+                        pathList.Add(newPath);
+
+                        for (var j = 0; j < 2; j++)
+                        {
+                            var branchVectorStair = new Vector3()
+                            {
+                                x = newNodes[j].x + stairsLengthX,
+                                y = trackPath.m_nodes.Last().y,
+                                z = newNodes[j].z + stairsLengthZ,
+                            };
+                            //branchVectorStair += bendVector;
+                            var branchPathStair = ChainPath(newPath, branchVectorStair, j);
+                            branchPathStair.m_forbidLaneConnection = new[] { true, false };
+                            branchPathStair.AssignNetInfo(specialNetInfo);
+
+                            pathList.Add(branchPathStair);
+                        }
+
+                        if (!connectList.Contains(newPath.m_nodes))
+                            connectList.Add(newPath.m_nodes);
+                    }
                     else if (trackPath.m_netInfo.IsUndergroundSidePlatformMetroStationTrack())
                     {
                         var newNodes = new List<Vector3>();

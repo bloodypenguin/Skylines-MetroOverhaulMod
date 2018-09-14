@@ -6,19 +6,8 @@ using UnityEngine;
 
 namespace MetroOverhaul.UI
 {
-	public class MetroAboveGroundStationCustomizerUI : UIPanel
+	public class MetroAboveGroundStationCustomizerUI : MetroCustomizerBase
 	{
-		public int trackStyle = 0;
-		private BulldozeTool m_bulldozeTool;
-		private BuildingTool m_buildingTool;
-		private NetTool m_netTool;
-		private UIButton m_upgradeButtonTemplate;
-		private BuildingInfo m_currentBuilding;
-		private bool m_activated = false;
-		private UIButton btnModernStyle;
-		private UIButton btnClassicStyle;
-
-		public static MetroAboveGroundStationCustomizerUI instance;
 
 		public override void Update()
 		{
@@ -135,66 +124,19 @@ namespace MetroOverhaul.UI
 			isInteractive = true;
 			padding = new RectOffset() { bottom = 8, left = 8, right = 8, top = 8 };
 
-			UIPanel dragHandlePanel = AddUIComponent<UIPanel>();
-			dragHandlePanel.atlas = atlas;
-			dragHandlePanel.backgroundSprite = "GenericPanel";
-			dragHandlePanel.width = width;
-			dragHandlePanel.height = 20;
-			dragHandlePanel.opacity = 100;
-			dragHandlePanel.color = new Color32(21, 140, 34, 255);
-			dragHandlePanel.relativePosition = Vector3.zero;
+            CreateDragHandle("Surface Station Options");
 
-            UIDragHandle dragHandle = dragHandlePanel.AddUIComponent<UIDragHandle>();
-            dragHandle.width = width;
-            dragHandle.height = dragHandle.parent.height;
-            dragHandle.relativePosition = Vector3.zero;
-            dragHandle.target = this;
-
-            UILabel titleLabel = dragHandlePanel.AddUIComponent<UILabel>();
-            titleLabel.relativePosition = new Vector3() { x = 5, y = 5, z = 0 };
-            titleLabel.textAlignment = UIHorizontalAlignment.Center;
-            titleLabel.text = "Surface Station Options";
-			titleLabel.isInteractive = false;
-
-			btnModernStyle = CreateButton("Modern", new Vector3(8, 50), (c, v) =>
+			btnModernStyle = CreateButton("Modern", 2, (c, v) =>
 			{
 				trackStyle = 0;
 				SetNetToolPrefab();
 			});
 
-			btnClassicStyle = CreateButton("Classic", new Vector3(8 + (0.5f * width) - 16, 50), (c, v) =>
+			btnClassicStyle = CreateButton("Classic", 2, (c, v) =>
 			{
 				trackStyle = 1;
 				SetNetToolPrefab();
 			});
-		}
-
-		private UIButton CreateButton(string text, Vector3 pos, MouseEventHandler eventClick)
-		{
-			var button = this.AddUIComponent<UIButton>();
-			button.width = 80;
-			button.height = 30;
-			button.normalBgSprite = "ButtonMenu";
-			button.color = new Color32(150, 150, 150, 255);
-			button.disabledBgSprite = "ButtonMenuDisabled";
-			button.hoveredBgSprite = "ButtonMenuHovered";
-			button.hoveredColor = new Color32(163, 255, 16, 255);
-			button.focusedBgSprite = "ButtonMenu";
-			button.focusedColor = new Color32(163, 255, 16, 255);
-			button.pressedBgSprite = "ButtonMenuPressed";
-			button.pressedColor = new Color32(163, 255, 16, 255);
-			button.textColor = new Color32(255, 255, 255, 255);
-			button.normalBgSprite = "ButtonMenu";
-			button.focusedBgSprite = "ButtonMenuFocused";
-			button.playAudioEvents = true;
-			button.opacity = 75;
-			button.dropShadowColor = new Color32(0, 0, 0, 255);
-			button.dropShadowOffset = new Vector2(-1, -1);
-			button.text = text;
-			button.relativePosition = pos;
-			button.eventClick += eventClick;
-
-			return button;
 		}
 
 		private void SetNetToolPrefab()
