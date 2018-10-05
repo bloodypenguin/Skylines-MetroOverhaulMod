@@ -79,8 +79,7 @@ namespace MetroOverhaul.InitializationSteps
                                 node.SetTextures(
                                     new TextureSet
                                         (@"Textures\Ground_Level_Crossing__MainTex.png",
-                                            @"Textures\Ground_Level_Crossing__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"),
+                                            @"Textures\Ground_Level_Crossing__AlphaMap.png"),
                                     new LODTextureSet
                                         (@"Textures\Ground_Level_Crossing__MainTex_LOD.png",
                                             @"Textures\Ground_Level_Crossing__AlphaMap_LOD.png",
@@ -189,8 +188,7 @@ namespace MetroOverhaul.InitializationSteps
                                 node.SetTextures(
                                     new TextureSet
                                         (@"Textures\Ground_Level_Crossing__MainTex.png",
-                                            @"Textures\Ground_Level_Crossing__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"),
+                                            @"Textures\Ground_Level_Crossing__AlphaMap.png"),
                                     new LODTextureSet
                                         (@"Textures\Ground_Level_Crossing__MainTex_LOD.png",
                                             @"Textures\Ground_Level_Crossing__AlphaMap_LOD.png",
@@ -323,8 +321,7 @@ namespace MetroOverhaul.InitializationSteps
                                 node.SetTextures(
                                     new TextureSet
                                         (@"Textures\Ground_Level_Crossing__MainTex.png",
-                                            @"Textures\Ground_Level_Crossing__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"),
+                                            @"Textures\Ground_Level_Crossing__AlphaMap.png"),
                                     new LODTextureSet
                                         (@"Textures\Ground_Level_Crossing__MainTex_LOD.png",
                                             @"Textures\Ground_Level_Crossing__AlphaMap_LOD.png",

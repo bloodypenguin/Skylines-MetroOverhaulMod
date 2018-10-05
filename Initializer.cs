@@ -77,11 +77,10 @@ namespace MetroOverhaul
                             {
                                 LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
                             }),
-                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge,
+                    NetInfoVersion.All,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null,
-                            NetInfoVersion.Slope | NetInfoVersion.Tunnel)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None)
                     , prefabName => prefabName + " NoBar"
                     );
             }
@@ -107,11 +106,10 @@ namespace MetroOverhaul
                             {
                                 LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
                             }),
-                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge,
+                    NetInfoVersion.All,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null,
-                            NetInfoVersion.Slope | NetInfoVersion.Tunnel)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None)
                     , prefabName => prefabName + " Two-Lane One-Way"
                     );
             }
@@ -1144,6 +1142,7 @@ namespace MetroOverhaul
             {
                 prefab.m_class.m_layer = ItemClass.Layer.Default;
             }
+            prefab.m_createGravel = version == NetInfoVersion.Ground;
             prefab.m_availableIn = ItemClass.Availability.AssetEditor;
             prefab.m_class.hideFlags = HideFlags.None;
             prefab.m_class.name = prefab.name;
@@ -1153,7 +1152,6 @@ namespace MetroOverhaul
             prefab.m_maxTurnAngleCos = Mathf.Cos(prefab.m_maxTurnAngle);
             prefab.m_averageVehicleLaneSpeed = vanillaMetroTrack.m_averageVehicleLaneSpeed;
             prefab.m_UnlockMilestone = vanillaMetroTrack.m_UnlockMilestone;
-            prefab.m_createGravel = false;
             prefab.m_createPavement = false;
             prefab.m_isCustomContent = true; //this line is responsible for moving tracks to the end of the list and that's not what we're interested in  
 
