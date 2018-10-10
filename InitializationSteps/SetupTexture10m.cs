@@ -54,12 +54,23 @@ namespace MetroOverhaul.InitializationSteps
                             }
                             else
                             {
-                                segment.SetTextures(
-                                    new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
-                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
-                            }
+								var texture = new TextureSet
+										(@"Textures\Ground_Segment_Rail__MainTex.png",
+											@"Textures\Ground_Segment_Rail__AlphaMap.png",
+											@"Textures\Ground_Segment_Rail__XYSMap.png");
+								if (info.name.Contains("Large"))
+								{
+									var lodTexture = new LODTextureSet
+										($@"Textures\Ground_Rail_Large__MainTex_LOD.png",
+										 $@"Textures\Ground_Rail_Large__AlphaMap_LOD.png",
+										 $@"Textures\Ground_Rail_Large__XYSMap_LOD.png");
+									segment.SetTextures(texture, lodTexture);
+								}
+								else
+								{
+									segment.SetTextures(texture);
+								}
+							}
                         }
                         foreach (var node in info.m_nodes)
                         {
@@ -125,12 +136,23 @@ namespace MetroOverhaul.InitializationSteps
                             }
                             else
                             {
-                                node.SetTextures(
-                                    new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
-                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
-                            }
+								var texture = new TextureSet
+										(@"Textures\Ground_Segment_Rail__MainTex.png",
+											@"Textures\Ground_Segment_Rail__AlphaMap.png",
+											@"Textures\Ground_Segment_Rail__XYSMap.png");
+								if (info.name.Contains("Large"))
+								{
+									var lodTexture = new LODTextureSet
+										($@"Textures\Ground_Rail_Large__MainTex_LOD.png",
+										 $@"Textures\Ground_Rail_Large__AlphaMap_LOD.png",
+										 $@"Textures\Ground_Rail_Large__XYSMap_LOD.png");
+									node.SetTextures(texture, lodTexture);
+								}
+								else
+								{
+									node.SetTextures(texture);
+								}
+							}
                         }
                         break;
                     }
@@ -168,12 +190,23 @@ namespace MetroOverhaul.InitializationSteps
                             }
                             else
                             {
-                                segment.SetTextures(
-                                    new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
-                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
-                            }
+								var texture = new TextureSet
+										(@"Textures\Ground_Segment_Rail__MainTex.png",
+											@"Textures\Ground_Segment_Rail__AlphaMap.png",
+											@"Textures\Ground_Segment_Rail__XYSMap.png");
+								if (info.name.Contains("Large"))
+								{
+									var lodTexture = new LODTextureSet
+										($@"Textures\Ground_Rail_Large__MainTex_LOD.png",
+										 $@"Textures\Ground_Rail_Large__AlphaMap_LOD.png",
+										 $@"Textures\Ground_Rail_Large__XYSMap_LOD.png");
+									segment.SetTextures(texture, lodTexture);
+								}
+								else
+								{
+									segment.SetTextures(texture);
+								}
+							}
                         }
                         foreach (var node in info.m_nodes)
                         {
@@ -242,19 +275,31 @@ namespace MetroOverhaul.InitializationSteps
                             }
                             else
                             {
-                                node.SetTextures(
-                                    new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
-                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
-                            }
+								var texture = new TextureSet
+										(@"Textures\Ground_Segment_Rail__MainTex.png",
+											@"Textures\Ground_Segment_Rail__AlphaMap.png",
+											@"Textures\Ground_Segment_Rail__XYSMap.png");
+								if (info.name.Contains("Large"))
+								{
+									var lodTexture = new LODTextureSet
+										($@"Textures\Ground_Rail_Large__MainTex_LOD.png",
+										 $@"Textures\Ground_Rail_Large__AlphaMap_LOD.png",
+										 $@"Textures\Ground_Rail_Large__XYSMap_LOD.png");
+									node.SetTextures(texture, lodTexture);
+								}
+								else
+								{
+									node.SetTextures(texture);
+								}
+							}
                         }
                         break;
                     }
                 case NetInfoVersion.Slope:
                 case NetInfoVersion.Tunnel:
                     {
-                        foreach (var segment in info.m_segments)
+						var isTunnel = version == NetInfoVersion.Tunnel ? "_Tunnel" : "";
+						foreach (var segment in info.m_segments)
                         {
                             if (segment.m_mesh.name.Contains("Station_Pavement"))
                             {
@@ -295,12 +340,23 @@ namespace MetroOverhaul.InitializationSteps
                             }
                             else
                             {
-                                segment.SetTextures(
-                                    new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
-                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
-                            }
+								var texture = new TextureSet
+										(@"Textures\Ground_Segment_Rail__MainTex.png",
+											@"Textures\Ground_Segment_Rail__AlphaMap.png",
+											@"Textures\Ground_Segment_Rail__XYSMap.png");
+								if (info.name.Contains("Large"))
+								{
+									var lodTexture = new LODTextureSet
+										($@"Textures\Ground_Rail_Large{isTunnel}__MainTex_LOD.png",
+										 $@"Textures\Ground_Rail_Large{isTunnel}__AlphaMap_LOD.png",
+										 $@"Textures\Ground_Rail_Large{isTunnel}__XYSMap_LOD.png");
+									segment.SetTextures(texture, lodTexture);
+								}
+								else
+								{
+									segment.SetTextures(texture);
+								}
+							}
                         }
                         foreach (var node in info.m_nodes)
                         {
@@ -367,12 +423,23 @@ namespace MetroOverhaul.InitializationSteps
                             }
                             else
                             {
-                                node.SetTextures(
-                                    new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
-                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
-                            }
+								var texture = new TextureSet
+										(@"Textures\Ground_Segment_Rail__MainTex.png",
+											@"Textures\Ground_Segment_Rail__AlphaMap.png",
+											@"Textures\Ground_Segment_Rail__XYSMap.png");
+								if (info.name.Contains("Large"))
+								{
+									var lodTexture = new LODTextureSet
+										($@"Textures\Ground_Rail_Large{isTunnel}__MainTex_LOD.png",
+										 $@"Textures\Ground_Rail_Large{isTunnel}__AlphaMap_LOD.png",
+										 $@"Textures\Ground_Rail_Large{isTunnel}__XYSMap_LOD.png");
+									node.SetTextures(texture, lodTexture);
+								}
+								else
+								{
+									node.SetTextures(texture);
+								}
+							}
                         }
                         break;
                     }
