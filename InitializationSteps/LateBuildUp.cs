@@ -1,6 +1,7 @@
 ﻿using MetroOverhaul.NEXT;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MetroOverhaul.InitializationSteps
 {
@@ -8,7 +9,15 @@ namespace MetroOverhaul.InitializationSteps
     {
         public static void BuildUp(NetInfo prefab, NetInfoVersion version)
         {
-            var smallWord = prefab.name.ToLower().Contains("small") ? "Small" : "";
+            var smallWord = "";
+            switch (prefab.m_lanes.Where(l => l.m_vehicleType == VehicleInfo.VehicleType.Metro).Count()) {
+                case 1:
+                    smallWord = "Small";
+                    break;
+                case 4:
+                    smallWord = "Large";
+                    break;
+            }
             switch (version)
             {
                 case NetInfoVersion.Elevated:

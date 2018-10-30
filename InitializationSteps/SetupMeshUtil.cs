@@ -350,13 +350,24 @@ namespace MetroOverhaul.InitializationSteps
                     ($@"Meshes\{WidthName}\{prefix}_LevelCrossing_Pavement.obj",
                     $@"Meshes\{WidthName}\LevelCrossing_Pavement_LOD.obj")
                     .SetConsistentUVs();
+                if (WidthName != "10m")
+                {
+                    nodes1
+                        .SetFlags(NetNode.Flags.LevelCrossing, NetNode.Flags.None)
+                        .SetMeshes
+                        ($@"Meshes\{WidthName}\LevelCrossing_{(isStation && WidthName != "6m" ? "Station_" : "")}Rail.obj",
+                        $@"Meshes\{WidthName}\LevelCrossing_Rail_LOD.obj")
+                        .SetConsistentUVs();
+                }
+                else
+                {
+                    nodes1
+                        .SetFlags(NetNode.Flags.LevelCrossing, NetNode.Flags.None)
+                        .SetMeshes
+                        ($@"Meshes\{WidthName}\LevelCrossing_{(isStation && WidthName != "6m" ? "Station_" : "")}Rail.obj")
+                        .SetConsistentUVs();
+                }
 
-                nodes1
-                    .SetFlags(NetNode.Flags.LevelCrossing, NetNode.Flags.None)
-                    .SetMeshes
-                    ($@"Meshes\{WidthName}\LevelCrossing_{(isStation && WidthName != "6m" ? "Station_" : "")}Rail.obj")//,
-                                                                                                                       //$@"Meshes\{WidthName}\LevelCrossing_Rail_LOD.obj")
-                    .SetConsistentUVs();
 
                 nodes2
                     .SetMeshes

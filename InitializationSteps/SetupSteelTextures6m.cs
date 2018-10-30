@@ -161,7 +161,7 @@ namespace MetroOverhaul.InitializationSteps
                                     new LODTextureSet
                                         ($@"Textures\{elevatedBridge}_Segment_Pavement_Steel__MainTex_LOD.png",
                                             $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__AlphaMap_LOD.png",
-                                            $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__XYSMap_LOD.png"));
+                                            $@"Textures\Elevated_Segment_Pavement__XYSMap_LOD.png"));
                             }
                             else if (segment.m_mesh.name.Contains("ThirdRail"))
                             {
@@ -217,7 +217,7 @@ namespace MetroOverhaul.InitializationSteps
                                         new LODTextureSet
                                             (@"Textures\Elevated_Node_Pavement__MainTex_LOD.png",
                                                 @"Textures\Elevated_Node_Pavement__AlphaMap_LOD.png",
-                                                @"Textures\Ground_Segment_Pavement__XYSMap_LOD.png"));
+                                                @"Textures\Elevated_Segment_Pavement__XYSMap_LOD.png"));
                                 }
                                 if (node.m_mesh.name.Contains("Elevated"))
                                 {

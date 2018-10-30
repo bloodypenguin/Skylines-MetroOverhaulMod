@@ -15,7 +15,7 @@ namespace MetroOverhaul.InitializationSteps
                 case NetInfoVersion.Elevated:
                     {
                         var pillarDict = new Dictionary<int, BuildingInfo>();
-                        var laneCount = prefab.name.ToLower().Contains("small") ? 1 : 2;
+                        var laneCount = prefab.m_lanes.Where(l => l.m_vehicleType == VehicleInfo.VehicleType.Metro).Count();
                         var lowPillar = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"Classic {laneCount}L Pillar (Low)")}.Classic {laneCount}L Pillar (Low)_Data");
                         var highPillar = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"Classic {laneCount}L Pillar (High)")}.Classic {laneCount}L Pillar (High)_Data");
                         var lowPillarProp = PrefabCollection<PropInfo>.FindLoaded($"{Util.PackageName($"Classic {laneCount}L Pillar (Low) Prop")}.Classic {laneCount}L Pillar (Low) Prop_Data");
@@ -68,7 +68,7 @@ namespace MetroOverhaul.InitializationSteps
                     }
                 case NetInfoVersion.Bridge:
                     {
-                        var laneCount = prefab.name.ToLower().Contains("small") ? 1 : 2;
+                        var laneCount = prefab.m_lanes.Where(l => l.m_vehicleType == VehicleInfo.VehicleType.Metro).Count();
                         var steelBridgePillarInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"Classic {laneCount}L Pillar (Bridge)")}.Classic {laneCount}L Pillar (Bridge)_Data");
                         if (steelBridgePillarInfo == null)
                         {

@@ -207,16 +207,31 @@
     <None Include="Assets\Classic 2L Pillar %28Low%29.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Assets\Classic 4L Pillar %28Bridge%29.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\Classic 4L Pillar %28High%29.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\Classic 4L Pillar %28Low%29.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Assets\m100.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Assets\MetroBridgePillar.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Assets\MetroBridgePillarLarge.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Assets\MetroBridgePillarSmall.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Assets\MetroElevatedPillar.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\MetroElevatedPillarLarge.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Assets\MetroElevatedPillarSmall.crp">
@@ -819,6 +834,9 @@
     <None Include="Resources\Meshes\18m\LevelCrossing_Rail_Insert.obj" />
     <None Include="Resources\Meshes\18m\LevelCrossing_Rail_Insert_Merge.obj" />
     <None Include="Resources\Meshes\18m\LevelCrossing_Rail_Insert_Single_Merge.obj" />
+    <None Include="Resources\Meshes\18m\LevelCrossing_Rail_LOD.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\18m\LevelCrossing_Rail_Merge.obj" />
     <None Include="Resources\Meshes\18m\LevelCrossing_Rail_Single_Merge.obj" />
     <None Include="Resources\Meshes\18m\LevelCrossing_Station_Rail.obj" />
@@ -1682,6 +1700,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Textures\Ground_Fence__XYSMap_LOD.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Textures\Ground_Level_Crossing_Rail_Large__AlphaMap_LOD.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Textures\Ground_Level_Crossing_Rail_Large__MainTex_LOD.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Textures\Ground_Level_Crossing_Rail_Large__XYSMap_LOD.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Textures\Ground_Level_Crossing_Rail__AlphaMap_LOD.png">

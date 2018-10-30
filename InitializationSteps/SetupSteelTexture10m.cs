@@ -106,9 +106,9 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
                                             @"Textures\Ground_Level_Crossing_Rail__XYSMap.png"),
                                     new LODTextureSet
-                                           (@"Textures\Ground_Level_Crossing_Rail__MainTex_LOD.png",
-                                            @"Textures\Ground_Level_Crossing_Rail__AlphaMap_LOD.png",
-                                            @"Textures\Ground_Level_Crossing_Rail__XYSMap_LOD.png"));
+                                           ($@"Textures\Ground_Level_Crossing_Rail{large}__MainTex_LOD.png",
+                                            $@"Textures\Ground_Level_Crossing_Rail{large}__AlphaMap_LOD.png",
+                                            $@"Textures\Ground_Level_Crossing_Rail{large}__XYSMap_LOD.png"));
                             }
 
                             else if (node.m_mesh.name.Contains("Pavement"))
@@ -186,7 +186,7 @@ namespace MetroOverhaul.InitializationSteps
                                     new LODTextureSet
                                         ($@"Textures\{elevatedBridge}_Segment_Pavement_Steel__MainTex_LOD.png",
                                             $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__AlphaMap_LOD.png",
-                                            $@"Textures\{elevatedBridge}_Segment_Pavement_Steel__XYSMap_LOD.png"));
+                                            $@"Textures\Elevated_Segment_Pavement__XYSMap_LOD.png"));
                             }
                             else if (segment.m_mesh.name.Contains("ThirdRail"))
                             {
@@ -241,7 +241,11 @@ namespace MetroOverhaul.InitializationSteps
                                     new TextureSet
                                         (@"Textures\Ground_Level_Crossing_Rail__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Level_Crossing_Rail__XYSMap.png"));
+                                            @"Textures\Ground_Level_Crossing_Rail__XYSMap.png"),
+                                    new LODTextureSet
+                                           ($@"Textures\Ground_Level_Crossing_Rail{large}__MainTex_LOD.png",
+                                            $@"Textures\Ground_Level_Crossing_Rail{large}__AlphaMap_LOD.png",
+                                            $@"Textures\Ground_Level_Crossing_Rail{large}__XYSMap_LOD.png"));
                             }
                             else if (node.m_mesh.name.Contains("Pavement") || (node.m_mesh.name.Contains("Fence")) || (node.m_mesh.name.Contains("Bar")))
                             {
@@ -411,7 +415,11 @@ namespace MetroOverhaul.InitializationSteps
                                     new TextureSet
                                         (@"Textures\Ground_Level_Crossing_Rail__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Level_Crossing_Rail__XYSMap.png"));
+                                            @"Textures\Ground_Level_Crossing_Rail__XYSMap.png"),
+                                    new LODTextureSet
+                                           ($@"Textures\Ground_Level_Crossing_Rail{large}__MainTex_LOD.png",
+                                            $@"Textures\Ground_Level_Crossing_Rail{large}__AlphaMap_LOD.png",
+                                            $@"Textures\Ground_Level_Crossing_Rail{large}__XYSMap_LOD.png"));
                             }
                             else if (node.m_mesh.name.Contains("Tunnel_Node") || node.m_mesh.name.Contains("Slope_U_Node") || node.m_mesh.name.Contains("Tunnel_Trans"))
                             {

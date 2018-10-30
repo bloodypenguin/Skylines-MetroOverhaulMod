@@ -39,12 +39,12 @@ namespace MetroOverhaul.InitializationSteps
                                 $@"Meshes\{width}\Ground_Pavement_LOD.obj");
                         if (isLarge)
                         {
-                        segment1
-                            .SetFlagsDefault()
-                            .SetMeshes
-                            ($@"Meshes\{width}\Rail.obj",
-                             $@"Meshes\{width}\Rail_LOD.obj")
-                            .SetConsistentUVs();
+                            segment1
+                                .SetFlagsDefault()
+                                .SetMeshes
+                                ($@"Meshes\{width}\Rail.obj",
+                                 $@"Meshes\{width}\Rail_LOD.obj")
+                                .SetConsistentUVs();
                         }
                         else
                         {
@@ -94,11 +94,23 @@ namespace MetroOverhaul.InitializationSteps
                             ($@"Meshes\{width}\Elevated_Pavement.obj",
                                 $@"Meshes\{width}\Elevated_Pavement_LOD.obj")
                             .SetConsistentUVs(); //ehem
-
-                        segment1
-                            .SetFlagsDefault()
-                            .SetMeshes
-                            ($@"Meshes\{width}\Boosted_Rail.obj");
+                        if (isLarge)
+                        {
+                            segment1
+                                .SetFlagsDefault()
+                                .SetMeshes
+                                ($@"Meshes\{width}\Boosted_Rail.obj",
+                                 $@"Meshes\{width}\Rail_LOD.obj")
+                                .SetConsistentUVs();
+                        }
+                        else
+                        {
+                            segment1
+                                .SetFlagsDefault()
+                                .SetMeshes
+                                ($@"Meshes\{width}\Boosted_Rail.obj")
+                                .SetConsistentUVs();
+                        }
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes
@@ -125,12 +137,12 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
 
                         segment0.m_material = elevatedMaterial;
-                        segment0.m_lodMaterial = elevatedLODMaterial;
+                        segment0.m_lodMaterial = elevatedbrMaterial;
                         segment3.m_material = elevatedMaterial;
                         segment3.m_lodMaterial = elevatedLODMaterial;
 
                         node0.m_material = elevatedMaterial;
-                        node0.m_lodMaterial = elevatedLODMaterial;
+                        node0.m_lodMaterial = elevatedbrMaterial;
                         node2.m_material = elevatedMaterial;
                         node2.m_lodMaterial = elevatedLODMaterial;
 
@@ -157,10 +169,23 @@ namespace MetroOverhaul.InitializationSteps
                             ($@"Meshes\{width}\Bridge_Pavement.obj",
                             $@"Meshes\{width}\Bridge_Pavement_LOD.obj")
                             .SetConsistentUVs();
-                        segment1
-                            .SetFlagsDefault()
-                            .SetMeshes
-                            ($@"Meshes\{width}\Boosted_Rail.obj");
+                        if (isLarge)
+                        {
+                            segment1
+                                .SetFlagsDefault()
+                                .SetMeshes
+                                ($@"Meshes\{width}\Boosted_Rail.obj",
+                                 $@"Meshes\{width}\Rail_LOD.obj")
+                                .SetConsistentUVs();
+                        }
+                        else
+                        {
+                            segment1
+                                .SetFlagsDefault()
+                                .SetMeshes
+                                ($@"Meshes\{width}\Boosted_Rail.obj")
+                                .SetConsistentUVs();
+                        }
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes
@@ -189,11 +214,11 @@ namespace MetroOverhaul.InitializationSteps
                             ($@"Meshes\{width}\ThirdRail_Node.obj", $@"Meshes\{width}\Blank.obj")
                             .SetConsistentUVs();
                         segment0.m_material = elevatedMaterial;
-                        segment0.m_lodMaterial = elevatedLODMaterial;
+                        segment0.m_lodMaterial = elevatedbrMaterial;
                         segment3.m_material = elevatedMaterial;
                         segment3.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
-                        node0.m_lodMaterial = elevatedLODMaterial;
+                        node0.m_lodMaterial = elevatedbrMaterial;
                         node2.m_material = elevatedMaterial;
                         node2.m_lodMaterial = elevatedLODMaterial;
                         info.m_segments = new[] { segment0, segment1, segment2, segment3 };
@@ -218,10 +243,23 @@ namespace MetroOverhaul.InitializationSteps
                         nodeList.Add(node5);
                         nodeList.Add(node6);
                         nodeList.Add(node7);
-                        segment1
-                            .SetMeshes
-                            ($@"Meshes\{width}\Boosted_Rail.obj")
-                            .SetConsistentUVs();
+                        if (isLarge)
+                        {
+                            segment1
+                                .SetFlagsDefault()
+                                .SetMeshes
+                                ($@"Meshes\{width}\Boosted_Rail.obj",
+                                 $@"Meshes\{width}\Rail_LOD.obj")
+                                .SetConsistentUVs();
+                        }
+                        else
+                        {
+                            segment1
+                                .SetFlagsDefault()
+                                .SetMeshes
+                                ($@"Meshes\{width}\Boosted_Rail.obj")
+                                .SetConsistentUVs();
+                        }
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes
