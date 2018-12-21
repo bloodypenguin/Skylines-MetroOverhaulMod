@@ -1121,7 +1121,11 @@ namespace MetroOverhaul
                     lane.m_speedLimit = speedLimit;
                 }
             }
-
+            var vanillaMetroClass = FindOriginalNetInfo("Metro Track")?.m_class;
+            if (vanillaMetroClass != null)
+            {
+                prefab.m_connectionClass = vanillaMetroClass;
+            }
             Modifiers.RemoveElectricityPoles(prefab);
         }
 
