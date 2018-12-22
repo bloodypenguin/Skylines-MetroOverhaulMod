@@ -581,6 +581,18 @@
     <None Include="Resources\Meshes\10m\Ground_Rail_Merge_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\10m\Rail_End.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Rail_Merge_End.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Rail_Merge_Start.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Rail_Start.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\10m\Slope_LevelCrossing_Pavement.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -633,6 +645,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\10m\Station_Boosted_Rail.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Station_Node_Rail.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\10m\Station_Rail.obj">
@@ -705,6 +720,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\10m\Tunnel_Station_Pavement_Gray_LOD.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Tunnel_Trans_Pavement.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\10m\Tunnel_Trans_Pavement_Steel.obj">
@@ -848,6 +866,12 @@
     <None Include="Resources\Meshes\18m\Rail_LOD.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\18m\Rail_Merge.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\18m\Rail_Single_Merge.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\18m\Slope_LevelCrossing_Pavement.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -918,6 +942,9 @@
     <None Include="Resources\Meshes\18m\Tunnel_Station_Pavement_Gray_LOD.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\18m\Tunnel_Trans_Pavement.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\18m\Tunnel_Trans_Pavement_Steel.obj" />
     <None Include="Resources\Meshes\19m\Boosted_Rail_Quad.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -925,10 +952,16 @@
     <None Include="Resources\Meshes\19m\Boosted_Rail_Steel_Insert_Merge.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\19m\Boosted_Rail_Steel_Insert_Quad.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\19m\Boosted_Rail_Steel_Insert_Single_Merge.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\19m\Elevated_LevelCrossing_Pavement.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\19m\Elevated_Node_Pavement_Steel_Insert_Quad.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\19m\Elevated_Station_Node_Pavement.obj">
@@ -1006,6 +1039,15 @@
     <None Include="Resources\Meshes\19m\LevelCrossing_Rail_Single_Merge.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\19m\Rail_Merge.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\19m\Rail_Quad.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\19m\Rail_Single_Merge.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\19m\Station_Boosted_Rail.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1061,6 +1103,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\6m\Boosted_Rail_Merge.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\6m\Boosted_Rail_Merge_End.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\6m\Boosted_Rail_Merge_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\6m\Boosted_Rail_Quad_End.obj">
@@ -1396,6 +1444,27 @@
     <None Include="Resources\Meshes\6m\LevelCrossing_Rail_Start.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\6m\Rail_End.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\6m\Rail_Merge.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\6m\Rail_Merge_End.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\6m\Rail_Merge_Start.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\6m\Rail_Quad_End.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\6m\Rail_Quad_Start.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\6m\Rail_Start.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\6m\Slope_LevelCrossing_Pavement.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1526,6 +1595,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\6m\Tunnel_Station_Pavement_Gray_LOD.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\6m\Tunnel_Trans_Pavement.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\6m\Tunnel_Trans_Pavement_Steel.obj">

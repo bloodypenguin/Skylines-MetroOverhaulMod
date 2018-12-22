@@ -41,6 +41,7 @@ namespace MetroOverhaul.InitializationSteps
                 NetInfo.Node node0 = null;
                 NetInfo.Node node1 = null;
                 NetInfo.Node node2 = null;
+                NetInfo.Node node3 = null;
                 if (version == NetInfoVersion.Tunnel)
                 {
                     node0 = info.m_nodes[0].ShallowClone();
@@ -48,6 +49,11 @@ namespace MetroOverhaul.InitializationSteps
                     node0.m_lodMaterial = DefaultLodElMaterial;
                     node0.m_connectGroup = info.m_connectGroup;
                     node0.m_directConnect = true;
+                    node3 = info.m_nodes[0].ShallowClone();
+                    node3.m_material = DefaultElMaterial;
+                    node3.m_lodMaterial = DefaultLodElMaterial;
+                    node3.m_connectGroup = info.m_connectGroup;
+                    node3.m_directConnect = true;
                     if (isSteel && (version & (NetInfoVersion.Elevated | NetInfoVersion.Bridge)) != NetInfoVersion.None)
                     {
                         node1 = info.m_nodes[0].ShallowClone();
@@ -69,6 +75,8 @@ namespace MetroOverhaul.InitializationSteps
                 {
                     node0 = info.m_nodes[1].ShallowClone();
                     node0.m_directConnect = true;
+                    node3 = info.m_nodes[0].ShallowClone();
+                    node3.m_directConnect = true;
                     if (isSteel && (version & (NetInfoVersion.Elevated | NetInfoVersion.Bridge)) != NetInfoVersion.None)
                     {
                         node1 = info.m_nodes[0].ShallowClone();
@@ -90,9 +98,16 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         if (isStation && WidthName != "6m")
                         {
+                            node3.m_directConnect = true;
+                            NodeList.Add(node3);
                             if (WidthName == "18m")
                             {
                                 node0
+                                .SetMeshes
+                                ($@"Meshes\{WidthName}\Station_Node_Rail.obj",
+                                $@"Meshes\{WidthName}\Rail_LOD.obj")
+                                .SetConsistentUVs();
+                                node3
                                 .SetMeshes
                                 ($@"Meshes\{WidthName}\Boosted_Station_Node_Rail.obj",
                                 $@"Meshes\{WidthName}\Rail_LOD.obj")
@@ -101,6 +116,10 @@ namespace MetroOverhaul.InitializationSteps
                             else
                             {
                                 node0
+                                    .SetMeshes
+                                    ($@"Meshes\{WidthName}\Station_Node_Rail.obj")
+                                    .SetConsistentUVs();
+                                node3
                                     .SetMeshes
                                     ($@"Meshes\{WidthName}\Boosted_Station_Node_Rail.obj")
                                     .SetConsistentUVs();
@@ -118,7 +137,7 @@ namespace MetroOverhaul.InitializationSteps
                             }
                             else
                             {
-                                node0
+                                node3
                                     .SetMeshes
                                     ($@"Meshes\{WidthName}\Rail.obj")
                                     .SetConsistentUVs();
@@ -135,9 +154,16 @@ namespace MetroOverhaul.InitializationSteps
                     }
                     else
                     {
+                        node3.m_directConnect = true;
+                        NodeList.Add(node3);
                         if (WidthName == "18m")
                         {
                             node0
+                                .SetMeshes
+                                ($@"Meshes\{WidthName}\{(isStation && WidthName != "6m" ? "Station_Node_" : "")}Rail.obj",
+                                $@"Meshes\{WidthName}\Rail_LOD.obj")
+                                .SetConsistentUVs();
+                            node3
                                 .SetMeshes
                                 ($@"Meshes\{WidthName}\Boosted_{(isStation && WidthName != "6m" ? "Station_Node_" : "")}Rail.obj",
                                 $@"Meshes\{WidthName}\Rail_LOD.obj")
@@ -147,6 +173,10 @@ namespace MetroOverhaul.InitializationSteps
                         {
                             node0
                                 .SetMeshes
+                                ($@"Meshes\{WidthName}\{(isStation && WidthName != "6m" ? "Station_Node_" : "")}Rail.obj")
+                                .SetConsistentUVs();
+                            node3
+                                .SetMeshes
                                 ($@"Meshes\{WidthName}\Boosted_{(isStation && WidthName != "6m" ? "Station_Node_" : "")}Rail.obj")
                                 .SetConsistentUVs();
                         }
@@ -155,9 +185,16 @@ namespace MetroOverhaul.InitializationSteps
 
                 else
                 {
+                    node3.m_directConnect = true;
+                    NodeList.Add(node3);
                     if (WidthName == "18m")
                     {
                         node0
+                            .SetMeshes
+                            ($@"Meshes\{WidthName}\{(isStation && WidthName != "6m" ? "Station_Node_" : "")}Rail.obj",
+                             $@"Meshes\{WidthName}\Rail_LOD.obj")
+                            .SetConsistentUVs();
+                        node3
                             .SetMeshes
                             ($@"Meshes\{WidthName}\Boosted_{(isStation && WidthName != "6m" ? "Station_Node_" : "")}Rail.obj",
                              $@"Meshes\{WidthName}\Rail_LOD.obj")
@@ -166,6 +203,10 @@ namespace MetroOverhaul.InitializationSteps
                     else
                     {
                         node0
+                            .SetMeshes
+                            ($@"Meshes\{WidthName}\{(isStation && WidthName != "6m" ? "Station_Node_" : "")}Rail.obj")
+                            .SetConsistentUVs();
+                        node3
                             .SetMeshes
                             ($@"Meshes\{WidthName}\Boosted_{(isStation && WidthName != "6m" ? "Station_Node_" : "")}Rail.obj")
                             .SetConsistentUVs();
@@ -178,6 +219,7 @@ namespace MetroOverhaul.InitializationSteps
                     if (i == 0)
                     {
                         node0.m_connectGroup = LikenessGroups[i];
+                        node3.m_connectGroup = LikenessGroups[i];
                         if (isSteel && (version & (NetInfoVersion.Elevated | NetInfoVersion.Bridge)) != NetInfoVersion.None)
                         {
                             node1.m_connectGroup = LikenessGroups[i];
@@ -413,8 +455,8 @@ namespace MetroOverhaul.InitializationSteps
             if (version == NetInfoVersion.Elevated || version == NetInfoVersion.Bridge)
             {
                 node1 = info.m_nodes[1].ShallowClone();
-                node1a = info.m_nodes[1].ShallowClone();
-
+                node1a = info.m_nodes[0].ShallowClone();
+                node1a.m_directConnect = true;
                 NetInfo.Node node3 = info.m_nodes[0].ShallowClone();
                 NetInfo.Node node4 = null;
                 NetInfo.Node node5 = info.m_nodes[0].ShallowClone();
@@ -427,7 +469,8 @@ namespace MetroOverhaul.InitializationSteps
                 if (m_IsOneWay)
                 {
                     node2 = info.m_nodes[1].ShallowClone();
-                    node2a = info.m_nodes[1].ShallowClone();
+                    node2a = info.m_nodes[0].ShallowClone();
+                    node2a.m_directConnect = true;
                     node4 = info.m_nodes[0].ShallowClone();
                     node6 = info.m_nodes[0].ShallowClone();
 
@@ -439,7 +482,7 @@ namespace MetroOverhaul.InitializationSteps
                     node1
                         .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
                         .SetMeshes
-                           ($@"Meshes\{WidthName}\Ground_Rail{Variations[index]}_Start.obj",
+                           ($@"Meshes\{WidthName}\Rail{Variations[index]}_Start.obj",
                           @"Meshes\6m\Ground_Rail_Start_LOD.obj")
                          .SetConsistentUVs();
                     node1a
@@ -451,7 +494,7 @@ namespace MetroOverhaul.InitializationSteps
                     node2
                         .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
                         .SetMeshes
-                           ($@"Meshes\{WidthName}\Ground_Rail{Variations[index]}_End.obj",
+                           ($@"Meshes\{WidthName}\Rail{Variations[index]}_End.obj",
                           @"Meshes\6m\Ground_Rail_End_LOD.obj")
                          .SetConsistentUVs();
                     node2a
@@ -525,7 +568,7 @@ namespace MetroOverhaul.InitializationSteps
                     node1
                         .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
                         .SetMeshes
-                           ($@"Meshes\{WidthName}\Ground_Rail{Variations[index]}.obj",
+                           ($@"Meshes\{WidthName}\Rail{Variations[index]}.obj",
                           @"Meshes\6m\Ground_Rail_Start_LOD.obj")
                          .SetConsistentUVs();
                     node1a
@@ -581,49 +624,85 @@ namespace MetroOverhaul.InitializationSteps
                     node1.m_material = DefaultMaterial;
                     node1.m_lodMaterial = DefaultLODMaterial;
                     node1.m_directConnect = true;
+                    node1a = info.m_nodes[0].ShallowClone();
+                    node1a.m_material = DefaultMaterial;
+                    node1a.m_lodMaterial = DefaultLODMaterial;
+                    node1a.m_directConnect = true;
                     if (m_IsOneWay)
                     {
                         node2 = info.m_nodes[0].ShallowClone();
                         node2.m_material = DefaultMaterial;
                         node2.m_lodMaterial = DefaultLODMaterial;
                         node2.m_directConnect = true;
+                        node2a = info.m_nodes[0].ShallowClone();
+                        node2a.m_material = DefaultMaterial;
+                        node2a.m_lodMaterial = DefaultLODMaterial;
+                        node2a.m_directConnect = true;
                     }
                 }
                 else
                 {
                     node1 = info.m_nodes[1].ShallowClone();
+                    node1a = info.m_nodes[0].ShallowClone();
                     if (m_IsOneWay)
+                    {
                         node2 = info.m_nodes[1].ShallowClone();
+                        node2a = info.m_nodes[0].ShallowClone();
+                    }
+
                 }
 
                 NodeList.Add(node1);
+                NodeList.Add(node1a);
                 if (m_IsOneWay)
+                {
                     NodeList.Add(node2);
+                    NodeList.Add(node2a);
+                }
+                    
 
                 if (m_IsOneWay)
                 {
                     node1
                         .SetMeshes
-                           ($@"Meshes\{WidthName}\Boosted_Rail{Variations[index]}_Start.obj",
+                           ($@"Meshes\{WidthName}\Rail{Variations[index]}_Start.obj",
                           @"Meshes\6m\Ground_Rail_Start_LOD.obj")
                          .SetConsistentUVs();
                     node2
                         .SetMeshes
+                           ($@"Meshes\{WidthName}\Rail{Variations[index]}_End.obj",
+                           @"Meshes\6m\Ground_Rail_End_LOD.obj")
+                          .SetConsistentUVs();
+                    node1a
+                        .SetMeshes
+                           ($@"Meshes\{WidthName}\Boosted_Rail{Variations[index]}_Start.obj",
+                          @"Meshes\6m\Ground_Rail_Start_LOD.obj")
+                         .SetConsistentUVs();
+                    node2a
+                        .SetMeshes
                            ($@"Meshes\{WidthName}\Boosted_Rail{Variations[index]}_End.obj",
                            @"Meshes\6m\Ground_Rail_End_LOD.obj")
                           .SetConsistentUVs();
-
                     node1.m_connectGroup = NetInfo.ConnectGroup.OnewayStart;
+                    node1a.m_connectGroup = NetInfo.ConnectGroup.OnewayStart;
                     node2.m_connectGroup = NetInfo.ConnectGroup.OnewayEnd;
+                    node2a.m_connectGroup = NetInfo.ConnectGroup.OnewayEnd;
                     for (var j = index; j <= m_Till; j++)
                     {
                         node1.m_connectGroup |= Groups[j];
+                        node1a.m_connectGroup |= Groups[j];
                         node2.m_connectGroup |= Groups[j];
+                        node2a.m_connectGroup |= Groups[j];
                     }
                 }
                 else
                 {
                     node1
+                        .SetMeshes
+                           ($@"Meshes\{WidthName}\Rail{Variations[index]}.obj",
+                          @"Meshes\6m\Ground_Rail_Start_LOD.obj")
+                         .SetConsistentUVs();
+                    node1a
                         .SetMeshes
                            ($@"Meshes\{WidthName}\Boosted_Rail{Variations[index]}.obj",
                           @"Meshes\6m\Ground_Rail_Start_LOD.obj")
@@ -633,10 +712,12 @@ namespace MetroOverhaul.InitializationSteps
                         if (j == index)
                         {
                             node1.m_connectGroup = Groups[j];
+                            node1a.m_connectGroup = Groups[j];
                         }
                         else
                         {
                             node1.m_connectGroup |= Groups[j];
+                            node1a.m_connectGroup |= Groups[j];
                         }
                     }
                 }
@@ -644,11 +725,16 @@ namespace MetroOverhaul.InitializationSteps
         }
         public static void CreateModernSplitTracks(NetInfo info, NetInfoVersion version, int index)
         {
-
+            NetInfo.Node node1 = null;
+            NetInfo.Node node2 = null;
             NetInfo.Node node3 = null;
             NetInfo.Node node4 = null;
             if (version == NetInfoVersion.Tunnel)
             {
+                node1 = info.m_nodes[0].ShallowClone();
+                node1.m_material = DefaultMaterial;
+                node1.m_lodMaterial = DefaultLODMaterial;
+                node1.m_directConnect = true;
 
                 node3 = info.m_nodes[0].ShallowClone();
                 node3.m_material = DefaultMaterial;
@@ -657,6 +743,11 @@ namespace MetroOverhaul.InitializationSteps
 
                 if (m_IsOneWay)
                 {
+                    node2 = info.m_nodes[0].ShallowClone();
+                    node2.m_material = DefaultMaterial;
+                    node2.m_lodMaterial = DefaultLODMaterial;
+                    node2.m_directConnect = true;
+
                     node4 = info.m_nodes[0].ShallowClone();
                     node4.m_material = DefaultMaterial;
                     node4.m_lodMaterial = DefaultLODMaterial;
@@ -665,19 +756,35 @@ namespace MetroOverhaul.InitializationSteps
             }
             else
             {
-                node3 = info.m_nodes[1].ShallowClone();
+                node1 = info.m_nodes[1].ShallowClone();
+                node3 = info.m_nodes[0].ShallowClone();
                 if (m_IsOneWay)
-                    node4 = info.m_nodes[1].ShallowClone();
+                {
+                    node2 = info.m_nodes[1].ShallowClone();
+                    node4 = info.m_nodes[0].ShallowClone();
+                }
+
             }
+            NodeList.Add(node1);
             NodeList.Add(node3);
             if (m_IsOneWay)
             {
+                node1
+                    .SetMeshes
+                       ($@"Meshes\{WidthName}\Rail{Variations[index]}_Start.obj",
+                      @"Meshes\6m\Ground_Rail_Start_LOD.obj")
+                     .SetConsistentUVs();
                 node3
                     .SetMeshes
                        ($@"Meshes\{WidthName}\Boosted_Rail{Variations[index]}_Start.obj",
                       @"Meshes\6m\Ground_Rail_Start_LOD.obj")
                      .SetConsistentUVs();
-
+                NodeList.Add(node2);
+                node2
+                    .SetMeshes
+                       ($@"Meshes\{WidthName}\Rail{Variations[index]}_End.obj",
+                       @"Meshes\6m\Ground_Rail_End_LOD.obj")
+                      .SetConsistentUVs();
                 NodeList.Add(node4);
                 node4
                     .SetMeshes
@@ -687,7 +794,11 @@ namespace MetroOverhaul.InitializationSteps
             }
             else
             {
-                NodeList.Add(node3);
+                node1
+                    .SetMeshes
+                       ($@"Meshes\{WidthName}\Rail{Variations[index]}.obj",
+                      @"Meshes\6m\Ground_Rail_Start_LOD.obj")
+                     .SetConsistentUVs();
                 node3
                     .SetMeshes
                        ($@"Meshes\{WidthName}\Boosted_Rail{Variations[index]}.obj",

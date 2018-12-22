@@ -54,9 +54,9 @@ namespace MetroOverhaul.InitializationSteps
                             {
                                 segment.SetTextures(
                                     new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        (@"Textures\Ground_Segment_Rail_Steel__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                                            @"Textures\Ground_Segment_Rail_Steel__XYSMap.png"));
                             }
                         }
                         foreach (var node in info.m_nodes)
@@ -125,9 +125,9 @@ namespace MetroOverhaul.InitializationSteps
                             {
                                 node.SetTextures(
                                     new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        (@"Textures\Ground_Segment_Rail_Steel__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                                            @"Textures\Ground_Segment_Rail_Steel__XYSMap.png"));
                             }
                         }
                         break;
@@ -179,9 +179,9 @@ namespace MetroOverhaul.InitializationSteps
                             {
                                 segment.SetTextures(
                                     new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        (@"Textures\Ground_Segment_Rail_Steel__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                                            @"Textures\Ground_Segment_Rail_Steel__XYSMap.png"));
                             }
                         }
                         foreach (var node in info.m_nodes)
@@ -219,7 +219,7 @@ namespace MetroOverhaul.InitializationSteps
                                                 @"Textures\Elevated_Node_Pavement__AlphaMap_LOD.png",
                                                 @"Textures\Elevated_Segment_Pavement__XYSMap_LOD.png"));
                                 }
-                                if (node.m_mesh.name.Contains("Elevated"))
+                                else if (node.m_mesh.name.Contains("Elevated"))
                                 {
                                     node.SetTextures(
                                         new TextureSet
@@ -291,9 +291,9 @@ namespace MetroOverhaul.InitializationSteps
                             {
                                 node.SetTextures(
                                     new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        (@"Textures\Ground_Segment_Rail_Steel__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                                            @"Textures\Ground_Segment_Rail_Steel__XYSMap.png"));
                             }
                         }
                         break;
@@ -344,9 +344,9 @@ namespace MetroOverhaul.InitializationSteps
                             {
                                 segment.SetTextures(
                                     new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        (@"Textures\Ground_Segment_Rail_Steel__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                                            @"Textures\Ground_Segment_Rail_Steel__XYSMap.png"));
                             }
                         }
                         for (var i = 0; i < info.m_nodes.Length; i++)
@@ -411,9 +411,9 @@ namespace MetroOverhaul.InitializationSteps
                             {
                                 node.SetTextures(
                                     new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        (@"Textures\Ground_Segment_Rail_Steel__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                                            @"Textures\Ground_Segment_Rail_Steel__XYSMap.png"));
                             }
                         }
                         break;

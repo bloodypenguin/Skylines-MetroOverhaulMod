@@ -1124,7 +1124,6 @@ namespace MetroOverhaul
             {
                 var milestone = vanillaMetroTrack.GetComponent<PlayerNetAI>().m_createPassMilestone;
                 prefab.GetComponent<PlayerNetAI>().m_createPassMilestone = milestone;
-                prefab.m_minCornerOffset = 24;
             }
             prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
             prefab.m_class.m_subService = ItemClass.SubService.PublicTransportMetro;

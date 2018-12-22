@@ -55,9 +55,9 @@ namespace MetroOverhaul.InitializationSteps
                             else
                             {
                                 var texture = new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        (@"Textures\Ground_Segment_Rail_Steel__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png");
+                                            @"Textures\Ground_Segment_Rail_Steel__XYSMap.png");
                                 if (info.name.Contains("Large"))
                                 {
                                     var lodTexture = new LODTextureSet
@@ -138,9 +138,9 @@ namespace MetroOverhaul.InitializationSteps
                             else
                             {
                                 var texture = new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        (@"Textures\Ground_Segment_Rail_Steel__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png");
+                                            @"Textures\Ground_Segment_Rail_Steel__XYSMap.png");
                                 if (info.name.Contains("Large"))
                                 {
                                     var lodTexture = new LODTextureSet
@@ -203,9 +203,9 @@ namespace MetroOverhaul.InitializationSteps
                             else
                             {
                                 var texture = new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        (@"Textures\Ground_Segment_Rail_Steel__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png");
+                                            @"Textures\Ground_Segment_Rail_Steel__XYSMap.png");
                                 if (info.name.Contains("Large"))
                                 {
                                     var lodTexture = new LODTextureSet
@@ -301,9 +301,9 @@ namespace MetroOverhaul.InitializationSteps
                             else
                             {
                                 var texture = new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        (@"Textures\Ground_Segment_Rail_Steel__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png");
+                                            @"Textures\Ground_Segment_Rail_Steel__XYSMap.png");
                                 if (info.name.Contains("Large"))
                                 {
                                     var lodTexture = new LODTextureSet
@@ -365,9 +365,9 @@ namespace MetroOverhaul.InitializationSteps
                             else if (segment.m_mesh.name.Contains("Rail"))
                             {
                                 var texture = new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        (@"Textures\Ground_Segment_Rail_Steel__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png");
+                                            @"Textures\Ground_Segment_Rail_Steel__XYSMap.png");
                                 if (info.name.Contains("Large"))
                                 {
                                     var lodTexture = new LODTextureSet
@@ -460,9 +460,9 @@ namespace MetroOverhaul.InitializationSteps
                             else
                             {
                                 var texture = new TextureSet
-                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                        (@"Textures\Ground_Segment_Rail_Steel__MainTex.png",
                                             @"Textures\Ground_Segment_Rail__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Rail__XYSMap.png");
+                                            @"Textures\Ground_Segment_Rail_Steel__XYSMap.png");
                                 //if (info.name.Contains("Large"))
                                 //{
                                 //    var lodTexture = new LODTextureSet

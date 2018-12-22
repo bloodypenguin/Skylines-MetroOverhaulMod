@@ -73,7 +73,11 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                             ($@"Meshes\{width}\ThirdRail_Node.obj", $@"Meshes\{width}\Blank.obj")
                             .SetConsistentUVs();
-
+                        if (isLarge)
+                        {
+node0.m_directConnect = true;
+                        }
+                        
                         info.m_segments = new[] { segment0, segment1, segment2 };
                         break;
                     }

@@ -237,6 +237,7 @@ namespace MetroOverhaul.InitializationSteps
             {
                 prefab.m_connectGroup = NetInfo.ConnectGroup.WideTram;
                 prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.NarrowTram | (NetInfo.ConnectGroup)16;
+                prefab.m_minCornerOffset = 24;
                 //if (version != NetInfoVersion.Tunnel)
                 //{
                 //    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.WideTram;
