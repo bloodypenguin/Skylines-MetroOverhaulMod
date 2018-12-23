@@ -1079,7 +1079,6 @@ namespace MetroOverhaul
             }
             prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
             prefab.m_class.m_subService = ItemClass.SubService.PublicTransportMetro;
-            prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
             prefab.m_class.m_service = ItemClass.Service.PublicTransport;
             //prefab.m_class.m_level = ItemClass.Level.Level1;
             prefab.m_UIPriority = vanillaMetroTrack.m_UIPriority;
@@ -1092,7 +1091,7 @@ namespace MetroOverhaul
             }
             else
             {
-                prefab.m_class.m_layer = ItemClass.Layer.Default;
+                prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels | ItemClass.Layer.Default;
             }
             prefab.m_availableIn = ItemClass.Availability.AssetEditor;
             prefab.m_class.hideFlags = HideFlags.None;
@@ -1121,11 +1120,11 @@ namespace MetroOverhaul
                     lane.m_speedLimit = speedLimit;
                 }
             }
-            var vanillaMetroClass = FindOriginalNetInfo("Metro Track")?.m_class;
-            if (vanillaMetroClass != null)
-            {
-                prefab.m_connectionClass = vanillaMetroClass;
-            }
+            //var vanillaMetroClass = FindOriginalNetInfo("Metro Track")?.m_class;
+            //if (vanillaMetroClass != null)
+            //{
+            //    prefab.m_connectionClass = vanillaMetroClass;
+            //}
             Modifiers.RemoveElectricityPoles(prefab);
         }
 
