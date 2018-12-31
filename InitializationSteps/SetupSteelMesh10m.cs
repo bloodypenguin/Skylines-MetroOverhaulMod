@@ -75,7 +75,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
                         if (isLarge)
                         {
-node0.m_directConnect = true;
+//node0.m_directConnect = true;
                         }
                         
                         info.m_segments = new[] { segment0, segment1, segment2 };
