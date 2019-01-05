@@ -7,12 +7,13 @@ namespace MetroOverhaul.InitializationSteps
 {
     public static partial class SetupSteelMesh
     {
-        public static void Setup6mSteelMesh(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo, NetInfo trainTrackInfo)
+        public static void Setup6mSteelMesh(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo)
         {
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
             var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
-            var trainTrackMaterial = trainTrackInfo.m_nodes[0].m_material;
-            var trainTrackLODMaterial = elevatedInfo.m_nodes[0].m_lodMaterial;
+            var trainTrackInfo = Prefabs.Find<NetInfo>("Train Track");
+            var railMaterial = trainTrackInfo.m_segments[1].m_material;
+            var railLODMaterial = trainTrackInfo.m_segments[1].m_lodMaterial;
             var brElInfo = Prefabs.Find<NetInfo>("Basic Road Elevated");
             var defaultElMaterial = brElInfo.m_segments[0].m_material;
             var defaultElLODMaterial = brElInfo.m_segments[0].m_lodMaterial;
@@ -62,7 +63,7 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         var segment0 = info.m_segments[0].ShallowClone();
                         var segment1 = info.m_segments[1].ShallowClone();
-                        var segment2 = info.m_segments[0].ShallowClone();
+                        var segment2 = info.m_segments[1].ShallowClone();
                         var segment3 = info.m_segments[0].ShallowClone();
 
                         var node0 = info.m_nodes[0].ShallowClone();
@@ -126,7 +127,7 @@ namespace MetroOverhaul.InitializationSteps
                 case NetInfoVersion.Bridge:
                     {
                         var segment1 = info.m_segments[1].ShallowClone();
-                        var segment2 = info.m_segments[0].ShallowClone();
+                        var segment2 = info.m_segments[1].ShallowClone();
                         var segment3 = info.m_segments[0].ShallowClone();
 
                         //var node0 = info.m_nodes[0].ShallowClone();
@@ -177,10 +178,9 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         var segment0 = info.m_segments[0].ShallowClone();
                         var segment1 = info.m_segments[1].ShallowClone();
-                        var segment2 = info.m_segments[0].ShallowClone();
+                        var segment2 = info.m_segments[1].ShallowClone();
                         var segment3 = info.m_segments[3].ShallowClone();
                         var segment4 = info.m_segments[3].ShallowClone();
-                        var segment5 = info.m_segments[3].ShallowClone();
                         var node0 = info.m_nodes[0].ShallowClone();
 
                         var node2 = info.m_nodes[1].ShallowClone();
@@ -215,11 +215,6 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                             (@"Meshes\6m\Slope_Pavement_Steel_Ground.obj",
                                 @"Meshes\10m\Blank.obj");
-                        segment5
-                            .SetFlagsDefault()
-                              .SetMeshes
-                              (@"Meshes\6m\ThirdRail.obj", @"Meshes\10m\Blank.obj")
-                              .SetConsistentUVs();
                         node0
                             .SetMeshes
                             (@"Meshes\6m\Tunnel_Pavement_Gray.obj",
@@ -244,15 +239,12 @@ namespace MetroOverhaul.InitializationSteps
                         segment3.m_lodMaterial = elevatedLODMaterial;
                         segment4.m_material = elevatedMaterial;
                         segment4.m_lodMaterial = elevatedLODMaterial;
-                        segment5.m_material = elevatedMaterial;
-                        segment5.m_lodMaterial = elevatedLODMaterial;
                         node2.m_connectGroup = info.m_connectGroup;
                         node3.m_material = elevatedMaterial;
                         node3.m_lodMaterial = elevatedLODMaterial;
                         node5.m_material = elevatedMaterial;
                         node5.m_lodMaterial = elevatedLODMaterial;
-                        RoadHelper.HandleAsymSegmentFlags(segment5);
-                        info.m_segments = new[] { segment0, segment1, segment2, segment3, segment4, segment5 };
+                        info.m_segments = new[] { segment0, segment1, segment2, segment3, segment4 };
                         break;
                     }
 
@@ -315,10 +307,10 @@ namespace MetroOverhaul.InitializationSteps
 
                         segment1.m_material = defaultElMaterial;
                         segment1.m_lodMaterial = defaultElLODMaterial;
-                        segment2.m_material = elevatedMaterial;
-                        segment2.m_lodMaterial = elevatedLODMaterial;
-                        segment3.m_material = elevatedMaterial;
-                        segment3.m_lodMaterial = elevatedLODMaterial;
+                        segment2.m_material = railMaterial;
+                        segment2.m_lodMaterial = railLODMaterial;
+                        segment3.m_material = railMaterial;
+                        segment3.m_lodMaterial = railLODMaterial;
                         segment4.m_material = defaultElMaterial;
                         segment4.m_lodMaterial = defaultElLODMaterial;
                         node1.m_material = elevatedMaterial;
@@ -536,6 +528,9 @@ namespace MetroOverhaul.InitializationSteps
         {
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
             var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
+            var trainTrackInfo = Prefabs.Find<NetInfo>("Train Track");
+            var railMaterial = trainTrackInfo.m_segments[1].m_material;
+            var railLODMaterial = trainTrackInfo.m_segments[1].m_lodMaterial;
             var isTwoWay = prefab.name.Contains("Two-Way");
             var nodeList = new List<NetInfo.Node>();
             switch (version)
@@ -544,14 +539,10 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         var segment0 = prefab.m_segments[0].ShallowClone();
                         var segment1 = prefab.m_segments[1].ShallowClone();
-                        var segment2 = prefab.m_segments[0].ShallowClone();
+                        var segment2 = prefab.m_segments[1].ShallowClone();
                         var node0 = prefab.m_nodes[0].ShallowClone();
-                        var node1 = prefab.m_nodes[1].ShallowClone();
-
 
                         nodeList.Add(node0);
-                        nodeList.Add(node1);
-                        node1.m_connectGroup = (NetInfo.ConnectGroup)16;
                         segment0
                             .SetMeshes
                             (@"Meshes\6m\Ground_Station_Pavement.obj",
@@ -571,11 +562,6 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                             (@"Meshes\6m\Ground_Node_Pavement.obj",
                                 @"Meshes\6m\Ground_Node_Pavement_LOD.obj");
-                        node1
-                            .SetMeshes
-                            (@"Meshes\6m\Boosted_Rail.obj",
-                            @"Meshes\6m\Ground_Rail_Node_LOD.obj")
-                            .SetConsistentUVs();
 
                         RoadHelper.HandleAsymSegmentFlags(segment2);
 
@@ -591,7 +577,7 @@ namespace MetroOverhaul.InitializationSteps
 
                         var segment0 = prefab.m_segments[0].ShallowClone();
                         var segment1 = prefab.m_segments[1].ShallowClone();
-                        var segment2 = prefab.m_segments[0].ShallowClone();
+                        var segment2 = prefab.m_segments[1].ShallowClone();
                         var segment3 = prefab.m_segments[0].ShallowClone();
 
                         var node0 = prefab.m_nodes[0].ShallowClone();

@@ -390,8 +390,8 @@ namespace MetroOverhaul.UI
             SidePlatform,
             IslandPlatform,
             SingleTrack,
-            QuadSidePlatform//,
-                            //QuadIslandPlatform
+            QuadSidePlatform,
+            QuadIslandPlatform
         }
         public enum ToggleType
         {

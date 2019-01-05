@@ -32,11 +32,11 @@ namespace MetroOverhaul.InitializationSteps
 			DefaultMaterial = ttInfo.m_nodes[0].m_material;
 			DefaultLODMaterial = ttInfo.m_nodes[0].m_lodMaterial;
 			NodeList = new List<NetInfo.Node>();
-			m_IsOneWay = (info.m_connectGroup & ((NetInfo.ConnectGroup)32 | NetInfo.ConnectGroup.CenterTram)) != NetInfo.ConnectGroup.None;
+			m_IsOneWay = (info.m_connectGroup & (NetInfo.ConnectGroup.MonorailStation | NetInfo.ConnectGroup.CenterTram)) != NetInfo.ConnectGroup.None;
 			var isSteel = info.name.Contains("Steel");
 			PopulateMetaData(info);
 			CreateBaseLevelCrossing(info, version);
-			if (LikenessGroups != null && info.m_connectGroup != NetInfo.ConnectGroup.DoubleMonorail)
+			if (LikenessGroups != null && (info.m_connectGroup & (NetInfo.ConnectGroup.DoubleMonorail | (NetInfo.ConnectGroup)32768)) == NetInfo.ConnectGroup.None)
 			{
 				NetInfo.Node node0 = null;
 				NetInfo.Node node1 = null;
@@ -137,7 +137,7 @@ namespace MetroOverhaul.InitializationSteps
 							}
 							else
 							{
-								node3
+								node0
 									.SetMeshes
 									($@"Meshes\{WidthName}\Rail.obj")
 									.SetConsistentUVs();
@@ -238,7 +238,7 @@ namespace MetroOverhaul.InitializationSteps
 					}
 				}
 			}
-			if ((info.m_connectGroup & ((NetInfo.ConnectGroup)64 | NetInfo.ConnectGroup.NarrowTram)) == NetInfo.ConnectGroup.None)
+			if ((info.m_connectGroup & ((NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.NarrowTram)) == NetInfo.ConnectGroup.None)
 			{
 				if (Variations != null)
 				{
@@ -285,18 +285,18 @@ namespace MetroOverhaul.InitializationSteps
 			info.m_nodeConnectGroups = info.m_connectGroup;
 			switch (info.m_connectGroup)
 			{
-				case (NetInfo.ConnectGroup)16:
+				case NetInfo.ConnectGroup.SingleMonorail:
 					Variations = new[] { "_Merge", "_Merge", "_Merge" };
-					Groups = new[] { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)32, (NetInfo.ConnectGroup)64 };
+					Groups = new[] { NetInfo.ConnectGroup.NarrowTram, NetInfo.ConnectGroup.MonorailStation, (NetInfo.ConnectGroup)2048 };
 					WidthName = "6m";
 					break;
 				case NetInfo.ConnectGroup.CenterTram:
-					LikenessGroups.Add((NetInfo.ConnectGroup)16);
+					LikenessGroups.Add(NetInfo.ConnectGroup.SingleMonorail);
 					Variations = new[] { "", "_Merge", "_Merge", "_Quad", "_Quad" };
-					Groups = new[] { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)32, (NetInfo.ConnectGroup)64, NetInfo.ConnectGroup.WideTram, (NetInfo.ConnectGroup)128 };
+					Groups = new[] { NetInfo.ConnectGroup.NarrowTram, NetInfo.ConnectGroup.MonorailStation, (NetInfo.ConnectGroup)2048, NetInfo.ConnectGroup.WideTram, (NetInfo.ConnectGroup)128 };
 					WidthName = "6m";
 					break;
-				case (NetInfo.ConnectGroup)32:
+				case NetInfo.ConnectGroup.MonorailStation:
 					Variations = new[] { "_Merge", "", "" };
 					Groups = new[] { NetInfo.ConnectGroup.NarrowTram, NetInfo.ConnectGroup.WideTram, (NetInfo.ConnectGroup)128 };
 					WidthName = "10m";
@@ -304,28 +304,33 @@ namespace MetroOverhaul.InitializationSteps
 				case NetInfo.ConnectGroup.NarrowTram:
 					WidthName = "10m";
 					break;
-				case (NetInfo.ConnectGroup)64:
+				case (NetInfo.ConnectGroup)2048:
 					WidthName = "10m";
 					LikenessGroups.Add(NetInfo.ConnectGroup.NarrowTram);
-					LikenessGroups.Add((NetInfo.ConnectGroup)32);
+					LikenessGroups.Add(NetInfo.ConnectGroup.MonorailStation);
 					break;
 				case NetInfo.ConnectGroup.WideTram:
 					Variations = new[] { "_Merge", "_Merge", "_Single_Merge" };
-					Groups = new[] { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)64, (NetInfo.ConnectGroup)16 };
+					Groups = new[] { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)2048, NetInfo.ConnectGroup.SingleMonorail };
 					WidthName = "18m";
 					break;
 				case (NetInfo.ConnectGroup)128:
 					WidthName = "18m";
 					LikenessGroups.Add(NetInfo.ConnectGroup.WideTram);
 					Variations = new[] { "_Merge", "_Merge", "_Single_Merge" };
-					Groups = new[] { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)64, (NetInfo.ConnectGroup)16 };
+					Groups = new[] { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)2048, NetInfo.ConnectGroup.SingleMonorail };
 					break;
 				case NetInfo.ConnectGroup.DoubleMonorail:
 					WidthName = "19m";
 					Variations = new[] { "_Merge", "_Merge", "_Single_Merge", "_Single_Merge", "_Quad" };
-					Groups = new[] { NetInfo.ConnectGroup.NarrowTram, (NetInfo.ConnectGroup)32, NetInfo.ConnectGroup.CenterTram, (NetInfo.ConnectGroup)16, NetInfo.ConnectGroup.WideTram };
+					Groups = new[] { NetInfo.ConnectGroup.NarrowTram, NetInfo.ConnectGroup.MonorailStation, NetInfo.ConnectGroup.CenterTram, NetInfo.ConnectGroup.SingleMonorail, NetInfo.ConnectGroup.WideTram };
 					break;
-			}
+                case (NetInfo.ConnectGroup)32768:
+                    WidthName = "27m";
+                    Variations = new[] { "_Merge", "_Merge", "_Single_Merge", "_Single_Merge", "_Quad" };
+                    Groups = new[] { NetInfo.ConnectGroup.NarrowTram, NetInfo.ConnectGroup.MonorailStation, NetInfo.ConnectGroup.CenterTram, NetInfo.ConnectGroup.SingleMonorail, NetInfo.ConnectGroup.WideTram };
+                    break;
+            }
 			if (Groups != null)
 			{
 				for (var i = 0; i < Groups.Length; i++)
@@ -480,7 +485,7 @@ namespace MetroOverhaul.InitializationSteps
 					NodeList.Add(node6);
 
 					node1
-						.SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
+						.SetFlags(NetNode.Flags.None, NetNode.Flags.None)
 						.SetMeshes
 						   ($@"Meshes\{WidthName}\Rail{Variations[index]}_Start.obj",
 						  @"Meshes\6m\Ground_Rail_Start_LOD.obj")
@@ -492,7 +497,7 @@ namespace MetroOverhaul.InitializationSteps
 						   @"Meshes\6m\Ground_Rail_Start_LOD.obj")
 						  .SetConsistentUVs();
 					node2
-						.SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
+						.SetFlags(NetNode.Flags.None, NetNode.Flags.None)
 						.SetMeshes
 						   ($@"Meshes\{WidthName}\Rail{Variations[index]}_End.obj",
 						  @"Meshes\6m\Ground_Rail_End_LOD.obj")

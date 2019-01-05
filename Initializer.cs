@@ -350,8 +350,8 @@ namespace MetroOverhaul
 				CreateFullStationPrefab(
 					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
 						Chain(CustomizationSteps.SetupStationProps).
-						Chain(CustomizationSteps.CommonIsland16mCustomization).
-						Chain(CustomizationSteps.Set19mTrackWidths).
+						Chain(CustomizationSteps.CommonIslandCustomization).
+						Chain(CustomizationSteps.SetIslandTrackWidths).
 						Chain(SetupMesh.Setup19mStationMesh, elevatedInfo, metroStationInfo).
 						Chain(SetupTexture.Setup19mTexture).
 						Chain(
@@ -372,7 +372,34 @@ namespace MetroOverhaul
 				UnityEngine.Debug.LogException(e);
 			}
 
-			try
+            try
+            {
+                CreateFullStationPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupStationProps).
+                        Chain(CustomizationSteps.CommonLargeIslandCustomization).
+                        Chain(CustomizationSteps.SetLargeIslandTrackWidths).
+                        Chain(SetupMesh.Setup19mStationMesh, elevatedInfo, metroStationInfo).
+                        Chain(SetupTexture.Setup19mTexture).
+                        Chain(
+                            (info, version) =>
+                            {
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                            }),
+                   NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
+                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                    , prefabName => prefabName + " Large Island"
+                    );
+            }
+            catch (Exception e)
+            {
+                Next.Debug.Log("Exception happened when setting up concrete large island station tracks");
+                UnityEngine.Debug.LogException(e);
+            }
+
+            try
 			{
 				CreateFullStationPrefab(
 					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
@@ -445,7 +472,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.SetStandardTrackWidths).
 						Chain(CustomizationSteps.CommonCustomization).
 						Chain(CustomizationSteps.CommonSteelCustomization).
-						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, metroInfo).
+						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo).
 						Chain(SetupSteelMesh.Setup10mSteelBarMesh, elevatedInfo).
 						Chain(SetupSteelTexture.Setup10mSteelTexture).
 						Chain(
@@ -476,7 +503,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.CommonCustomizationLarge).
 						Chain(CustomizationSteps.CommonSteelCustomization).
 						Chain(CustomizationSteps.SetLargeTrackWidths).
-						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, trainTrackInfo).
+						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo).
 						Chain(SetupSteelMesh.Setup10mSteelBarMesh, elevatedInfo).
 						Chain(SetupSteelTexture.Setup10mSteelTexture).
 						Chain(
@@ -507,7 +534,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.CommonCustomizationLarge).
 						Chain(CustomizationSteps.CommonSteelCustomization).
 						Chain(CustomizationSteps.SetLargeTrackWidths).
-						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, trainTrackInfo).
+						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo).
 						Chain(SetupSteelMesh.Setup10mSteelNoBarMesh, elevatedInfo, trainTrackInfo).
 						Chain(SetupSteelTexture.Setup10mSteelTexture).
 						Chain(
@@ -538,7 +565,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.CommonSteelCustomization).
 						Chain(CustomizationSteps.SetupTrackProps).
 						Chain(CustomizationSteps.SetStandardTrackWidths).
-						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, metroInfo).
+						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo).
 						Chain(SetupSteelMesh.Setup10mSteelNoBarMesh, elevatedInfo, metroInfo).
 						Chain(SetupSteelTexture.Setup10mSteelTexture).
 						Chain(
@@ -570,7 +597,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.CommonCustomizationTwoLaneOneWay).
 						Chain(CustomizationSteps.CommonSteelCustomization).
 						Chain(CustomizationSteps.SetStandardTrackWidths).
-						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, metroInfo).
+						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo).
 						Chain(SetupSteelMesh.Setup10mSteelBarMesh, elevatedInfo).
 						Chain(SetupSteelTexture.Setup10mSteelTexture).
 						Chain(
@@ -602,7 +629,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.CommonCustomizationTwoLaneOneWay).
 						Chain(CustomizationSteps.CommonSteelCustomization).
 						Chain(CustomizationSteps.SetStandardTrackWidths).
-						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo, metroInfo).
+						Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo).
 						Chain(SetupSteelMesh.Setup10mSteelNoBarMesh, elevatedInfo, metroInfo).
 						Chain(SetupSteelTexture.Setup10mSteelTexture).
 						Chain(
@@ -634,7 +661,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.CommonCustomizationSmall).
 						Chain(CustomizationSteps.CommonSteelCustomization).
 						Chain(CustomizationSteps.SetSmallTrackWidths).
-						Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo, trainTrackInfo).
+						Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo).
 						Chain(SetupSteelMesh.Setup6mSteelMeshBar, elevatedInfo).
 						Chain(SetupSteelTexture.Setup6mSteelTexture).
 						Chain(
@@ -666,7 +693,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.CommonCustomizationSmall).
 						Chain(CustomizationSteps.CommonSteelCustomization).
 						Chain(CustomizationSteps.SetSmallTrackWidths).
-						Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo, trainTrackInfo).
+						Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo).
 						Chain(SetupSteelMesh.Setup6mSteelMeshNoBar, elevatedInfo, trainTrackInfo).
 						Chain(SetupSteelTexture.Setup6mSteelTexture).
 						Chain(
@@ -697,7 +724,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.CommonCustomizationSmall).
 						Chain(CustomizationSteps.CommonSteelCustomization).
 						Chain(CustomizationSteps.SetSmallTrackWidths).
-						Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo, trainTrackInfo).
+						Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo).
 						Chain(SetupSteelMesh.Setup6mSteelMeshBar, elevatedInfo).
 						Chain(SetupSteelTexture.Setup6mSteelTexture).
 						Chain(
@@ -729,7 +756,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.CommonCustomizationSmall).
 						Chain(CustomizationSteps.CommonSteelCustomization).
 						Chain(CustomizationSteps.SetSmallTrackWidths).
-						Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo, trainTrackInfo).
+						Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo).
 						Chain(SetupSteelMesh.Setup6mSteelMeshNoBar, elevatedInfo, trainTrackInfo).
 						Chain(SetupSteelTexture.Setup6mSteelTexture).
 						Chain(
@@ -761,9 +788,9 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.SetupStationProps).
 						Chain(CustomizationSteps.CommonCustomization).
 						Chain(CustomizationSteps.CommonSteelCustomization).
-						Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo, metroInfo)
+						Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo)
 						. //TODO(earalov): probably change to station specific method
-						Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo, metroStationInfo)
+						Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo)
 						. //TODO(earalov): probably change to station specific method
 						Chain(SetupSteelTexture.Setup10mSteelTexture).
 						Chain(
@@ -783,15 +810,41 @@ namespace MetroOverhaul
 				Next.Debug.Log("Exception happened when setting up steel station tracks");
 				UnityEngine.Debug.LogException(e);
 			}
-
-			try
+            try
+            {
+                CreateFullStationPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupStationProps).
+                        Chain(CustomizationSteps.CommonLargeIslandCustomization).
+                        Chain(CustomizationSteps.CommonSteelCustomization).
+                        Chain(CustomizationSteps.SetLargeIslandTrackWidths).
+                        Chain(SetupSteelMesh.Setup19mSteelStationMesh, elevatedInfo, metroStationInfo).
+                        Chain(SetupSteelTexture.Setup19mSteelTexture).
+                        Chain(
+                            (info, version) =>
+                            {
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
+                            }),
+                   NetInfoVersion.Ground | NetInfoVersion.Elevated,
+                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                    , prefabName => "Steel " + prefabName + " Large Island"
+                    );
+            }
+            catch (Exception e)
+            {
+                Next.Debug.Log("Exception happened when setting up steel island station tracks");
+                UnityEngine.Debug.LogException(e);
+            }
+            try
 			{
 				CreateFullStationPrefab(
 					ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
 						Chain(CustomizationSteps.SetupStationProps).
-						Chain(CustomizationSteps.CommonIsland16mCustomization).
+						Chain(CustomizationSteps.CommonIslandCustomization).
 						Chain(CustomizationSteps.CommonSteelCustomization).
-						Chain(CustomizationSteps.Set19mTrackWidths).
+						Chain(CustomizationSteps.SetIslandTrackWidths).
 						Chain(SetupSteelMesh.Setup19mSteelStationMesh, elevatedInfo, metroStationInfo).
 						Chain(SetupSteelTexture.Setup19mSteelTexture).
 						Chain(
@@ -808,7 +861,7 @@ namespace MetroOverhaul
 			}
 			catch (Exception e)
 			{
-				Next.Debug.Log("Exception happened when setting up steel island station tracks");
+				Next.Debug.Log("Exception happened when setting up steel large island station tracks");
 				UnityEngine.Debug.LogException(e);
 			}
 
@@ -847,7 +900,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.SetupStationProps).
 						Chain(CustomizationSteps.CommonSteelCustomization).
 						Chain(CustomizationSteps.SetLargeStationTrackWidths).
-						Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo, metroStationInfo).
+						Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo).
 						Chain(SetupSteelTexture.Setup10mSteelTexture).
 						Chain(
 							(info, version) =>
@@ -1120,23 +1173,27 @@ namespace MetroOverhaul
 		private static void SetupMetroTrackMeta(NetInfo prefab, NetInfoVersion version)
 		{
 			var vanillaMetroTrack = FindOriginalNetInfo("Metro Track");
+            var vanillaTrainTrack = FindOriginalNetInfo("Train Track");
 			if (!prefab.name.Contains("Station"))
 			{
 				var milestone = vanillaMetroTrack.GetComponent<PlayerNetAI>().m_createPassMilestone;
 				prefab.GetComponent<PlayerNetAI>().m_createPassMilestone = milestone;
-			}
-			else
-			{
-				prefab.m_minCornerOffset = 24;
-			}
-			prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
+                prefab.m_minCornerOffset = 18;
+            }
+            var connectClass = ScriptableObject.CreateInstance<ItemClass>();
+            connectClass = vanillaTrainTrack.m_class;
+            connectClass.m_subService = ItemClass.SubService.PublicTransportMetro;
+            prefab.m_connectionClass = connectClass;
+            //prefab.m_connectionClass = vanillaTrainTrack.m_class;
+            prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
 			prefab.m_class.m_subService = ItemClass.SubService.PublicTransportMetro;
-			prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
+			//prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
 			prefab.m_class.m_service = ItemClass.Service.PublicTransport;
 			//prefab.m_class.m_level = ItemClass.Level.Level1;
 			prefab.m_UIPriority = vanillaMetroTrack.m_UIPriority;
 			prefab.SetUICategory("PublicTransportMetro");
-			if (version == NetInfoVersion.Tunnel)
+
+            if (version == NetInfoVersion.Tunnel)
 			{
 				prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
 				prefab.m_setVehicleFlags = Vehicle.Flags.Transition | Vehicle.Flags.Underground;
@@ -1144,8 +1201,9 @@ namespace MetroOverhaul
 			}
 			else
 			{
-				prefab.m_class.m_layer = ItemClass.Layer.Default;
+				prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels | ItemClass.Layer.Default;
 			}
+            
 			prefab.m_createGravel = version == NetInfoVersion.Ground;
 			prefab.m_availableIn = ItemClass.Availability.AssetEditor;
 			prefab.m_class.hideFlags = HideFlags.None;
@@ -1172,11 +1230,6 @@ namespace MetroOverhaul
 					lane.m_vehicleType = VehicleInfo.VehicleType.Metro;
 					lane.m_speedLimit = speedLimit;
 				}
-			}
-			var vanillaMetroClass = FindOriginalNetInfo("Metro Track")?.m_class;
-			if (vanillaMetroClass != null)
-			{
-				prefab.m_connectionClass = vanillaMetroClass;
 			}
 			Modifiers.RemoveElectricityPoles(prefab);
 		}

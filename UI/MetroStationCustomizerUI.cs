@@ -229,7 +229,7 @@ namespace MetroOverhaul.UI
 			CreateCheckbox(StationTrackType.IslandPlatform);
 			CreateCheckbox(StationTrackType.SingleTrack);
 			CreateCheckbox(StationTrackType.QuadSidePlatform);
-			//CreateCheckbox(StationTrackType.QuadIslandPlatform);
+			CreateCheckbox(StationTrackType.QuadIslandPlatform);
 		}
 
 		protected override void TunnelStationTrackToggleStyles(BuildingInfo info, StationTrackType type)
@@ -277,9 +277,9 @@ namespace MetroOverhaul.UI
 						case StationTrackType.QuadSidePlatform:
 							path.AssignNetInfo("Metro Station Track Tunnel Large");
 							break;
-						//case StationTrackType.QuadIslandPlatform:
-							//path.AssignNetInfo("Metro Station Track Tunnel Large Island");
-							//break;
+						case StationTrackType.QuadIslandPlatform:
+							path.AssignNetInfo("Metro Station Track Tunnel Large Island");
+							break;
 					}
 			}
 		}

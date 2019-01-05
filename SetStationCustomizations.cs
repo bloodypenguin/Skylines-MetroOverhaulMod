@@ -222,7 +222,7 @@ namespace MetroOverhaul
                     var interpolant = 0.6f;
                     var crossing = Vector3.Lerp(trackPath.m_nodes.First(), trackPath.m_nodes.Last(), interpolant);
 
-                    if (trackPath.m_netInfo.IsUndergroundIslandPlatformStationTrack())
+                    if (trackPath.m_netInfo.IsUndergroundIslandPlatformStationTrack() || trackPath.m_netInfo.IsUndergroundIslandPlatformLargeMetroStationTrack())
                     {
                         var startNode = new Vector3()
                         {
