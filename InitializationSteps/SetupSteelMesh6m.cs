@@ -26,7 +26,7 @@ namespace MetroOverhaul.InitializationSteps
                         var segments0 = info.m_segments[0].ShallowClone();
                         var segments1 = info.m_segments[1].ShallowClone();
 
-                        var segments3 = info.m_segments[1].ShallowClone();
+                        var segments3 = info.m_segments[0].ShallowClone();
                         var nodes0 = info.m_nodes[0].ShallowClone();
 
                         nodeList.Add(nodes0);
@@ -55,7 +55,8 @@ namespace MetroOverhaul.InitializationSteps
                             @"Meshes\6m\Ground_Node_Pavement_LOD.obj");
 
                         RoadHelper.HandleAsymSegmentFlags(segments3);
-
+                        segments3.m_material = railMaterial;
+                        segments3.m_lodMaterial = railLODMaterial;
                         info.m_segments = new[] { segments0, segments1, /*segments2*/segments3 };
                         break;
                     }
@@ -63,7 +64,7 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         var segment0 = info.m_segments[0].ShallowClone();
                         var segment1 = info.m_segments[1].ShallowClone();
-                        var segment2 = info.m_segments[1].ShallowClone();
+                        var segment2 = info.m_segments[0].ShallowClone();
                         var segment3 = info.m_segments[0].ShallowClone();
 
                         var node0 = info.m_nodes[0].ShallowClone();
@@ -117,6 +118,8 @@ namespace MetroOverhaul.InitializationSteps
                         RoadHelper.HandleAsymSegmentFlags(segment3);
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
+                        segment2.m_material = railMaterial;
+                        segment2.m_lodMaterial = railLODMaterial;
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
                         node11.m_material = elevatedMaterial;
@@ -127,10 +130,8 @@ namespace MetroOverhaul.InitializationSteps
                 case NetInfoVersion.Bridge:
                     {
                         var segment1 = info.m_segments[1].ShallowClone();
-                        var segment2 = info.m_segments[1].ShallowClone();
+                        var segment2 = info.m_segments[0].ShallowClone();
                         var segment3 = info.m_segments[0].ShallowClone();
-
-                        //var node0 = info.m_nodes[0].ShallowClone();
 
                         var node3 = info.m_nodes[0].ShallowClone();
                         var node9 = info.m_nodes[0].ShallowClone();
@@ -163,7 +164,8 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                             (@"Meshes\6m\Elevated_Node_Pavement_Steel_Insert.obj", @"Meshes\6m\Blank.obj")
                             .SetConsistentUVs();
-
+                        segment2.m_material = railMaterial;
+                        segment2.m_lodMaterial = railLODMaterial;
                         node3.m_material = elevatedMaterial;
                         node3.m_lodMaterial = elevatedLODMaterial;
                         node9.m_material = elevatedMaterial;
@@ -178,7 +180,7 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         var segment0 = info.m_segments[0].ShallowClone();
                         var segment1 = info.m_segments[1].ShallowClone();
-                        var segment2 = info.m_segments[1].ShallowClone();
+                        var segment2 = info.m_segments[0].ShallowClone();
                         var segment3 = info.m_segments[3].ShallowClone();
                         var segment4 = info.m_segments[3].ShallowClone();
                         var node0 = info.m_nodes[0].ShallowClone();
@@ -234,7 +236,8 @@ namespace MetroOverhaul.InitializationSteps
                             (@"Meshes\6m\Tunnel_Node_Pavement_Steel.obj",
                                 @"Meshes\6m\Tunnel_Node_Pavement_LOD.obj")
                             .SetConsistentUVs();
-
+                        segment2.m_material = railMaterial;
+                        segment2.m_lodMaterial = railLODMaterial;
                         segment3.m_material = elevatedMaterial;
                         segment3.m_lodMaterial = elevatedLODMaterial;
                         segment4.m_material = elevatedMaterial;
@@ -539,7 +542,7 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         var segment0 = prefab.m_segments[0].ShallowClone();
                         var segment1 = prefab.m_segments[1].ShallowClone();
-                        var segment2 = prefab.m_segments[1].ShallowClone();
+                        var segment2 = prefab.m_segments[0].ShallowClone();
                         var node0 = prefab.m_nodes[0].ShallowClone();
 
                         nodeList.Add(node0);
@@ -567,6 +570,8 @@ namespace MetroOverhaul.InitializationSteps
 
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
+                        segment2.m_material = railMaterial;
+                        segment2.m_lodMaterial = railLODMaterial;
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
                         prefab.m_segments = new[] { segment0, segment1, segment2 };
@@ -577,7 +582,7 @@ namespace MetroOverhaul.InitializationSteps
 
                         var segment0 = prefab.m_segments[0].ShallowClone();
                         var segment1 = prefab.m_segments[1].ShallowClone();
-                        var segment2 = prefab.m_segments[1].ShallowClone();
+                        var segment2 = prefab.m_segments[0].ShallowClone();
                         var segment3 = prefab.m_segments[0].ShallowClone();
 
                         var node0 = prefab.m_nodes[0].ShallowClone();
@@ -624,6 +629,8 @@ namespace MetroOverhaul.InitializationSteps
                         RoadHelper.HandleAsymSegmentFlags(segment3);
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
+                        segment2.m_material = railMaterial;
+                        segment2.m_lodMaterial = railLODMaterial;
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
 

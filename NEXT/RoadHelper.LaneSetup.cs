@@ -11,7 +11,7 @@ namespace MetroOverhaul.NEXT
     {
         public static NetInfo SetRoadLanes(this NetInfo rdInfo, NetInfoVersion version, LanesConfiguration config)
         {
-            if (config.LanesToAdd < 0)
+            if (config.VehicleLanesToAdd < 0)
             {
                 var remainingLanes = new List<NetInfo.Lane>();
                 remainingLanes.AddRange(rdInfo
@@ -20,16 +20,43 @@ namespace MetroOverhaul.NEXT
                 remainingLanes.AddRange(rdInfo
                     .m_lanes
                     .Where(l => l.m_laneType != NetInfo.LaneType.Pedestrian && l.m_laneType != NetInfo.LaneType.None && l.m_laneType != NetInfo.LaneType.Parking)
-                    .Skip(-config.LanesToAdd));
+                    .Skip(-config.VehicleLanesToAdd));
 
                 rdInfo.m_lanes = remainingLanes.ToArray();
             }
-            else if (config.LanesToAdd > 0)
+            else if (config.VehicleLanesToAdd > 0)
             {
                 var sourceLane = rdInfo.m_lanes.First(l => l.m_laneType != NetInfo.LaneType.None && l.m_laneType != NetInfo.LaneType.Parking && l.m_laneType != NetInfo.LaneType.Pedestrian);
                 var tempLanes = rdInfo.m_lanes.ToList();
 
-                for (var i = 0; i < config.LanesToAdd; i++)
+                for (var i = 0; i < config.VehicleLanesToAdd; i++)
+                {
+                    var newLane = sourceLane.CloneWithoutStops();
+                    tempLanes.Add(newLane);
+                }
+
+                rdInfo.m_lanes = tempLanes.ToArray();
+            }
+
+            if (config.PedestrianLanesToAdd < 0)
+            {
+                var remainingLanes = new List<NetInfo.Lane>();
+                remainingLanes.AddRange(rdInfo
+                    .m_lanes
+                    .Where(l => l.m_laneType != NetInfo.LaneType.Vehicle && l.m_laneType != NetInfo.LaneType.None && l.m_laneType != NetInfo.LaneType.Parking));
+                remainingLanes.AddRange(rdInfo
+                    .m_lanes
+                    .Where(l => l.m_laneType != NetInfo.LaneType.Pedestrian)
+                    .Skip(-config.PedestrianLanesToAdd));
+
+                rdInfo.m_lanes = remainingLanes.ToArray();
+            }
+            else if (config.PedestrianLanesToAdd > 0)
+            {
+                var sourceLane = rdInfo.m_lanes.First(l => l.m_laneType == NetInfo.LaneType.Pedestrian);
+                var tempLanes = rdInfo.m_lanes.ToList();
+
+                for (var i = 0; i < config.PedestrianLanesToAdd; i++)
                 {
                     var newLane = sourceLane.CloneWithoutStops();
                     tempLanes.Add(newLane);
@@ -82,7 +109,7 @@ namespace MetroOverhaul.NEXT
             var nbUsableLanes = nbLanes - (config.CenterLane == CenterLaneType.TurningLane ? 2 : 0);
             var leftLaneCount = isNotSymmetrical ? (int)Math.Floor((decimal)(int)config.LayoutStyle / 10) : 0;
             var nbLanesBeforeMedian = isNotSymmetrical ? leftLaneCount : nbUsableLanes / 2;
-            var positionStart = -(rdInfo.m_halfWidth - rdInfo.m_pavementWidth - (rdInfo.m_hasParkingSpaces ? rdInfo.m_lanes.FirstOrDefault(l => l.m_laneType == NetInfo.LaneType.Parking)?.m_width ?? 0 : 0) - (0.5f * config.LaneWidth) + config.LanePositionOffst);
+            var positionStart = -(rdInfo.m_halfWidth - rdInfo.m_pavementWidth - (rdInfo.m_hasParkingSpaces ? rdInfo.m_lanes.FirstOrDefault(l => l.m_laneType == NetInfo.LaneType.Parking)?.m_width ?? 0 : 0) - (0.5f * config.VehicleLaneWidth) + config.LanePositionOffst);
 
             //if (config.CenterLane == CenterLaneType.Median ||
             //    config.CenterLane == CenterLaneType.TurningLane)
@@ -119,7 +146,7 @@ namespace MetroOverhaul.NEXT
                     {
                         l.m_position =
                             positionStart +
-                            (i * config.LaneWidth);
+                            (i * config.VehicleLaneWidth);
                     }
                     else
                     {
@@ -127,28 +154,28 @@ namespace MetroOverhaul.NEXT
                         {
                             l.m_position =
                                 positionStart +
-                                (i * config.LaneWidth) +
+                                (i * config.VehicleLaneWidth) +
                                 config.CenterLaneWidth;
                         }
                         else if (config.CenterLane == CenterLaneType.TurningLane)
                         {
                             l.m_position =
                                 positionStart +
-                                ((i - 2) * config.LaneWidth) +
+                                ((i - 2) * config.VehicleLaneWidth) +
                                 config.CenterLaneWidth;
                         }
                         else
                         {
                             l.m_position =
                                 positionStart +
-                                (i * config.LaneWidth);
+                                (i * config.VehicleLaneWidth);
                         }
                     }
                 }
 
                 //Debug.Log(">>>> Lane Id : " + i + " Position : " + l.m_position);
                 l.m_stopType = VehicleInfo.VehicleType.None;
-                l.m_width = config.LaneWidth;
+                l.m_width = config.VehicleLaneWidth;
 
                 l.m_laneProps = l.m_laneProps.Clone();
                 if (config.SpeedLimit != null && !isTurningLane)
@@ -265,11 +292,18 @@ namespace MetroOverhaul.NEXT
 
             foreach (var pedLane in pedestrianLanes)
             {
-                pedLane.m_laneProps = pedLane.m_laneProps.Clone();
-
                 var multiplier = pedLane.m_position / Math.Abs(pedLane.m_position);
-                pedLane.m_width = rdInfo.m_pavementWidth - (version == NetInfoVersion.Slope || version == NetInfoVersion.Tunnel ? 3 : 1);
-                pedLane.m_position = multiplier * (rdInfo.m_halfWidth - (version == NetInfoVersion.Slope || version == NetInfoVersion.Tunnel ? 2 : 0) - (0.5f * pedLane.m_width) + config.PedLaneOffset);
+                pedLane.m_laneProps = pedLane.m_laneProps.Clone();
+                if (config.PedestrianLaneWidth == -1)
+                {
+                    pedLane.m_width = rdInfo.m_pavementWidth - (version == NetInfoVersion.Slope || version == NetInfoVersion.Tunnel ? 3 : 1);
+                    pedLane.m_position = multiplier * (rdInfo.m_halfWidth - (version == NetInfoVersion.Slope || version == NetInfoVersion.Tunnel ? 2 : 0) - (0.5f * pedLane.m_width) + config.PedLaneOffset);
+                }
+                else
+                {
+                    pedLane.m_width = config.PedestrianLaneWidth;
+                }
+
 
                 if (config.PedPropOffsetX != null)
                 {

@@ -183,7 +183,7 @@ namespace MetroOverhaul.InitializationSteps
             prefab.SetRoadLanes(version, new LanesConfiguration()
             {
                 IsTwoWay = isTwoWay,
-                LanesToAdd = isTwoWay ? 0 : -1,
+                VehicleLanesToAdd = isTwoWay ? 0 : -1,
                 LayoutStyle = LanesLayoutStyle.AsymL1R2
             });
             var theLanes = prefab.m_lanes.ToList();
@@ -246,7 +246,7 @@ namespace MetroOverhaul.InitializationSteps
             prefab.SetRoadLanes(version, new LanesConfiguration()
             {
                 IsTwoWay = true,
-                LanesToAdd = 2
+                VehicleLanesToAdd = 2
             });
 
             var vanillaMetroTrack = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
@@ -341,7 +341,7 @@ namespace MetroOverhaul.InitializationSteps
             prefab.SetRoadLanes(version, new LanesConfiguration()
             {
                 IsTwoWay = true,
-                LanesToAdd = 2,
+                VehicleLanesToAdd = 2,
             });
             var count = 0;
             var theLanes = prefab.m_lanes.ToList();
@@ -388,6 +388,71 @@ namespace MetroOverhaul.InitializationSteps
                             break;
                     }
                     count++;
+                    theLanes[i].m_verticalOffset = 0.35f;
+                }
+            }
+            prefab.m_lanes = theLanes.ToArray();
+        }
+        public static void CommonLargeDualIslandCustomization(NetInfo prefab, NetInfoVersion version)
+        {
+            prefab.m_connectGroup = NetInfo.ConnectGroup.PathPowerLine;
+            prefab.SetRoadLanes(version, new LanesConfiguration()
+            {
+                IsTwoWay = true,
+                VehicleLanesToAdd = 2,
+                PedestrianLanesToAdd = 2,
+                PedestrianLaneWidth = 2.28f
+            });
+            var vehicleLaneCount = 0;
+            var pedestrianLaneCount = 0;
+            var theLanes = prefab.m_lanes.ToList();
+            for (var i = 0; i < theLanes.Count; i++)
+            {
+                if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
+                {
+                    switch (pedestrianLaneCount)
+                    {
+                        case 0:
+                            theLanes[i].m_position = -9.48f;
+                            break;
+                        case 1:
+                            theLanes[i].m_position = -4.8f;
+                            break;
+                        case 2:
+                            theLanes[i].m_position = 4.8f;
+                            break;
+                        case 3:
+                            theLanes[i].m_position = 9.48f;
+                            break;
+                        case 4:
+                            break;
+                    }
+                    pedestrianLaneCount++;
+                }
+                else if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)
+                {
+                    theLanes[i].m_vehicleType = VehicleInfo.VehicleType.Metro;
+                    switch (vehicleLaneCount)
+                    {
+                        case 0:
+                            theLanes[i].m_position = -12.38f;
+                            theLanes[i].m_direction = NetInfo.Direction.AvoidForward;
+                            break;
+                        case 1:
+                            theLanes[i].m_position = -1.966f;
+                            theLanes[i].m_direction = NetInfo.Direction.AvoidForward;
+
+                            break;
+                        case 2:
+                            theLanes[i].m_position = 1.966f;
+                            theLanes[i].m_direction = NetInfo.Direction.AvoidBackward;
+                            break;
+                        case 3:
+                            theLanes[i].m_position = 12.38f;
+                            theLanes[i].m_direction = NetInfo.Direction.AvoidBackward;
+                            break;
+                    }
+                    vehicleLaneCount++;
                     theLanes[i].m_verticalOffset = 0.35f;
                 }
             }

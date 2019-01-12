@@ -1181,8 +1181,16 @@ namespace MetroOverhaul
                 prefab.m_minCornerOffset = 18;
             }
             var connectClass = ScriptableObject.CreateInstance<ItemClass>();
-            connectClass = vanillaTrainTrack.m_class;
-            connectClass.m_subService = ItemClass.SubService.PublicTransportMetro;
+            connectClass = vanillaTrainTrack.m_class.ShallowClone();
+            if (version == NetInfoVersion.Tunnel)
+            {
+                connectClass.m_layer = ItemClass.Layer.MetroTunnels;
+            }
+            else
+            {
+                connectClass.m_layer = ItemClass.Layer.Default;
+            }
+            connectClass.m_subService = ItemClass.SubService.PublicTransportTrain;
             prefab.m_connectionClass = connectClass;
             //prefab.m_connectionClass = vanillaTrainTrack.m_class;
             prefab.m_class = ScriptableObject.CreateInstance<ItemClass>();
@@ -1201,7 +1209,7 @@ namespace MetroOverhaul
 			}
 			else
 			{
-				prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels | ItemClass.Layer.Default;
+                prefab.m_class.m_layer = ItemClass.Layer.Default;// | ItemClass.Layer.MetroTunnels;
 			}
             
 			prefab.m_createGravel = version == NetInfoVersion.Ground;

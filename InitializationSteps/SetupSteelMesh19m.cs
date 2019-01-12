@@ -24,22 +24,12 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         var segment0 = prefab.m_segments[0].ShallowClone();
                         var segment1 = prefab.m_segments[1].ShallowClone();
-                        var segment2 = prefab.m_segments[1].ShallowClone();
+                        var segment2 = prefab.m_segments[0].ShallowClone();
                         var node0 = prefab.m_nodes[0].ShallowClone();
-                        //var node1 = prefab.m_nodes[1].ShallowClone();
-                        //var node2 = prefab.m_nodes[2].ShallowClone();
-                        //var node3 = prefab.m_nodes[1].ShallowClone();
-                        var node4 = prefab.m_nodes[1].ShallowClone();
-                        //var node5 = prefab.m_nodes[2].ShallowClone();
-                        //var node6 = prefab.m_nodes[1].ShallowClone();
+                        var node4 = prefab.m_nodes[0].ShallowClone();
 
                         nodeList.Add(node0);
-                        //nodeList.Add(node1);
-                        //nodeList.Add(node2);
-                        //nodeList.Add(node3);
                         nodeList.Add(node4);
-                        //nodeList.Add(node5);
-                        //nodeList.Add(node6);
                         segment0
                             .SetFlagsDefault()
                             .SetMeshes
@@ -63,10 +53,14 @@ namespace MetroOverhaul.InitializationSteps
                                 $@"Meshes\{width}\Ground_Station_Node_Pavement_LOD.obj")
                             .SetConsistentUVs(true);
                         node4
+                            .SetFlagsDefault()
                             .SetMeshes
                             ($@"Meshes\{width}\Station_Node_ThirdRail.obj", @"Meshes\10m\Blank.obj")
                             .SetConsistentUVs();
-
+                        segment2.m_material = railMaterial;
+                        segment2.m_lodMaterial = railLODMaterial;
+                        node4.m_material = railMaterial;
+                        node4.m_lodMaterial = railLODMaterial;
                         prefab.m_segments = new[] { segment0, segment1, segment2 };
                         break;
                     }
@@ -74,9 +68,9 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         var segment0 = prefab.m_segments[0].ShallowClone();
                         var segment1 = prefab.m_segments[1].ShallowClone();
-                        var segment2 = prefab.m_segments[1].ShallowClone();
+                        var segment2 = prefab.m_segments[0].ShallowClone();
                         var node0 = prefab.m_nodes[0].ShallowClone();
-                        var node7 = prefab.m_nodes[1].ShallowClone();
+                        var node7 = prefab.m_nodes[0].ShallowClone();
 
                         nodeList.Add(node0);
                         nodeList.Add(node7);
@@ -103,14 +97,19 @@ namespace MetroOverhaul.InitializationSteps
                                 $@"Meshes\{width}\Elevated_Station_Node_Pavement_Steel_LOD.obj")
                             .SetConsistentUVs();
                         node7
+                           .SetFlagsDefault()
                            .SetMeshes
                             ($@"Meshes\{width}\Station_Node_ThirdRail.obj", @"Meshes\10m\Blank.obj")
-                            .SetConsistentUVs();
+                           .SetConsistentUVs();
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
+                        segment2.m_material = railMaterial;
+                        segment2.m_lodMaterial = railLODMaterial;
+
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
-
+                        node7.m_material = railMaterial;
+                        node7.m_lodMaterial = railLODMaterial;
                         prefab.m_segments = new[] { segment0, segment1, segment2 };
                         break;
                     }
@@ -169,8 +168,8 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
                         segment1.m_material = elevatedMaterial;
                         segment1.m_lodMaterial = elevatedLODMaterial;
-                        segment2.m_material = railMaterial;
-                        segment2.m_lodMaterial = railLODMaterial;
+                        segment2.m_material = elevatedMaterial;
+                        segment2.m_lodMaterial = elevatedLODMaterial;
                         segment3.m_material = railMaterial;
                         segment3.m_lodMaterial = railLODMaterial;
                         segment4.m_material = railMaterial;

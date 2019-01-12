@@ -50,8 +50,7 @@ namespace MetroOverhaul.InitializationSteps
 					node0.m_connectGroup = info.m_connectGroup;
 					node0.m_directConnect = true;
 					node3 = info.m_nodes[0].ShallowClone();
-					node3.m_material = DefaultElMaterial;
-					node3.m_lodMaterial = DefaultLodElMaterial;
+
 					node3.m_connectGroup = info.m_connectGroup;
 					node3.m_directConnect = true;
 					if (isSteel && (version & (NetInfoVersion.Elevated | NetInfoVersion.Bridge)) != NetInfoVersion.None)
@@ -91,7 +90,9 @@ namespace MetroOverhaul.InitializationSteps
 						NodeList.Add(node2);
 					}
 				}
-				NodeList.Add(node0);
+                node3.m_material = DefaultElMaterial;
+                node3.m_lodMaterial = DefaultLodElMaterial;
+                NodeList.Add(node0);
 				if (isSteel)
 				{
 					if ((version & (NetInfoVersion.Elevated | NetInfoVersion.Bridge)) != NetInfoVersion.None)
@@ -462,7 +463,9 @@ namespace MetroOverhaul.InitializationSteps
 			{
 				node1 = info.m_nodes[1].ShallowClone();
 				node1a = info.m_nodes[0].ShallowClone();
-				node1a.m_directConnect = true;
+                node1a.m_material = DefaultElMaterial;
+                node1a.m_lodMaterial = DefaultLodElMaterial;
+                node1a.m_directConnect = true;
 				NetInfo.Node node3 = info.m_nodes[0].ShallowClone();
 				NetInfo.Node node4 = null;
 				NetInfo.Node node5 = info.m_nodes[0].ShallowClone();
@@ -479,14 +482,17 @@ namespace MetroOverhaul.InitializationSteps
 					node4 = info.m_nodes[0].ShallowClone();
 					node6 = info.m_nodes[0].ShallowClone();
 
-					NodeList.Add(node2);
+                    node2a.m_material = DefaultElMaterial;
+                    node2a.m_lodMaterial = DefaultLodElMaterial;
+
+                    NodeList.Add(node2);
 					NodeList.Add(node2a);
 					NodeList.Add(node4);
 					NodeList.Add(node6);
 
 					node1
-						.SetFlags(NetNode.Flags.None, NetNode.Flags.None)
-						.SetMeshes
+                        .SetFlagsDefault()
+                        .SetMeshes
 						   ($@"Meshes\{WidthName}\Rail{Variations[index]}_Start.obj",
 						  @"Meshes\6m\Ground_Rail_Start_LOD.obj")
 						 .SetConsistentUVs();
@@ -497,7 +503,7 @@ namespace MetroOverhaul.InitializationSteps
 						   @"Meshes\6m\Ground_Rail_Start_LOD.obj")
 						  .SetConsistentUVs();
 					node2
-						.SetFlags(NetNode.Flags.None, NetNode.Flags.None)
+						.SetFlagsDefault()
 						.SetMeshes
 						   ($@"Meshes\{WidthName}\Rail{Variations[index]}_End.obj",
 						  @"Meshes\6m\Ground_Rail_End_LOD.obj")
@@ -573,7 +579,7 @@ namespace MetroOverhaul.InitializationSteps
 				else
 				{
 					node1
-						.SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
+						.SetFlagsDefault()
 						.SetMeshes
 						   ($@"Meshes\{WidthName}\Rail{Variations[index]}.obj",
 						  @"Meshes\6m\Ground_Rail_Start_LOD.obj")
@@ -625,16 +631,17 @@ namespace MetroOverhaul.InitializationSteps
 			}
 			else
 			{
-				if (version == NetInfoVersion.Tunnel)
+                node1a = info.m_nodes[0].ShallowClone();
+                node1a.m_material = DefaultMaterial;
+                node1a.m_lodMaterial = DefaultLODMaterial;
+                node1a.m_directConnect = true;
+                if (version == NetInfoVersion.Tunnel)
 				{
 					node1 = info.m_nodes[0].ShallowClone();
 					node1.m_material = DefaultMaterial;
 					node1.m_lodMaterial = DefaultLODMaterial;
 					node1.m_directConnect = true;
-					node1a = info.m_nodes[0].ShallowClone();
-					node1a.m_material = DefaultMaterial;
-					node1a.m_lodMaterial = DefaultLODMaterial;
-					node1a.m_directConnect = true;
+
 					if (m_IsOneWay)
 					{
 						node2 = info.m_nodes[0].ShallowClone();
@@ -650,12 +657,14 @@ namespace MetroOverhaul.InitializationSteps
 				else
 				{
 					node1 = info.m_nodes[1].ShallowClone();
-					node1a = info.m_nodes[0].ShallowClone();
 					if (m_IsOneWay)
 					{
 						node2 = info.m_nodes[1].ShallowClone();
 						node2a = info.m_nodes[0].ShallowClone();
-					}
+                        node2a.m_material = DefaultMaterial;
+                        node2a.m_lodMaterial = DefaultLODMaterial;
+                        node2a.m_directConnect = true;
+                    }
 
 				}
 
@@ -737,16 +746,15 @@ namespace MetroOverhaul.InitializationSteps
 			NetInfo.Node node2 = null;
 			NetInfo.Node node3 = null;
 			NetInfo.Node node4 = null;
-			if (version == NetInfoVersion.Tunnel)
+
+            node3 = info.m_nodes[0].ShallowClone();
+            node3.m_material = DefaultMaterial;
+            node3.m_lodMaterial = DefaultLODMaterial;
+            if (version == NetInfoVersion.Tunnel)
 			{
 				node1 = info.m_nodes[0].ShallowClone();
 				node1.m_material = DefaultMaterial;
 				node1.m_lodMaterial = DefaultLODMaterial;
-
-
-				node3 = info.m_nodes[0].ShallowClone();
-				node3.m_material = DefaultMaterial;
-				node3.m_lodMaterial = DefaultLODMaterial;
 
 				if (m_IsOneWay)
 				{
@@ -764,14 +772,18 @@ namespace MetroOverhaul.InitializationSteps
 			else
 			{
 				node1 = info.m_nodes[1].ShallowClone();
-				node3 = info.m_nodes[0].ShallowClone();
 				if (m_IsOneWay)
 				{
 					node2 = info.m_nodes[1].ShallowClone();
-					node4 = info.m_nodes[0].ShallowClone();
-					node2.m_directConnect = true;
-					node4.m_directConnect = true;
-				}
+                    node2.m_material = DefaultMaterial;
+                    node2.m_lodMaterial = DefaultLODMaterial;
+                    node2.m_directConnect = true;
+
+                    node4 = info.m_nodes[0].ShallowClone();
+                    node4.m_material = DefaultMaterial;
+                    node4.m_lodMaterial = DefaultLODMaterial;
+                    node4.m_directConnect = true;
+                }
 
 			}
 			node1.m_directConnect = true;

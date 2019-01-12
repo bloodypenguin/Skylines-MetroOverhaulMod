@@ -31,10 +31,10 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         var segment0 = info.m_segments[0].ShallowClone();
                         var segment1 = info.m_segments[1].ShallowClone();
-                        var segment2 = info.m_segments[1].ShallowClone();
+                        var segment2 = info.m_segments[0].ShallowClone();
                         var node0 = info.m_nodes[0].ShallowClone();
 
-                        var node4 = info.m_nodes[1].ShallowClone();
+                        var node4 = info.m_nodes[0].ShallowClone();
 
                         nodeList.Add(node0);
                         nodeList.Add(node4);
@@ -71,9 +71,14 @@ namespace MetroOverhaul.InitializationSteps
                                 $@"Meshes\{width}\Ground_Node_Pavement_LOD.obj")
                             .SetConsistentUVs(true);
                         node4
+                            .SetFlagsDefault()
                             .SetMeshes
                             ($@"Meshes\{width}\ThirdRail_Node.obj", $@"Meshes\{width}\Blank.obj")
                             .SetConsistentUVs();
+                        segment2.m_material = railMaterial;
+                        segment2.m_lodMaterial = railLODMaterial;
+                        node4.m_material = railMaterial;
+                        node4.m_lodMaterial = railLODMaterial;
 
                         info.m_segments = new[] { segment0, segment1, segment2 };
                         break;
@@ -82,9 +87,9 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         var segment0 = info.m_segments[0].ShallowClone();
                         var segment1 = info.m_segments[1].ShallowClone();
-                        var segment2 = info.m_segments[1].ShallowClone();
+                        var segment2 = info.m_segments[0].ShallowClone();
                         var node0 = info.m_nodes[0].ShallowClone();
-                        var node4 = info.m_nodes[1].ShallowClone();
+                        var node4 = info.m_nodes[0].ShallowClone();
                         var node5 = info.m_nodes[0].ShallowClone();
 
                         nodeList.Add(node0);
@@ -130,6 +135,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
 
                         node4
+                            .SetFlagsDefault()
                             .SetMeshes
                             ($@"Meshes\{width}\ThirdRail_Node.obj", $@"Meshes\{width}\Blank.obj")
                             .SetConsistentUVs();
@@ -142,9 +148,12 @@ namespace MetroOverhaul.InitializationSteps
 
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedbrMaterial;
+                        segment2.m_material = railMaterial;
+                        segment2.m_lodMaterial = railLODMaterial;
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedbrMaterial;
-
+                        node4.m_material = railMaterial;
+                        node4.m_lodMaterial = railLODMaterial;
                         node5.m_material = elevatedMaterial;
                         node5.m_lodMaterial = elevatedLODMaterial;
 
@@ -153,10 +162,8 @@ namespace MetroOverhaul.InitializationSteps
                     }
                 case NetInfoVersion.Bridge:
                     {
-                        //var segment0 = info.m_segments[0].ShallowClone();
                         var segment1 = info.m_segments[1].ShallowClone();
-                        var segment2 = info.m_segments[1].ShallowClone();
-                        //var node0 = info.m_nodes[0].ShallowClone();
+                        var segment2 = info.m_segments[0].ShallowClone();
 
                         var node3 = info.m_nodes[0].ShallowClone();
                         var node4 = info.m_nodes[0].ShallowClone();
@@ -189,6 +196,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
 
                         node3
+                            .SetFlagsDefault()
                             .SetMeshes
                             ($@"Meshes\{width}\ThirdRail_Node.obj", $@"Meshes\{width}\Blank.obj")
                             .SetConsistentUVs();
@@ -197,7 +205,12 @@ namespace MetroOverhaul.InitializationSteps
                             ($@"Meshes\{width}\Elevated_Trans_Pavement_Steel.obj",
                                 $@"Meshes\{width}\Elevated_Node_Pavement_LOD.obj")
                             .SetConsistentUVs();
-
+                        segment2.m_material = railMaterial;
+                        segment2.m_lodMaterial = railLODMaterial;
+                        node3.m_material = railMaterial;
+                        node3.m_lodMaterial = railLODMaterial;
+                        node4.m_material = railMaterial;
+                        node4.m_lodMaterial = railLODMaterial;
                         info.m_segments = new[] { segment1, segment2 };
                         break;
                     }
@@ -205,14 +218,14 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         var segment0 = info.m_segments[0].ShallowClone();
                         var segment1 = info.m_segments[1].ShallowClone();
-                        var segment2 = info.m_segments[1].ShallowClone();
+                        var segment2 = info.m_segments[0].ShallowClone();
                         var segment3 = info.m_segments[3].ShallowClone();
                         var segment4 = info.m_segments[3].ShallowClone();
                         var node0 = info.m_nodes[0].ShallowClone();
 
                         var node3 = info.m_nodes[3].ShallowClone();
                         var node5 = info.m_nodes[0].ShallowClone();
-                        var node6 = info.m_nodes[1].ShallowClone();
+                        var node6 = info.m_nodes[0].ShallowClone();
 
                         nodeList.Add(node0);
                         nodeList.Add(node3);
@@ -271,16 +284,16 @@ namespace MetroOverhaul.InitializationSteps
                                 $@"Meshes\{width}\Tunnel_Node_Pavement_LOD.obj")
                             .SetConsistentUVs();
                         node6
+                            .SetFlagsDefault()
                             .SetMeshes
                             ($@"Meshes\{width}\ThirdRail_Node.obj", $@"Meshes\{width}\Blank.obj")
                             .SetConsistentUVs();
-                        //segment4.m_material = defaultElMaterial;
-                        //segment4.m_lodMaterial = defaultElLODMaterial;
-                        //node3.m_material = defaultElMaterial;
-                        //node3.m_lodMaterial = defaultElLODMaterial;
+                        segment2.m_material = railMaterial;
+                        segment2.m_lodMaterial = railLODMaterial;
                         node5.m_material = elevatedMaterial;
                         node5.m_lodMaterial = defaultElLODMaterial;
-
+                        node6.m_material = railMaterial;
+                        node6.m_lodMaterial = railLODMaterial;
                         info.m_segments = new[] { segment0, segment1, segment2, segment3, segment4 };
                         break;
                     }
@@ -673,8 +686,8 @@ namespace MetroOverhaul.InitializationSteps
 
                         segment0.m_material = elevatedMaterial;
                         segment0.m_lodMaterial = elevatedLODMaterial;
-                        segment2.m_material = elevatedMaterial;
-                        segment2.m_lodMaterial = elevatedLODMaterial;
+                        segment2.m_material = railMaterial;
+                        segment2.m_lodMaterial = railLODMaterial;
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
                         node4.m_material = elevatedMaterial;
@@ -687,11 +700,11 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         var segment0 = prefab.m_segments[0].ShallowClone();
                         var segment1 = prefab.m_segments[1].ShallowClone();
-                        var segment2 = prefab.m_segments[1].ShallowClone();
+                        var segment2 = prefab.m_segments[0].ShallowClone();
                         var node0 = prefab.m_nodes[0].ShallowClone();
                         //var node1 = prefab.m_nodes[1].ShallowClone();
                         var node2 = prefab.m_nodes[0].ShallowClone();
-                        var node3 = prefab.m_nodes[1].ShallowClone();
+                        var node3 = prefab.m_nodes[0].ShallowClone();
                         nodeList.Add(node0);
                         //nodeList.Add(node1);
                         nodeList.Add(node2);

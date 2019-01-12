@@ -12,15 +12,11 @@ namespace MetroOverhaul.InitializationSteps
         {
             var ttInfo = Prefabs.Find<NetInfo>("Train Track");
             var brElInfo = Prefabs.Find<NetInfo>("Basic Road Elevated");
-            var ttElInfo = Prefabs.Find<NetInfo>("Train Track Elevated");
+            //var ttElInfo = Prefabs.Find<NetInfo>("Train Track Elevated");
             var defaultMaterial = brElInfo.m_segments[0].m_material;
-            var defaultElMaterial = brElInfo.m_segments[0].m_lodMaterial;
-            var defaultBrElMaterial = brElInfo.m_segments[0].m_material;
-            var defaultLODMaterial = ttInfo.m_nodes[0].m_lodMaterial;
-            var defaultElLODMaterial = ttInfo.m_nodes[0].m_lodMaterial;
-            var defaultBrElLodMaterial = brElInfo.m_segments[0].m_lodMaterial;
-            var railMaterial = ttInfo.m_nodes[1].m_material;
-            var railLODMaterial = ttInfo.m_nodes[1].m_material;
+            var defaultLODMaterial = brElInfo.m_segments[0].m_lodMaterial;
+            var railMaterial = ttInfo.m_segments[1].m_material;
+            var railLODMaterial = ttInfo.m_segments[1].m_lodMaterial;
             var isTwoWay = info.name.Contains("Two-Way");
             var nodeList = new List<NetInfo.Node>();
             switch (version)
@@ -66,7 +62,7 @@ namespace MetroOverhaul.InitializationSteps
                         var segments0 = info.m_segments[0].ShallowClone();
                         var segments1 = info.m_segments[0].ShallowClone();
                         var segments2 = info.m_segments[1].ShallowClone();
-                        var segments3 = info.m_segments[1].ShallowClone();
+                        var segments3 = info.m_segments[0].ShallowClone();
                         var segments4 = info.m_segments[0].ShallowClone();
                         var nodes0 = info.m_nodes[0].ShallowClone();
                         var nodes2 = info.m_nodes[0].ShallowClone();
@@ -112,6 +108,8 @@ namespace MetroOverhaul.InitializationSteps
                         RoadHelper.HandleAsymSegmentFlags(segments3);
                         segments0.m_material = defaultMaterial;
                         segments0.m_lodMaterial = defaultLODMaterial;
+                        segments3.m_material = railMaterial;
+                        segments3.m_lodMaterial = railLODMaterial;
                         segments4.m_material = defaultMaterial;
                         segments4.m_lodMaterial = defaultLODMaterial;
                         nodes0.m_material = defaultMaterial;
@@ -215,6 +213,8 @@ namespace MetroOverhaul.InitializationSteps
                         RoadHelper.HandleAsymSegmentFlags(segments3);
                         segments0.m_material = defaultMaterial;
                         segments0.m_lodMaterial = defaultLODMaterial;
+                        segments3.m_material = railMaterial;
+                        segments3.m_lodMaterial = railLODMaterial;
                         segments4.m_material = defaultMaterial;
                         segments4.m_lodMaterial = defaultLODMaterial;
                         nodes0.m_material = defaultMaterial;
@@ -256,7 +256,7 @@ namespace MetroOverhaul.InitializationSteps
                         segments2
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\6m\Boosted_Rail.obj")
+                            (@"Meshes\6m\Rail.obj")
                             .SetConsistentUVs();
                         segments3
                             .SetFlagsDefault()
@@ -286,10 +286,12 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
 
                         RoadHelper.HandleAsymSegmentFlags(segments4);
-                        segments3.m_material = defaultBrElMaterial;
-                        segments3.m_lodMaterial = defaultBrElLodMaterial;
-                        nodes9.m_material = defaultBrElMaterial;
-                        nodes9.m_lodMaterial = defaultBrElLodMaterial;
+                        segments3.m_material = defaultMaterial;
+                        segments3.m_lodMaterial = defaultLODMaterial;
+                        segments4.m_material = railMaterial;
+                        segments4.m_lodMaterial = railLODMaterial;
+                        nodes9.m_material = defaultMaterial;
+                        nodes9.m_lodMaterial = defaultLODMaterial;
 
                         info.m_segments = new[] { segments0, segments1, segments2, segments3, segments4 };
                         break;
@@ -327,7 +329,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment4
                             .SetFlagsDefault()
                               .SetMeshes
-                              (@"Meshes\6m\Boosted_Rail.obj");
+                              (@"Meshes\6m\Rail.obj");
                         node0
                             .SetMeshes
                             (@"Meshes\6m\Tunnel_Pavement_Gray.obj",
@@ -338,18 +340,18 @@ namespace MetroOverhaul.InitializationSteps
                                   @"Meshes\6m\Tunnel_Node_Pavement_LOD.obj")
                               .SetConsistentUVs();
 
-                        segment1.m_material = defaultElMaterial;
-                        segment1.m_lodMaterial = defaultElLODMaterial;
-                        segment2.m_material = defaultElMaterial;
-                        segment2.m_lodMaterial = defaultElLODMaterial;
-                        segment3.m_material = defaultElMaterial;
-                        segment3.m_lodMaterial = defaultElLODMaterial;
+                        segment1.m_material = defaultMaterial;
+                        segment1.m_lodMaterial = defaultLODMaterial;
+                        segment2.m_material = defaultMaterial;
+                        segment2.m_lodMaterial = defaultLODMaterial;
+                        segment3.m_material = defaultMaterial;
+                        segment3.m_lodMaterial = defaultLODMaterial;
                         segment4.m_material = railMaterial;
                         segment4.m_lodMaterial = railLODMaterial;
                         RoadHelper.HandleAsymSegmentFlags(segment1);
                         RoadHelper.HandleAsymSegmentFlags(segment3);
-                        node1.m_material = defaultBrElMaterial;
-                        node1.m_lodMaterial = defaultBrElLodMaterial;
+                        node1.m_material = defaultMaterial;
+                        node1.m_lodMaterial = defaultLODMaterial;
                         //node2.m_connectGroup = info.m_connectGroup;
 
                         //node2.m_material = defaultMaterial;
