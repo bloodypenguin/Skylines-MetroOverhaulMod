@@ -11,7 +11,20 @@ namespace MetroOverhaul.InitializationSteps
     {
         public static void Setup19mSteelStationMesh(NetInfo prefab, NetInfoVersion version, NetInfo elevatedInfo, NetInfo metroStationInfo)
         {
-            var width = prefab.name.ToLower().Contains("large") ? "27m" : "19m";
+            var width = "";
+            if (prefab.name.Contains("LargeDualIsland"))
+            {
+                width = "31m";
+            }
+            else if (prefab.name.Contains("LargeSideIsland"))
+            {
+                width = "31_2m";
+            }
+            else
+            {
+                width = "19m";
+            }
+
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
             var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
             var traintrackInfo = Prefabs.Find<NetInfo>("Train Track");

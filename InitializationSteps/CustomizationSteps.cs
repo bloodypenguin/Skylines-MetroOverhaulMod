@@ -110,7 +110,7 @@ namespace MetroOverhaul.InitializationSteps
         {
             if (prefab.name.Contains("Station"))
             {
-                prefab.m_connectGroup = (NetInfo.ConnectGroup)2048;
+                prefab.m_connectGroup = NetInfo.ConnectGroup.None;
                 //prefab.m_nodeConnectGroups = (NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.MonorailStation | NetInfo.ConnectGroup.NarrowTram;
                 //if (version != NetInfoVersion.Tunnel)
                 //{
@@ -230,8 +230,7 @@ namespace MetroOverhaul.InitializationSteps
             var isStation = prefab.name.Contains("Station");
             if (isStation)
             {
-                prefab.m_connectGroup = (NetInfo.ConnectGroup)128;
-                prefab.m_nodeConnectGroups = (NetInfo.ConnectGroup)128 | NetInfo.ConnectGroup.WideTram;
+                prefab.m_connectGroup = NetInfo.ConnectGroup.None;
             }
             else
             {
@@ -297,7 +296,7 @@ namespace MetroOverhaul.InitializationSteps
 
         public static void CommonIslandCustomization(NetInfo prefab, NetInfoVersion version)
         {
-            prefab.m_connectGroup = NetInfo.ConnectGroup.DoubleMonorail;
+            prefab.m_connectGroup = NetInfo.ConnectGroup.None;
             //prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.NarrowTram;
             //if (version != NetInfoVersion.Tunnel)
             //{
@@ -335,67 +334,72 @@ namespace MetroOverhaul.InitializationSteps
             prefab.m_lanes = theLanes.ToArray();
         }
 
-        public static void CommonLargeIslandCustomization(NetInfo prefab, NetInfoVersion version)
+        public static void CommonLargeSideIslandCustomization(NetInfo prefab, NetInfoVersion version)
         {
-            prefab.m_connectGroup = (NetInfo.ConnectGroup)32768;
+            prefab.m_connectGroup = NetInfo.ConnectGroup.None;
             prefab.SetRoadLanes(version, new LanesConfiguration()
             {
                 IsTwoWay = true,
                 VehicleLanesToAdd = 2,
+                PedestrianLanesToAdd = 2
             });
-            var count = 0;
+            var vehicleCount = 0;
+            var pedestrianCount = 0;
             var theLanes = prefab.m_lanes.ToList();
             for (var i = 0; i < theLanes.Count; i++)
             {
+                var theLane = theLanes[i];
                 if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
                 {
-                    theLanes[i].m_width = 3.5f;
-                    if (Math.Sign(theLanes[i].m_position) > 0)
-                    {
-                        theLanes[i].m_position = 2.95f;
-                    }
-                    else if (Math.Sign(theLanes[i].m_position) < 0)
-                    {
-                        theLanes[i].m_position = -2.95f;
-                    }
-                }
-                else if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)
-                {
-                    switch (count)
+                    theLane.m_width = 3.5f;
+                    switch (pedestrianCount)
                     {
                         case 0:
-                            theLanes[i].m_position = -10.39f;
-                            theLanes[i].m_stopType = VehicleInfo.VehicleType.Metro;
-                            theLanes[i].m_direction = NetInfo.Direction.Backward;
-                            theLanes[i].m_speedLimit += 3;
+                            theLane.m_position = 2.95f;
                             break;
                         case 1:
-                            theLanes[i].m_position = -6.463f;
-                            theLanes[i].m_stopType = VehicleInfo.VehicleType.None;
-                            theLanes[i].m_direction = NetInfo.Direction.AvoidForward;
-                            
+                            theLane.m_position = -2.95f;
                             break;
                         case 2:
-                            theLanes[i].m_position = 6.463f;
-                            theLanes[i].m_stopType = VehicleInfo.VehicleType.None;
-                            theLanes[i].m_direction = NetInfo.Direction.AvoidBackward;
+                            theLane.m_position = 12;
                             break;
                         case 3:
-                            theLanes[i].m_position = 10.39f;
-                            theLanes[i].m_stopType = VehicleInfo.VehicleType.Metro;
-                            theLanes[i].m_direction = NetInfo.Direction.Forward;
-                            theLanes[i].m_speedLimit += 3;
+                            theLane.m_position = -12;
                             break;
                     }
-                    count++;
-                    theLanes[i].m_verticalOffset = 0.35f;
+                }
+                else if (theLane.m_laneType == NetInfo.LaneType.Vehicle)
+                {
+                    switch (vehicleCount)
+                    {
+                        case 0:
+                            theLane.m_position = -10.39f;
+                            theLane.m_direction = NetInfo.Direction.AvoidForward;
+                            break;
+                        case 1:
+                            theLane.m_position = -6.463f;
+                            theLane.m_direction = NetInfo.Direction.AvoidForward;
+
+                            break;
+                        case 2:
+                            theLane.m_position = 6.463f;
+                            theLane.m_direction = NetInfo.Direction.AvoidBackward;
+                            break;
+                        case 3:
+                            theLane.m_position = 10.39f;
+                            theLane.m_direction = NetInfo.Direction.AvoidBackward;
+                            break;
+                    }
+                    vehicleCount++;
+                    theLane.m_verticalOffset = 0.35f;
+                    theLane.m_stopType = VehicleInfo.VehicleType.Metro;
                 }
             }
             prefab.m_lanes = theLanes.ToArray();
         }
         public static void CommonLargeDualIslandCustomization(NetInfo prefab, NetInfoVersion version)
         {
-            prefab.m_connectGroup = NetInfo.ConnectGroup.PathPowerLine;
+            prefab.m_connectGroup = NetInfo.ConnectGroup.None;
             prefab.SetRoadLanes(version, new LanesConfiguration()
             {
                 IsTwoWay = true,
@@ -612,24 +616,26 @@ namespace MetroOverhaul.InitializationSteps
                     break;
             }
         }
+
         public static void SetLargeIslandTrackWidths(NetInfo prefab, NetInfoVersion version)
         {
             switch (version)
             {
                 case NetInfoVersion.Ground:
-                    prefab.m_halfWidth = 13.5f;
+                    prefab.m_halfWidth = 15.5f;
                     prefab.m_pavementWidth = 1.5f;
                     break;
                 case NetInfoVersion.Elevated:
-                    prefab.m_halfWidth = 13.5f;
+                    prefab.m_halfWidth = 15.5f;
                     prefab.m_pavementWidth = 1.5f;
                     break;
                 case NetInfoVersion.Tunnel:
-                    prefab.m_halfWidth = 14.5f;
+                    prefab.m_halfWidth = 16.5f;
                     prefab.m_pavementWidth = 2.5f;
                     break;
             }
         }
+
         public static void ReplaceTrackIcon(NetInfo prefab, NetInfoVersion version)
         {
             if (version != NetInfoVersion.Ground)

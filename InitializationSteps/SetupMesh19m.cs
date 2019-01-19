@@ -11,7 +11,19 @@ namespace MetroOverhaul.InitializationSteps
     {
         public static void Setup19mStationMesh(NetInfo prefab, NetInfoVersion version, NetInfo elevatedInfo, NetInfo metroStationInfo)
         {
-            var width = prefab.name.ToLower().Contains("large") ? "27m" : "19m";
+            var width = "";
+            if (prefab.name.Contains("LargeDualIsland"))
+            {
+                width = "31m";
+            }
+            else if (prefab.name.Contains("LargeIsland"))
+            {
+                width = "27m";
+            }
+            else
+            {
+                width = "19m";
+            }
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
             var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
             var traintrackInfo = Prefabs.Find<NetInfo>("Train Track");
@@ -27,7 +39,7 @@ namespace MetroOverhaul.InitializationSteps
                         var segment2 = prefab.m_segments[0].ShallowClone();
                         var node0 = prefab.m_nodes[0].ShallowClone();
                         var node4 = prefab.m_nodes[0].ShallowClone();
-                        
+
                         nodeList.Add(node0);
                         nodeList.Add(node4);
                         segment0
@@ -69,7 +81,7 @@ namespace MetroOverhaul.InitializationSteps
                         var segment3 = prefab.m_segments[1].ShallowClone();
                         var node0 = prefab.m_nodes[0].ShallowClone();
                         var node2 = prefab.m_nodes[0].ShallowClone();
-                        
+
                         nodeList.Add(node0);
                         nodeList.Add(node2);
                         segment0
@@ -123,7 +135,7 @@ namespace MetroOverhaul.InitializationSteps
                         var node0 = metroStationInfo.m_nodes[0].ShallowClone();
                         var node1 = metroStationInfo.m_nodes[0].ShallowClone();
                         var node3 = metroStationInfo.m_nodes[0].ShallowClone();
-                        
+
                         nodeList.Add(node0);
                         nodeList.Add(node1);
                         nodeList.Add(node3);

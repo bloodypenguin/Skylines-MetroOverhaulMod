@@ -54,10 +54,15 @@
 		{
 			return netInfo?.name != null && netInfo.name.Contains("Metro Station Track Tunnel Large");
 		}
+        public static bool IsUndergroundDualIslandPlatformLargeMetroStationTrack(this NetInfo netInfo)
+        {
+            return netInfo?.name != null && netInfo.name.Contains("Metro Station Track Tunnel Large Dual Island");
+        }
         public static bool IsUndergroundIslandPlatformLargeMetroStationTrack(this NetInfo netInfo)
         {
             return netInfo?.name != null && netInfo.name.Contains("Metro Station Track Tunnel Large Island");
         }
+
         public static bool IsUndergroundIslandPlatformStationTrack(this NetInfo netinfo)
         {
             if (netinfo?.name == null)

@@ -377,7 +377,7 @@ namespace MetroOverhaul
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.SetupStationProps).
-                        Chain(CustomizationSteps.CommonLargeIslandCustomization).
+                        Chain(CustomizationSteps.CommonLargeSideIslandCustomization).
                         Chain(CustomizationSteps.SetLargeIslandTrackWidths).
                         Chain(SetupMesh.Setup19mStationMesh, elevatedInfo, metroStationInfo).
                         Chain(SetupTexture.Setup19mTexture).
@@ -390,7 +390,7 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null, NetInfoVersion.None)
-                    , prefabName => prefabName + " Large Island"
+                    , prefabName => prefabName + " Large Side Island"
                     );
             }
             catch (Exception e)
@@ -398,7 +398,32 @@ namespace MetroOverhaul
                 Next.Debug.Log("Exception happened when setting up concrete large island station tracks");
                 UnityEngine.Debug.LogException(e);
             }
-
+            try
+            {
+                CreateFullStationPrefab(
+                    ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
+                        Chain(CustomizationSteps.SetupStationProps).
+                        Chain(CustomizationSteps.CommonLargeDualIslandCustomization).
+                        Chain(CustomizationSteps.SetLargeIslandTrackWidths).
+                        Chain(SetupMesh.Setup19mStationMesh, elevatedInfo, metroStationInfo).
+                        Chain(SetupTexture.Setup19mTexture).
+                        Chain(
+                            (info, version) =>
+                            {
+                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
+                            }),
+                   NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
+                    ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
+                        Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
+                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                    , prefabName => prefabName + " Large Dual Island"
+                    );
+            }
+            catch (Exception e)
+            {
+                Next.Debug.Log("Exception happened when setting up concrete large island station tracks");
+                UnityEngine.Debug.LogException(e);
+            }
             try
 			{
 				CreateFullStationPrefab(
@@ -815,7 +840,7 @@ namespace MetroOverhaul
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.SetupStationProps).
-                        Chain(CustomizationSteps.CommonLargeIslandCustomization).
+                        Chain(CustomizationSteps.CommonLargeSideIslandCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetLargeIslandTrackWidths).
                         Chain(SetupSteelMesh.Setup19mSteelStationMesh, elevatedInfo, metroStationInfo).
