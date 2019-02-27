@@ -39,12 +39,13 @@ namespace MetroOverhaul.InitializationSteps
                             .SetFlagsDefault()
                            .SetMeshes
                            (@"Meshes\6m\Ground_Rail.obj",
-                           @"Meshes\6m\Ground_Rail_LOD.obj");
+                           @"Meshes\6m\Rail_LOD.obj");
 
                         segments3
                             .SetFlagsDefault()
                            .SetMeshes
-                           (@"Meshes\6m\ThirdRail.obj", @"Meshes\10m\Blank.obj")
+                           (@"Meshes\6m\ThirdRail.obj",
+                           $@"Meshes\6m\Rail_LOD.obj")
                            .SetConsistentUVs();
 
                         nodes0
@@ -77,22 +78,24 @@ namespace MetroOverhaul.InitializationSteps
                         segments1
                             .SetFlagsDefault()
                               .SetMeshes
-                              (@"Meshes\6m\Boosted_Rail.obj",
-                              @"Meshes\6m\Ground_Rail_LOD.obj");
+                              (@"Meshes\6m\Boosted_Rail.obj", 
+                               @"Meshes\10m\Blank.obj");
                         segments2
                             .SetFlagsDefault()
                               .SetMeshes
                               (@"Meshes\6m\Rail.obj",
-                              @"Meshes\6m\Ground_Rail_LOD.obj");
+                              @"Meshes\6m\Rail_LOD.obj");
                         segments3
                             .SetFlagsDefault()
                               .SetMeshes
-                              (@"Meshes\6m\ThirdRail.obj", @"Meshes\10m\Blank.obj")
+                              (@"Meshes\6m\ThirdRail.obj",
+                              $@"Meshes\6m\Rail_LOD.obj")
                               .SetConsistentUVs();
                         segments4
                             .SetFlagsDefault()
                               .SetMeshes
-                              (@"Meshes\6m\Elevated_RailGuards.obj", @"Meshes\10m\Blank.obj")
+                              (@"Meshes\6m\Elevated_RailGuards.obj",
+                              @"Meshes\10m\Blank.obj")
                               .SetConsistentUVs();
                         nodes0
                             .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
@@ -140,21 +143,23 @@ namespace MetroOverhaul.InitializationSteps
                             .SetFlagsDefault()
                               .SetMeshes
                               (@"Meshes\6m\Boosted_Rail.obj",
-                              @"Meshes\6m\Ground_Rail_LOD.obj");
+                               @"Meshes\10m\Blank.obj");
                         segments2
                             .SetFlagsDefault()
                               .SetMeshes
                               (@"Meshes\6m\Rail.obj",
-                              @"Meshes\6m\Ground_Rail_LOD.obj");
+                              @"Meshes\6m\Rail_LOD.obj");
                         segments3
                             .SetFlagsDefault()
                               .SetMeshes
-                              (@"Meshes\6m\ThirdRail.obj", @"Meshes\10m\Blank.obj")
+                              (@"Meshes\6m\ThirdRail.obj",
+                              $@"Meshes\6m\Rail_LOD.obj")
                               .SetConsistentUVs();
                         segments4
                             .SetFlagsDefault()
                               .SetMeshes
-                              (@"Meshes\6m\Elevated_RailGuards.obj", @"Meshes\10m\Blank.obj")
+                              (@"Meshes\6m\Elevated_RailGuards.obj",
+                              @"Meshes\10m\Blank.obj")
                               .SetConsistentUVs();
                         nodes0
                             .SetFlags(NetNode.Flags.None, NetNode.Flags.Transition)
@@ -245,18 +250,17 @@ namespace MetroOverhaul.InitializationSteps
                             .SetMeshes
                             ($@"Meshes\6m\Tunnel_Pavement_Gray.obj",
                             $@"Meshes\6m\Tunnel_Pavement_Gray_LOD.obj");
-                        segments0
-                            .SetMeshes
-                            (@"Meshes\6m\Tunnel_Pavement.obj");
                         segments1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\6m\Boosted_Rail.obj")
+                            (@"Meshes\6m\Boosted_Rail.obj",
+                            @"Meshes\10m\Blank.obj")
                             .SetConsistentUVs();
                         segments2
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\6m\Rail.obj")
+                            (@"Meshes\6m\Rail.obj",
+                            @"Meshes\6m\Rail_LOD.obj")
                             .SetConsistentUVs();
                         segments3
                             .SetFlagsDefault()
@@ -268,7 +272,8 @@ namespace MetroOverhaul.InitializationSteps
                         segments4
                             .SetFlagsDefault()
                               .SetMeshes
-                              (@"Meshes\6m\ThirdRail.obj", @"Meshes\10m\Blank.obj")
+                              (@"Meshes\6m\ThirdRail.obj",
+                              $@"Meshes\6m\Rail_LOD.obj")
                               .SetConsistentUVs();
                         nodes0
                             .SetMeshes
@@ -320,24 +325,28 @@ namespace MetroOverhaul.InitializationSteps
                         segment2
                             .SetFlagsDefault()
                               .SetMeshes
-                              (@"Meshes\6m\Boosted_Rail.obj");
+                              (@"Meshes\6m\Boosted_Rail.obj",
+                              @"Meshes\10m\Blank.obj");
                         segment3
                             .SetFlagsDefault()
                               .SetMeshes
-                              (@"Meshes\6m\ThirdRail.obj", @"Meshes\10m\Blank.obj")
+                              (@"Meshes\6m\ThirdRail.obj",
+                               @"Meshes\6m\Rail_LOD.obj")
                               .SetConsistentUVs();
                         segment4
                             .SetFlagsDefault()
                               .SetMeshes
-                              (@"Meshes\6m\Rail.obj");
+                              (@"Meshes\6m\Rail.obj",
+                               @"Meshes\6m\Rail_LOD.obj")
+                              .SetConsistentUVs();
                         node0
                             .SetMeshes
                             (@"Meshes\6m\Tunnel_Pavement_Gray.obj",
-                            @"Meshes\6m\Tunnel_Pavement_Gray_LOD.obj");
+                             @"Meshes\6m\Tunnel_Pavement_Gray_LOD.obj");
                         node1
                             .SetMeshes
                               (@"Meshes\6m\Tunnel_Node_Pavement.obj",
-                                  @"Meshes\6m\Tunnel_Node_Pavement_LOD.obj")
+                               @"Meshes\6m\Tunnel_Node_Pavement_LOD.obj")
                               .SetConsistentUVs();
 
                         segment1.m_material = defaultMaterial;
@@ -352,12 +361,7 @@ namespace MetroOverhaul.InitializationSteps
                         RoadHelper.HandleAsymSegmentFlags(segment3);
                         node1.m_material = defaultMaterial;
                         node1.m_lodMaterial = defaultLODMaterial;
-                        //node2.m_connectGroup = info.m_connectGroup;
 
-                        //node2.m_material = defaultMaterial;
-                        //node2.m_lodMaterial = defaultLODMaterial;
-
-                        //node2.m_directConnect = true;
                         info.m_segments = new[] { segment0, segment1, segment2, segment3,segment4 };
                     }
                     break;
@@ -486,6 +490,7 @@ namespace MetroOverhaul.InitializationSteps
                         var segment0 = prefab.m_segments[0].ShallowClone();
                         var segment1 = prefab.m_segments[1].ShallowClone();
                         var segment2 = prefab.m_segments[0].ShallowClone();
+                        var segment3 = prefab.m_segments[0].ShallowClone();
                         var node0 = prefab.m_nodes[0].ShallowClone();
                         nodeList.Add(node0);
 
@@ -496,13 +501,21 @@ namespace MetroOverhaul.InitializationSteps
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\6m\Station_Rail.obj")
+                            (@"Meshes\6m\Station_Rail.obj",
+                             @"Meshes\6m\Rail_LOD.obj")
                             .SetConsistentUVs();
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\6m\Station_ThirdRail.obj", @"Meshes\6m\Blank.obj")
+                            (@"Meshes\6m\Station_ThirdRail.obj",
+                             @"Meshes\6m\Rail_LOD.obj")
                             .SetConsistentUVs();
+                        segment3
+                              .SetFlagsDefault()
+                              .SetMeshes
+                              (@"Meshes\6m\Boosted_Rail.obj",
+                              @"Meshes\10m\Blank.obj");
+
                         node0
                             .SetMeshes
                             (@"Meshes\6m\Ground_Node_Pavement.obj",
@@ -512,7 +525,7 @@ namespace MetroOverhaul.InitializationSteps
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
-                        prefab.m_segments = new[] { segment0, segment1, segment2 };
+                        prefab.m_segments = new[] { segment0, segment1, segment2, segment3 };
                         break;
                     }
                 case NetInfoVersion.Elevated:
@@ -531,17 +544,20 @@ namespace MetroOverhaul.InitializationSteps
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\6m\Station_Boosted_Rail.obj")
+                            (@"Meshes\6m\Station_Boosted_Rail.obj",
+                            @"Meshes\6m\Blank.obj")
                             .SetConsistentUVs();
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\6m\Station_ThirdRail.obj", @"Meshes\6m\Blank.obj")
+                            (@"Meshes\6m\Station_ThirdRail.obj",
+                            @"Meshes\6m\Rail_LOD.obj")
                             .SetConsistentUVs();
                         segment3
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\6m\Station_Rail.obj")
+                            (@"Meshes\6m\Station_Rail.obj",
+                            @"Meshes\6m\Rail_LOD.obj")
                             .SetConsistentUVs();
                         node0
                             .SetMeshes
@@ -580,17 +596,20 @@ namespace MetroOverhaul.InitializationSteps
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\6m\Station_Boosted_Rail.obj")
+                            (@"Meshes\6m\Station_Boosted_Rail.obj",
+                            @"Meshes\6m\Blank.obj")
                             .SetConsistentUVs();
                         segment3
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\6m\Station_ThirdRail.obj", @"Meshes\6m\Blank.obj")
+                            (@"Meshes\6m\Station_ThirdRail.obj",
+                            @"Meshes\6m\Rail_LOD.obj")
                             .SetConsistentUVs();
                         segment4
                             .SetFlagsDefault()
                             .SetMeshes
-                            (@"Meshes\6m\Station_Rail.obj")
+                            (@"Meshes\6m\Station_Rail.obj",
+                            @"Meshes\6m\Rail_LOD.obj")
                             .SetConsistentUVs();
                         node0
                             .SetMeshes

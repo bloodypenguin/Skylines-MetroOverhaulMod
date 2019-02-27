@@ -225,74 +225,6 @@ namespace MetroOverhaul.InitializationSteps
             }
             prefab.m_lanes = theLanes.Except(removedLanes).ToArray();
         }
-        public static void CommonCustomizationLarge(NetInfo prefab, NetInfoVersion version)
-        {
-            var isStation = prefab.name.Contains("Station");
-            if (isStation)
-            {
-                prefab.m_connectGroup = NetInfo.ConnectGroup.None;
-            }
-            else
-            {
-                prefab.m_connectGroup = NetInfo.ConnectGroup.WideTram;
-                prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.NarrowTram | NetInfo.ConnectGroup.SingleMonorail;
-                //if (version != NetInfoVersion.Tunnel)
-                //{
-                //    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.WideTram;
-                //}
-            }
-
-            prefab.SetRoadLanes(version, new LanesConfiguration()
-            {
-                IsTwoWay = true,
-                VehicleLanesToAdd = 2
-            });
-
-            var vanillaMetroTrack = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
-            var speedLimit = vanillaMetroTrack.m_lanes.First(l => l.m_vehicleType != VehicleInfo.VehicleType.None).m_speedLimit;
-            var theLanes = prefab.m_lanes.ToList();
-            var count = 0;
-            for (var i = 0; i < theLanes.Count(); i++)
-            {
-                if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)
-                {
-                    switch (count)
-                    {
-                        case 0:
-                            theLanes[i].m_position = -5.885f;
-                            theLanes[i].m_stopType = VehicleInfo.VehicleType.Metro;
-                            theLanes[i].m_direction = NetInfo.Direction.Backward;
-                            theLanes[i].m_speedLimit = speedLimit;
-                            break;
-                        case 1:
-                            theLanes[i].m_position = -1.966f;
-                            theLanes[i].m_stopType = VehicleInfo.VehicleType.None;
-                            theLanes[i].m_direction = NetInfo.Direction.Backward;
-                            theLanes[i].m_speedLimit = isStation ? speedLimit + 3 : speedLimit;
-                            break;
-                        case 2:
-                            theLanes[i].m_position = 1.966f;
-                            theLanes[i].m_stopType = VehicleInfo.VehicleType.None;
-                            theLanes[i].m_direction = NetInfo.Direction.Forward;
-                            theLanes[i].m_speedLimit = isStation ? speedLimit + 3 : speedLimit;
-                            break;
-                        case 3:
-                            theLanes[i].m_position = 5.886f;
-                            theLanes[i].m_stopType = VehicleInfo.VehicleType.Metro;
-                            theLanes[i].m_direction = NetInfo.Direction.Forward;
-                            theLanes[i].m_speedLimit = speedLimit;
-                            break;
-                    }
-                    count++;
-                    theLanes[i].m_verticalOffset = 0.35f;
-                }
-                else if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
-                {
-                    theLanes[i].m_position = Math.Sign(theLanes[i].m_position) * 9;
-                }
-            }
-            prefab.m_lanes = theLanes.ToArray();
-        }
 
         public static void CommonIslandCustomization(NetInfo prefab, NetInfoVersion version)
         {
@@ -333,7 +265,70 @@ namespace MetroOverhaul.InitializationSteps
             }
             prefab.m_lanes = theLanes.ToArray();
         }
+        public static void CommonCustomizationLarge(NetInfo prefab, NetInfoVersion version)
+        {
+            var isStation = prefab.name.Contains("Station");
+            if (isStation)
+            {
+                prefab.m_connectGroup = NetInfo.ConnectGroup.None;
+            }
+            else
+            {
+                prefab.m_connectGroup = NetInfo.ConnectGroup.WideTram;
+                prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.NarrowTram | NetInfo.ConnectGroup.SingleMonorail;
+                //if (version != NetInfoVersion.Tunnel)
+                //{
+                //    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.WideTram;
+                //}
+            }
 
+            prefab.SetRoadLanes(version, new LanesConfiguration()
+            {
+                IsTwoWay = true,
+                VehicleLanesToAdd = 2
+            });
+            prefab.m_minCornerOffset = 18;
+            var vanillaMetroTrack = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+            var speedLimit = vanillaMetroTrack.m_lanes.First(l => l.m_vehicleType != VehicleInfo.VehicleType.None).m_speedLimit;
+            var theLanes = prefab.m_lanes.ToList();
+            var count = 0;
+            for (var i = 0; i < theLanes.Count(); i++)
+            {
+                if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)
+                {
+                    switch (count)
+                    {
+                        case 0:
+                            theLanes[i].m_position = -5.885f;
+                            theLanes[i].m_direction = NetInfo.Direction.Backward;
+                            theLanes[i].m_speedLimit = speedLimit;
+                            break;
+                        case 1:
+                            theLanes[i].m_position = -1.966f;
+                            theLanes[i].m_direction = NetInfo.Direction.Backward;
+                            theLanes[i].m_speedLimit = isStation ? speedLimit + 3 : speedLimit;
+                            break;
+                        case 2:
+                            theLanes[i].m_position = 1.966f;
+                            theLanes[i].m_direction = NetInfo.Direction.Forward;
+                            theLanes[i].m_speedLimit = isStation ? speedLimit + 3 : speedLimit;
+                            break;
+                        case 3:
+                            theLanes[i].m_position = 5.886f;
+                            theLanes[i].m_direction = NetInfo.Direction.Forward;
+                            theLanes[i].m_speedLimit = speedLimit;
+                            break;
+                    }
+                    count++;
+                    theLanes[i].m_verticalOffset = 0.35f;
+                }
+                else if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
+                {
+                    theLanes[i].m_position = Math.Sign(theLanes[i].m_position) * 9;
+                }
+            }
+            prefab.m_lanes = theLanes.ToArray();
+        }
         public static void CommonLargeSideIslandCustomization(NetInfo prefab, NetInfoVersion version)
         {
             prefab.m_connectGroup = NetInfo.ConnectGroup.None;
@@ -343,6 +338,7 @@ namespace MetroOverhaul.InitializationSteps
                 VehicleLanesToAdd = 2,
                 PedestrianLanesToAdd = 2
             });
+            prefab.m_minCornerOffset = 18;
             var vehicleCount = 0;
             var pedestrianCount = 0;
             var theLanes = prefab.m_lanes.ToList();
@@ -352,21 +348,26 @@ namespace MetroOverhaul.InitializationSteps
                 if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
                 {
                     theLane.m_width = 3.5f;
+                    theLane.m_stopType = VehicleInfo.VehicleType.Metro;
+                    theLane.m_direction = NetInfo.Direction.Both;
                     switch (pedestrianCount)
                     {
                         case 0:
-                            theLane.m_position = 2.95f;
+                            theLane.m_position = -12;
                             break;
                         case 1:
                             theLane.m_position = -2.95f;
+                            theLane.m_centerPlatform = true;
                             break;
                         case 2:
-                            theLane.m_position = 12;
+                            theLane.m_position = 2.95f;
+                            theLane.m_centerPlatform = true;
                             break;
                         case 3:
-                            theLane.m_position = -12;
+                            theLane.m_position = 12;
                             break;
                     }
+                    pedestrianCount++;
                 }
                 else if (theLane.m_laneType == NetInfo.LaneType.Vehicle)
                 {
@@ -379,11 +380,13 @@ namespace MetroOverhaul.InitializationSteps
                         case 1:
                             theLane.m_position = -6.463f;
                             theLane.m_direction = NetInfo.Direction.AvoidForward;
+                            theLane.m_speedLimit += 3;
 
                             break;
                         case 2:
                             theLane.m_position = 6.463f;
                             theLane.m_direction = NetInfo.Direction.AvoidBackward;
+                            theLane.m_speedLimit += 3;
                             break;
                         case 3:
                             theLane.m_position = 10.39f;
@@ -392,7 +395,6 @@ namespace MetroOverhaul.InitializationSteps
                     }
                     vehicleCount++;
                     theLane.m_verticalOffset = 0.35f;
-                    theLane.m_stopType = VehicleInfo.VehicleType.Metro;
                 }
             }
             prefab.m_lanes = theLanes.ToArray();
@@ -407,6 +409,7 @@ namespace MetroOverhaul.InitializationSteps
                 PedestrianLanesToAdd = 2,
                 PedestrianLaneWidth = 2.28f
             });
+            prefab.m_minCornerOffset = 30;
             var vehicleLaneCount = 0;
             var pedestrianLaneCount = 0;
             var theLanes = prefab.m_lanes.ToList();
@@ -414,10 +417,13 @@ namespace MetroOverhaul.InitializationSteps
             {
                 if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
                 {
+                    theLanes[i].m_direction = NetInfo.Direction.Both;
+                    theLanes[i].m_stopType = VehicleInfo.VehicleType.Metro;
                     switch (pedestrianLaneCount)
                     {
                         case 0:
                             theLanes[i].m_position = -9.48f;
+                            theLanes[i].m_centerPlatform = true;
                             break;
                         case 1:
                             theLanes[i].m_position = -4.8f;
@@ -427,15 +433,13 @@ namespace MetroOverhaul.InitializationSteps
                             break;
                         case 3:
                             theLanes[i].m_position = 9.48f;
-                            break;
-                        case 4:
+                            theLanes[i].m_centerPlatform = true;
                             break;
                     }
                     pedestrianLaneCount++;
                 }
                 else if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)
                 {
-                    theLanes[i].m_vehicleType = VehicleInfo.VehicleType.Metro;
                     switch (vehicleLaneCount)
                     {
                         case 0:
@@ -445,11 +449,13 @@ namespace MetroOverhaul.InitializationSteps
                         case 1:
                             theLanes[i].m_position = -1.966f;
                             theLanes[i].m_direction = NetInfo.Direction.AvoidForward;
+                            theLanes[i].m_speedLimit += 3;
 
                             break;
                         case 2:
                             theLanes[i].m_position = 1.966f;
                             theLanes[i].m_direction = NetInfo.Direction.AvoidBackward;
+                            theLanes[i].m_speedLimit += 3;
                             break;
                         case 3:
                             theLanes[i].m_position = 12.38f;

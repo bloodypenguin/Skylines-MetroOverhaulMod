@@ -478,7 +478,6 @@ namespace MetroOverhaul
 
         private static void CleanUpPaths(BuildingInfo info)
         {
-            List<int> RemoveInx = null;
             for (int i = 0; i < m_Nodes.Count(); i++)
             {
                 //if(NodeFrom(m_Nodes[i]).

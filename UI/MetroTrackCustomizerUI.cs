@@ -11,7 +11,6 @@ namespace MetroOverhaul.UI
 {
     public class MetroTrackCustomizerUI : MetroCustomizerBase
     {
-
         public override void Update()
         {
             if (m_netTool == null)
@@ -28,7 +27,6 @@ namespace MetroOverhaul.UI
                 NetInfo finalInfo = null;
                 if (toolInfo != null)
                 {
-                    //RestoreStationTrackStyle(toolInfo);
                     if (toolInfo.IsMetroTrack())
                     {
                         finalInfo = toolInfo;
@@ -100,8 +98,7 @@ namespace MetroOverhaul.UI
             trackStyle = 0;
             trackSize = 1;
             trackDirection = 1;
-            fence = false;
-            SetNetToolPrefab();
+            ExecuteUiInstructions();
         }
 
         private void CreateUI()
@@ -125,129 +122,57 @@ namespace MetroOverhaul.UI
             btnModernStyle = CreateButton("Modern", 2, (c, v) =>
             {
                 trackStyle = 0;
-                SetNetToolPrefab();
+                ExecuteUiInstructions();
             });
 
             btnClassicStyle = CreateButton("Classic", 2, (c, v) =>
                {
                    trackStyle = 1;
-                   SetNetToolPrefab();
+                   ExecuteUiInstructions();
                });
             btnSingleTrack = CreateButton("Single", 3, (c, v) =>
               {
                   trackSize = 0;
-                  SetNetToolPrefab();
+                  ExecuteUiInstructions();
               });
 
             btnDoubleTrack = CreateButton("Double", 3, (c, v) =>
               {
                   trackSize = 1;
-                  SetNetToolPrefab();
+                  ExecuteUiInstructions();
               });
 
             btnQuadTrack = CreateButton("Quad", 3, (c, v) =>
            {
                trackSize = 2;
-               SetNetToolPrefab();
+               ExecuteUiInstructions();
            });
 
             btnOneWay = CreateButton("OneWay", 2, (c, v) =>
              {
                  trackDirection = 0;
-                 SetNetToolPrefab();
+                 ExecuteUiInstructions();
              });
 
             btnTwoWay = CreateButton("TwoWay", 2, (c, v) =>
               {
                   trackDirection = 1;
-                  SetNetToolPrefab();
+                  ExecuteUiInstructions();
               });
 
-
-
-            UICheckBox useFenceCheckBox = AddUIComponent<UICheckBox>();
-            useFenceCheckBox.text = "Island Platform";
-            useFenceCheckBox.size = new Vector2(width - 16, 16);
-            useFenceCheckBox.relativePosition = new Vector2(8, 200);
-            useFenceCheckBox.isInteractive = true;
-            useFenceCheckBox.eventCheckChanged += (c, v) =>
-            {
-                fence = useFenceCheckBox.isChecked;
-                if (fence)
-                {
-                    m_useFenceCheckBoxClicker.spriteName = "check-checked";
-                }
-                else
-                {
-                    m_useFenceCheckBoxClicker.spriteName = "check-unchecked";
-                }
-                SetNetToolPrefab();
-            };
-
-            m_useFenceCheckBoxClicker = useFenceCheckBox.AddUIComponent<UISprite>();
-            m_useFenceCheckBoxClicker.atlas = atlas;
-            m_useFenceCheckBoxClicker.spriteName = "check-unchecked";
-            m_useFenceCheckBoxClicker.relativePosition = new Vector2(0, 0);
-            m_useFenceCheckBoxClicker.size = new Vector2(16, 16);
-            m_useFenceCheckBoxClicker.isInteractive = true;
-
-            UILabel useFenceLabel = useFenceCheckBox.AddUIComponent<UILabel>();
-            useFenceLabel.relativePosition = new Vector2(20, 0);
-            useFenceLabel.text = "Alt/Barrier";
-            useFenceLabel.height = 16;
-            useFenceLabel.isInteractive = true;
-
-            UICheckBox useExtraElevatedPillarsCheckBox = AddUIComponent<UICheckBox>();
-            useExtraElevatedPillarsCheckBox.text = "Island Platform";
-            useExtraElevatedPillarsCheckBox.size = new Vector2(width - 16, 16);
-            useExtraElevatedPillarsCheckBox.relativePosition = new Vector2(8, 230);
-            useExtraElevatedPillarsCheckBox.isInteractive = true;
-            useExtraElevatedPillarsCheckBox.eventCheckChanged += (c, v) =>
-            {
-                extraElevated = useExtraElevatedPillarsCheckBox.isChecked;
-                if (extraElevated)
-                {
-                    m_useExtraElevatedPillarClicker.spriteName = "check-checked";
-                }
-                else
-                {
-                    m_useExtraElevatedPillarClicker.spriteName = "check-unchecked";
-                }
-                SetNetToolPrefab();
-            };
-
-            m_useExtraElevatedPillarClicker = useExtraElevatedPillarsCheckBox.AddUIComponent<UISprite>();
-            m_useExtraElevatedPillarClicker.atlas = atlas;
-            m_useExtraElevatedPillarClicker.spriteName = "check-unchecked";
-            m_useExtraElevatedPillarClicker.relativePosition = new Vector2(0, 0);
-            m_useExtraElevatedPillarClicker.size = new Vector2(16, 16);
-            m_useExtraElevatedPillarClicker.isInteractive = true;
-
-            UILabel useExtraElevatedPillarLabel = useExtraElevatedPillarsCheckBox.AddUIComponent<UILabel>();
-            useExtraElevatedPillarLabel.relativePosition = new Vector2(20, 0);
-            useExtraElevatedPillarLabel.text = "Extra Elevated Pillars";
-            useExtraElevatedPillarLabel.height = 16;
-            useExtraElevatedPillarLabel.isInteractive = true;
+            CheckboxDict = new Dictionary<string, UICheckBox>();
+            CreateCheckbox(ALT_BARRIER);
+            CreateCheckbox(OVER_ROAD_FRIENDLY);
         }
 
-        private void SetNetToolPrefab()
+        protected override void ExecuteUiInstructions()
         {
-            if (trackStyle == 0)
-                ToggleButtonPairs(btnModernStyle, btnClassicStyle);
-            else if (trackStyle == 1)
-                ToggleButtonPairs(btnClassicStyle, btnModernStyle);
-            if (trackSize == 0)
-                ToggleButtonPairs(btnSingleTrack, btnDoubleTrack, btnQuadTrack);
-            else if (trackSize == 1)
-                ToggleButtonPairs(btnDoubleTrack, btnSingleTrack, btnQuadTrack);
-            else if (trackSize == 2)
-                ToggleButtonPairs(btnQuadTrack, btnSingleTrack, btnDoubleTrack);
-            if (trackDirection == 0)
-                ToggleButtonPairs(btnOneWay, btnTwoWay);
-            else if (trackDirection == 1)
-                ToggleButtonPairs(btnTwoWay, btnOneWay);
+            ToggleButtonPairs(trackStyle, btnModernStyle, btnClassicStyle);
+            ToggleButtonPairs(trackSize, btnSingleTrack, btnDoubleTrack, btnQuadTrack);
+            ToggleButtonPairs(trackDirection, btnOneWay, btnTwoWay);
 
             NetInfo prefab = null;
+            var fence = CheckboxDict[ALT_BARRIER].isChecked;
             switch (trackStyle)
             {
                 case 0:
@@ -274,31 +199,6 @@ namespace MetroOverhaul.UI
                                 }
                                 else
                                 {
-                                    //    var segmentList = new List<NetInfo.Segment>();
-                                    //    for (int i = 0; i < concretePrefab.m_segments.Count(); i++)
-                                    //    {
-                                    //        var segment = concretePrefab.m_segments[i];
-                                    //        if (segment.m_mesh.name.Contains("Fence"))
-                                    //        {
-                                    //            if (fence)
-                                    //            {
-                                    //                segment.m_forwardRequired &= ~NetSegment.Flags.Deleted;
-                                    //                segment.m_forwardRequired &= ~NetSegment.Flags.Deleted;
-                                    //                segment.m_forwardRequired |= NetSegment.Flags.Created;
-                                    //                segment.m_backwardRequired |= NetSegment.Flags.Created;
-                                    //            }
-                                    //            else
-                                    //            {
-                                    //                segment.m_forwardRequired |= NetSegment.Flags.Deleted;
-                                    //                segment.m_backwardRequired |= NetSegment.Flags.Deleted;
-                                    //                segment.m_forwardRequired &= ~NetSegment.Flags.Created;
-                                    //                segment.m_forwardRequired &= ~NetSegment.Flags.Created;
-                                    //            }
-                                    //        }
-                                    //        segmentList.Add(segment);
-                                    //    }
-                                    //    concretePrefab.m_segments = segmentList.ToArray();
-                                    //    prefab = concretePrefab;
                                     prefab = fence ? concretePrefab : concretePrefabNoBar;
                                 }
                             }
@@ -348,7 +248,6 @@ namespace MetroOverhaul.UI
                             {
                                 if (trackDirection == 0)
                                 {
-                                    //prefab = fence ? steelTwoLaneOneWayPrefab : steelTwoLaneOneWayPrefabNoBar;
                                 }
                                 else
                                 {
@@ -361,8 +260,27 @@ namespace MetroOverhaul.UI
             }
             if (prefab != null)
             {
+                if (CheckboxDict.ContainsKey(OVER_ROAD_FRIENDLY))
+                {
+
+                    var noCollisionPillars = CheckboxDict[OVER_ROAD_FRIENDLY].isChecked;
+                    var elevatedPrefab = PrefabCollection<NetInfo>.FindLoaded(prefab.name.Replace("Ground", "Elevated"));
+                    var ttbai = elevatedPrefab?.GetComponent<TrainTrackBridgeAIMetro>();
+                    if (ttbai != null)
+                    {
+                        ttbai.NoPillarCollision = noCollisionPillars;
+                    }
+
+                    var bridgePrefab = PrefabCollection<NetInfo>.FindLoaded(prefab.name.Replace("Ground", "Bridge"));
+                    var ttbai2 = bridgePrefab?.GetComponent<TrainTrackBridgeAIMetro>();
+                    if (ttbai2 != null)
+                    {
+                        ttbai2.NoPillarCollision = noCollisionPillars;
+                    }
+                }
+
                 m_netTool.m_prefab = prefab;
-                var elevation = m_netTool.GetElevation();
+                m_currentNetInfo = prefab;
                 var lanes = m_netTool.m_prefab.m_lanes.ToList();
                 Next.Debug.Log($"MOM EE lane count: {lanes.Count()}");
                 var lane = lanes.FirstOrDefault(l => l.m_laneType == NetInfo.LaneType.None);
@@ -378,16 +296,16 @@ namespace MetroOverhaul.UI
                         {
                             Next.Debug.Log($"MOM EE Examining aLane");
                             var name = prop.m_prop.name;
-                            if (extraElevated)
-                            {
-                                prop.m_probability = 100;
-                                Next.Debug.Log("MOM EE Enabled");
-                            }
-                            else
-                            {
-                                prop.m_probability = 0;
-                                Next.Debug.Log("MOM EE Disabled");
-                            }
+                            //if (noCollisionPillars)
+                            //{
+                            //    prop.m_probability = 100;
+                            //    Next.Debug.Log("MOM EE Enabled");
+                            //}
+                            //else
+                            //{
+                            //    prop.m_probability = 0;
+                            //    Next.Debug.Log("MOM EE Disabled");
+                            //}
                             var props = lane.m_laneProps.m_props?.ToList();
                             if (props != null)
                             {
@@ -419,7 +337,7 @@ namespace MetroOverhaul.UI
             m_activated = true;
             m_currentNetInfo = nInfo;
             isVisible = true;
-            SetNetToolPrefab();
+            ExecuteUiInstructions();
         }
         private void Deactivate()
         {
@@ -427,6 +345,8 @@ namespace MetroOverhaul.UI
             {
                 return;
             }
+            CheckboxDict[OVER_ROAD_FRIENDLY].isChecked = false;
+            ExecuteUiInstructions();
             m_currentNetInfo = null;
             isVisible = false;
             m_activated = false;

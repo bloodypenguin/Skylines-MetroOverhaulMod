@@ -12,14 +12,14 @@ namespace MetroOverhaul.InitializationSteps
         public static void Setup19mStationMesh(NetInfo prefab, NetInfoVersion version, NetInfo elevatedInfo, NetInfo metroStationInfo)
         {
             var width = "";
-            if (prefab.name.Contains("LargeDualIsland"))
+            if (prefab.name.Contains("Dual Island"))
             {
                 width = "31m";
             }
-            else if (prefab.name.Contains("LargeIsland"))
-            {
-                width = "27m";
-            }
+            //else if (prefab.name.Contains("Side Island"))
+            //{
+            //    width = "31_2m";
+            //}
             else
             {
                 width = "19m";
@@ -50,7 +50,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetFlagsDefault()
                             .SetMeshes
                             ($@"Meshes\{width}\Station_Rail.obj",
-                            $@"Meshes\{width}\Station_Rail_LOD.obj")
+                            $@"Meshes\{width}\Rail_LOD.obj")
                             .SetConsistentUVs();
                         segment2
                             .SetFlagsDefault()
@@ -92,7 +92,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetFlagsDefault()
                             .SetMeshes
                             ($@"Meshes\{width}\Station_Boosted_Rail.obj",
-                            $@"Meshes\{width}\Station_Rail_LOD.obj")
+                            $@"Meshes\{width}\Rail_LOD.obj")
                             .SetConsistentUVs();
                         segment2
                             .SetFlagsDefault()
@@ -103,7 +103,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetFlagsDefault()
                             .SetMeshes
                             ($@"Meshes\{width}\Station_Rail.obj",
-                            $@"Meshes\{width}\Station_Rail_LOD.obj")
+                            $@"Meshes\{width}\Rail_LOD.obj")
                             .SetConsistentUVs();
                         node0
                             .SetMeshes
@@ -152,7 +152,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetFlagsDefault()
                             .SetMeshes
                             ($@"Meshes\{width}\Station_Boosted_Rail.obj",
-                            $@"Meshes\{width}\Station_Rail_LOD.obj")
+                            $@"Meshes\{width}\Rail_LOD.obj")
                             .SetConsistentUVs();
                         segment3
                             .SetFlagsDefault()
@@ -163,7 +163,7 @@ namespace MetroOverhaul.InitializationSteps
                             .SetFlagsDefault()
                             .SetMeshes
                             ($@"Meshes\{width}\Station_Rail.obj",
-                            $@"Meshes\{width}\Station_Rail_LOD.obj")
+                            $@"Meshes\{width}\Rail_LOD.obj")
                             .SetConsistentUVs();
                         node0
                             .SetMeshes

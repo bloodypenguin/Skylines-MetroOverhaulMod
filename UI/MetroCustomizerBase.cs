@@ -9,22 +9,17 @@ using UnityEngine;
 
 namespace MetroOverhaul.UI
 {
-    public class MetroCustomizerBase:UIPanel
+    public class MetroCustomizerBase : UIPanel
     {
         public int trackStyle = 0;
         public int trackSize = 1;
         public int trackDirection = 1;
-        public bool fence = false;
-        public bool extraElevated = false;
         protected BulldozeTool m_bulldozeTool;
         protected NetTool m_netTool;
         protected UIButton m_upgradeButtonTemplate;
         protected NetInfo m_currentNetInfo;
         protected bool m_activated = false;
         public static MetroTrackCustomizerUI instance;
-
-        protected UISprite m_useFenceCheckBoxClicker = null;
-        protected UISprite m_useExtraElevatedPillarClicker = null;
 
         protected NetInfo concretePrefab;
         protected NetInfo concretePrefabNoBar;
@@ -65,10 +60,6 @@ namespace MetroOverhaul.UI
         protected UIButton btnTwoWay;
         protected UIButton btnStation;
         protected UIButton btnTrack;
-        protected UIButton btnSidePlatform;
-        protected UIButton btnIslandPlatform;
-        protected UIButton btnSinglePlatform;
-        protected UIButton btnQuadPlatform;
 
         protected Task m_T = null;
 
@@ -77,7 +68,9 @@ namespace MetroOverhaul.UI
         protected static Dictionary<ToggleType, SliderData> SliderDataDict { get; set; }
         protected static Dictionary<ToggleType, UISlider> SliderDict { get; set; }
         protected static Dictionary<ToggleType, UIPanel> PanelDict { get; set; }
-        protected static Dictionary<StationTrackType, UICheckBox> CheckboxDict { get; set; }
+        protected static Dictionary<StationTrackType, UICheckBox> CheckboxStationDict { get; set; }
+        protected static Dictionary<StationTrackType, UIButton> buttonStationDict { get; set; }
+        protected static Dictionary<string, UICheckBox> CheckboxDict { get; set; }
         protected Dictionary<ToggleType, UIButton> toggleBtnDict = new Dictionary<ToggleType, UIButton>();
         protected Dictionary<ToggleType, float> SetDict = new Dictionary<ToggleType, float>();
         protected BuildingTool m_buildingTool = null;
@@ -87,20 +80,25 @@ namespace MetroOverhaul.UI
         protected StationTrackType m_PrevTrackType = StationTrackType.SidePlatform;
 
         public int isStation = 1;
-        public int stationType = 0;
+        public StationTrackType stationType;
 
-        protected UICheckBox m_useFenceCheckBox = null;
-        protected UICheckBox m_useExtraElevatedPillarsCheckBox = null;
+        protected NetInfo concreteSideStationPrefab;
+        protected NetInfo concreteIslandStationPrefab;
+        protected NetInfo concreteSingleStationPrefab;
+        protected NetInfo concreteQuadSideStationPrefab;
+        protected NetInfo concreteQuadDualIslandStationPrefab;
 
-        protected NetInfo concreteSidePlatformStationPrefab;
-        protected NetInfo concreteIslandPlatformStationPrefab;
-        protected NetInfo concreteSinglePlatformStationPrefab;
-        protected NetInfo concreteLargePlatformStationPrefab;
+        protected NetInfo steelSideStationPrefab;
+        protected NetInfo steelIslandStationPrefab;
+        protected NetInfo steelSingleStationPrefab;
+        protected NetInfo steelQuadSideStationPrefab;
+        protected NetInfo steelQuadDualIslandStationPrefab;
 
-        protected NetInfo steelSidePlatformStationPrefab;
-        protected NetInfo steelIslandPlatformStationPrefab;
-        protected NetInfo steelSinglePlatformStationPrefab;
-        protected NetInfo steelLargePlatformStationPrefab;
+        protected const string ALT_BARRIER = "Alt/Barrier";
+        protected const string OVER_ROAD_FRIENDLY = "Over-Road Friendly";
+
+        protected ItemClass m_TheIntersectClass = null;
+
         public override void Awake()
         {
             concretePrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground");
@@ -118,10 +116,11 @@ namespace MetroOverhaul.UI
             concreteSmallTwoWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small Two-Way");
             concreteSmallTwoWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small Two-Way NoBar");
 
-            concreteSidePlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground");
-            concreteIslandPlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Island");
-            concreteSinglePlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Small");
-            concreteLargePlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Large");
+            concreteSideStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground");
+            concreteIslandStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Island");
+            concreteSingleStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Small");
+            concreteQuadSideStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Large");
+            concreteQuadDualIslandStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Large Dual Island");
 
             steelPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground");
             steelPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground NoBar");
@@ -138,10 +137,11 @@ namespace MetroOverhaul.UI
             steelLargePrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Large");
             steelLargePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Large NoBar");
 
-            steelSidePlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground");
-            steelIslandPlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Island");
-            steelSinglePlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Small");
-            steelLargePlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Large");
+            steelSideStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground");
+            steelIslandStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Island");
+            steelSingleStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Small");
+            steelQuadSideStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Large");
+            steelQuadDualIslandStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Large Dual Island");
         }
 
         protected void CreateDragHandle(string title)
@@ -168,12 +168,14 @@ namespace MetroOverhaul.UI
             titleLabel.isInteractive = false;
         }
 
-        protected void ToggleButtonPairs(UIButton active, params UIButton[] inactives)
+        protected void ToggleButtonPairs(int activeIndex, params UIButton[] buttons)
         {
+            var active = buttons[activeIndex];
             active.color = new Color32(163, 255, 16, 255);
             active.normalBgSprite = "ButtonMenuFocused";
             active.useDropShadow = true;
             active.opacity = 95;
+            var inactives = buttons.Except(new List<UIButton>() { active });
             foreach (UIButton inactive in inactives)
             {
                 inactive.color = new Color32(150, 150, 150, 255);
@@ -183,13 +185,32 @@ namespace MetroOverhaul.UI
             }
         }
 
-        private int m_rowIndex = 1;
+        protected void ToggleButtonPairs(StationTrackType activeStationtype)
+        {
+            foreach (var kvp in buttonStationDict)
+            {
+                kvp.Value.color = new Color32(150, 150, 150, 255);
+                kvp.Value.normalBgSprite = "ButtonMenu";
+                kvp.Value.useDropShadow = false;
+                kvp.Value.opacity = 75;
+            }
+            buttonStationDict[activeStationtype].color = new Color32(163, 255, 16, 255);
+            buttonStationDict[activeStationtype].normalBgSprite = "ButtonMenuFocused";
+            buttonStationDict[activeStationtype].useDropShadow = true;
+            buttonStationDict[activeStationtype].opacity = 95;
+        }
+
+        protected int m_rowIndex = 1;
         private int m_colIndex = 0;
 
         private int m_SliderCount = 0;
         private int m_CheckboxCount = 0;
+        protected UIButton CreateButton(StationTrackType type, int columnCount, MouseEventHandler eventClick, bool sameLine = false)
+        {
+            return CreateButton(GetNameFromStationType(type), columnCount, eventClick, sameLine);
+        }
 
-        protected  UIButton CreateButton(string text, int columnCount, MouseEventHandler eventClick, bool sameLine = false)
+        protected UIButton CreateButton(string text, int columnCount, MouseEventHandler eventClick, bool sameLine = false)
         {
             var button = this.AddUIComponent<UIButton>();
             button.relativePosition = new Vector3(8 + (((float)m_colIndex / columnCount) * width), m_rowIndex * 50);
@@ -230,6 +251,8 @@ namespace MetroOverhaul.UI
         {
 
         }
+        
+        protected float m_height = 50;
         protected void CreateSlider(ToggleType type)
         {
             SliderData sData = SliderDataDict[type];
@@ -321,18 +344,62 @@ namespace MetroOverhaul.UI
                     m_valueChanged = false;
                 }
             };
-
+            m_height += 40;
             m_SliderCount++;
         }
         protected virtual void TunnelStationTrackToggleStyles(BuildingInfo info, StationTrackType type)
         {
 
         }
+        protected virtual void ExecuteUiInstructions()
+        {
+
+        }
+        protected void CreateCheckbox(string label)
+        {
+            UICheckBox checkbox = AddUIComponent<UICheckBox>();
+            checkbox.text = label;
+            checkbox.size = new Vector2(width - 16, 16);
+            checkbox.relativePosition = new Vector2(8, 200 + (30 * CheckboxDict.Count));
+            CheckboxDict[label] = checkbox;
+            checkbox.isInteractive = true;
+
+            UISprite cbClicker = checkbox.AddUIComponent<UISprite>();
+            cbClicker.atlas = atlas;
+            cbClicker.spriteName = "check-unchecked";
+            cbClicker.relativePosition = new Vector2(0, 0);
+            cbClicker.size = new Vector2(16, 16);
+            cbClicker.isInteractive = true;
+            checkbox.eventCheckChanged += (c, v) =>
+            {
+                if (checkbox.isChecked)
+                {
+                    cbClicker.spriteName = "check-checked";
+                }
+                else
+                {
+                    cbClicker.spriteName = "check-unchecked";
+                }
+                ExecuteUiInstructions();
+            };
+
+            UILabel checkboxLabel = checkbox.AddUIComponent<UILabel>();
+            checkboxLabel.relativePosition = new Vector2(20, 0);
+            checkboxLabel.text = label;
+            checkboxLabel.height = 16;
+            checkboxLabel.isInteractive = true;
+
+            m_height = Math.Max(m_height + 30, 230);
+        }
+        protected string GetNameFromStationType(StationTrackType type)
+        {
+            return Regex.Replace(type.ToString(), "[a-z][A-Z]", m => m.Value[0] + " " + char.ToLower(m.Value[1]));
+        }
         protected void CreateCheckbox(StationTrackType type)
         {
-            string typeName = Regex.Replace(type.ToString(), "[a-z][A-Z]", m => m.Value[0] + " " + char.ToLower(m.Value[1]));
+            string typeName = GetNameFromStationType(type);
             var checkBox = AddUIComponent<UICheckBox>();
-            CheckboxDict[type] = checkBox;
+            CheckboxStationDict[type] = checkBox;
             checkBox.text = typeName;
             checkBox.size = new Vector2(width - 16, 16);
             checkBox.relativePosition = new Vector2(8, 200 + (m_CheckboxCount * 20));
@@ -343,7 +410,7 @@ namespace MetroOverhaul.UI
                 {
                     m_PrevTrackType = m_TrackType;
                     m_TrackType = type;
-                    foreach (var kvp in CheckboxDict)
+                    foreach (var kvp in CheckboxStationDict)
                     {
                         if (kvp.Key != type)
                         {
@@ -383,6 +450,7 @@ namespace MetroOverhaul.UI
             cbLabel.text = typeName;
             cbLabel.height = 16;
             cbLabel.isInteractive = true;
+            m_height += 20;
             m_CheckboxCount++;
         }
         public enum StationTrackType
@@ -391,7 +459,7 @@ namespace MetroOverhaul.UI
             IslandPlatform,
             SingleTrack,
             QuadSidePlatform,
-            QuadSideIslandPlatform,
+            //QuadSideIslandPlatform,
             QuadDualIslandPlatform
         }
         public enum ToggleType

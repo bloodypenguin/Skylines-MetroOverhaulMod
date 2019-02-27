@@ -113,6 +113,8 @@ namespace MetroOverhaul
                         SetupTunnelTracks(prefab, toVanilla);
                     }
                 }
+                var totalStations = 0;
+                var totalShallowStations = 0;
 				for (ushort i = 0; i < binstance.m_buildings.m_buffer.Count(); i++)
                 {
                     Building b = binstance.m_buildings.m_buffer[i];
@@ -124,20 +126,20 @@ namespace MetroOverhaul
 					List<ushort> stationNodes = GetStationNodes(b);
 					if (stationNodes != null)
 					{
-						foreach (var n in stationNodes)
-						{
-							if (NodeFrom(n).m_position.y == b.m_position.y - 4)
-							{
-								m_NeedsConvert = true;
-								break;
-							}
-						}
+                        totalStations++;
+                        var highestStationNode = stationNodes.OrderBy(n => NodeFrom(n).m_position.y).LastOrDefault();
+                        Debug.Log(b.m_position.y + "," + NodeFrom(highestStationNode).m_position.y);
+                        if (NodeFrom(highestStationNode).m_position.y > b.m_position.y - 8)
+                        {
+                            totalShallowStations ++;
+                        }
+                         //stationNodes.Where(n => NodeFrom(n).m_position.y == b.m_position.y - 4).Count();
 					}
-                    if (m_NeedsConvert)
-                    {
-						break;
-                    }
                 }
+                Debug.Log("XXXXXXXXXXXXX");
+                Debug.Log("Shallow: " + totalShallowStations);
+                Debug.Log("Total: " + totalStations);
+                m_NeedsConvert = (float)totalShallowStations / totalStations >= 0.5f;
 				for (ushort i = 0; i < Singleton<NetManager>.instance.m_nodes.m_buffer.Count(); i++)
                 {
                     NetNode n = Singleton<NetManager>.instance.m_nodes.m_buffer[i];

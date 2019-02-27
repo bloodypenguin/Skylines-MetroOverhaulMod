@@ -8,6 +8,7 @@ namespace MetroOverhaul.InitializationSteps
     {
         public static void Setup10mTexture(NetInfo info, NetInfoVersion version)
         {
+            var small = info.name.Contains("Large") ? "_Small" : "";
             var large = info.name.Contains("Large") ? "_Large" : "";
             switch (version)
             {
@@ -23,8 +24,8 @@ namespace MetroOverhaul.InitializationSteps
                                             $@"Textures\Ground_Segment_Pavement{large}__AlphaMap.png",
                                             @"Textures\Ground_Segment_Pavement__XYSMap.png"),
                                     new LODTextureSet
-                                        ($@"Textures\Ground_Segment_Pavement{large}__MainTex_LOD.png",
-                                            $@"Textures\Ground_Segment_Pavement{large}__AlphaMap_LOD.png",
+                                        ($@"Textures\Ground_Segment_Pavement{small}__MainTex_LOD.png",
+                                            $@"Textures\Ground_Segment_Pavement__AlphaMap_LOD.png",
                                             @"Textures\Ground_Segment_Pavement__XYSMap_LOD.png"));
 
                             }
@@ -54,23 +55,11 @@ namespace MetroOverhaul.InitializationSteps
                             }
                             else
                             {
-								var texture = new TextureSet
-										(@"Textures\Ground_Segment_Rail__MainTex.png",
-											@"Textures\Ground_Segment_Rail__AlphaMap.png",
-											@"Textures\Ground_Segment_Rail__XYSMap.png");
-								if (info.name.Contains("Large"))
-								{
-									var lodTexture = new LODTextureSet
-										($@"Textures\Ground_Rail_Large__MainTex_LOD.png",
-										 $@"Textures\Ground_Rail_Large__AlphaMap_LOD.png",
-										 $@"Textures\Ground_Rail_Large__XYSMap_LOD.png");
-									segment.SetTextures(texture, lodTexture);
-								}
-								else
-								{
-									segment.SetTextures(texture);
-								}
-							}
+                                segment.SetTextures(new TextureSet
+                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                            }
                         }
                         foreach (var node in info.m_nodes)
                         {
@@ -95,7 +84,7 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\ThirdRail__XYSMap.png"),
                                     new LODTextureSet
                                         (@"Textures\ThirdRail__MainTex_LOD.png",
-                                            @"Textures\ThirdRail__AlphaMap_LOD.png",
+                                            @"Textures\ThirdRail_Node__AlphaMap_LOD.png",
                                             @"Textures\ThirdRail__XYSMap_LOD.png"));
                             }
                             else if (node.m_mesh.name.Contains("LevelCrossing"))
@@ -136,23 +125,11 @@ namespace MetroOverhaul.InitializationSteps
                             }
                             else
                             {
-								var texture = new TextureSet
-										(@"Textures\Ground_Segment_Rail__MainTex.png",
-											@"Textures\Ground_Segment_Rail__AlphaMap.png",
-											@"Textures\Ground_Segment_Rail__XYSMap.png");
-								if (info.name.Contains("Large"))
-								{
-									var lodTexture = new LODTextureSet
-										($@"Textures\Ground_Rail_Large__MainTex_LOD.png",
-										 $@"Textures\Ground_Rail_Large__AlphaMap_LOD.png",
-										 $@"Textures\Ground_Rail_Large__XYSMap_LOD.png");
-									node.SetTextures(texture, lodTexture);
-								}
-								else
-								{
-									node.SetTextures(texture);
-								}
-							}
+                                node.SetTextures(new TextureSet
+                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                            }
                         }
                         break;
                     }
@@ -190,23 +167,11 @@ namespace MetroOverhaul.InitializationSteps
                             }
                             else
                             {
-								var texture = new TextureSet
-										(@"Textures\Ground_Segment_Rail__MainTex.png",
-											@"Textures\Ground_Segment_Rail__AlphaMap.png",
-											@"Textures\Ground_Segment_Rail__XYSMap.png");
-								if (info.name.Contains("Large"))
-								{
-									var lodTexture = new LODTextureSet
-										($@"Textures\Ground_Rail_Large__MainTex_LOD.png",
-										 $@"Textures\Ground_Rail_Large__AlphaMap_LOD.png",
-										 $@"Textures\Ground_Rail_Large__XYSMap_LOD.png");
-									segment.SetTextures(texture, lodTexture);
-								}
-								else
-								{
-									segment.SetTextures(texture);
-								}
-							}
+                                segment.SetTextures(new TextureSet
+                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                            }
                         }
                         foreach (var node in info.m_nodes)
                         {
@@ -270,28 +235,16 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\ThirdRail__XYSMap.png"),
                                     new LODTextureSet
                                         (@"Textures\ThirdRail__MainTex_LOD.png",
-                                            @"Textures\ThirdRail__AlphaMap_LOD.png",
+                                            @"Textures\ThirdRail_Node__AlphaMap_LOD.png",
                                             @"Textures\ThirdRail__XYSMap_LOD.png"));
                             }
                             else
                             {
-								var texture = new TextureSet
-										(@"Textures\Ground_Segment_Rail__MainTex.png",
-											@"Textures\Ground_Segment_Rail__AlphaMap.png",
-											@"Textures\Ground_Segment_Rail__XYSMap.png");
-								if (info.name.Contains("Large"))
-								{
-									var lodTexture = new LODTextureSet
-										($@"Textures\Ground_Rail_Large__MainTex_LOD.png",
-										 $@"Textures\Ground_Rail_Large__AlphaMap_LOD.png",
-										 $@"Textures\Ground_Rail_Large__XYSMap_LOD.png");
-									node.SetTextures(texture, lodTexture);
-								}
-								else
-								{
-									node.SetTextures(texture);
-								}
-							}
+                                node.SetTextures(new TextureSet
+                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                            }
                         }
                         break;
                     }
@@ -340,23 +293,11 @@ namespace MetroOverhaul.InitializationSteps
                             }
                             else
                             {
-								var texture = new TextureSet
-										(@"Textures\Ground_Segment_Rail__MainTex.png",
-											@"Textures\Ground_Segment_Rail__AlphaMap.png",
-											@"Textures\Ground_Segment_Rail__XYSMap.png");
-								if (info.name.Contains("Large"))
-								{
-									var lodTexture = new LODTextureSet
-										($@"Textures\Ground_Rail_Large{isTunnel}__MainTex_LOD.png",
-										 $@"Textures\Ground_Rail_Large{isTunnel}__AlphaMap_LOD.png",
-										 $@"Textures\Ground_Rail_Large{isTunnel}__XYSMap_LOD.png");
-									segment.SetTextures(texture, lodTexture);
-								}
-								else
-								{
-									segment.SetTextures(texture);
-								}
-							}
+                                segment.SetTextures(new TextureSet
+                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                            }
                         }
                         foreach (var node in info.m_nodes)
                         {
@@ -418,28 +359,16 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\ThirdRail__XYSMap.png"),
                                     new LODTextureSet
                                         (@"Textures\ThirdRail__MainTex_LOD.png",
-                                            @"Textures\ThirdRail__AlphaMap_LOD.png",
+                                            @"Textures\ThirdRail_Node__AlphaMap_LOD.png",
                                             @"Textures\ThirdRail__XYSMap_LOD.png"));
                             }
                             else
                             {
-								var texture = new TextureSet
-										(@"Textures\Ground_Segment_Rail__MainTex.png",
-											@"Textures\Ground_Segment_Rail__AlphaMap.png",
-											@"Textures\Ground_Segment_Rail__XYSMap.png");
-								if (info.name.Contains("Large"))
-								{
-									var lodTexture = new LODTextureSet
-										($@"Textures\Ground_Rail_Large{isTunnel}__MainTex_LOD.png",
-										 $@"Textures\Ground_Rail_Large{isTunnel}__AlphaMap_LOD.png",
-										 $@"Textures\Ground_Rail_Large{isTunnel}__XYSMap_LOD.png");
-									node.SetTextures(texture, lodTexture);
-								}
-								else
-								{
-									node.SetTextures(texture);
-								}
-							}
+                                node.SetTextures(new TextureSet
+                                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                            }
                         }
                         break;
                     }

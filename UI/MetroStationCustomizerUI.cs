@@ -174,7 +174,7 @@ namespace MetroOverhaul.UI
             backgroundSprite = "GenericPanel";
             color = new Color32(68, 84, 68, 170);
             width = 280;
-            height = 300;
+            //height = 300;
             opacity = 60;
             position = Vector2.zero;
             isVisible = false;
@@ -218,7 +218,7 @@ namespace MetroOverhaul.UI
             });
             SliderDict = new Dictionary<ToggleType, UISlider>();
             PanelDict = new Dictionary<ToggleType, UIPanel>();
-            CheckboxDict = new Dictionary<StationTrackType, UICheckBox>();
+            CheckboxStationDict = new Dictionary<StationTrackType, UICheckBox>();
 
             CreateSlider(ToggleType.Length);
             CreateSlider(ToggleType.Depth);
@@ -230,8 +230,10 @@ namespace MetroOverhaul.UI
             CreateCheckbox(StationTrackType.SingleTrack);
             CreateCheckbox(StationTrackType.QuadSidePlatform);
             CreateCheckbox(StationTrackType.QuadDualIslandPlatform);
-        }
 
+            height = m_height;
+        }
+        
         protected override void TunnelStationTrackToggleStyles(BuildingInfo info, StationTrackType type)
         {
             if (info?.m_paths == null)
@@ -254,7 +256,7 @@ namespace MetroOverhaul.UI
                         cbSprite.spriteName = "check-unchecked";
                     }
                 }
-                var activeCbSprite = CheckboxDict[type].GetComponentInChildren<UISprite>();
+                var activeCbSprite = CheckboxStationDict[type].GetComponentInChildren<UISprite>();
                 if (activeCbSprite != null)
                 {
                     activeCbSprite.spriteName = "check-checked";
@@ -277,9 +279,9 @@ namespace MetroOverhaul.UI
                     case StationTrackType.QuadSidePlatform:
                         path.AssignNetInfo("Metro Station Track Tunnel Large");
                         break;
-                    case StationTrackType.QuadSideIslandPlatform:
-                        path.AssignNetInfo("Metro Station Track Tunnel Large Side Island");
-                        break;
+                    //case StationTrackType.QuadSideIslandPlatform:
+                    //    path.AssignNetInfo("Metro Station Track Tunnel Large Side Island");
+                    //    break;
                     case StationTrackType.QuadDualIslandPlatform:
                         path.AssignNetInfo("Metro Station Track Tunnel Large Dual Island");
                         break;

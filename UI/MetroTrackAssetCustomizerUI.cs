@@ -7,6 +7,7 @@ using MetroOverhaul.NEXT.Extensions;
 using System.Linq;
 using System.Collections.Generic;
 using ColossalFramework;
+using MetroOverhaul.OptionsFramework;
 
 namespace MetroOverhaul.UI
 {
@@ -103,8 +104,7 @@ namespace MetroOverhaul.UI
             trackDirection = 1;
             isStation = 1;
             stationType = 0;
-            fence = false;
-            SetNetToolPrefab();
+            ExecuteUiInstructions();
         }
 
         private void CreateUI()
@@ -128,139 +128,91 @@ namespace MetroOverhaul.UI
             btnModernStyle = CreateButton("Modern", 2, (c, v) =>
             {
                 trackStyle = 0;
-                SetNetToolPrefab();
+                ExecuteUiInstructions();
             });
 
             btnClassicStyle = CreateButton("Classic", 2, (c, v) =>
               {
                   trackStyle = 1;
-                  SetNetToolPrefab();
+                  ExecuteUiInstructions();
               });
             btnStation = CreateButton("Stn Trk", 2, (c, v) =>
             {
                 isStation = 1;
-                SetNetToolPrefab();
+                ExecuteUiInstructions();
             });
             btnTrack = CreateButton("Track", 2, (c, v) =>
             {
                 isStation = 0;
-                SetNetToolPrefab();
+                ExecuteUiInstructions();
             });
-            btnSidePlatform = CreateButton("Side", 4, (c, v) =>
-             {
-                 stationType = 0;
-                 SetNetToolPrefab();
-             });
-            btnIslandPlatform = CreateButton("Island", 4, (c, v) =>
+
+            var rowIndex2 = m_rowIndex;
+
+            buttonStationDict = new Dictionary<StationTrackType, UIButton>();
+            buttonStationDict[StationTrackType.SidePlatform] = CreateButton(StationTrackType.SidePlatform, 3, (c, v) =>
             {
-                stationType = 1;
-                SetNetToolPrefab();
+                stationType = StationTrackType.SidePlatform;
+                ExecuteUiInstructions();
             });
-            btnSinglePlatform = CreateButton("Single", 4, (c, v) =>
+            buttonStationDict[StationTrackType.IslandPlatform] = CreateButton(StationTrackType.IslandPlatform, 3, (c, v) =>
             {
-                stationType = 2;
-                SetNetToolPrefab();
+                stationType = StationTrackType.IslandPlatform;
+                ExecuteUiInstructions();
             });
-            btnQuadPlatform = CreateButton("Quad", 4, (c, v) =>
+            buttonStationDict[StationTrackType.SingleTrack] = CreateButton(StationTrackType.SingleTrack, 3, (c, v) =>
             {
-                stationType = 3;
-                SetNetToolPrefab();
-            }, true);
+                stationType = StationTrackType.SingleTrack;
+                ExecuteUiInstructions();
+            });
+            buttonStationDict[StationTrackType.QuadSidePlatform] = CreateButton(StationTrackType.QuadSidePlatform, 2, (c, v) =>
+            {
+                stationType = StationTrackType.QuadSidePlatform;
+                ExecuteUiInstructions();
+            });
+            buttonStationDict[StationTrackType.QuadDualIslandPlatform] = CreateButton(StationTrackType.QuadDualIslandPlatform, 2, (c, v) =>
+            {
+                stationType = StationTrackType.QuadDualIslandPlatform;
+                ExecuteUiInstructions();
+            });
+
+            var rowIndexTemp = m_rowIndex;
+            m_rowIndex = rowIndex2;
+
             btnSingleTrack = CreateButton("Single", 3, (c, v) =>
               {
                   trackSize = 0;
-                  SetNetToolPrefab();
+                  ExecuteUiInstructions();
               });
 
             btnDoubleTrack = CreateButton("Double", 3, (c, v) =>
               {
                   trackSize = 1;
-                  SetNetToolPrefab();
+                  ExecuteUiInstructions();
               });
 
             btnQuadTrack = CreateButton("Quad", 3, (c, v) =>
             {
                 trackSize = 2;
-                SetNetToolPrefab();
+                ExecuteUiInstructions();
             });
 
             btnOneWay = CreateButton("OneWay", 2, (c, v) =>
               {
                   trackDirection = 0;
-                  SetNetToolPrefab();
+                  ExecuteUiInstructions();
               });
 
             btnTwoWay = CreateButton("TwoWay", 2, (c, v) =>
               {
                   trackDirection = 1;
-                  SetNetToolPrefab();
+                  ExecuteUiInstructions();
               });
+            m_height = (Math.Max(rowIndexTemp, m_rowIndex) * 60) + 20;
+            CheckboxDict = new Dictionary<string, UICheckBox>();
+            CreateCheckbox(ALT_BARRIER);
+            CreateCheckbox(OVER_ROAD_FRIENDLY);
 
-
-
-            m_useFenceCheckBox = AddUIComponent<UICheckBox>();
-            m_useFenceCheckBox.text = "Island Platform";
-            m_useFenceCheckBox.size = new Vector2(width - 16, 16);
-            m_useFenceCheckBox.relativePosition = new Vector2(8, 250);
-            m_useFenceCheckBox.isInteractive = true;
-            m_useFenceCheckBox.eventCheckChanged += (c, v) =>
-            {
-                fence = m_useFenceCheckBox.isChecked;
-                if (fence)
-                {
-                    m_useFenceCheckBoxClicker.spriteName = "check-checked";
-                }
-                else
-                {
-                    m_useFenceCheckBoxClicker.spriteName = "check-unchecked";
-                }
-                SetNetToolPrefab();
-            };
-
-            m_useFenceCheckBoxClicker = m_useFenceCheckBox.AddUIComponent<UISprite>();
-            m_useFenceCheckBoxClicker.atlas = atlas;
-            m_useFenceCheckBoxClicker.spriteName = "check-unchecked";
-            m_useFenceCheckBoxClicker.relativePosition = new Vector2(0, 0);
-            m_useFenceCheckBoxClicker.size = new Vector2(16, 16);
-            m_useFenceCheckBoxClicker.isInteractive = true;
-
-            UILabel useFenceLabel = m_useFenceCheckBox.AddUIComponent<UILabel>();
-            useFenceLabel.relativePosition = new Vector2(20, 0);
-            useFenceLabel.text = "Alt/Barrier";
-            useFenceLabel.height = 16;
-            useFenceLabel.isInteractive = true;
-
-            m_useExtraElevatedPillarsCheckBox = AddUIComponent<UICheckBox>();
-            m_useExtraElevatedPillarsCheckBox.text = "Island Platform";
-            m_useExtraElevatedPillarsCheckBox.size = new Vector2(width - 16, 16);
-            m_useExtraElevatedPillarsCheckBox.relativePosition = new Vector2(8, 280);
-            m_useExtraElevatedPillarsCheckBox.isInteractive = true;
-            m_useExtraElevatedPillarsCheckBox.eventCheckChanged += (c, v) =>
-            {
-                extraElevated = m_useExtraElevatedPillarsCheckBox.isChecked;
-                if (extraElevated)
-                {
-                    m_useExtraElevatedPillarClicker.spriteName = "check-checked";
-                }
-                else
-                {
-                    m_useExtraElevatedPillarClicker.spriteName = "check-unchecked";
-                }
-                SetNetToolPrefab();
-            };
-
-            m_useExtraElevatedPillarClicker = m_useExtraElevatedPillarsCheckBox.AddUIComponent<UISprite>();
-            m_useExtraElevatedPillarClicker.atlas = atlas;
-            m_useExtraElevatedPillarClicker.spriteName = "check-unchecked";
-            m_useExtraElevatedPillarClicker.relativePosition = new Vector2(0, 0);
-            m_useExtraElevatedPillarClicker.size = new Vector2(16, 16);
-            m_useExtraElevatedPillarClicker.isInteractive = true;
-
-            UILabel useExtraElevatedPillarLabel = m_useExtraElevatedPillarsCheckBox.AddUIComponent<UILabel>();
-            useExtraElevatedPillarLabel.relativePosition = new Vector2(20, 0);
-            useExtraElevatedPillarLabel.text = "Extra Elevated Pillars";
-            useExtraElevatedPillarLabel.height = 16;
-            useExtraElevatedPillarLabel.isInteractive = true;
         }
         private UITextureAtlas m_InGameAtlas = null;
         private UITextureAtlas InGameAtlas()
@@ -279,54 +231,57 @@ namespace MetroOverhaul.UI
             return m_InGameAtlas;
         }
 
-        private void SetNetToolPrefab()
+        protected override void ExecuteUiInstructions()
         {
-            if (trackStyle == 0)
-                ToggleButtonPairs(btnModernStyle, btnClassicStyle);
-            else if (trackStyle == 1)
-                ToggleButtonPairs(btnClassicStyle, btnModernStyle);
-
             btnSingleTrack.isVisible = isStation == 0;
             btnDoubleTrack.isVisible = isStation == 0;
             btnQuadTrack.isVisible = isStation == 0;
             btnOneWay.isVisible = isStation == 0;
             btnTwoWay.isVisible = isStation == 0;
-            m_useFenceCheckBox.isVisible = isStation == 0;
-            m_useExtraElevatedPillarsCheckBox.isVisible = isStation == 0;
 
-            btnSidePlatform.isVisible = isStation == 1;
-            btnIslandPlatform.isVisible = isStation == 1;
-            btnSinglePlatform.isVisible = isStation == 1;
-            btnQuadPlatform.isVisible = isStation == 1;
+            foreach (var kvp in CheckboxDict)
+            {
+                kvp.Value.isVisible = isStation == 0;
+            }
+            foreach (var kvp in buttonStationDict)
+            {
+                kvp.Value.isVisible = isStation == 1;
+            }
+
+            ToggleButtonPairs(trackStyle, btnModernStyle, btnClassicStyle);
+            ToggleButtonPairs(isStation, btnTrack, btnStation);
 
             if (isStation == 0)
             {
-                ToggleButtonPairs(btnTrack, btnStation);
-                if (trackSize == 0)
-                    ToggleButtonPairs(btnSingleTrack, btnDoubleTrack, btnQuadTrack);
-                else if (trackSize == 1)
-                    ToggleButtonPairs(btnDoubleTrack, btnSingleTrack, btnQuadTrack);
-                else if (trackSize == 2)
-                    ToggleButtonPairs(btnQuadTrack, btnSingleTrack, btnDoubleTrack);
-
-                if (trackDirection == 0)
-                    ToggleButtonPairs(btnOneWay, btnTwoWay);
-                else if (trackDirection == 1)
-                    ToggleButtonPairs(btnTwoWay, btnOneWay);
+                ToggleButtonPairs(trackSize, btnSingleTrack, btnDoubleTrack, btnQuadTrack);
+                ToggleButtonPairs(trackDirection, btnOneWay, btnTwoWay);
             }
             else if (isStation == 1)
             {
-                ToggleButtonPairs(btnStation, btnTrack);
-                if (stationType == 0)
-                    ToggleButtonPairs(btnSidePlatform, btnIslandPlatform, btnSinglePlatform, btnQuadPlatform);
-                else if (stationType == 1)
-                    ToggleButtonPairs(btnIslandPlatform, btnSidePlatform, btnSinglePlatform, btnQuadPlatform);
-                else if (stationType == 2)
-                    ToggleButtonPairs(btnSinglePlatform, btnIslandPlatform, btnSidePlatform, btnQuadPlatform);
-                else if (stationType == 3)
-                    ToggleButtonPairs(btnQuadPlatform, btnSinglePlatform, btnIslandPlatform, btnSidePlatform);
+                ToggleButtonPairs(stationType);
+                //switch (stationType)
+                //{
+                //    case StationTrackType.SidePlatform:
+                //        break;
+                //    case StationTrackType.IslandPlatform:
+                //        break;
+                //    case StationTrackType.SingleTrack:
+                //        break;
+                //    case StationTrackType.QuadSidePlatform:
+                //        break;
+                //        case 
+                //}
+                //if (stationType == StationTrackType.SidePlatform)
+                //    ToggleButtonPairs(btnSidePlatform, btnIslandPlatform, btnSinglePlatform, btnQuadPlatform);
+                //else if (stationType == StationTrackType.IslandPlatform)
+                //    ToggleButtonPairs(btnIslandPlatform, btnSidePlatform, btnSinglePlatform, btnQuadPlatform);
+                //else if (stationType == StationTrackType.SingleTrack)
+                //    ToggleButtonPairs(btnSinglePlatform, btnIslandPlatform, btnSidePlatform, btnQuadPlatform);
+                //else if (stationType == StationTrackType.QuadSidePlatform)
+                //    ToggleButtonPairs(btnQuadPlatform, btnSinglePlatform, btnIslandPlatform, btnSidePlatform);
             }
             NetInfo prefab = null;
+            var fence = CheckboxDict[ALT_BARRIER].isChecked;
             switch (trackStyle)
             {
                 case 0:
@@ -334,41 +289,44 @@ namespace MetroOverhaul.UI
                         switch (isStation)
                         {
                             case 0:
-                                    switch (trackSize)
-                                    {
-                                        case 0:
-                                                if (trackDirection == 0)
-                                                    prefab = fence ? concreteSmallPrefab : concreteSmallPrefabNoBar;
-                                                else
-                                                    prefab = fence ? concreteSmallTwoWayPrefab : concreteSmallTwoWayPrefabNoBar;
-                                            break;
-                                        case 1:
-                                                if (trackDirection == 0)
-                                                    prefab = fence ? concreteTwoLaneOneWayPrefab : concreteTwoLaneOneWayPrefabNoBar;
-                                                else
-                                                    prefab = fence ? concretePrefab : concretePrefabNoBar;
-                                            break;
-                                        case 2:
-                                                if (trackDirection == 0) { }
-                                                else
-                                                    prefab = fence ? concreteLargePrefab : concreteLargePrefabNoBar;
-                                            break;
-                                    }
-                                    break;
+                                switch (trackSize)
+                                {
+                                    case 0:
+                                        if (trackDirection == 0)
+                                            prefab = fence ? concreteSmallPrefab : concreteSmallPrefabNoBar;
+                                        else
+                                            prefab = fence ? concreteSmallTwoWayPrefab : concreteSmallTwoWayPrefabNoBar;
+                                        break;
+                                    case 1:
+                                        if (trackDirection == 0)
+                                            prefab = fence ? concreteTwoLaneOneWayPrefab : concreteTwoLaneOneWayPrefabNoBar;
+                                        else
+                                            prefab = fence ? concretePrefab : concretePrefabNoBar;
+                                        break;
+                                    case 2:
+                                        if (trackDirection == 0) { }
+                                        else
+                                            prefab = fence ? concreteLargePrefab : concreteLargePrefabNoBar;
+                                        break;
+                                }
+                                break;
                             case 1:
                                 switch (stationType)
                                 {
-                                    case 0:
-                                        prefab = concreteSidePlatformStationPrefab;
+                                    case StationTrackType.SidePlatform:
+                                        prefab = concreteSideStationPrefab;
                                         break;
-                                    case 1:
-                                        prefab = concreteIslandPlatformStationPrefab;
+                                    case StationTrackType.IslandPlatform:
+                                        prefab = concreteIslandStationPrefab;
                                         break;
-                                    case 2:
-                                        prefab = concreteSinglePlatformStationPrefab;
+                                    case StationTrackType.SingleTrack:
+                                        prefab = concreteSingleStationPrefab;
                                         break;
-                                    case 3:
-                                        prefab = concreteLargePlatformStationPrefab;
+                                    case StationTrackType.QuadSidePlatform:
+                                        prefab = concreteQuadSideStationPrefab;
+                                        break;
+                                    case StationTrackType.QuadDualIslandPlatform:
+                                        prefab = concreteQuadDualIslandStationPrefab;
                                         break;
                                 }
                                 break;
@@ -426,17 +384,20 @@ namespace MetroOverhaul.UI
                                 {
                                     switch (stationType)
                                     {
-                                        case 0:
-                                            prefab = steelSidePlatformStationPrefab;
+                                        case StationTrackType.SidePlatform:
+                                            prefab = steelSideStationPrefab;
                                             break;
-                                        case 1:
-                                            prefab = steelIslandPlatformStationPrefab;
+                                        case StationTrackType.IslandPlatform:
+                                            prefab = steelIslandStationPrefab;
                                             break;
-                                        case 2:
-                                            prefab = steelSinglePlatformStationPrefab;
+                                        case StationTrackType.SingleTrack:
+                                            prefab = steelSingleStationPrefab;
                                             break;
-                                        case 3:
-                                            prefab = steelLargePlatformStationPrefab;
+                                        case StationTrackType.QuadSidePlatform:
+                                            prefab = steelQuadSideStationPrefab;
+                                            break;
+                                        case StationTrackType.QuadDualIslandPlatform:
+                                            prefab = steelQuadDualIslandStationPrefab;
                                             break;
                                     }
                                 }
@@ -447,9 +408,28 @@ namespace MetroOverhaul.UI
             }
             if (prefab != null)
             {
+                if (CheckboxDict.ContainsKey(OVER_ROAD_FRIENDLY))
+                {
+                    var noCollisionPillars = CheckboxDict[OVER_ROAD_FRIENDLY].isChecked;
+                    var elevatedPrefab = PrefabCollection<NetInfo>.FindLoaded(prefab.name.Replace("Ground", "Elevated"));
+                    var ttbai = elevatedPrefab?.GetComponent<TrainTrackBridgeAIMetro>();
+                    if (ttbai != null)
+                    {
+                        ttbai.NoPillarCollision = noCollisionPillars;
+                    }
+
+                    var bridgePrefab = PrefabCollection<NetInfo>.FindLoaded(prefab.name.Replace("Ground", "Bridge"));
+                    var ttbai2 = bridgePrefab?.GetComponent<TrainTrackBridgeAIMetro>();
+                    if (ttbai2 != null)
+                    {
+                        ttbai2.NoPillarCollision = noCollisionPillars;
+                    }
+                }
+
                 m_netTool.m_prefab = prefab;
-                var elevation = m_netTool.GetElevation();
+                m_currentNetInfo = prefab;
                 var lanes = m_netTool.m_prefab.m_lanes.ToList();
+
                 Next.Debug.Log($"MOM EE lane count: {lanes.Count()}");
                 var lane = lanes.FirstOrDefault(l => l.m_laneType == NetInfo.LaneType.None);
                 NetLaneProps.Prop prop = null;
@@ -464,16 +444,16 @@ namespace MetroOverhaul.UI
                         {
                             Next.Debug.Log($"MOM EE Examining aLane");
                             var name = prop.m_prop.name;
-                            if (extraElevated)
-                            {
-                                prop.m_probability = 100;
-                                Next.Debug.Log("MOM EE Enabled");
-                            }
-                            else
-                            {
-                                prop.m_probability = 0;
-                                Next.Debug.Log("MOM EE Disabled");
-                            }
+                            //if (noCollisionPillars)
+                            //{
+                            //    prop.m_probability = 100;
+                            //    Next.Debug.Log("MOM EE Enabled");
+                            //}
+                            //else
+                            //{
+                            //    prop.m_probability = 0;
+                            //    Next.Debug.Log("MOM EE Disabled");
+                            //}
                             var props = lane.m_laneProps.m_props?.ToList();
                             if (props != null)
                             {
@@ -505,10 +485,15 @@ namespace MetroOverhaul.UI
             m_activated = true;
             m_currentNetInfo = nInfo;
             isVisible = true;
-            SetNetToolPrefab();
+            ExecuteUiInstructions();
         }
         private void Deactivate()
         {
+            if (m_TheIntersectClass != null)
+            {
+m_currentNetInfo.m_intersectClass = m_TheIntersectClass;
+            }
+            
             if (!m_activated)
             {
                 return;

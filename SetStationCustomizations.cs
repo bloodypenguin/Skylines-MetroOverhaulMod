@@ -138,54 +138,105 @@ namespace MetroOverhaul
             var retval = new List<BuildingInfo.PathInfo>();
             if (connectorHalfWidths != null)
             {
-                if (connectorHalfWidths.Length > 1)
-                {
-
-                }
                 var newNodes = new List<Vector3>();
-                newNodes.Add(new Vector3()
-                {
-                    x = Crossing.x - (connectorHalfWidths.First() * zCoeff) - (3 * xCoeff),
-                    y = TrackPath.m_nodes.Last().y + 8,
-                    z = Crossing.z - (connectorHalfWidths.First() * xCoeff) + (3 * zCoeff)
-                });
-                newNodes[0] = new Vector3(newNodes[0].x - BendVector.x, newNodes[0].y, newNodes[0].z + BendVector.z);
-
-                var connectorHalfWidthList = connectorHalfWidths.ToList();
+                var connectorHalfWidthList = new List<float>();
+                connectorHalfWidthList.AddRange(connectorHalfWidths);
                 connectorHalfWidthList.Sort();
                 var offset = connectorHalfWidthList[0];
                 var forbiddenList = new List<bool>();
-                for (int i = 1; i < connectorHalfWidthList.Count(); i++)
+
+                for (int i = 0; i < connectorHalfWidthList.Count(); i++)
                 {
-                    offset -= connectorHalfWidthList[i];
-                    newNodes.Add(new Vector3()
+                    if (i == 0)
                     {
-                        x = newNodes[0].x + (Math.Abs(offset) * zCoeff),
-                        y = TrackPath.m_nodes.Last().y + 8,
-                        z = newNodes[0].z + (2 * connectorHalfWidthList[i] * xCoeff)
-                    });
-                    offset = connectorHalfWidthList[i];
+                        Debug.Log("CrossingX: " + Crossing.x);
+                        Debug.Log("CrossingZ: " + Crossing.z);
+                        Debug.Log("connectorhalfwidths0: " + connectorHalfWidthList[0]);
+                        Debug.Log("zCoeff: " + zCoeff);
+                        Debug.Log("xCoeff: " + xCoeff);
+                        newNodes.Add(new Vector3()
+                        {
+                            x = Crossing.x + (connectorHalfWidthList[0] * zCoeff) - (3 * xCoeff),
+                            y = TrackPath.m_nodes.Last().y + 8,
+                            z = Crossing.z + (connectorHalfWidthList[0] * xCoeff) + (3 * zCoeff)
+                        });
+                        newNodes[0] = new Vector3(newNodes[0].x - BendVector.x, newNodes[0].y, newNodes[0].z + BendVector.z);
+                    }
+                    else
+                    {
+                        offset -= connectorHalfWidthList[i];
+                        newNodes.Add(new Vector3()
+                        {
+                            x = newNodes[i - 1].x + (Math.Abs(offset) * zCoeff),
+                            y = TrackPath.m_nodes.Last().y + 8,
+                            z = newNodes[i - 1].z + (Math.Abs(offset) * xCoeff)
+                        });
+                        offset = connectorHalfWidthList[i];
+                    }
                     forbiddenList.Add(true);
+
                 }
-                NewPath.m_nodes = newNodes.ToArray();
+
+
+                var averagedNodeList = new List<Vector3>();
+                var stairNodes = new List<Vector3>();
+                if (newNodes.Count() == 1)
+                {
+                    averagedNodeList.Add(newNodes.First());
+                    stairNodes.Add(new Vector3()
+                    {
+                        x = newNodes[0].x + StairsLengthX,
+                        y = TrackPath.m_nodes.Last().y,
+                        z = newNodes[0].z + StairsLengthZ,
+                    });
+                }
+                else
+                {
+                    var mergeOnLast = false;
+                    for (int i = 0; i < newNodes.Count(); i++)
+                    {
+                        if (i > 0)
+                        {
+                            if (mergeOnLast)
+                            {
+                                mergeOnLast = false;
+                            }
+                            else if (Vector3.Distance(newNodes[i], newNodes[i - 1]) < 4)
+                            {
+                                averagedNodeList.Add(((newNodes[i] + newNodes[i - 1]) / 2));
+                                mergeOnLast = true;
+                            }
+                            else
+                            {
+                                averagedNodeList.Add(newNodes[i - 1]);
+                                if (i == newNodes.Count() - 1)
+                                {
+                                    averagedNodeList.Add(newNodes[i]);
+                                }
+                            }
+                        }
+
+                        stairNodes.Add(new Vector3()
+                        {
+                            x = newNodes[i].x + StairsLengthX,
+                            y = TrackPath.m_nodes.Last().y,
+                            z = newNodes[i].z + StairsLengthZ,
+                        });
+                    }
+                }
+
+                NewPath.m_nodes = averagedNodeList.ToArray();
                 NewPath.m_forbidLaneConnection = forbiddenList.ToArray();
                 NewPath.AssignNetInfo(m_SpecialNetInfo);
 
                 retval.Add(NewPath);
 
-                for (var j = 0; j < newNodes.Count(); j++)
+                for (var i = 0; i < stairNodes.Count(); i++)
                 {
-                    var branchVectorStair = new Vector3()
-                    {
-                        x = newNodes[j].x + StairsLengthX,
-                        y = TrackPath.m_nodes.Last().y,
-                        z = newNodes[j].z + StairsLengthZ,
-                    };
-                    //branchVectorStair += bendVector;
-                    var branchPathStair = ChainPath(NewPath, branchVectorStair, j);
+                    var closestIndex = averagedNodeList.IndexOf(averagedNodeList.OrderBy(n => Vector3.Distance(n, stairNodes[i])).FirstOrDefault());
+                    var branchPathStair = ChainPath(NewPath, stairNodes[i], closestIndex);
                     branchPathStair.m_forbidLaneConnection = new[] { true, false };
                     branchPathStair.AssignNetInfo(m_SpecialNetInfo);
-
                     retval.Add(branchPathStair);
                 }
             }
@@ -301,22 +352,27 @@ namespace MetroOverhaul
                     {
                         pathList.AddRange(SetStationPaths(0));
                     }
-                    else if (TrackPath.m_netInfo.IsUndergroundIslandPlatformLargeMetroStationTrack())
-                    {
-                        pathList.AddRange(SetStationPaths(-14, 0, 14));
-                    }
+                    //else if (TrackPath.m_netInfo.IsUndergroundSideIslandPlatformMetroStationTrack())
+                    //{
+                    //    pathList.AddRange(SetStationPaths(-14, 0, 14));
+                    //}
                     else if (TrackPath.m_netInfo.IsUndergroundSmallStationTrack())
                     {
                         pathList.AddRange(SetStationPaths(5));
                     }
-                    else if (TrackPath.m_netInfo.IsUndergroundSidePlatformLargeMetroStationTrack())
+                    else if (TrackPath.m_netInfo.IsUndergroundPlatformLargeMetroStationTrack())
                     {
-                        pathList.AddRange(SetStationPaths(-11,11));
+                        pathList.AddRange(SetStationPaths(-11, 11));
                     }
-                    else if (TrackPath.m_netInfo.IsUndergroundSidePlatformMetroStationTrack() || TrackPath.m_netInfo.IsUndergroundDualIslandPlatformLargeMetroStationTrack())
+                    else if (TrackPath.m_netInfo.IsUndergroundDualIslandPlatformMetroStationTrack())
                     {
-                        pathList.AddRange(SetStationPaths(-7,7));
+                        pathList.AddRange(SetStationPaths(-8.8f, -5.5f, 5.5f, 8.8f));
                     }
+                    else if (TrackPath.m_netInfo.IsUndergroundSidePlatformMetroStationTrack())
+                    {
+                        pathList.AddRange(SetStationPaths(-7, 7));
+                    }
+
                     if (!connectList.Contains(NewPath.m_nodes))
                         connectList.Add(NewPath.m_nodes);
                 }
@@ -781,7 +837,8 @@ namespace MetroOverhaul
             {
                 return;
             }
-            var coefficient = Math.Abs(m_TargetStationTrackLength / length);
+            var adjTrackLength = m_TargetStationTrackLength * (((2 * Math.Abs(m_BendStrength) * Math.Sqrt(2)) / Math.PI) - Math.Abs(m_BendStrength) + 1);
+            var coefficient = (float)Math.Abs(adjTrackLength / length);
             for (var i = 0; i < path.m_nodes.Length; i++)
             {
                 path.m_nodes[i] = new Vector3
