@@ -6,6 +6,7 @@ using UnityEngine;
 using MetroOverhaul.NEXT.Extensions;
 using System.Linq;
 using System.Collections.Generic;
+using MetroOverhaul.OptionsFramework;
 
 namespace MetroOverhaul.UI
 {
@@ -163,6 +164,7 @@ namespace MetroOverhaul.UI
             CheckboxDict = new Dictionary<string, UICheckBox>();
             CreateCheckbox(ALT_BARRIER);
             CreateCheckbox(OVER_ROAD_FRIENDLY);
+            //CreateCheckbox(EXTRA_PILLARS);
         }
 
         protected override void ExecuteUiInstructions()
@@ -173,6 +175,7 @@ namespace MetroOverhaul.UI
 
             NetInfo prefab = null;
             var fence = CheckboxDict[ALT_BARRIER].isChecked;
+            btnOneWay.enabled = true;
             switch (trackStyle)
             {
                 case 0:
@@ -248,10 +251,13 @@ namespace MetroOverhaul.UI
                             {
                                 if (trackDirection == 0)
                                 {
+                                    trackDirection = 1;
+                                    btnOneWay.enabled = false;
                                 }
                                 else
                                 {
                                     prefab = fence ? steelLargePrefab : steelLargePrefabNoBar;
+                                    btnOneWay.enabled = false;
                                 }
                             }
                             break;
@@ -279,56 +285,13 @@ namespace MetroOverhaul.UI
                     }
                 }
 
+                //if (CheckboxDict[EXTRA_PILLARS].isChecked)
+                //{
+                //    prefab = PrefabCollection<NetInfo>.FindLoaded(prefab.name + " ep");
+                //}
                 m_netTool.m_prefab = prefab;
                 m_currentNetInfo = prefab;
-                var lanes = m_netTool.m_prefab.m_lanes.ToList();
-                Next.Debug.Log($"MOM EE lane count: {lanes.Count()}");
-                var lane = lanes.FirstOrDefault(l => l.m_laneType == NetInfo.LaneType.None);
-                NetLaneProps.Prop prop = null;
-                if (lane != null)
-                {
-                    var propList = lane.m_laneProps.m_props?.ToList();
-                    if (propList != null)
-                    {
-                        Next.Debug.Log($"MOM EE lane found with {propList.Count()} props");
-                        prop = propList.FirstOrDefault(p => p.m_prop.name.ToLower().Contains("l pillar ("));
-                        if (prop != null)
-                        {
-                            Next.Debug.Log($"MOM EE Examining aLane");
-                            var name = prop.m_prop.name;
-                            //if (noCollisionPillars)
-                            //{
-                            //    prop.m_probability = 100;
-                            //    Next.Debug.Log("MOM EE Enabled");
-                            //}
-                            //else
-                            //{
-                            //    prop.m_probability = 0;
-                            //    Next.Debug.Log("MOM EE Disabled");
-                            //}
-                            var props = lane.m_laneProps.m_props?.ToList();
-                            if (props != null)
-                            {
-                                var replacementPair = new KeyValuePair<string, PropInfo>(name, prop.m_prop);
 
-                                if (props.Any(p => p.m_prop.name.ToLower().Contains(replacementPair.Key.ToLower())))
-                                {
-                                    var tempProp = new NetLaneProps.Prop();
-                                    var propsToReplace = props.Where(p => p.m_prop.name.ToLower().Contains(replacementPair.Key.ToLower())).ToList();
-                                    for (var i = 0; i < propsToReplace.Count; i++)
-                                    {
-                                        tempProp = propsToReplace[i].ShallowClone();
-                                        props.Remove(propsToReplace[i]);
-                                        tempProp.m_prop = replacementPair.Value;
-                                        props.Add(tempProp);
-                                    }
-                                }
-                                lane.m_laneProps.m_props = props.ToArray();
-                            }
-                        }
-                    }
-                }
-                m_netTool.m_prefab.m_lanes = lanes.ToArray();
             }
         }
 

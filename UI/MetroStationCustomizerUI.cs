@@ -29,7 +29,6 @@ namespace MetroOverhaul.UI
                     return;
                 }
                 BuildingInfo finalInfo = null;
-                BuildingInfo superFinalInfo = null;
                 if (toolInfo != null)
                 {
 
@@ -41,13 +40,11 @@ namespace MetroOverhaul.UI
                     {
                         foreach (var subInfo in toolInfo.m_subBuildings)
                         {
-                            if (subInfo.m_buildingInfo == null || !subInfo.m_buildingInfo.HasUndergroundMetroStationTracks())
+                            if (subInfo.m_buildingInfo != null && subInfo.m_buildingInfo.HasUndergroundMetroStationTracks())
                             {
-                                continue;
+                                finalInfo = toolInfo;
+                                break;
                             }
-                            finalInfo = subInfo.m_buildingInfo;
-                            superFinalInfo = toolInfo;
-                            break;
                         }
                     }
                 }
@@ -57,7 +54,7 @@ namespace MetroOverhaul.UI
                 }
                 if (finalInfo != null)
                 {
-                    Activate(finalInfo, superFinalInfo);
+                    Activate(finalInfo);
                 }
                 else
                 {
@@ -233,69 +230,95 @@ namespace MetroOverhaul.UI
 
             height = m_height;
         }
-        
-        protected override void TunnelStationTrackToggleStyles(BuildingInfo info, StationTrackType type)
-        {
-            if (info?.m_paths == null)
-            {
-                return;
-            }
-            for (var i = 0; i < info.m_paths.Length; i++)
-            {
-                var path = info.m_paths[i];
-                if (path?.m_netInfo?.name == null || !path.m_netInfo.IsUndergroundMetroStationTrack())
-                {
-                    continue;
-                }
 
-                foreach (var cb in CheckboxDict.Values)
+        protected override void TunnelStationTrackToggleStyles(StationTrackType type)
+        {
+            if (type == StationTrackType.None)
+            {
+                m_TrackType = StationTrackType.SidePlatform;
+            }
+            else if (m_TrackType != type)
+            {
+                m_TrackType = type;
+            }
+
+            foreach (var kvp in CheckboxStationDict)
+            {
+                var cbSprite = kvp.Value.GetComponentInChildren<UISprite>();
+                if (cbSprite != null)
                 {
-                    var cbSprite = cb.GetComponentInChildren<UISprite>();
-                    if (cbSprite != null)
+                    if (kvp.Key == m_TrackType)
+                    {
+                        cbSprite.spriteName = "check-checked";
+                    }
+                    else
                     {
                         cbSprite.spriteName = "check-unchecked";
                     }
                 }
-                var activeCbSprite = CheckboxStationDict[type].GetComponentInChildren<UISprite>();
-                if (activeCbSprite != null)
+            }
+            if (m_currentBuilding.HasUndergroundMetroStationTracks())
+            {
+                SetTunnelInfoByType();
+            }
+            if (m_currentBuilding?.m_subBuildings != null)
+            {
+                for (int i = 0; i < m_currentBuilding.m_subBuildings.Length; i++)
                 {
-                    activeCbSprite.spriteName = "check-checked";
+                    var subBuildingInfo = m_currentBuilding.m_subBuildings[i]?.m_buildingInfo;
+                    if (subBuildingInfo != null && subBuildingInfo.HasUndergroundMetroStationTracks())
+                    {
+                        SetTunnelInfoByType(subBuildingInfo);
+                    }
                 }
-                else
+            }
+            m_T.Run();
+            
+
+        }
+        private void SetTunnelInfoByType(BuildingInfo info = null)
+        {
+            if (info == null)
+            {
+                info = m_currentBuilding;
+            }
+            for (int i = 0; i < info.m_paths.Length; i++)
+            {
+                var path = info.m_paths[i];
+                if (path.m_netInfo.IsUndergroundMetroStationTrack())
                 {
-                    Debug.Log("NOOOO");
-                }
-                switch (m_TrackType)
-                {
-                    case StationTrackType.SidePlatform:
-                        path.AssignNetInfo("Metro Station Track Tunnel");
-                        break;
-                    case StationTrackType.IslandPlatform:
-                        path.AssignNetInfo("Metro Station Track Tunnel Island");
-                        break;
-                    case StationTrackType.SingleTrack:
-                        path.AssignNetInfo("Metro Station Track Tunnel Small");
-                        break;
-                    case StationTrackType.QuadSidePlatform:
-                        path.AssignNetInfo("Metro Station Track Tunnel Large");
-                        break;
-                    //case StationTrackType.QuadSideIslandPlatform:
-                    //    path.AssignNetInfo("Metro Station Track Tunnel Large Side Island");
-                    //    break;
-                    case StationTrackType.QuadDualIslandPlatform:
-                        path.AssignNetInfo("Metro Station Track Tunnel Large Dual Island");
-                        break;
+                    switch (m_TrackType)
+                    {
+                        case StationTrackType.SidePlatform:
+                            path.AssignNetInfo("Metro Station Track Tunnel");
+                            break;
+                        case StationTrackType.IslandPlatform:
+                            path.AssignNetInfo("Metro Station Track Tunnel Island");
+                            break;
+                        case StationTrackType.SingleTrack:
+                            path.AssignNetInfo("Metro Station Track Tunnel Small");
+                            break;
+                        case StationTrackType.QuadSidePlatform:
+                            path.AssignNetInfo("Metro Station Track Tunnel Large");
+                            break;
+                        //case StationTrackType.QuadSideIslandPlatform:
+                        //    path.AssignNetInfo("Metro Station Track Tunnel Large Side Island");
+                        //    break;
+                        case StationTrackType.QuadDualIslandPlatform:
+                            path.AssignNetInfo("Metro Station Track Tunnel Large Dual Island");
+                            break;
+                    }
                 }
             }
         }
-        private void Activate(BuildingInfo bInfo, BuildingInfo superInfo = null)
+        private void Activate(BuildingInfo bInfo)
         {
             m_activated = true;
-            DoStationMechanicsResetAngles();
+
             m_currentBuilding = bInfo;
-            m_currentSuperBuilding = superInfo;
+            DoStationMechanicsResetAngles();
             isVisible = true;
-            TunnelStationTrackToggleStyles(bInfo, m_TrackType);
+            TunnelStationTrackToggleStyles(m_TrackType);
             DoStationMechanics();
         }
         private void Deactivate()
@@ -308,10 +331,12 @@ namespace MetroOverhaul.UI
             {
                 pnl.color = new Color32(150, 150, 150, 210);
             }
-            DoStationMechanicsResetAngles();
+            if (m_currentBuilding != null)
+            {
+                DoStationMechanicsResetAngles();
+            }
             SetStationCustomizations.m_PremierPath = -1;
             m_currentBuilding = null;
-            m_currentSuperBuilding = null;
             isVisible = false;
             m_activated = false;
 
@@ -319,11 +344,18 @@ namespace MetroOverhaul.UI
 
         private void DoStationMechanics()
         {
-            SetStationCustomizations.ModifyStation(m_currentBuilding, SetDict[ToggleType.Depth], SetDict[ToggleType.Length], (int)SetDict[ToggleType.Angle], SetDict[ToggleType.Bend], m_currentSuperBuilding);
+            if (m_currentBuilding != null)
+            {
+                SetStationCustomizations.ModifyStation(m_currentBuilding, SetDict[ToggleType.Depth], SetDict[ToggleType.Length], (int)SetDict[ToggleType.Angle], SetDict[ToggleType.Bend]);
+            }
+
         }
         private void DoStationMechanicsResetAngles()
         {
-            SetStationCustomizations.ModifyStation(m_currentBuilding, SetDict[ToggleType.Depth], SetDict[ToggleType.Length], 0, SetDict[ToggleType.Bend], m_currentSuperBuilding);
+            if (m_currentBuilding != null)
+            {
+                SetStationCustomizations.ModifyStation(m_currentBuilding, SetDict[ToggleType.Depth], SetDict[ToggleType.Length], 0, SetDict[ToggleType.Bend]);
+            }
         }
     }
     public struct SliderData

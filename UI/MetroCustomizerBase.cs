@@ -1,5 +1,6 @@
 ﻿using ColossalFramework.Threading;
 using ColossalFramework.UI;
+using MetroOverhaul.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,9 +76,7 @@ namespace MetroOverhaul.UI
         protected Dictionary<ToggleType, float> SetDict = new Dictionary<ToggleType, float>();
         protected BuildingTool m_buildingTool = null;
         protected BuildingInfo m_currentBuilding;
-        protected BuildingInfo m_currentSuperBuilding;
-        protected StationTrackType m_TrackType = StationTrackType.SidePlatform;
-        protected StationTrackType m_PrevTrackType = StationTrackType.SidePlatform;
+        protected StationTrackType m_TrackType = StationTrackType.None;
 
         public int isStation = 1;
         public StationTrackType stationType;
@@ -96,6 +95,7 @@ namespace MetroOverhaul.UI
 
         protected const string ALT_BARRIER = "Alt/Barrier";
         protected const string OVER_ROAD_FRIENDLY = "Over-Road Friendly";
+        protected const string EXTRA_PILLARS = "Extra Pillars";
 
         protected ItemClass m_TheIntersectClass = null;
 
@@ -251,7 +251,7 @@ namespace MetroOverhaul.UI
         {
 
         }
-        
+
         protected float m_height = 50;
         protected void CreateSlider(ToggleType type)
         {
@@ -347,7 +347,7 @@ namespace MetroOverhaul.UI
             m_height += 40;
             m_SliderCount++;
         }
-        protected virtual void TunnelStationTrackToggleStyles(BuildingInfo info, StationTrackType type)
+        protected virtual void TunnelStationTrackToggleStyles(StationTrackType type)
         {
 
         }
@@ -404,46 +404,17 @@ namespace MetroOverhaul.UI
             checkBox.size = new Vector2(width - 16, 16);
             checkBox.relativePosition = new Vector2(8, 200 + (m_CheckboxCount * 20));
             checkBox.isInteractive = true;
-            checkBox.eventCheckChanged += (c, v) =>
-            {
-                if (checkBox.isChecked)
-                {
-                    m_PrevTrackType = m_TrackType;
-                    m_TrackType = type;
-                    foreach (var kvp in CheckboxStationDict)
-                    {
-                        if (kvp.Key != type)
-                        {
-                            kvp.Value.isChecked = false;
-                        }
-                    }
-                    TunnelStationTrackToggleStyles(m_currentBuilding, type);
-                    m_T.Run();
-                }
-                else
-                {
-                    var allUnchecked = true;
-                    foreach (var cb in CheckboxDict.Values)
-                    {
-                        if (cb.isChecked)
-                        {
-                            allUnchecked = false;
-                            break;
-                        }
-                    }
-                    if (allUnchecked)
-                    {
-                        checkBox.isChecked = true;
-                    }
-                }
-            };
-
             UISprite cbClicker = checkBox.AddUIComponent<UISprite>();
+
             cbClicker.atlas = atlas;
             cbClicker.spriteName = "check-unchecked";
             cbClicker.relativePosition = new Vector2(0, 0);
             cbClicker.size = new Vector2(16, 16);
             cbClicker.isInteractive = true;
+            checkBox.eventCheckChanged += (c, v) =>
+            {
+                TunnelStationTrackToggleStyles(type);
+            };
 
             UILabel cbLabel = checkBox.AddUIComponent<UILabel>();
             cbLabel.relativePosition = new Vector2(20, 0);
@@ -455,6 +426,7 @@ namespace MetroOverhaul.UI
         }
         public enum StationTrackType
         {
+            None,
             SidePlatform,
             IslandPlatform,
             SingleTrack,

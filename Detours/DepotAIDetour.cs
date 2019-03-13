@@ -9,59 +9,98 @@ namespace MetroOverhaul.Detours
         [RedirectMethod]
         public override string GetLocalizedStats(ushort buildingID, ref Building data)
         {
-            string empty = string.Empty;
+            string text = string.Empty;
             if ((UnityEngine.Object)this.m_transportInfo != (UnityEngine.Object)null && this.m_maxVehicleCount != 0)
             {
                 switch (this.m_transportInfo.m_transportType)
                 {
                     case TransportInfo.TransportType.Bus:
-                        int vehicleCount1 = this.GetVehicleCount(buildingID, ref data);
-                        int num1 = (PlayerBuildingAI.GetProductionRate(100, Singleton<EconomyManager>.instance.GetBudget(this.m_info.m_class)) * this.m_maxVehicleCount + 99) / 100;
-                        empty += LocaleFormatter.FormatGeneric("AIINFO_BUSDEPOT_BUSCOUNT", (object)vehicleCount1, (object)num1);
-                        break;
+                    case TransportInfo.TransportType.TouristBus:
+                        {
+                            int vehicleCount = this.GetVehicleCount(buildingID, ref data);
+                            int budget = Singleton<EconomyManager>.instance.GetBudget(this.m_info.m_class);
+                            int productionRate = PlayerBuildingAI.GetProductionRate(100, budget);
+                            int num = (productionRate * this.m_maxVehicleCount + 99) / 100;
+                            text += LocaleFormatter.FormatGeneric("AIINFO_BUSDEPOT_BUSCOUNT", new object[]
+                            {
+                    vehicleCount,
+                    num
+                            });
+                            break;
+                        }
                     case TransportInfo.TransportType.Ship:
                         if (this.m_transportInfo.m_vehicleType == VehicleInfo.VehicleType.Ferry)
                         {
                             int vehicleCount2 = this.GetVehicleCount(buildingID, ref data);
-                            int num2 = (PlayerBuildingAI.GetProductionRate(100, Singleton<EconomyManager>.instance.GetBudget(this.m_info.m_class)) * this.m_maxVehicleCount + 99) / 100;
-                            empty += LocaleFormatter.FormatGeneric("AIINFO_FERRYDEPOT_FERRYCOUNT", (object)vehicleCount2, (object)num2);
-                            break;
+                            int budget2 = Singleton<EconomyManager>.instance.GetBudget(this.m_info.m_class);
+                            int productionRate2 = PlayerBuildingAI.GetProductionRate(100, budget2);
+                            int num2 = (productionRate2 * this.m_maxVehicleCount + 99) / 100;
+                            text += LocaleFormatter.FormatGeneric("AIINFO_FERRYDEPOT_FERRYCOUNT", new object[]
+                            {
+                        vehicleCount2,
+                        num2
+                            });
                         }
                         break;
                     case TransportInfo.TransportType.Airplane:
                         if (this.m_transportInfo.m_vehicleType == VehicleInfo.VehicleType.Blimp)
                         {
-                            int vehicleCount2 = this.GetVehicleCount(buildingID, ref data);
-                            int num2 = (PlayerBuildingAI.GetProductionRate(100, Singleton<EconomyManager>.instance.GetBudget(this.m_info.m_class)) * this.m_maxVehicleCount + 99) / 100;
-                            empty += LocaleFormatter.FormatGeneric("AIINFO_BLIMPDEPOT_BLIMPCOUNT", (object)vehicleCount2, (object)num2);
-                            break;
+                            int vehicleCount3 = this.GetVehicleCount(buildingID, ref data);
+                            int budget3 = Singleton<EconomyManager>.instance.GetBudget(this.m_info.m_class);
+                            int productionRate3 = PlayerBuildingAI.GetProductionRate(100, budget3);
+                            int num3 = (productionRate3 * this.m_maxVehicleCount + 99) / 100;
+                            text += LocaleFormatter.FormatGeneric("AIINFO_BLIMPDEPOT_BLIMPCOUNT", new object[]
+                            {
+                        vehicleCount3,
+                        num3
+                            });
                         }
                         break;
                     case TransportInfo.TransportType.Taxi:
-                        int vehicleCount3 = this.GetVehicleCount(buildingID, ref data);
-                        int num3 = (PlayerBuildingAI.GetProductionRate(100, Singleton<EconomyManager>.instance.GetBudget(this.m_info.m_class)) * this.m_maxVehicleCount + 99) / 100;
-                        empty += LocaleFormatter.FormatGeneric("AIINFO_TAXIDEPOT_VEHICLES", (object)vehicleCount3, (object)num3);
-                        break;
+                        {
+                            int vehicleCount4 = this.GetVehicleCount(buildingID, ref data);
+                            int budget4 = Singleton<EconomyManager>.instance.GetBudget(this.m_info.m_class);
+                            int productionRate4 = PlayerBuildingAI.GetProductionRate(100, budget4);
+                            int num4 = (productionRate4 * this.m_maxVehicleCount + 99) / 100;
+                            text += LocaleFormatter.FormatGeneric("AIINFO_TAXIDEPOT_VEHICLES", new object[]
+                            {
+                    vehicleCount4,
+                    num4
+                            });
+                            break;
+                        }
                     case TransportInfo.TransportType.Tram:
-                        int vehicleCount4 = this.GetVehicleCount(buildingID, ref data);
-                        int num4 = (PlayerBuildingAI.GetProductionRate(100, Singleton<EconomyManager>.instance.GetBudget(this.m_info.m_class)) * this.m_maxVehicleCount + 99) / 100;
-                        empty += LocaleFormatter.FormatGeneric("AIINFO_TRAMDEPOT_TRAMCOUNT", (object)vehicleCount4, (object)num4);
-                        break;
+                        {
+                            int vehicleCount5 = this.GetVehicleCount(buildingID, ref data);
+                            int budget5 = Singleton<EconomyManager>.instance.GetBudget(this.m_info.m_class);
+                            int productionRate5 = PlayerBuildingAI.GetProductionRate(100, budget5);
+                            int num5 = (productionRate5 * this.m_maxVehicleCount + 99) / 100;
+                            text += LocaleFormatter.FormatGeneric("AIINFO_TRAMDEPOT_TRAMCOUNT", new object[]
+                            {
+                    vehicleCount5,
+                    num5
+                            });
+                            break;
+                        }
                     //begin mod
                     case TransportInfo.TransportType.Metro:
-                        int vehicleCount5 = this.GetVehicleCount(buildingID, ref data);
-                        int num5 = (PlayerBuildingAI.GetProductionRate(100, Singleton<EconomyManager>.instance.GetBudget(this.m_info.m_class)) * this.m_maxVehicleCount + 99) / 100;
-                        empty += $"Metro trains in use: {vehicleCount5}";
+                        int vehicleCount6 = this.GetVehicleCount(buildingID, ref data);
+                        int budget6 = Singleton<EconomyManager>.instance.GetBudget(this.m_info.m_class);
+                        int productionRate6 = PlayerBuildingAI.GetProductionRate(100, budget6);
+                        int num6 = (productionRate6 * this.m_maxVehicleCount + 99) / 100;
+                        text += $"Metro trains in use: {vehicleCount6}";
                         break;
                     case TransportInfo.TransportType.Train:
-                        int vehicleCount6 = this.GetVehicleCount(buildingID, ref data);
-                        int num6 = (PlayerBuildingAI.GetProductionRate(100, Singleton<EconomyManager>.instance.GetBudget(this.m_info.m_class)) * this.m_maxVehicleCount + 99) / 100;
-                        empty += $"Trains in use: {vehicleCount6}";
+                        int vehicleCount7 = this.GetVehicleCount(buildingID, ref data);
+                        int budget7 = Singleton<EconomyManager>.instance.GetBudget(this.m_info.m_class);
+                        int productionRate7 = PlayerBuildingAI.GetProductionRate(100, budget7);
+                        int num7 = (productionRate7 * this.m_maxVehicleCount + 99) / 100;
+                        text += $"Trains in use: {vehicleCount7}";
                         break;
                         //end mod
                 }
             }
-            return empty;
+            return text;
         }
     }
 }

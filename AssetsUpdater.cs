@@ -7,6 +7,7 @@ using ICities;
 using MetroOverhaul.Detours;
 using MetroOverhaul.Extensions;
 using MetroOverhaul.NEXT;
+using MetroOverhaul.NEXT.Extensions;
 using MetroOverhaul.OptionsFramework;
 using UnityEngine;
 
@@ -94,9 +95,9 @@ namespace MetroOverhaul
 
             try
             {
-				for (uint i = 0; i < PrefabCollection<BuildingInfo>.LoadedCount(); i++)
+                for (uint i = 0; i < PrefabCollection<BuildingInfo>.LoadedCount(); i++)
                 {
-					var prefab = PrefabCollection<BuildingInfo>.GetPrefab(i);
+                    var prefab = PrefabCollection<BuildingInfo>.GetPrefab(i);
                     if (prefab == null || !(prefab.m_buildingAI is DepotAI))
                     {
                         continue;
@@ -115,32 +116,30 @@ namespace MetroOverhaul
                 }
                 var totalStations = 0;
                 var totalShallowStations = 0;
-				for (ushort i = 0; i < binstance.m_buildings.m_buffer.Count(); i++)
+                for (ushort i = 0; i < binstance.m_buildings.m_buffer.Count(); i++)
                 {
                     Building b = binstance.m_buildings.m_buffer[i];
-					BuildingInfo info = b.Info;
-					if (info == null || !(info.m_buildingAI is DepotAI))
+                    BuildingInfo info = b.Info;
+                    if (info == null || !(info.m_buildingAI is DepotAI))
                     {
                         continue;
                     }
-					List<ushort> stationNodes = GetStationNodes(b);
-					if (stationNodes != null)
-					{
+                    List<ushort> stationNodes = GetStationNodes(b);
+                    if (stationNodes != null)
+                    {
                         totalStations++;
                         var highestStationNode = stationNodes.OrderBy(n => NodeFrom(n).m_position.y).LastOrDefault();
                         Debug.Log(b.m_position.y + "," + NodeFrom(highestStationNode).m_position.y);
-                        if (NodeFrom(highestStationNode).m_position.y > b.m_position.y - 8)
+                        if (NodeFrom(highestStationNode).m_position.y == b.m_position.y - 4)
                         {
-                            totalShallowStations ++;
+                            totalShallowStations++;
                         }
-                         //stationNodes.Where(n => NodeFrom(n).m_position.y == b.m_position.y - 4).Count();
-					}
+                        //stationNodes.Where(n => NodeFrom(n).m_position.y == b.m_position.y - 4).Count();
+                    }
                 }
-                Debug.Log("XXXXXXXXXXXXX");
-                Debug.Log("Shallow: " + totalShallowStations);
-                Debug.Log("Total: " + totalStations);
+
                 m_NeedsConvert = (float)totalShallowStations / totalStations >= 0.5f;
-				for (ushort i = 0; i < Singleton<NetManager>.instance.m_nodes.m_buffer.Count(); i++)
+                for (ushort i = 0; i < Singleton<NetManager>.instance.m_nodes.m_buffer.Count(); i++)
                 {
                     NetNode n = Singleton<NetManager>.instance.m_nodes.m_buffer[i];
                     NetInfo info = n.Info;
@@ -159,7 +158,7 @@ namespace MetroOverhaul
                         DipPath(i, n, toVanilla);
                     }
                 }
-				if (m_NeedsConvert)
+                if (m_NeedsConvert)
                 {
                     for (ushort i = 0; i < binstance.m_buildings.m_buffer.Count(); i++)
                     {
@@ -176,7 +175,7 @@ namespace MetroOverhaul
                                     while (subBuildingID > 0)
                                     {
                                         if (HasStationTracks(BuildingFrom(subBuildingID).Info))
-                                            UpdateBuilding(subBuildingID, info);
+                                            UpdateBuilding(subBuildingID);
                                         subBuildingID = BuildingFrom(subBuildingID).m_subBuilding;
                                     }
                                 }
@@ -440,19 +439,19 @@ namespace MetroOverhaul
         private static Dictionary<string, ManualMilestone> m_CpmNetDict = null;
         private static Dictionary<string, List<ManualMilestone>> m_CpmBuildingDict = null;
         private static bool m_NeedsConvert = false;
-        private static void UpdateBuilding(ushort buildingID, BuildingInfo superInfo = null)
+        private static void UpdateBuilding(ushort buildingID)
         {
             Building building = BuildingFrom(buildingID);
-            BuildingInfo info = building.Info;
+            BuildingInfo info = building.Info.ShallowClone();
 
             PopulateDictionaries(buildingID);
             PrepareBuilding(ref info);
-            if (!OptionsWrapper<Options>.Options.ghostMode && HasUndergroundMOMorVanilla(buildingID, false))
+            if (!OptionsWrapper<Options>.Options.ghostMode && HasUndergroundMOMorVanilla(buildingID, true))
             {
-                SetStationCustomizations.ModifyStation(info, SetStationCustomizations.DEF_DEPTH, SetStationCustomizations.MIN_LENGTH, (int)SetStationCustomizations.DEF_ANGLE, SetStationCustomizations.DEF_BEND_STRENGTH, superInfo);
+                SetStationCustomizations.ModifyStation(info, SetStationCustomizations.DEF_DEPTH, SetStationCustomizations.MIN_LENGTH, (int)SetStationCustomizations.DEF_ANGLE, SetStationCustomizations.DEF_BEND_STRENGTH);
+                binstance.UpdateBuildingInfo(buildingID, info);
             }
-            info = BuildingFrom(buildingID).Info;
-            binstance.UpdateBuildingInfo(buildingID, info);
+
             RevertBuilding(ref info);
             ReconsileOrphanedSegments(buildingID);
         }
