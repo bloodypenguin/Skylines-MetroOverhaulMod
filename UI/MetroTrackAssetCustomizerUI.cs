@@ -13,92 +13,25 @@ namespace MetroOverhaul.UI
 {
     public class MetroTrackAssetCustomizerUI : MetroCustomizerBase
     {
-
-        public override void Update()
+        protected override bool SatisfiesTrackSpecs(PrefabInfo info)
         {
-            if (m_netTool == null)
-            {
-                return;
-            }
-            try
-            {
-                var toolInfo = m_netTool.enabled ? m_netTool.m_prefab : null;
-                if (toolInfo == m_currentNetInfo)
-                {
-                    return;
-                }
-                NetInfo finalInfo = null;
-                if (toolInfo != null)
-                {
-                    //RestoreStationTrackStyle(toolInfo);
-                    if (toolInfo.IsMetroTrack() || toolInfo.IsMetroStationTrack())
-                    {
-                        finalInfo = toolInfo;
-                    }
-                }
-                if (finalInfo == m_currentNetInfo)
-                {
-                    return;
-                }
-                if (finalInfo != null)
-                {
-                    Activate(finalInfo);
-                }
-                else
-                {
-                    Deactivate();
-                }
-            }
-            catch (Exception e)
-            {
-                UnityEngine.Debug.LogException(e);
-                Deactivate();
-            }
-
+            return ((NetInfo)info).IsMetroTrack() || ((NetInfo)info).IsMetroStationTrack();
         }
-        public override void Start()
+
+        protected override ToolBase GetTheTool()
         {
-            m_netTool = FindObjectOfType<NetTool>();
-            if (m_netTool == null)
-            {
-#if DEBUG
-                Next.Debug.Log("NetTool Not Found");
-#endif
-                enabled = false;
-                return;
-            }
+            return m_netTool;
+        }
 
-            m_bulldozeTool = FindObjectOfType<BulldozeTool>();
-            if (m_bulldozeTool == null)
-            {
-#if DEBUG
-                Next.Debug.Log("BulldozeTool Not Found");
-#endif
-                enabled = false;
-                return;
-            }
-            m_netTool = FindObjectOfType<NetTool>();
-            if (m_netTool == null)
-            {
-#if DEBUG
-                Next.Debug.Log("NetTool Not Found");
-#endif
-                enabled = false;
-                return;
-            }
+        protected override PrefabInfo GetToolPrefab()
+        {
+            return ((NetTool)GetTheTool()).m_prefab;
+        }
 
-            try
-            {
-                m_upgradeButtonTemplate = GameObject.Find("RoadsSmallPanel").GetComponent<GeneratedScrollPanel>().m_OptionsBar.Find<UIButton>("Upgrade");
-            }
-            catch
-            {
-#if DEBUG
-                Next.Debug.Log("Upgrade button template not found");
-#endif
-            }
+        protected override PrefabInfo CurrentInfo { get => m_currentNetInfo; set => m_currentNetInfo = (NetInfo)value; }
 
-            CreateUI();
+        protected override void SubStart()
+        {
             trackStyle = 0;
             trackSize = 1;
             trackDirection = 1;
@@ -107,7 +40,7 @@ namespace MetroOverhaul.UI
             ExecuteUiInstructions();
         }
 
-        private void CreateUI()
+        protected override void CreateUI()
         {
 #if DEBUG
             Next.Debug.Log("MOM TRACK GUI Created");
@@ -259,26 +192,6 @@ namespace MetroOverhaul.UI
             else if (isStation == 1)
             {
                 ToggleButtonPairs(stationType);
-                //switch (stationType)
-                //{
-                //    case StationTrackType.SidePlatform:
-                //        break;
-                //    case StationTrackType.IslandPlatform:
-                //        break;
-                //    case StationTrackType.SingleTrack:
-                //        break;
-                //    case StationTrackType.QuadSidePlatform:
-                //        break;
-                //        case 
-                //}
-                //if (stationType == StationTrackType.SidePlatform)
-                //    ToggleButtonPairs(btnSidePlatform, btnIslandPlatform, btnSinglePlatform, btnQuadPlatform);
-                //else if (stationType == StationTrackType.IslandPlatform)
-                //    ToggleButtonPairs(btnIslandPlatform, btnSidePlatform, btnSinglePlatform, btnQuadPlatform);
-                //else if (stationType == StationTrackType.SingleTrack)
-                //    ToggleButtonPairs(btnSinglePlatform, btnIslandPlatform, btnSidePlatform, btnQuadPlatform);
-                //else if (stationType == StationTrackType.QuadSidePlatform)
-                //    ToggleButtonPairs(btnQuadPlatform, btnSinglePlatform, btnIslandPlatform, btnSidePlatform);
             }
             NetInfo prefab = null;
             var fence = CheckboxDict[ALT_BARRIER].isChecked;
@@ -428,79 +341,20 @@ namespace MetroOverhaul.UI
 
                 m_netTool.m_prefab = prefab;
                 m_currentNetInfo = prefab;
-                var lanes = m_netTool.m_prefab.m_lanes.ToList();
-
-                Next.Debug.Log($"MOM EE lane count: {lanes.Count()}");
-                var lane = lanes.FirstOrDefault(l => l.m_laneType == NetInfo.LaneType.None);
-                NetLaneProps.Prop prop = null;
-                if (lane != null)
-                {
-                    var propList = lane.m_laneProps.m_props?.ToList();
-                    if (propList != null)
-                    {
-                        Next.Debug.Log($"MOM EE lane found with {propList.Count()} props");
-                        prop = propList.FirstOrDefault(p => p.m_prop.name.ToLower().Contains("l pillar ("));
-                        if (prop != null)
-                        {
-                            Next.Debug.Log($"MOM EE Examining aLane");
-                            var name = prop.m_prop.name;
-                            //if (noCollisionPillars)
-                            //{
-                            //    prop.m_probability = 100;
-                            //    Next.Debug.Log("MOM EE Enabled");
-                            //}
-                            //else
-                            //{
-                            //    prop.m_probability = 0;
-                            //    Next.Debug.Log("MOM EE Disabled");
-                            //}
-                            var props = lane.m_laneProps.m_props?.ToList();
-                            if (props != null)
-                            {
-                                var replacementPair = new KeyValuePair<string, PropInfo>(name, prop.m_prop);
-
-                                if (props.Any(p => p.m_prop.name.ToLower().Contains(replacementPair.Key.ToLower())))
-                                {
-                                    var tempProp = new NetLaneProps.Prop();
-                                    var propsToReplace = props.Where(p => p.m_prop.name.ToLower().Contains(replacementPair.Key.ToLower())).ToList();
-                                    for (var i = 0; i < propsToReplace.Count; i++)
-                                    {
-                                        tempProp = propsToReplace[i].ShallowClone();
-                                        props.Remove(propsToReplace[i]);
-                                        tempProp.m_prop = replacementPair.Value;
-                                        props.Add(tempProp);
-                                    }
-                                }
-                                lane.m_laneProps.m_props = props.ToArray();
-                            }
-                        }
-                    }
-                }
-                m_netTool.m_prefab.m_lanes = lanes.ToArray();
             }
         }
 
-        private void Activate(NetInfo nInfo)
+        protected override void Activate(PrefabInfo info)
         {
-            m_activated = true;
-            m_currentNetInfo = nInfo;
-            isVisible = true;
+            base.Activate(info);
             ExecuteUiInstructions();
         }
-        private void Deactivate()
+        protected override void SubDeactivate()
         {
             if (m_TheIntersectClass != null)
             {
-m_currentNetInfo.m_intersectClass = m_TheIntersectClass;
+                m_currentNetInfo.m_intersectClass = m_TheIntersectClass;
             }
-            
-            if (!m_activated)
-            {
-                return;
-            }
-            m_currentNetInfo = null;
-            isVisible = false;
-            m_activated = false;
         }
     }
 }

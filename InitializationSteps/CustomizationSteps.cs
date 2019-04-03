@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using System;
+using MetroOverhaul.Extensions;
 
 namespace MetroOverhaul.InitializationSteps
 {
@@ -324,11 +325,15 @@ namespace MetroOverhaul.InitializationSteps
                 }
                 else if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
                 {
-                    theLanes[i].m_position = Math.Sign(theLanes[i].m_position) * 9;
+                    theLanes[i].m_direction = NetInfo.Direction.Both;
+                    theLanes[i].m_stopType = VehicleInfo.VehicleType.Metro;
+                    theLanes[i].m_position = Math.Sign(theLanes[i].m_position) * 10;
+                        theLanes[i].m_width = 3;
                 }
             }
             prefab.m_lanes = theLanes.ToArray();
         }
+
         public static void CommonLargeSideIslandCustomization(NetInfo prefab, NetInfoVersion version)
         {
             prefab.m_connectGroup = NetInfo.ConnectGroup.None;
@@ -424,9 +429,11 @@ namespace MetroOverhaul.InitializationSteps
                         case 0:
                             theLanes[i].m_position = -9.48f;
                             theLanes[i].m_centerPlatform = true;
+                            theLanes[i].m_elevated = true;
                             break;
                         case 1:
                             theLanes[i].m_position = -4.8f;
+                            theLanes[i].m_elevated = true;
                             break;
                         case 2:
                             theLanes[i].m_position = 4.8f;
@@ -468,6 +475,57 @@ namespace MetroOverhaul.InitializationSteps
             }
             prefab.m_lanes = theLanes.ToArray();
         }
+        public static void CommonClonedStationCustomization(BuildingInfo info) {
+            if (info.HasAbovegroundTrainStationTracks()) {
+                var paths = info.m_paths;
+                for (var i = 0; i < paths.Length; i++) {
+                    if (paths[i]?.m_netInfo != null) {
+                        var trackName = paths[i].m_netInfo.name;
+                        if (paths[i].m_netInfo.IsAbovegroundTrainStationTrack()) {
+                            paths[i].AssignNetInfo(GetComplimentaryTrackName(paths[i].m_netInfo.name));
+                        }
+                    }
+                }
+            }
+            else if (info.HasAbovegroundMetroStationTracks()) {
+                var paths = info.m_paths;
+                for (var i = 0; i < paths.Length; i++) {
+                    if (paths[i]?.m_netInfo != null) {
+                        var trackName = paths[i].m_netInfo.name;
+                        if (paths[i].m_netInfo.IsAbovegroundMetroStationTrack()) {
+                            paths[i].AssignNetInfo(GetComplimentaryTrackName(paths[i].m_netInfo.name));
+                        }
+                    }
+                }
+            }
+        }
+
+        private static string GetComplimentaryTrackName(string trackName) {
+            if (trackName == "Train Station Track") {
+                return "Metro Station Track Ground";
+            }
+            else if (trackName.EndsWith("Metro Station Track Ground")) {
+                return "Train Station Track";
+            }
+            else if (trackName == "BP wide train station track") {
+                return "Metro Station Track Ground Island";
+            }
+            else if (trackName.EndsWith("Metro Station Track Ground Island")) {
+                return "BP wide train station track";
+            }
+            else if (trackName == "BP_DualIslandStationTrack_Ground") {
+                return "Metro Station Track Ground Large Dual Island";
+            }
+            else if (trackName.EndsWith("Metro Station Track Ground Large Dual Island")) {
+                return "BP_DualIslandStationTrack_Ground";
+            }else if(trackName == "BP_Bypass Station Track_G") {
+                return "Metro Station Track Ground Large";
+            }else if (trackName.EndsWith("Metro Station Track Ground Large")) {
+                return "BP_Bypass Station Track_G";
+            }
+            return "";
+        }
+
         public static void SetStandardTrackWidths(NetInfo prefab, NetInfoVersion version)
         {
             switch (version)
@@ -665,6 +723,29 @@ namespace MetroOverhaul.InitializationSteps
             if (!locale.Exists(key))
             {
                 locale.AddLocalizedString(key, locale.Get(new Locale.Key { m_Identifier = "NET_DESC", m_Key = "Metro Track" }));
+            }
+        }
+        public static void ReplaceBuildingIcon(BuildingInfo prefab) {
+            BuildingInfo vanillaBuilding = null;
+            var transportInfo = prefab.GetComponent<TransportStationAI>().m_transportInfo;
+            if (transportInfo == PrefabCollection<TransportInfo>.FindLoaded("Metro")) {
+                vanillaBuilding = PrefabCollection<BuildingInfo>.FindLoaded("Metro Entrance");
+            }else if (transportInfo == PrefabCollection<TransportInfo>.FindLoaded("Train"))
+                vanillaBuilding = PrefabCollection<BuildingInfo>.FindLoaded("Train Station");
+            prefab.m_Atlas = vanillaBuilding.m_Atlas;
+            prefab.m_Thumbnail = vanillaBuilding.m_Thumbnail;
+            prefab.m_InfoTooltipAtlas = vanillaBuilding.m_InfoTooltipAtlas;
+            prefab.m_InfoTooltipThumbnail = vanillaBuilding.m_InfoTooltipThumbnail;
+            prefab.m_isCustomContent = false;
+            prefab.m_availableIn = ItemClass.Availability.All;
+            var locale = LocaleManager.instance.GetLocale();
+            var key = new Locale.Key { m_Identifier = "NET_TITLE", m_Key = prefab.name };
+            if (!locale.Exists(key)) {
+                locale.AddLocalizedString(key, locale.Get(new Locale.Key { m_Identifier = "NET_TITLE", m_Key = prefab.name.Substring(0, prefab.name.IndexOf("_Analog"))} ));
+            }
+            key = new Locale.Key { m_Identifier = "NET_DESC", m_Key = prefab.name };
+            if (!locale.Exists(key)) {
+                locale.AddLocalizedString(key, locale.Get(new Locale.Key { m_Identifier = "NET_DESC", m_Key = prefab.name.Substring(0, prefab.name.IndexOf("_Analog")) }));
             }
         }
     }

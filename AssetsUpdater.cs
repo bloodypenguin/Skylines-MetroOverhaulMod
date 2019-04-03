@@ -35,55 +35,6 @@ namespace MetroOverhaul
             }
         }
 
-        //        private static void UpdateTrainTracks()
-        //        {
-        //            var vanillaTracksNames = new[] { "Train Track", "Train Track Elevated", "Train Track Bridge", "Train Track Slope", "Train Track Tunnel" };
-        //            var vanillaTracksCosts = vanillaTracksNames.ToDictionary(Initializer.DetectVersion, GetTrackCost);
-        //            var toGroundMultipliers = vanillaTracksCosts.ToDictionary(keyValue => keyValue.Key,
-        //                keyValue => keyValue.Value == vanillaTracksCosts[NetInfoVersion.Ground] ? 1f : keyValue.Value / (float)vanillaTracksCosts[NetInfoVersion.Ground]);
-
-        //            var baseMultiplier = GetTrackCost("Metro Track Ground") / (float)GetTrackCost("Train Track");
-        //            for (ushort i = 0; i < PrefabCollection<NetInfo>.LoadedCount(); i++)
-        //            {
-        //                var netInfo = PrefabCollection<NetInfo>.GetLoaded(i);
-        //                var ai = netInfo?.m_netAI as PlayerNetAI;
-        //                if (ai == null || netInfo.m_class.m_service != ItemClass.Service.PublicTransport || netInfo.m_class.m_subService != ItemClass.SubService.PublicTransportTrain)
-        //                {
-        //                    continue;
-        //                }
-        //                var version = Initializer.DetectVersion(netInfo.name);
-        //                var wasCost = GetTrackCost(netInfo);
-        //                if (wasCost == 0)
-        //                {
-        //                    continue;
-        //                }
-        //                var newCost = wasCost / toGroundMultipliers[version] *
-        //                                     Initializer.GetCostMultiplier(version) * GetAdditionalCostMultiplier(version) * baseMultiplier;
-        //#if DEBUG
-        //                UnityEngine.Debug.Log($"Updating asset {netInfo.name} cost. Was cost: {wasCost}. New cost: {newCost}");
-        //#endif
-        //                ai.m_constructionCost = (int)newCost;
-        //                ai.m_maintenanceCost = (int)(newCost / 10f);
-        //            }
-        //        }
-
-        //private static float GetAdditionalCostMultiplier(NetInfoVersion version)
-        //{
-        //    return (version == NetInfoVersion.Tunnel || version == NetInfoVersion.Slope || version == NetInfoVersion.Elevated || version == NetInfoVersion.Bridge) ? 1.5f : 1.0f;
-        //}
-
-        //private static int GetTrackCost(string prefabName)
-        //{
-        //    var netInfo = PrefabCollection<NetInfo>.FindLoaded(prefabName);
-        //    return GetTrackCost(netInfo);
-        //}
-
-        //private static int GetTrackCost(NetInfo netInfo)
-        //{
-        //    return ((PlayerNetAI)netInfo.m_netAI).m_constructionCost;
-        //}
-
-        //this method is supposed to be called from LoadingExtension
         public static void UpdateBuildingsMetroPaths(LoadMode mode, bool toVanilla = false)
         {
 #if !DEBUG

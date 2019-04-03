@@ -655,6 +655,9 @@ namespace MetroOverhaul.InitializationSteps
                         break;
                     }
             }
+            //if (version == NetInfoVersion.Ground || version == NetInfoVersion.Elevated) {
+            //    nodeList[0].m_flagsForbidden |= NetNode.Flags.End;
+            //}
             for (int i = 0; i < nodeList.Count; i++)
             {
                 nodeList[i].m_flagsForbidden |= NetNode.Flags.LevelCrossing;

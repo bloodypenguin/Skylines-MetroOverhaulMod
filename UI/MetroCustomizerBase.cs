@@ -12,15 +12,22 @@ namespace MetroOverhaul.UI
 {
     public class MetroCustomizerBase : UIPanel
     {
+        public int stationClass = 0;
         public int trackStyle = 0;
         public int trackSize = 1;
         public int trackDirection = 1;
         protected BulldozeTool m_bulldozeTool;
         protected NetTool m_netTool;
+        protected BuildingTool m_buildingTool = null;
         protected UIButton m_upgradeButtonTemplate;
         protected NetInfo m_currentNetInfo;
+        protected BuildingInfo m_currentBuilding;
+        protected BuildingInfo m_currentCloneBuilding;
         protected bool m_activated = false;
         public static MetroTrackCustomizerUI instance;
+
+        protected NetInfo trainTrackPrefab;
+        protected NetInfo trainStationTrackPrefab;
 
         protected NetInfo concretePrefab;
         protected NetInfo concretePrefabNoBar;
@@ -52,6 +59,8 @@ namespace MetroOverhaul.UI
         protected NetInfo steelSmallTwoWayPrefab;
         protected NetInfo steelSmallTwoWayPrefabNoBar;
 
+        protected UIButton btnMetro;
+        protected UIButton btnTrain;
         protected UIButton btnModernStyle;
         protected UIButton btnClassicStyle;
         protected UIButton btnSingleTrack;
@@ -74,8 +83,7 @@ namespace MetroOverhaul.UI
         protected static Dictionary<string, UICheckBox> CheckboxDict { get; set; }
         protected Dictionary<ToggleType, UIButton> toggleBtnDict = new Dictionary<ToggleType, UIButton>();
         protected Dictionary<ToggleType, float> SetDict = new Dictionary<ToggleType, float>();
-        protected BuildingTool m_buildingTool = null;
-        protected BuildingInfo m_currentBuilding;
+
         protected StationTrackType m_TrackType = StationTrackType.None;
 
         public int isStation = 1;
@@ -99,8 +107,134 @@ namespace MetroOverhaul.UI
 
         protected ItemClass m_TheIntersectClass = null;
 
+        protected virtual bool SatisfiesTrackSpecs(PrefabInfo info)
+        {
+            return false;
+        }
+        protected virtual ToolBase GetTheTool()
+        {
+            return null;
+        }
+        protected virtual PrefabInfo GetToolPrefab()
+        {
+            return null;
+        }
+        protected virtual PrefabInfo CurrentInfo { get; set; }
+
+        public override void Update()
+        {
+            if (GetTheTool() == null)
+            {
+                Deactivate();
+                return;
+            }
+            try
+            {
+                if (GetToolPrefab() == null)
+                {
+                    Deactivate();
+                    return;
+                }
+                var toolInfo = GetTheTool().enabled ? GetToolPrefab() : null;
+                if (toolInfo == CurrentInfo)
+                {
+                    if (!SatisfiesTrackSpecs(toolInfo))
+                    {
+                        Deactivate();
+                    }
+                    return;
+                }
+                PrefabInfo finalInfo = null;
+                if (toolInfo != null)
+                {
+                    if (SatisfiesTrackSpecs(toolInfo))
+                    {
+                        finalInfo = toolInfo;
+                    }
+                    else if (toolInfo is BuildingInfo)
+                    {
+                        var buildingInfoSubBuildings = ((BuildingInfo)toolInfo).m_subBuildings;
+                        if (buildingInfoSubBuildings != null)
+                        {
+                            foreach (var subInfo in buildingInfoSubBuildings)
+                            {
+                                if (subInfo.m_buildingInfo != null && subInfo.m_buildingInfo.HasUndergroundMetroStationTracks())
+                                {
+                                    finalInfo = subInfo.m_buildingInfo;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (finalInfo == CurrentInfo)
+                {
+                    return;
+                }
+                if (finalInfo != null)
+                {
+                    Activate(finalInfo);
+                }
+                else
+                {
+                    Deactivate();
+                }
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+                Deactivate();
+            }
+        }
+        public override void Start()
+        {
+            m_netTool = FindObjectOfType<NetTool>();
+            if (m_netTool == null)
+            {
+#if DEBUG
+                Next.Debug.Log("NetTool Not Found");
+#endif
+                enabled = false;
+                return;
+            }
+            m_buildingTool = FindObjectOfType<BuildingTool>();
+            if (m_buildingTool == null)
+            {
+#if DEBUG
+                Next.Debug.Log("BuildingTool Not Found");
+#endif
+                enabled = false;
+                return;
+            }
+            m_bulldozeTool = FindObjectOfType<BulldozeTool>();
+            if (m_bulldozeTool == null)
+            {
+#if DEBUG
+                Next.Debug.Log("BulldozeTool Not Found");
+#endif
+                enabled = false;
+                return;
+            }
+            try
+            {
+                m_upgradeButtonTemplate = GameObject.Find("RoadsSmallPanel").GetComponent<GeneratedScrollPanel>().m_OptionsBar.Find<UIButton>("Upgrade");
+            }
+            catch
+            {
+#if DEBUG
+                Next.Debug.Log("Upgrade button template not found");
+#endif
+            }
+            CreateUI();
+            SubStart();
+        }
+        protected virtual void CreateUI() { }
+        protected virtual void SubStart(){}
         public override void Awake()
         {
+            trainTrackPrefab = PrefabCollection<NetInfo>.FindLoaded("Train Track");
+            trainStationTrackPrefab = PrefabCollection<NetInfo>.FindLoaded("Train Station Track");
+
             concretePrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground");
             concretePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground NoBar");
 
@@ -424,6 +558,26 @@ namespace MetroOverhaul.UI
             m_height += 20;
             m_CheckboxCount++;
         }
+
+        protected virtual void Activate(PrefabInfo info)
+        {
+            CurrentInfo = info;
+            m_activated = true;
+            isVisible = true;
+        }
+        protected virtual void SubDeactivate() { }
+        private void Deactivate()
+        {
+            if (!m_activated)
+            {
+                return;
+            }
+            SubDeactivate();
+            CurrentInfo = null;
+            isVisible = false;
+            m_activated = false;
+        }
+
         public enum StationTrackType
         {
             None,

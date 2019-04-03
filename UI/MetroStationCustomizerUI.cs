@@ -15,102 +15,25 @@ namespace MetroOverhaul.UI
         private const int ANGLE_STEP = 15;
         private const float BEND_STRENGTH_STEP = 0.5f;
 
-        public override void Update()
+        protected override bool SatisfiesTrackSpecs(PrefabInfo info)
         {
-            if (m_buildingTool == null)
-            {
-                return;
-            }
-            try
-            {
-                var toolInfo = m_buildingTool.enabled ? m_buildingTool.m_prefab : null;
-                if (toolInfo == m_currentBuilding)
-                {
-                    return;
-                }
-                BuildingInfo finalInfo = null;
-                if (toolInfo != null)
-                {
-
-                    if (toolInfo.HasUndergroundMetroStationTracks())
-                    {
-                        finalInfo = toolInfo;
-                    }
-                    else if (toolInfo.m_subBuildings != null)
-                    {
-                        foreach (var subInfo in toolInfo.m_subBuildings)
-                        {
-                            if (subInfo.m_buildingInfo != null && subInfo.m_buildingInfo.HasUndergroundMetroStationTracks())
-                            {
-                                finalInfo = toolInfo;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (finalInfo == m_currentBuilding)
-                {
-                    return;
-                }
-                if (finalInfo != null)
-                {
-                    Activate(finalInfo);
-                }
-                else
-                {
-                    Deactivate();
-                }
-            }
-            catch (Exception e)
-            {
-                UnityEngine.Debug.LogException(e);
-                Deactivate();
-            }
-
+            return ((BuildingInfo)info).HasUndergroundMetroStationTracks();
         }
-        public override void Start()
+
+        protected override ToolBase GetTheTool()
         {
-            m_buildingTool = FindObjectOfType<BuildingTool>();
-            if (m_buildingTool == null)
-            {
-#if DEBUG
-                Next.Debug.Log("BuildingTool Not Found");
-#endif
-                enabled = false;
-                return;
-            }
+            return m_buildingTool;
+        }
 
-            m_bulldozeTool = FindObjectOfType<BulldozeTool>();
-            if (m_bulldozeTool == null)
-            {
-#if DEBUG
-                Next.Debug.Log("BulldozeTool Not Found");
-#endif
-                enabled = false;
-                return;
-            }
-            m_netTool = FindObjectOfType<NetTool>();
-            if (m_netTool == null)
-            {
-#if DEBUG
-                Next.Debug.Log("NetTool Not Found");
-#endif
-                enabled = false;
-                return;
-            }
+        protected override PrefabInfo GetToolPrefab()
+        {
+            return ((BuildingTool)GetTheTool()).m_prefab;
+        }
 
-            try
-            {
-                m_upgradeButtonTemplate = GameObject.Find("RoadsSmallPanel").GetComponent<GeneratedScrollPanel>().m_OptionsBar.Find<UIButton>("Upgrade");
-            }
-            catch
-            {
-#if DEBUG
-                Next.Debug.Log("Upgrade button template not found");
-#endif
-            }
+        protected override PrefabInfo CurrentInfo { get => m_currentBuilding; set => m_currentBuilding = (BuildingInfo)value; }
 
-            CreateUI();
+        protected override void SubStart()
+        {
             SetDict[ToggleType.Depth] = SetStationCustomizations.DEF_DEPTH;
             SetDict[ToggleType.Length] = SetStationCustomizations.DEF_LENGTH;
             SetDict[ToggleType.Angle] = SetStationCustomizations.DEF_ANGLE;
@@ -160,7 +83,7 @@ namespace MetroOverhaul.UI
             }
         }
 
-        private void CreateUI()
+        protected override void CreateUI()
         {
 #if DEBUG
             Next.Debug.Log("MOM UNDERGROUND STATION TRACK GUI Created");
@@ -311,22 +234,15 @@ namespace MetroOverhaul.UI
                 }
             }
         }
-        private void Activate(BuildingInfo bInfo)
+        protected override void Activate(PrefabInfo info)
         {
-            m_activated = true;
-
-            m_currentBuilding = bInfo;
+            base.Activate(info);
             DoStationMechanicsResetAngles();
-            isVisible = true;
             TunnelStationTrackToggleStyles(m_TrackType);
             DoStationMechanics();
         }
-        private void Deactivate()
+        protected override void SubDeactivate()
         {
-            if (!m_activated)
-            {
-                return;
-            }
             foreach (UIPanel pnl in PanelDict.Values)
             {
                 pnl.color = new Color32(150, 150, 150, 210);
@@ -336,10 +252,6 @@ namespace MetroOverhaul.UI
                 DoStationMechanicsResetAngles();
             }
             SetStationCustomizations.m_PremierPath = -1;
-            m_currentBuilding = null;
-            isVisible = false;
-            m_activated = false;
-
         }
 
         private void DoStationMechanics()

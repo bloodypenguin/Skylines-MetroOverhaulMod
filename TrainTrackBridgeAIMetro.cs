@@ -46,42 +46,32 @@ namespace MetroOverhaul
                         {
                             m_NetTool = FindObjectOfType<NetTool>();
                         }
-                        if (m_NetTool != null)
-                        {
+                        if (m_NetTool != null) {
                             var elevation = m_NetTool.GetElevation();
                             var theList = pillarList.Where(d => d.HeightLimit == 0 || d.HeightLimit >= elevation).OrderBy(x => x.HeightLimit).ToList();
                             BridgePillarItem thePillarInfo = null;
-                            if (theList == null || theList.Count == 0)
-                            {
+                            if (theList == null || theList.Count == 0) {
                                 thePillarInfo = pillarList.LastOrDefault();
-                            }
-                            else
-                            {
+                            } else {
                                 thePillarInfo = theList.FirstOrDefault();
                             }
                             var prefab = m_NetTool.Prefab;
-                            if (NoPillarCollision && elevation >= 9)
-                            {
+                            if (NoPillarCollision && elevation >= 0) {
                                 building = thePillarInfo.noCollisionInfo;
                                 building.m_elevated = true;
                                 building.m_generatedInfo.m_min.y = 32;
-                                if (m_IntersectClass == null)
-                                {
+                                if (m_IntersectClass == null) {
                                     m_IntersectClass = prefab.m_intersectClass;
                                 }
                                 prefab.m_intersectClass = null;
-                            }
-                            else
-                            {
+                            } else {
                                 building = thePillarInfo.info;
-                                if (m_IntersectClass != null)
-                                {
+                                if (m_IntersectClass != null) {
                                     prefab.m_intersectClass = m_IntersectClass;
                                 }
                             }
                             heightOffset = thePillarInfo.HeightOffset - 1f - thePillarInfo.info.m_generatedInfo.m_size.y;
                         }
-
                     }
                     return;
                 }

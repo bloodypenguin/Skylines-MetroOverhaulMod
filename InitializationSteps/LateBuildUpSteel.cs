@@ -14,7 +14,7 @@ namespace MetroOverhaul.InitializationSteps
     {
         public static void BuildUp(NetInfo prefab, NetInfoVersion version)
         {
-            var laneCount = prefab.m_lanes.Where(l => l.m_vehicleType == VehicleInfo.VehicleType.Metro).GroupBy(g => g.m_position).Count();
+            var laneCount = prefab.m_lanes.Where(l => l.m_vehicleType == VehicleInfo.VehicleType.Metro).GroupBy(g => Math.Round(g.m_position)).Count();
             switch (version)
             {
                 case NetInfoVersion.Elevated:

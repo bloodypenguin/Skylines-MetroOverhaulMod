@@ -591,12 +591,11 @@ namespace MetroOverhaul.InitializationSteps
         public static void Setup10mStationSteelMesh(NetInfo prefab, NetInfoVersion version, NetInfo elevatedInfo)
         {
             var trainTrackInfo = Prefabs.Find<NetInfo>("Train Track");
-            var railMaterial = trainTrackInfo.m_segments[1].m_material;
-            var railLODMaterial = trainTrackInfo.m_segments[1].m_lodMaterial;
-            var isLarge = prefab.name.Contains("Large");
-            var width = isLarge ? "18m" : "10m";
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
             var elevatedLODMaterial = elevatedInfo.m_segments[0].m_lodMaterial;
+            var railMaterial = trainTrackInfo.m_segments[1].m_material;
+            var railLODMaterial = trainTrackInfo.m_segments[1].m_lodMaterial;
+            var width = prefab.name.Contains("Large") ? "18m" : "10m";
             var nodeList = new List<NetInfo.Node>();
             switch (version)
             {
@@ -604,9 +603,10 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         var segment0 = prefab.m_segments[0].ShallowClone();
                         var segment1 = prefab.m_segments[1].ShallowClone();
-                        var segment2 = prefab.m_segments[1].ShallowClone();
+                        var segment2 = prefab.m_segments[0].ShallowClone();
                         var node0 = prefab.m_nodes[0].ShallowClone();
-                        var node4 = prefab.m_nodes[1].ShallowClone();
+                        var node4 = prefab.m_nodes[0].ShallowClone();
+
                         nodeList.Add(node0);
                         nodeList.Add(node4);
                         segment0
@@ -616,21 +616,25 @@ namespace MetroOverhaul.InitializationSteps
                         segment1
                             .SetFlagsDefault()
                             .SetMeshes
-                            ($@"Meshes\{width}\Rail.obj")
+                            ($@"Meshes\{width}\Rail.obj",
+                             $@"Meshes\{width}\Rail_LOD.obj")
                             .SetConsistentUVs();
                         segment2
                             .SetFlagsDefault()
                             .SetMeshes
-                            ($@"Meshes\{width}\ThirdRail.obj", $@"Meshes\{width}\Rail_LOD.obj")
+                            ($@"Meshes\{width}\ThirdRail.obj",
+                            $@"Meshes\{width}\Rail_LOD.obj")
                             .SetConsistentUVs();
                         node0
                             .SetMeshes
-                            ($@"Meshes\{width}\Ground_Station_Node_Pavement.obj",
-                                $@"Meshes\{width}\Ground_Station_Node_Pavement_LOD.obj");
+                            ($@"Meshes\{width}\Ground_Node_Pavement.obj",
+                                $@"Meshes\{width}\Ground_Node_Pavement_LOD.obj");
 
                         node4
+                            .SetFlagsDefault()
                             .SetMeshes
-                            ($@"Meshes\{width}\ThirdRail_Node.obj", $@"Meshes\{width}\Rail_LOD.obj")
+                            ($@"Meshes\{width}\ThirdRail_Node.obj",
+                            $@"Meshes\{width}\Rail_LOD.obj")
                             .SetConsistentUVs();
 
                         segment0.m_material = elevatedMaterial;
@@ -639,8 +643,8 @@ namespace MetroOverhaul.InitializationSteps
                         segment2.m_lodMaterial = railLODMaterial;
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
-                        node4.m_material = elevatedMaterial;
-                        node4.m_lodMaterial = elevatedLODMaterial;
+                        node4.m_material = railMaterial;
+                        node4.m_lodMaterial = railLODMaterial;
 
                         prefab.m_segments = new[] { segment0, segment1, segment2 };
                         break;
@@ -708,6 +712,9 @@ namespace MetroOverhaul.InitializationSteps
                         break;
                     }
             }
+            //if (version == NetInfoVersion.Ground || version == NetInfoVersion.Elevated) {
+            //    nodeList[0].m_flagsForbidden |= NetNode.Flags.End;
+            //}
             for (int i = 0; i < nodeList.Count; i++)
             {
                 nodeList[i].m_flagsForbidden |= NetNode.Flags.LevelCrossing;

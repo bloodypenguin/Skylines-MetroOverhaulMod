@@ -5,23 +5,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MetroOverhaul.InitializationSteps
-{
-    partial class SetupMesh
-    {
-        public static void Setup19mStationMesh(NetInfo prefab, NetInfoVersion version, NetInfo elevatedInfo, NetInfo metroStationInfo)
-        {
+namespace MetroOverhaul.InitializationSteps {
+    partial class SetupMesh {
+        public static void Setup19mStationMesh(NetInfo prefab, NetInfoVersion version, NetInfo elevatedInfo, NetInfo metroStationInfo) {
             var width = "";
-            if (prefab.name.Contains("Dual Island"))
-            {
+            if (prefab.name.Contains("Dual Island")) {
                 width = "31m";
             }
             //else if (prefab.name.Contains("Side Island"))
             //{
             //    width = "31_2m";
             //}
-            else
-            {
+            else {
                 width = "19m";
             }
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;
@@ -30,10 +25,8 @@ namespace MetroOverhaul.InitializationSteps
             var railMaterial = traintrackInfo.m_segments[1].m_material;
             var railLODMaterial = traintrackInfo.m_segments[1].m_lodMaterial;
             var nodeList = new List<NetInfo.Node>();
-            switch (version)
-            {
-                case NetInfoVersion.Ground:
-                    {
+            switch (version) {
+                case NetInfoVersion.Ground: {
                         var segment0 = prefab.m_segments[0].ShallowClone();
                         var segment1 = prefab.m_segments[1].ShallowClone();
                         var segment2 = prefab.m_segments[0].ShallowClone();
@@ -73,8 +66,7 @@ namespace MetroOverhaul.InitializationSteps
                         prefab.m_segments = new[] { segment0, segment1, segment2 };
                         break;
                     }
-                case NetInfoVersion.Elevated:
-                    {
+                case NetInfoVersion.Elevated: {
                         var segment0 = prefab.m_segments[0].ShallowClone();
                         var segment1 = prefab.m_segments[0].ShallowClone();
                         var segment2 = prefab.m_segments[0].ShallowClone();
@@ -125,8 +117,7 @@ namespace MetroOverhaul.InitializationSteps
                         prefab.m_segments = new[] { segment0, segment1, segment2, segment3 };
                         break;
                     }
-                case NetInfoVersion.Tunnel:
-                    {
+                case NetInfoVersion.Tunnel: {
                         var segment0 = metroStationInfo.m_segments[0].ShallowClone();
                         var segment1 = metroStationInfo.m_segments[0].ShallowClone();
                         var segment2 = metroStationInfo.m_segments[0].ShallowClone();
@@ -198,8 +189,10 @@ namespace MetroOverhaul.InitializationSteps
                         break;
                     }
             }
-            for (int i = 0; i < nodeList.Count; i++)
-            {
+            //if (version == NetInfoVersion.Ground || version == NetInfoVersion.Elevated) {
+            //    nodeList[0].m_flagsForbidden |= NetNode.Flags.End;
+            //}
+            for (int i = 0; i < nodeList.Count; i++) {
                 nodeList[i].m_flagsForbidden |= NetNode.Flags.LevelCrossing;
             }
             nodeList.AddRange(SetupMeshUtil.GenerateSplitTracksAndLevelCrossings(prefab, version));

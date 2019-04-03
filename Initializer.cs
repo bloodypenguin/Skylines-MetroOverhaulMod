@@ -10,6 +10,7 @@ using UnityEngine;
 using MetroOverhaul.NEXT;
 using MetroOverhaul.NEXT.Extensions;
 using MetroOverhaul.OptionsFramework;
+using System.Diagnostics;
 
 namespace MetroOverhaul
 {
@@ -17,7 +18,7 @@ namespace MetroOverhaul
 	{
 		public AppMode AppMode { get; set; }
 
-		protected override void InitializeImpl()
+		protected override void InitializeNetInfoImpl()
 		{
 			CreateConcreteTracks();
 			CreateSteelTracks();
@@ -27,6 +28,9 @@ namespace MetroOverhaul
 				AssetsUpdater.UpdateVanillaMetroTracks();
 			}
 		}
+        public override void InitializeBuildingInfoImpl() {
+            CreateCloneBuildings();
+        }
 
 		#region CONCRETE
 		private void CreateConcreteTracks()
@@ -326,12 +330,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.SetStandardStationTrackWidths).
 						Chain(CustomizationSteps.CommonConcreteCustomization).
 						Chain(SetupMesh.Setup10mStationMesh, elevatedInfo, metroStationInfo).
-						Chain(SetupTexture.Setup10mTexture).
-						Chain(
-							(info, version) =>
-							{
-								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
-							}),
+						Chain(SetupTexture.Setup10mTexture),
 				   NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
 					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
 						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
@@ -354,12 +353,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.SetIslandTrackWidths).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(SetupMesh.Setup19mStationMesh, elevatedInfo, metroStationInfo).
-						Chain(SetupTexture.Setup19mTexture).
-						Chain(
-							(info, version) =>
-							{
-								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
-							}),
+						Chain(SetupTexture.Setup19mTexture),
 				   NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
 					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
 						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
@@ -409,12 +403,7 @@ namespace MetroOverhaul
                         Chain(CustomizationSteps.SetLargeIslandTrackWidths).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(SetupMesh.Setup19mStationMesh, elevatedInfo, metroStationInfo).
-                        Chain(SetupTexture.Setup19mTexture).
-                        Chain(
-                            (info, version) =>
-                            {
-                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
-                            }),
+                        Chain(SetupTexture.Setup19mTexture),
                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
@@ -436,12 +425,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.CommonConcreteCustomization).
 						Chain(CustomizationSteps.SetSmallStationTrackWidths).
 						Chain(SetupMesh.Setup6mStationMesh, elevatedInfo, metroStationInfo).
-						Chain(SetupTexture.Setup6mTexture).
-						Chain(
-							(info, version) =>
-							{
-								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
-							}),
+						Chain(SetupTexture.Setup6mTexture),
 				   NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
 					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
 						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
@@ -464,12 +448,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.SetLargeStationTrackWidths).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(SetupMesh.Setup10mStationMesh, elevatedInfo, metroStationInfo).
-						Chain(SetupTexture.Setup10mTexture).
-						Chain(
-							(info, version) =>
-							{
-								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
-							}),
+						Chain(SetupTexture.Setup10mTexture),
 				   NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
 					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
 						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
@@ -817,17 +796,9 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.SetupStationProps).
 						Chain(CustomizationSteps.CommonCustomization).
 						Chain(CustomizationSteps.CommonSteelCustomization).
-						Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo)
-						. //TODO(earalov): probably change to station specific method
-						Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo)
-						. //TODO(earalov): probably change to station specific method
-						Chain(SetupSteelTexture.Setup10mSteelTexture).
-						Chain(
-							(info, version) =>
-							{
-								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
-							}),
-				   NetInfoVersion.Ground | NetInfoVersion.Elevated,
+						Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo).
+						Chain(SetupSteelTexture.Setup10mSteelTexture)
+				   ,NetInfoVersion.Ground | NetInfoVersion.Elevated,
 					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
 						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
 							LinkToNonGroundVersions, null, NetInfoVersion.None)
@@ -875,12 +846,7 @@ namespace MetroOverhaul
                         Chain(CustomizationSteps.SetLargeIslandTrackWidths).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(SetupSteelMesh.Setup19mSteelStationMesh, elevatedInfo, metroStationInfo).
-                        Chain(SetupSteelTexture.Setup19mSteelTexture).
-                        Chain(
-                            (info, version) =>
-                            {
-                                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
-                            }),
+                        Chain(SetupSteelTexture.Setup19mSteelTexture),
                    NetInfoVersion.Ground | NetInfoVersion.Elevated,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
@@ -902,12 +868,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.CommonSteelCustomization).
 						Chain(CustomizationSteps.SetIslandTrackWidths).
 						Chain(SetupSteelMesh.Setup19mSteelStationMesh, elevatedInfo, metroStationInfo).
-						Chain(SetupSteelTexture.Setup19mSteelTexture).
-						Chain(
-							(info, version) =>
-							{
-								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
-							}),
+						Chain(SetupSteelTexture.Setup19mSteelTexture),
 				   NetInfoVersion.Ground | NetInfoVersion.Elevated,
 					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
 						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
@@ -930,12 +891,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.CommonSteelCustomization).
 						Chain(CustomizationSteps.SetSmallTrackWidths).
 						Chain(SetupSteelMesh.Setup6mStationSteelMesh, elevatedInfo, metroStationInfo).
-						Chain(SetupSteelTexture.Setup6mSteelTexture).
-						Chain(
-							(info, version) =>
-							{
-								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
-							}),
+						Chain(SetupSteelTexture.Setup6mSteelTexture),
 				   NetInfoVersion.Ground | NetInfoVersion.Elevated,
 					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
 						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
@@ -957,12 +913,7 @@ namespace MetroOverhaul
 						Chain(CustomizationSteps.CommonSteelCustomization).
 						Chain(CustomizationSteps.SetLargeStationTrackWidths).
 						Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo).
-						Chain(SetupSteelTexture.Setup10mSteelTexture).
-						Chain(
-							(info, version) =>
-							{
-								LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpSteel.BuildUp(info, version); });
-							}),
+						Chain(SetupSteelTexture.Setup10mSteelTexture),
 				   NetInfoVersion.Ground | NetInfoVersion.Elevated,
 					ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
 						Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
@@ -976,10 +927,36 @@ namespace MetroOverhaul
 				UnityEngine.Debug.LogException(e);
 			}
 		}
-		#endregion
+        #endregion
+        #region StationClones
+        private void CreateCloneBuildings() {
+            try {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                CreateFullStationClone(
+                    ActionExtensions.BeginChain<BuildingInfo>().
+                    Chain(CustomizationSteps.CommonClonedStationCustomization));
+                sw.Stop();
+                UnityEngine.Debug.Log("Items took " + sw.ElapsedMilliseconds + "ms");
+            }
+            catch(Exception e) {
+                Next.Debug.Log("Exception happened when setting up station clone");
+                UnityEngine.Debug.LogException(e);
+            }
+        }
 
-		#region COMMON
-		protected void CreateFullPrefab(Action<NetInfo, NetInfoVersion> customizationStep,
+
+        #endregion
+        #region COMMON
+        private void CreateFullStationClone(Action<BuildingInfo> customizationStep) {
+            CreateStationClones(ActionExtensions.BeginChain<BuildingInfo>().
+                        Chain(ReplaceBuildingAI).
+                        Chain(SetupAnalogStationMeta).
+                        Chain(SetupBuildingModel, customizationStep));
+
+
+        }
+        protected void CreateFullPrefab(Action<NetInfo, NetInfoVersion> customizationStep,
 			NetInfoVersion versions,
 			Action<NetInfo, Action<NetInfo, NetInfoVersion>> setupOtherVersionsStep,
 			Func<string, string> nameModifier = null, Dictionary<NetInfoVersion, string> replacements = null)
@@ -1092,7 +1069,41 @@ namespace MetroOverhaul
 					Chain(SetupTrackModel, customizationStep)
 			);
 		}
+        private static void ReplaceBuildingAI(BuildingInfo prefab) {
+            var ai = prefab.GetComponent<PlayerBuildingAI>();
+            if (ai!= null) {
+                var stationAi = ai as TransportStationAI;
+                if (stationAi != null) {
+                    var clonedAi = stationAi.CloneBuildingAI(stationAi.name);
+                    clonedAi.m_info = prefab;
+                    if (stationAi.m_transportInfo == PrefabCollection<TransportInfo>.FindLoaded("Train")) {
+                        var metroEntrance = PrefabCollection<BuildingInfo>.FindLoaded("Metro Entrance");
+                        clonedAi.m_transportLineInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Line");
+                        clonedAi.m_transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Metro");
+                        clonedAi.m_maxVehicleCount = 0;
+                        clonedAi.m_createPassMilestone = metroEntrance.GetComponent<PlayerBuildingAI>().m_createPassMilestone;
+                    }
+                    else if(stationAi.m_transportInfo == PrefabCollection<TransportInfo>.FindLoaded("Metro")) {
+                        var vanillaTrainStation = PrefabCollection<BuildingInfo>.FindLoaded("Train Station");
+                        var vanillaVehicleCount = 0;
+                        ManualMilestone createPassMilestone = null;
+                        if (vanillaTrainStation != null) {
+                            var vanillaAi = vanillaTrainStation.GetComponent<TransportStationAI>();
+                            if (vanillaAi != null) {
+                                vanillaVehicleCount = vanillaAi.m_maxVehicleCount;
+                                createPassMilestone = vanillaAi.m_createPassMilestone;
+                            }
+                        }
+                        clonedAi.m_transportLineInfo = PrefabCollection<NetInfo>.FindLoaded("Train Line");
+                        clonedAi.m_transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Train");
+                        clonedAi.m_maxVehicleCount = vanillaVehicleCount;
+                        clonedAi.m_createPassMilestone = createPassMilestone;
+                    }
+                    prefab.m_buildingAI = clonedAi;
+                }
 
+            }
+        }
 		private static void ReplaceAI(NetInfo prefab, NetInfoVersion version)
 		{
 			var originalAi = prefab.GetComponent<PlayerNetAI>(); //milestone, construction and maintenance costs to be overriden later
@@ -1157,8 +1168,8 @@ namespace MetroOverhaul
 
 		public static void SetupTunnelStationTrack(NetInfo prefab)
 		{
-			prefab.m_maxHeight = -1;
-			prefab.m_minHeight = -5;
+            prefab.m_maxHeight = -1;
+            prefab.m_minHeight = -5;
 			prefab.m_lowerTerrain = false;
 			prefab.m_pavementWidth = 4.5f;
 			prefab.m_halfWidth = 8;
@@ -1168,7 +1179,7 @@ namespace MetroOverhaul
 		public static void SetupStationTrack(NetInfo prefab, NetInfoVersion version)
 		{
 			prefab.m_followTerrain = false;
-			prefab.m_flattenTerrain = false;
+            prefab.m_flattenTerrain = version == NetInfoVersion.Ground;
 			prefab.m_createGravel = false;
 			prefab.m_createPavement = false;
 			prefab.m_createRuining = false;
@@ -1182,13 +1193,14 @@ namespace MetroOverhaul
 			{
 				prefab.m_lowerTerrain = false;
 				prefab.m_clipTerrain = true;
-			}
+                //prefab.m_maxHeight = 0.5f;
+            }
 			else
 			{
 				prefab.m_clipTerrain = false;
 				if (version == NetInfoVersion.Elevated)
 				{
-
+                    //prefab.m_maxHeight = 0.5f;
 				}
 				else if (version == NetInfoVersion.Tunnel)
 				{
@@ -1225,7 +1237,25 @@ namespace MetroOverhaul
 			customizationStep.Invoke(prefab, version);
 		}
 
+        private static void SetupBuildingModel(BuildingInfo prefab, Action<BuildingInfo> customizationStep) {
+            customizationStep.Invoke(prefab);
+        }
 
+        private static void SetupAnalogStationMeta(BuildingInfo prefab) {
+            var newClass = ScriptableObject.CreateInstance<ItemClass>();
+            if (prefab.m_class.m_subService == ItemClass.SubService.PublicTransportTrain) {
+                newClass.m_subService = ItemClass.SubService.PublicTransportMetro;
+                prefab.SetUICategory("PublicTransportMetro");
+            } else if (prefab.m_class.m_subService == ItemClass.SubService.PublicTransportMetro) {
+                newClass.m_subService = ItemClass.SubService.PublicTransportTrain;
+                prefab.SetUICategory("PublicTransportTrain");
+            }
+            newClass.m_service = ItemClass.Service.PublicTransport;
+            newClass.m_layer = ItemClass.Layer.Default;
+            newClass.name = prefab.m_class.name + "_Analog";
+            newClass.hideFlags = HideFlags.None;
+            prefab.m_class = newClass;
+        }
 		private static void SetupMetroTrackMeta(NetInfo prefab, NetInfoVersion version)
 		{
 			var vanillaMetroTrack = FindOriginalNetInfo("Metro Track");

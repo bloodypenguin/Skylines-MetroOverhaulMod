@@ -169,6 +169,7 @@ namespace MetroOverhaul
                     UIView.GetAView().AddUIComponent(typeof(MetroAboveGroundStationCustomizerUI));
 #endif
                 }
+                //Container.DoSomething();
             }
 
         }

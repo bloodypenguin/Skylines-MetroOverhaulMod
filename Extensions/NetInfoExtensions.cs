@@ -2,6 +2,12 @@
 {
     public static class NetInfoExtensions
     {
+        public static bool IsAbovegroundTrainStationTrack(this NetInfo info) {
+            if (info?.name == null) {
+                return false;
+            }
+            return IsAbovegroundSidePlatformTrainStationTrack(info);
+        }
         public static bool IsAbovegroundMetroStationTrack(this NetInfo info)
         {
             if (info?.name == null)
@@ -9,6 +15,12 @@
                 return false;
             }
             return IsAbovegroundSidePlatformMetroStationTrack(info) || IsAbovegroundIslandPlatformStationTrack(info) || IsAbovegroundSmallStationTrack(info);
+        }
+        public static bool IsAbovegroundSidePlatformTrainStationTrack(this NetInfo netInfo) {
+            if (netInfo?.name == null) {
+                return false;
+            }
+            return netInfo.name.Contains("Train Station Track") && netInfo.name.Contains("Tunnel") == false && netInfo.name.Contains("Island") == false && netInfo.name.Contains("Small") == false;// && netInfo.name.Contains("Large");
         }
         public static bool IsAbovegroundSidePlatformMetroStationTrack(this NetInfo netInfo)
         {

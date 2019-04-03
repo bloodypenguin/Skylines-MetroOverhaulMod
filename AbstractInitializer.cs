@@ -1,4 +1,7 @@
 ﻿using ColossalFramework;
+using MetroOverhaul.Extensions;
+using MetroOverhaul.InitializationSteps;
+using MetroOverhaul.NEXT.Extensions;
 using MetroOverhaul.OptionsFramework;
 using System;
 using System.Collections.Generic;
@@ -63,23 +66,32 @@ namespace MetroOverhaul
             }
             Loading.QueueLoadingAction(() =>
             {
-
-                InitializeImpl();
-                PrefabCollection<NetInfo>.InitializePrefabs("Rail Extensions", _customNetInfos.Values.ToArray(), !OptionsWrapper<Options>.Options.ghostMode ? _netReplacements.ToArray() : null);
-                PrefabCollection<BuildingInfo>.InitializePrefabs("Rail Building Extensions", _customBuildingInfos.Values.ToArray(), null);
-                //if (OptionsWrapper<Options>.Options.ghostMode)
-                //{
-                //    PrefabCollection<NetInfo>.DestroyPrefabs("Rail Extensions", _customNetInfos.Values.ToArray(), _netReplacements.ToArray());
-                //    PrefabCollection<BuildingInfo>.DestroyPrefabs("Rail Building Extensions", _customBuildingInfos.Values.ToArray(), null);
-                //    PrefabCollection<NetInfo>.BindPrefabs();
-                //    PrefabCollection<BuildingInfo>.BindPrefabs();
-                //}
+                InitializeNetInfoImpl();
+                PrefabCollection<NetInfo>.InitializePrefabs("Metro Extensions", _customNetInfos.Values.ToArray(), !OptionsWrapper<Options>.Options.ghostMode ? _netReplacements.ToArray() : null);
             });
             _isInitialized = true;
         }
+        public void DoSomething() {
+            Loading.QueueLoadingAction(() =>
+            {
+                InitializeBuildingInfoImpl();
+                PrefabCollection<BuildingInfo>.InitializePrefabs("Metro Building Extensions", _customBuildingInfos.Values.ToArray(), null);
+                PrefabCollection<BuildingInfo>.BindPrefabs();
+            });
+        }
+        protected abstract void InitializeNetInfoImpl();
+        public abstract void InitializeBuildingInfoImpl();
 
-        protected abstract void InitializeImpl();
-
+        protected void CreateStationClones(Action<BuildingInfo> setupAction = null) {
+            var railStationInfos = Resources.FindObjectsOfTypeAll<BuildingInfo>();
+            var targetRailStationInfos = railStationInfos.Where(rsi =>
+                rsi?.m_buildingAI is TransportStationAI &&
+                ((rsi.m_class.m_subService == ItemClass.SubService.PublicTransportTrain && rsi.HasAbovegroundTrainStationTracks())||
+                (rsi.m_class.m_subService == ItemClass.SubService.PublicTransportMetro && rsi.HasAbovegroundMetroStationTracks())));
+            foreach (var railStationInfo in targetRailStationInfos) {
+                CreateBuildingInfo(railStationInfo.name + "_Analog", railStationInfo, setupAction);
+            }
+        }
         protected NetInfo CreateNetInfo(string newNetInfoName, string originalNetInfoName, Action<NetInfo> setupAction, string replaces = "")
         {
             var originalPrefab = FindOriginalNetInfo(originalNetInfoName);
@@ -108,17 +120,21 @@ namespace MetroOverhaul
         protected void CreateBuildingInfo(string newBuildingInfoName, string originalBuildingInfoName, Action<BuildingInfo> setupAction = null)
         {
             var originalPrefab = FindOriginalBuildingInfo(originalBuildingInfoName);
+            CreateBuildingInfo(newBuildingInfoName, originalPrefab, setupAction);
 
-            if (originalPrefab == null)
+        }
+        private void CreateBuildingInfo(string newBuildingInfoName, BuildingInfo originalBuildingInfo, Action<BuildingInfo> setupAction = null) {
+            if (originalBuildingInfo == null)
             {
-                Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Prefab '{0}' not found (required for '{1}')", originalBuildingInfoName, newBuildingInfoName);
+                Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Prefab '{0}' not found (required for '{1}')", originalBuildingInfo.name, newBuildingInfoName);
                 return;
             }
             if (_customBuildingInfos.ContainsKey(newBuildingInfoName))
             {
                 return;
             }
-            var newPrefab = Util.ClonePrefab(originalPrefab, newBuildingInfoName, transform);
+            //var newPrefab = originalBuildingInfo.Clone(newBuildingInfoName, transform);
+            var newPrefab = Util.ClonePrefab(originalBuildingInfo, newBuildingInfoName, transform);
             if (newPrefab == null)
             {
                 Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Couldn't make prefab '{0}'", newBuildingInfoName);
@@ -127,7 +143,6 @@ namespace MetroOverhaul
             setupAction?.Invoke(newPrefab);
             _customBuildingInfos.Add(newBuildingInfoName, newPrefab);
         }
-
         protected NetInfo FindCustomNetInfo(string customNetInfoName)
         {
             return _customNetInfos[customNetInfoName];

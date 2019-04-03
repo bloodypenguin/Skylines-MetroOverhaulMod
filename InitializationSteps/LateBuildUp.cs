@@ -10,7 +10,7 @@ namespace MetroOverhaul.InitializationSteps
         public static void BuildUp(NetInfo prefab, NetInfoVersion version)
         {
             var smallWord = "";
-            switch (prefab.m_lanes.Where(l => l.m_vehicleType == VehicleInfo.VehicleType.Metro).Count()) {
+            switch (prefab.m_lanes.Where(l => l.m_vehicleType == VehicleInfo.VehicleType.Metro).GroupBy(g => Math.Round(g.m_position)).Count()) {
                 case 1:
                     smallWord = "Small";
                     break;

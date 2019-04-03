@@ -12,97 +12,32 @@ namespace MetroOverhaul.UI
 {
     public class MetroTrackCustomizerUI : MetroCustomizerBase
     {
-        public override void Update()
+        protected override bool SatisfiesTrackSpecs(PrefabInfo info)
         {
-            if (m_netTool == null)
-            {
-                return;
-            }
-            try
-            {
-                var toolInfo = m_netTool.enabled ? m_netTool.m_prefab : null;
-                if (toolInfo == m_currentNetInfo)
-                {
-                    return;
-                }
-                NetInfo finalInfo = null;
-                if (toolInfo != null)
-                {
-                    if (toolInfo.IsMetroTrack())
-                    {
-                        finalInfo = toolInfo;
-                    }
-                }
-                if (finalInfo == m_currentNetInfo)
-                {
-                    return;
-                }
-                if (finalInfo != null)
-                {
-                    Activate(finalInfo);
-                }
-                else
-                {
-                    Deactivate();
-                }
-            }
-            catch (Exception e)
-            {
-                UnityEngine.Debug.LogException(e);
-                Deactivate();
-            }
-
+            return ((NetInfo)info).IsMetroTrack();
         }
-        public override void Start()
+
+        protected override ToolBase GetTheTool()
         {
-            m_netTool = FindObjectOfType<NetTool>();
-            if (m_netTool == null)
-            {
-#if DEBUG
-                Next.Debug.Log("NetTool Not Found");
-#endif
-                enabled = false;
-                return;
-            }
+            return m_netTool;
+        }
 
-            m_bulldozeTool = FindObjectOfType<BulldozeTool>();
-            if (m_bulldozeTool == null)
-            {
-#if DEBUG
-                Next.Debug.Log("BulldozeTool Not Found");
-#endif
-                enabled = false;
-                return;
-            }
-            m_netTool = FindObjectOfType<NetTool>();
-            if (m_netTool == null)
-            {
-#if DEBUG
-                Next.Debug.Log("NetTool Not Found");
-#endif
-                enabled = false;
-                return;
-            }
+        protected override PrefabInfo GetToolPrefab()
+        {
+            return ((NetTool)GetTheTool()).m_prefab;
+        }
 
-            try
-            {
-                m_upgradeButtonTemplate = GameObject.Find("RoadsSmallPanel").GetComponent<GeneratedScrollPanel>().m_OptionsBar.Find<UIButton>("Upgrade");
-            }
-            catch
-            {
-#if DEBUG
-                Next.Debug.Log("Upgrade button template not found");
-#endif
-            }
+        protected override PrefabInfo CurrentInfo { get => m_currentNetInfo; set => m_currentNetInfo = (NetInfo)value; }
 
-            CreateUI();
+        protected override void SubStart()
+        {
             trackStyle = 0;
             trackSize = 1;
             trackDirection = 1;
             ExecuteUiInstructions();
         }
 
-        private void CreateUI()
+        protected override void CreateUI()
         {
 #if DEBUG
             Next.Debug.Log("MOM TRACK GUI Created");
@@ -211,10 +146,13 @@ namespace MetroOverhaul.UI
                             {
                                 if (trackDirection == 0)
                                 {
+                                    btnOneWay.enabled = false;
+                                    btnTwoWay.SimulateClick();
                                 }
                                 else
                                 {
                                     prefab = fence ? concreteLargePrefab : concreteLargePrefabNoBar;
+                                    btnOneWay.enabled = false;
                                 }
                             }
                             break;
@@ -251,8 +189,8 @@ namespace MetroOverhaul.UI
                             {
                                 if (trackDirection == 0)
                                 {
-                                    trackDirection = 1;
                                     btnOneWay.enabled = false;
+                                    btnTwoWay.SimulateClick();
                                 }
                                 else
                                 {
@@ -285,34 +223,21 @@ namespace MetroOverhaul.UI
                     }
                 }
 
-                //if (CheckboxDict[EXTRA_PILLARS].isChecked)
-                //{
-                //    prefab = PrefabCollection<NetInfo>.FindLoaded(prefab.name + " ep");
-                //}
                 m_netTool.m_prefab = prefab;
                 m_currentNetInfo = prefab;
-
             }
         }
 
-        private void Activate(NetInfo nInfo)
+        protected override void Activate(PrefabInfo info)
         {
-            m_activated = true;
-            m_currentNetInfo = nInfo;
-            isVisible = true;
-            ExecuteUiInstructions();
-        }
-        private void Deactivate()
-        {
-            if (!m_activated)
-            {
-                return;
-            }
+            base.Activate(info);
             CheckboxDict[OVER_ROAD_FRIENDLY].isChecked = false;
             ExecuteUiInstructions();
-            m_currentNetInfo = null;
-            isVisible = false;
-            m_activated = false;
+        }
+        protected override void SubDeactivate()
+        {
+            //CheckboxDict[OVER_ROAD_FRIENDLY].isChecked = false;
+            //ExecuteUiInstructions();
         }
     }
 }
