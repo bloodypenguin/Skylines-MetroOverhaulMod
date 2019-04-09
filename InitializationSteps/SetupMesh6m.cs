@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using MetroOverhaul.NEXT;
 using MetroOverhaul.NEXT.Extensions;
-using UnityEngine;
 
-namespace MetroOverhaul.InitializationSteps
-{
+namespace MetroOverhaul.InitializationSteps {
     public static partial class SetupMesh
     {
         public static void Setup6mMesh(this NetInfo info, NetInfoVersion version)

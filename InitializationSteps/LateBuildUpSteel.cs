@@ -3,13 +3,8 @@ using MetroOverhaul.NEXT;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-using MetroOverhaul.OptionsFramework;
-using MetroOverhaul.UI;
-using ColossalFramework;
-using ColossalFramework.UI;
 
-namespace MetroOverhaul.InitializationSteps
-{
+namespace MetroOverhaul.InitializationSteps {
     public static class LateBuildUpSteel
     {
         public static void BuildUp(NetInfo prefab, NetInfoVersion version)

@@ -4,15 +4,12 @@ using System.Linq;
 using ColossalFramework;
 using ColossalFramework.Math;
 using ICities;
-using MetroOverhaul.Detours;
 using MetroOverhaul.Extensions;
-using MetroOverhaul.NEXT;
 using MetroOverhaul.NEXT.Extensions;
 using MetroOverhaul.OptionsFramework;
 using UnityEngine;
 
-namespace MetroOverhaul
-{
+namespace MetroOverhaul {
     public class AssetsUpdater
     {
         private static NetManager ninstance = Singleton<NetManager>.instance;

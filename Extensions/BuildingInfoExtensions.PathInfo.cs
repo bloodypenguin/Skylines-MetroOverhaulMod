@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MetroOverhaul.Extensions
-{
+﻿namespace MetroOverhaul.Extensions {
     public static partial class BuildingInfoExtensions
     {
         public static void AssignNetInfo(this BuildingInfo.PathInfo path, string netInfoName)

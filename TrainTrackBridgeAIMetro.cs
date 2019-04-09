@@ -1,17 +1,10 @@
 ﻿using ColossalFramework;
-using ColossalFramework.Math;
-using MetroOverhaul.Extensions;
 using MetroOverhaul.NEXT.Extensions;
-using MetroOverhaul.OptionsFramework;
-using Next;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 
-namespace MetroOverhaul
-{
+namespace MetroOverhaul {
     class TrainTrackBridgeAIMetro : TrainTrackBridgeAI
     {
         public List<BridgePillarItem> pillarList { get; set; }

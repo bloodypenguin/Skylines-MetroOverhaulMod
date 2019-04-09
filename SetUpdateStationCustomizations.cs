@@ -2,15 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text;
 using MetroOverhaul.Extensions;
 using UnityEngine;
-using MetroOverhaul.UI;
 using ColossalFramework;
 
-namespace MetroOverhaul
-{
+namespace MetroOverhaul {
     public static class SetUpdateStationCustomizations
     {
         public const int MAX_DEPTH = 36;
@@ -329,9 +325,7 @@ namespace MetroOverhaul
             pool.AddRange(connectList);
             for (var i = 0; i < connectList.Count; i++)
             {
-                Debug.Log("derpAStart");
                 var closestVector = pool.SelectMany(n => n).OrderBy(n => (currentVector.x - n.x) + (100 * (connectPoints.First().y - n.y)) + (currentVector.z - n.z)).FirstOrDefault();
-                Debug.Log("derpAEnd");
                 var closestPath = pathList.FirstOrDefault(p => p.m_nodes.Any(n => n == closestVector));
                 BuildingInfo.PathInfo branch = null;
                 if (currentVector == connectPoints.First())
@@ -345,9 +339,7 @@ namespace MetroOverhaul
                 branch.AssignNetInfo("Pedestrian Connection Underground");
                 pathList.Add(branch);
                 var nodeArrayToLose = pool.FirstOrDefault(na => na.Any(n => n == closestVector));
-                Debug.Log("derpBStart");
                 currentVector = nodeArrayToLose.OrderBy(n => Vector3.Distance(closestVector, n)).LastOrDefault();
-                Debug.Log("derpBEnd");
                 if (nodeArrayToLose != null)
                 {
                     pool.Remove(nodeArrayToLose);
@@ -358,9 +350,7 @@ namespace MetroOverhaul
                 for (var i = 1; i < connectPoints.Count(); i++)
                 {
                     Vector3 node = connectPoints[i];
-                    Debug.Log("derpCStart");
                     Vector3 closestVector = connectList.SelectMany(n => n).OrderBy(n => (node.x - n.x) + (100 * (node.y - n.y)) + (node.z - n.z)).FirstOrDefault();
-                    Debug.Log("derpCEnd");
                     var closestPath = pathList.FirstOrDefault(p => p.m_nodes.Any(n => n == closestVector));
                     var branch = ChainPath(closestPath, node, Array.IndexOf(closestPath.m_nodes, closestVector));
                     branch.AssignNetInfo("Pedestrian Connection Underground");

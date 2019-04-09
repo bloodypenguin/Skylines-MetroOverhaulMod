@@ -4,16 +4,14 @@ using MetroOverhaul.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
+//using StationTrackType = MetroOverhaul.ModTrackNames.StationTrackType;
 
-namespace MetroOverhaul.UI
-{
-    public class MetroCustomizerBase : UIPanel
-    {
-        public int stationClass = 0;
-        public int trackStyle = 0;
+namespace MetroOverhaul.UI {
+    public class MetroCustomizerBase: UIPanel {
+        public TrackVehicleType trackVehicleType = TrackVehicleType.Default;
+        public TrackStyle trackStyle = TrackStyle.Modern;
         public int trackSize = 1;
         public int trackDirection = 1;
         protected BulldozeTool m_bulldozeTool;
@@ -61,6 +59,7 @@ namespace MetroOverhaul.UI
 
         protected UIButton btnMetro;
         protected UIButton btnTrain;
+        protected UIButton btnDefault;
         protected UIButton btnModernStyle;
         protected UIButton btnClassicStyle;
         protected UIButton btnSingleTrack;
@@ -229,7 +228,7 @@ namespace MetroOverhaul.UI
             SubStart();
         }
         protected virtual void CreateUI() { }
-        protected virtual void SubStart(){}
+        protected virtual void SubStart() { }
         public override void Awake()
         {
             trainTrackPrefab = PrefabCollection<NetInfo>.FindLoaded("Train Track");
@@ -305,18 +304,25 @@ namespace MetroOverhaul.UI
         protected void ToggleButtonPairs(int activeIndex, params UIButton[] buttons)
         {
             var active = buttons[activeIndex];
-            active.color = new Color32(163, 255, 16, 255);
-            active.normalBgSprite = "ButtonMenuFocused";
-            active.useDropShadow = true;
-            active.opacity = 95;
-            var inactives = buttons.Except(new List<UIButton>() { active });
-            foreach (UIButton inactive in inactives)
+            if (active.isEnabled)
             {
-                inactive.color = new Color32(150, 150, 150, 255);
-                inactive.normalBgSprite = "ButtonMenu";
-                inactive.useDropShadow = false;
-                inactive.opacity = 75;
+                active.color = new Color32(163, 255, 16, 255);
+                active.normalBgSprite = "ButtonMenuFocused";
+                active.useDropShadow = true;
+                active.opacity = 95;
+                var inactives = buttons.Except(new List<UIButton>() { active });
+                foreach (UIButton inactive in inactives)
+                {
+                    if (inactive.isEnabled)
+                    {
+                        inactive.color = new Color32(150, 150, 150, 255);
+                        inactive.normalBgSprite = "ButtonMenu";
+                        inactive.useDropShadow = false;
+                        inactive.opacity = 95;
+                    }
+                }
             }
+
         }
 
         protected void ToggleButtonPairs(StationTrackType activeStationtype)
@@ -326,7 +332,7 @@ namespace MetroOverhaul.UI
                 kvp.Value.color = new Color32(150, 150, 150, 255);
                 kvp.Value.normalBgSprite = "ButtonMenu";
                 kvp.Value.useDropShadow = false;
-                kvp.Value.opacity = 75;
+                kvp.Value.opacity = 95;
             }
             buttonStationDict[activeStationtype].color = new Color32(163, 255, 16, 255);
             buttonStationDict[activeStationtype].normalBgSprite = "ButtonMenuFocused";
@@ -353,6 +359,7 @@ namespace MetroOverhaul.UI
             button.normalBgSprite = "ButtonMenu";
             button.color = new Color32(150, 150, 150, 255);
             button.disabledBgSprite = "ButtonMenuDisabled";
+            button.disabledColor = new Color32(204, 204, 204, 255);
             button.hoveredBgSprite = "ButtonMenuHovered";
             button.hoveredColor = new Color32(163, 255, 16, 255);
             button.focusedBgSprite = "ButtonMenu";
@@ -363,7 +370,7 @@ namespace MetroOverhaul.UI
             button.normalBgSprite = "ButtonMenu";
             button.focusedBgSprite = "ButtonMenuFocused";
             button.playAudioEvents = true;
-            button.opacity = 75;
+            button.opacity = 95;
             button.dropShadowColor = new Color32(0, 0, 0, 255);
             button.dropShadowOffset = new Vector2(-1, -1);
             button.text = text;
@@ -578,18 +585,7 @@ namespace MetroOverhaul.UI
             m_activated = false;
         }
 
-        public enum StationTrackType
-        {
-            None,
-            SidePlatform,
-            IslandPlatform,
-            SingleTrack,
-            QuadSidePlatform,
-            //QuadSideIslandPlatform,
-            QuadDualIslandPlatform
-        }
-        public enum ToggleType
-        {
+        public enum ToggleType {
             None,
             Length,
             Depth,

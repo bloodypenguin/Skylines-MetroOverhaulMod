@@ -5,15 +5,16 @@ using MetroOverhaul.Redirection;
 using MetroOverhaul.NEXT;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ColossalFramework.UI;
 using MetroOverhaul.OptionsFramework;
 using MetroOverhaul.UI;
+using PrefabHook;
 using UnityEngine;
+using MetroOverhaul.Extensions;
 
-namespace MetroOverhaul
-{
-    public class LoadingExtension : LoadingExtensionBase
-    {
+namespace MetroOverhaul {
+    public class LoadingExtension: LoadingExtensionBase {
         public static Initializer Container;
         private static AssetsUpdater _updater;
         public static bool Done { get; private set; } // Only one Assets installation throughout the application
@@ -24,35 +25,96 @@ namespace MetroOverhaul
 #else
         private bool indebug = false;
 #endif
+
         private LoadMode _cachedMode;
 
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
-                _updater = null;
-                LateBuildUpQueue.Clear();
-                InstallAssets();
-                if (Container == null)
+            if (Util.IsHooked() && OptionsWrapper<Options>.Options.ingameTrainMetroConverter)
+            {
+                BuildingInfoHook.OnPreInitialization += info =>
                 {
-                    Container = new GameObject("MetroOverhaul").AddComponent<Initializer>();
-                    Container.AppMode = loading.currentMode;
-                }
-                if (loading.currentMode == AppMode.AssetEditor)
-                {
-                    Redirector<RoadsGroupPanelDetour>.Deploy();
-                }
-                if (loading.currentMode == AppMode.Game)
-                {
-                    Redirector<DepotAIDetour>.Deploy();
-                    if (OptionsWrapper<Options>.Options.improvedMetroTrainAi)
+                    try
                     {
-                        Redirector<MetroTrainAIDetour>.Deploy();
+                        if (Container.RegisterWid(info))
+                        {
+                            if (info.name.StartsWith("1700703476."))
+                            {
+                                Debug.Log("It's starting");
+                            }
+
+                            var ai = info.GetComponent<PlayerBuildingAI>();
+                            if (ai != null)
+                                if (ai is TransportStationAI)
+                                {
+                                    if (info.name.StartsWith("1700703476."))
+                                    {
+                                        Debug.Log("We have a proper AI");
+                                    }
+
+                                    if (info.m_class.m_subService == ItemClass.SubService.PublicTransportTrain &&
+                                        info.HasAbovegroundTrainStationTracks() ||
+                                        (info.m_class.m_subService == ItemClass.SubService.PublicTransportMetro &&
+                                         info.HasAbovegroundMetroStationTracks()))
+                                    {
+                                        if (info.name.StartsWith("1700703476."))
+                                        {
+                                            Debug.Log("Falls in line with class conventions");
+                                        }
+
+                                        Container.InitializeBuildingInfoImpl(info);
+                                    }
+                                }
+                                else
+                                {
+                                    if (info.name.StartsWith("1700703476."))
+                                    {
+                                        Debug.Log("item " + info.name + " has AI of " + ai.GetType().ToString());
+                                    }
+                                }
+                        }
+                        else
+                        {
+                            if (info.name.StartsWith("1700703476."))
+                            {
+                                Debug.Log("item " + info.name + " has no AI");
+                            }
+                        }
                     }
-                    if (OptionsWrapper<Options>.Options.improvedPassengerTrainAi)
+                    catch (Exception e)
                     {
-                        Redirector<PassengerTrainAIDetour>.Deploy();
+                        UnityEngine.Debug.LogError(e);
                     }
+                };
+                BuildingInfoHook.Deploy();
+            }
+
+            _updater = null;
+            LateBuildUpQueue.Clear();
+            InstallAssets();
+            if (Container == null)
+            {
+                Container = new GameObject("MetroOverhaul").AddComponent<Initializer>();
+                Container.AppMode = loading.currentMode;
+            }
+
+            if (loading.currentMode == AppMode.AssetEditor)
+            {
+                Redirector<RoadsGroupPanelDetour>.Deploy();
+            }
+            if (loading.currentMode == AppMode.Game)
+            {
+                Redirector<DepotAIDetour>.Deploy();
+                if (OptionsWrapper<Options>.Options.improvedMetroTrainAi)
+                {
+                    Redirector<MetroTrainAIDetour>.Deploy();
                 }
+                if (OptionsWrapper<Options>.Options.improvedPassengerTrainAi)
+                {
+                    Redirector<PassengerTrainAIDetour>.Deploy();
+                }
+            }
         }
 
         public static void EnqueueLateBuildUpAction(Action action)
@@ -90,6 +152,9 @@ namespace MetroOverhaul
         public override void OnReleased()
         {
             base.OnReleased();
+            if (Util.IsHooked() && OptionsWrapper<Options>.Options.ingameTrainMetroConverter)
+                BuildingInfoHook.Revert();
+
             if (!OptionsWrapper<Options>.Options.ghostMode)
             {
                 _updater = null;
@@ -159,7 +224,7 @@ namespace MetroOverhaul
                     transportInfo.m_secondaryLineMaterial = transportInfo.m_lineMaterial;
                     transportInfo.m_secondaryLineMaterial2 = transportInfo.m_lineMaterial2;
                 }
-                else 
+                else
                 {
                     var gameObject = new GameObject("MetroOverhaulUISetup");
                     //gameObject.AddComponent<StyleSelectionStationUI>();

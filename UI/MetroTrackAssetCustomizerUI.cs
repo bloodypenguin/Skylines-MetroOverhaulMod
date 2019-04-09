@@ -1,16 +1,10 @@
 ﻿using System;
-using ColossalFramework.Threading;
 using ColossalFramework.UI;
 using MetroOverhaul.Extensions;
 using UnityEngine;
-using MetroOverhaul.NEXT.Extensions;
-using System.Linq;
 using System.Collections.Generic;
-using ColossalFramework;
-using MetroOverhaul.OptionsFramework;
 
-namespace MetroOverhaul.UI
-{
+namespace MetroOverhaul.UI {
     public class MetroTrackAssetCustomizerUI : MetroCustomizerBase
     {
         protected override bool SatisfiesTrackSpecs(PrefabInfo info)
@@ -32,7 +26,7 @@ namespace MetroOverhaul.UI
 
         protected override void SubStart()
         {
-            trackStyle = 0;
+            trackStyle = TrackStyle.Modern;
             trackSize = 1;
             trackDirection = 1;
             isStation = 1;
@@ -60,13 +54,13 @@ namespace MetroOverhaul.UI
 
             btnModernStyle = CreateButton("Modern", 2, (c, v) =>
             {
-                trackStyle = 0;
+                trackStyle = TrackStyle.Modern;
                 ExecuteUiInstructions();
             });
 
             btnClassicStyle = CreateButton("Classic", 2, (c, v) =>
               {
-                  trackStyle = 1;
+                  trackStyle = TrackStyle.Classic;
                   ExecuteUiInstructions();
               });
             btnStation = CreateButton("Stn Trk", 2, (c, v) =>
@@ -181,7 +175,7 @@ namespace MetroOverhaul.UI
                 kvp.Value.isVisible = isStation == 1;
             }
 
-            ToggleButtonPairs(trackStyle, btnModernStyle, btnClassicStyle);
+            ToggleButtonPairs((int)trackStyle, btnModernStyle, btnClassicStyle);
             ToggleButtonPairs(isStation, btnTrack, btnStation);
 
             if (isStation == 0)
@@ -197,7 +191,7 @@ namespace MetroOverhaul.UI
             var fence = CheckboxDict[ALT_BARRIER].isChecked;
             switch (trackStyle)
             {
-                case 0:
+                case TrackStyle.Modern:
                     {
                         switch (isStation)
                         {
@@ -246,7 +240,7 @@ namespace MetroOverhaul.UI
                         }
                     }
                     break;
-                case 1:
+                case TrackStyle.Classic:
                     {
                         switch (isStation)
                         {

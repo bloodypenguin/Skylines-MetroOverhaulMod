@@ -1,15 +1,9 @@
-﻿using System;
-using ColossalFramework.Threading;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 using MetroOverhaul.Extensions;
 using UnityEngine;
-using MetroOverhaul.NEXT.Extensions;
-using System.Linq;
 using System.Collections.Generic;
-using MetroOverhaul.OptionsFramework;
 
-namespace MetroOverhaul.UI
-{
+namespace MetroOverhaul.UI {
     public class MetroTrackCustomizerUI : MetroCustomizerBase
     {
         protected override bool SatisfiesTrackSpecs(PrefabInfo info)
@@ -31,7 +25,7 @@ namespace MetroOverhaul.UI
 
         protected override void SubStart()
         {
-            trackStyle = 0;
+            trackStyle = TrackStyle.Modern;
             trackSize = 1;
             trackDirection = 1;
             ExecuteUiInstructions();
@@ -57,13 +51,13 @@ namespace MetroOverhaul.UI
 
             btnModernStyle = CreateButton("Modern", 2, (c, v) =>
             {
-                trackStyle = 0;
+                trackStyle = TrackStyle.Modern;
                 ExecuteUiInstructions();
             });
 
             btnClassicStyle = CreateButton("Classic", 2, (c, v) =>
                {
-                   trackStyle = 1;
+                   trackStyle = TrackStyle.Classic;
                    ExecuteUiInstructions();
                });
             btnSingleTrack = CreateButton("Single", 3, (c, v) =>
@@ -104,7 +98,7 @@ namespace MetroOverhaul.UI
 
         protected override void ExecuteUiInstructions()
         {
-            ToggleButtonPairs(trackStyle, btnModernStyle, btnClassicStyle);
+            ToggleButtonPairs((int)trackStyle, btnModernStyle, btnClassicStyle);
             ToggleButtonPairs(trackSize, btnSingleTrack, btnDoubleTrack, btnQuadTrack);
             ToggleButtonPairs(trackDirection, btnOneWay, btnTwoWay);
 
@@ -113,7 +107,7 @@ namespace MetroOverhaul.UI
             btnOneWay.enabled = true;
             switch (trackStyle)
             {
-                case 0:
+                case TrackStyle.Modern:
                     switch (trackSize)
                     {
                         case 0:
@@ -158,7 +152,7 @@ namespace MetroOverhaul.UI
                             break;
                     }
                     break;
-                case 1:
+                case TrackStyle.Classic:
                     switch (trackSize)
                     {
                         case 0:

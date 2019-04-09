@@ -1,9 +1,7 @@
 ﻿using MetroOverhaul.Redirection.Attributes;
 using System;
-using Next;
 
-namespace MetroOverhaul.Detours
-{
+namespace MetroOverhaul.Detours {
     [TargetType(typeof(RoadsGroupPanel))]
     class RoadsGroupPanelDetour:RoadsGroupPanel
     {

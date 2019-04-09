@@ -1,10 +1,8 @@
 ﻿using MetroOverhaul.NEXT;
 using MetroOverhaul.NEXT.Extensions;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace MetroOverhaul.InitializationSteps
-{
+namespace MetroOverhaul.InitializationSteps {
     public static partial class SetupSteelMesh
     {
         public static void Setup6mSteelMesh(NetInfo info, NetInfoVersion version, NetInfo elevatedInfo)

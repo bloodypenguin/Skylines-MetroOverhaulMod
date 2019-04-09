@@ -1,13 +1,8 @@
 ﻿using MetroOverhaul.NEXT;
 using MetroOverhaul.NEXT.Extensions;
 using MetroOverhaul.NEXT.Texturing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace MetroOverhaul.InitializationSteps
-{
+namespace MetroOverhaul.InitializationSteps {
     partial class SetupTexture
     {
         public static void Setup19mTexture(NetInfo info, NetInfoVersion version)

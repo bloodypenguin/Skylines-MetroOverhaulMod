@@ -2,13 +2,9 @@
 using MetroOverhaul.NEXT.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
-using static MetroOverhaul.UI.MetroCustomizerBase;
 
-namespace MetroOverhaul.InitializationSteps
-{
+namespace MetroOverhaul.InitializationSteps {
     public static class SetupMeshUtil
     {
         public static string WidthName = null;
@@ -1013,12 +1009,6 @@ namespace MetroOverhaul.InitializationSteps
             node7.m_directConnect = true;
             node7.m_material = DefaultMaterial;
             node7.m_lodMaterial = DefaultLODMaterial;
-        }
-
-        public enum TrackType
-        {
-            Modern,
-            Classic
         }
     }
 }

@@ -476,54 +476,7 @@ namespace MetroOverhaul.InitializationSteps
             prefab.m_lanes = theLanes.ToArray();
         }
         public static void CommonClonedStationCustomization(BuildingInfo info) {
-            if (info.HasAbovegroundTrainStationTracks()) {
-                var paths = info.m_paths;
-                for (var i = 0; i < paths.Length; i++) {
-                    if (paths[i]?.m_netInfo != null) {
-                        var trackName = paths[i].m_netInfo.name;
-                        if (paths[i].m_netInfo.IsAbovegroundTrainStationTrack()) {
-                            paths[i].AssignNetInfo(GetComplimentaryTrackName(paths[i].m_netInfo.name));
-                        }
-                    }
-                }
-            }
-            else if (info.HasAbovegroundMetroStationTracks()) {
-                var paths = info.m_paths;
-                for (var i = 0; i < paths.Length; i++) {
-                    if (paths[i]?.m_netInfo != null) {
-                        var trackName = paths[i].m_netInfo.name;
-                        if (paths[i].m_netInfo.IsAbovegroundMetroStationTrack()) {
-                            paths[i].AssignNetInfo(GetComplimentaryTrackName(paths[i].m_netInfo.name));
-                        }
-                    }
-                }
-            }
-        }
-
-        private static string GetComplimentaryTrackName(string trackName) {
-            if (trackName == "Train Station Track") {
-                return "Metro Station Track Ground";
-            }
-            else if (trackName.EndsWith("Metro Station Track Ground")) {
-                return "Train Station Track";
-            }
-            else if (trackName == "BP wide train station track") {
-                return "Metro Station Track Ground Island";
-            }
-            else if (trackName.EndsWith("Metro Station Track Ground Island")) {
-                return "BP wide train station track";
-            }
-            else if (trackName == "BP_DualIslandStationTrack_Ground") {
-                return "Metro Station Track Ground Large Dual Island";
-            }
-            else if (trackName.EndsWith("Metro Station Track Ground Large Dual Island")) {
-                return "BP_DualIslandStationTrack_Ground";
-            }else if(trackName == "BP_Bypass Station Track_G") {
-                return "Metro Station Track Ground Large";
-            }else if (trackName.EndsWith("Metro Station Track Ground Large")) {
-                return "BP_Bypass Station Track_G";
-            }
-            return "";
+            info.m_availableIn = ItemClass.Availability.None;
         }
 
         public static void SetStandardTrackWidths(NetInfo prefab, NetInfoVersion version)
@@ -737,7 +690,6 @@ namespace MetroOverhaul.InitializationSteps
             prefab.m_InfoTooltipAtlas = vanillaBuilding.m_InfoTooltipAtlas;
             prefab.m_InfoTooltipThumbnail = vanillaBuilding.m_InfoTooltipThumbnail;
             prefab.m_isCustomContent = false;
-            prefab.m_availableIn = ItemClass.Availability.All;
             var locale = LocaleManager.instance.GetLocale();
             var key = new Locale.Key { m_Identifier = "NET_TITLE", m_Key = prefab.name };
             if (!locale.Exists(key)) {

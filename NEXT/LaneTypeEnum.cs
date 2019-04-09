@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MetroOverhaul.NEXT
-{
+﻿namespace MetroOverhaul.NEXT {
     public enum LanesLayoutStyle
     {
         Symmetrical = 0,

@@ -111,20 +111,6 @@ namespace MetroOverhaul.NEXT
             var nbLanesBeforeMedian = isNotSymmetrical ? leftLaneCount : nbUsableLanes / 2;
             var positionStart = -(rdInfo.m_halfWidth - rdInfo.m_pavementWidth - (rdInfo.m_hasParkingSpaces ? rdInfo.m_lanes.FirstOrDefault(l => l.m_laneType == NetInfo.LaneType.Parking)?.m_width ?? 0 : 0) - (0.5f * config.VehicleLaneWidth) + config.LanePositionOffst);
 
-            //if (config.CenterLane == CenterLaneType.Median ||
-            //    config.CenterLane == CenterLaneType.TurningLane)
-            //{
-            //    positionStart -= config.CenterLaneWidth / 2;
-            //}
-
-            //positionStart -= config.LaneWidth * (nbLanesBeforeMedian - (isNotSymmetrical && config.CenterLane != CenterLaneType.None ? 0 : 1)) + config.LaneWidth / 2;
-            //Debug.Log(">>>> NbLanes : " + nbLanes);
-            //Debug.Log(">>>> NbUsableLanes : " + nbUsableLanes);
-            //Debug.Log(">>>> NbUsableLanesPerSide : " + nbUsableLanesPerSide);
-            //Debug.Log(">>>> HasCenterLane : " + hasCenterLane);
-            //Debug.Log(">>>> LaneWidth : " + config.LaneWidth);
-            //Debug.Log(">>>> PositionStart : " + positionStart);
-
             for (var i = 0; i < nbLanes; i++)
             {
                 var l = vehicleLanes[i].ShallowClone();

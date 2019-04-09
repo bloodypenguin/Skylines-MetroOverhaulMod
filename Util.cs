@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using ColossalFramework.Plugins;
@@ -10,8 +9,7 @@ using Object = UnityEngine.Object;
 using static ColossalFramework.Plugins.PluginManager;
 using ColossalFramework.PlatformServices;
 
-namespace MetroOverhaul
-{
+namespace MetroOverhaul {
     public static class Util
     {
         public static IEnumerable<FieldInfo> GetAllFieldsFromType(this Type type)
@@ -110,7 +108,28 @@ namespace MetroOverhaul
 
             }
         }
-
+        public static bool IsHooked()
+        {
+            foreach (PluginInfo current in PluginManager.instance.GetPluginsInfo())
+            {
+                if (current.publishedFileID.AsUInt64 == 530771650uL) return true;
+            }
+            return false;
+        }
+        public static bool TryGetWorkshopId(PrefabInfo info, out long workshopId)
+        {
+            workshopId = -1;
+            if (info?.name == null)
+            {
+                return false;
+            }
+            if (!info.name.Contains(".")) //only for custom prefabs
+            {
+                return false;
+            }
+            var idStr = info.name.Split('.')[0];
+            return long.TryParse(idStr, out workshopId);
+        }
         public static bool IsGameMode()
         {
             return ToolManager.instance.m_properties.m_mode == ItemClass.Availability.Game;

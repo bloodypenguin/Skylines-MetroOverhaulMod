@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using ColossalFramework.Threading;
 using ColossalFramework.UI;
 using MetroOverhaul.Extensions;
 using UnityEngine;
 
-namespace MetroOverhaul.UI
-{
+namespace MetroOverhaul.UI {
     public class MetroStationCustomizerUI : MetroCustomizerBase
     {
         private const int DEPTH_STEP = 3;

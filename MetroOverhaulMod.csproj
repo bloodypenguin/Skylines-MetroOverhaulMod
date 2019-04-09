@@ -60,6 +60,7 @@
     <Compile Include="InitializationSteps\SetupSteelTextures6m.cs" />
     <Compile Include="InitializationSteps\SetupTexture19m.cs" />
     <Compile Include="InitializationSteps\SetupTexture6m.cs" />
+    <Compile Include="NEXT\Extensions\BuildingInfoExtensions.PathInfo.cs" />
     <Compile Include="NEXT\Extensions\NetToolExtensions.cs" />
     <Compile Include="NEXT\LaneTypeEnum.cs" />
     <Compile Include="OptionsFramework\Attibutes\AbstractOptionsAttribute.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="Redirection\Attributes\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Extensions\TypeExtension.cs" />
     <Compile Include="SetUpdateStationCustomizations.cs" />
+    <Compile Include="ModTrackNames.cs" />
     <Compile Include="TrainTrackAIMetro.cs" />
     <Compile Include="TrainTrackBridgeAIMetro.cs" />
     <Compile Include="MetroTrackAIMetro.cs" />
@@ -162,6 +164,10 @@
     <Reference Include="ObjUnity3D, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\NetworkExtensions2\ObjUnity3D\bin\Release\ObjUnity3D.dll</HintPath>
+    </Reference>
+    <Reference Include="PrefabHook, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\PrefabHook.dll</HintPath>
     </Reference>
     <Reference Include="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\System.dll</HintPath>
@@ -2595,6 +2601,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="lib\ObjUnity3D.dll" />
+    <Content Include="lib\PrefabHook.dll" />
     <Content Include="Resources\Textures\Bridge_Node_Pavement_Steel__MainTex.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

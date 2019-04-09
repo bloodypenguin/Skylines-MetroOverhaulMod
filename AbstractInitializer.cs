@@ -1,6 +1,4 @@
-﻿using ColossalFramework;
-using MetroOverhaul.Extensions;
-using MetroOverhaul.InitializationSteps;
+﻿using MetroOverhaul.Extensions;
 using MetroOverhaul.NEXT.Extensions;
 using MetroOverhaul.OptionsFramework;
 using System;
@@ -8,8 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace MetroOverhaul
-{
+namespace MetroOverhaul {
     public abstract class AbstractInitializer : MonoBehaviour
     {
         private bool _isInitialized;
@@ -18,6 +15,7 @@ namespace MetroOverhaul
         private static readonly Dictionary<string, NetInfo> OriginalNetInfos = new Dictionary<string, NetInfo>();
         private static readonly Dictionary<string, BuildingInfo> OriginalBuildingInfos = new Dictionary<string, BuildingInfo>();
         private List<string> _netReplacements;
+        private List<string> _registeredWids;
 
         public void Awake()
         {
@@ -25,6 +23,7 @@ namespace MetroOverhaul
             _customNetInfos = new Dictionary<string, NetInfo>();
             _customBuildingInfos = new Dictionary<string, BuildingInfo>();
             _netReplacements = new List<string>();
+            _registeredWids = new List<string>();
             OriginalNetInfos.Clear();
             OriginalBuildingInfos.Clear();
         }
@@ -38,6 +37,7 @@ namespace MetroOverhaul
                 OriginalNetInfos.Clear();
                 _customBuildingInfos.Clear();
                 OriginalBuildingInfos.Clear();
+                _registeredWids.Clear();
                 _isInitialized = false;
             }
         }
@@ -68,29 +68,38 @@ namespace MetroOverhaul
             {
                 InitializeNetInfoImpl();
                 PrefabCollection<NetInfo>.InitializePrefabs("Metro Extensions", _customNetInfos.Values.ToArray(), !OptionsWrapper<Options>.Options.ghostMode ? _netReplacements.ToArray() : null);
+                //PrefabCollection<BuildingInfo>.InitializePrefabs("Metro Building Extensions", _customBuildingInfos.Values.ToArray(), null);
+                //PrefabCollection<BuildingInfo>.BindPrefabs();
             });
             _isInitialized = true;
         }
-        public void DoSomething() {
-            Loading.QueueLoadingAction(() =>
-            {
-                InitializeBuildingInfoImpl();
-                PrefabCollection<BuildingInfo>.InitializePrefabs("Metro Building Extensions", _customBuildingInfos.Values.ToArray(), null);
-                PrefabCollection<BuildingInfo>.BindPrefabs();
-            });
-        }
-        protected abstract void InitializeNetInfoImpl();
-        public abstract void InitializeBuildingInfoImpl();
 
-        protected void CreateStationClones(Action<BuildingInfo> setupAction = null) {
-            var railStationInfos = Resources.FindObjectsOfTypeAll<BuildingInfo>();
-            var targetRailStationInfos = railStationInfos.Where(rsi =>
-                rsi?.m_buildingAI is TransportStationAI &&
-                ((rsi.m_class.m_subService == ItemClass.SubService.PublicTransportTrain && rsi.HasAbovegroundTrainStationTracks())||
-                (rsi.m_class.m_subService == ItemClass.SubService.PublicTransportMetro && rsi.HasAbovegroundMetroStationTracks())));
-            foreach (var railStationInfo in targetRailStationInfos) {
-                CreateBuildingInfo(railStationInfo.name + "_Analog", railStationInfo, setupAction);
+        protected abstract void InitializeNetInfoImpl();
+        public abstract void InitializeBuildingInfoImpl(BuildingInfo info);
+
+        public bool RegisterWid(BuildingInfo info)
+        {
+            long workshopId;
+            if (Util.TryGetWorkshopId(info, out workshopId))
+            {
+                if (_registeredWids.IndexOf(info.name) > -1 || info.name.IndexOf(ModTrackNames.ANALOG_PREFIX) > -1)
+                {
+                    return false;
+                }
+                _registeredWids.Add(info.name);
             }
+
+            return true;
+        }
+        protected void CreateStationClone(BuildingInfo info, Action<BuildingInfo> setupAction = null) {
+                var suffix = "";
+                if (info.IsMetroStation()) {
+                    suffix = TrackVehicleType.Train.ToString();
+                }
+                else if (info.IsTrainStation()) {
+                    suffix = TrackVehicleType.Metro.ToString();
+                }
+                CreateBuildingInfo(info.name + ModTrackNames.ANALOG_PREFIX + suffix, info, setupAction);
         }
         protected NetInfo CreateNetInfo(string newNetInfoName, string originalNetInfoName, Action<NetInfo> setupAction, string replaces = "")
         {
@@ -133,15 +142,17 @@ namespace MetroOverhaul
             {
                 return;
             }
-            //var newPrefab = originalBuildingInfo.Clone(newBuildingInfoName, transform);
             var newPrefab = Util.ClonePrefab(originalBuildingInfo, newBuildingInfoName, transform);
             if (newPrefab == null)
             {
                 Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Couldn't make prefab '{0}'", newBuildingInfoName);
                 return;
             }
+            
             setupAction?.Invoke(newPrefab);
             _customBuildingInfos.Add(newBuildingInfoName, newPrefab);
+            Debug.Log("Prefab Made: " + newPrefab.name);
+            PrefabCollection<BuildingInfo>.InitializePrefabs("Metro Building Extensions", newPrefab, null);
         }
         protected NetInfo FindCustomNetInfo(string customNetInfoName)
         {

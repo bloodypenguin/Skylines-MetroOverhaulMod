@@ -1,12 +1,7 @@
 ﻿using ColossalFramework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
-namespace MetroOverhaul.Extensions
-{
+namespace MetroOverhaul.Extensions {
     public static class NetToolExtensions
     {
         public static void RenderNodeBuilding2(this NetTool tool, BuildingInfo info, Vector3 position, Vector3 direction)
