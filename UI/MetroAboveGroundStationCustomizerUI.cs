@@ -5,10 +5,10 @@ using MetroOverhaul.NEXT.Extensions;
 using MetroOverhaul.OptionsFramework;
 
 namespace MetroOverhaul.UI {
-    public class MetroAboveGroundStationCustomizerUI: MetroCustomizerBase {
+    public class MetroAboveGroundStationCustomizerUI: MetroCustomizerBaseUI {
         protected override bool SatisfiesTrackSpecs(PrefabInfo info)
         {
-            return ((BuildingInfo)info).HasAbovegroundMetroStationTracks() || (OptionsWrapper<Options>.Options.ingameTrainMetroConverter && ((BuildingInfo)info).HasAbovegroundTrainStationTracks());
+            return ((BuildingInfo)info).HasAbovegroundMetroStationTracks() || (Util.IsHooked() && OptionsWrapper<Options>.Options.ingameTrainMetroConverter && ((BuildingInfo)info).HasAbovegroundTrainStationTracks());
         }
 
         protected override ToolBase GetTheTool()
@@ -77,7 +77,7 @@ namespace MetroOverhaul.UI {
 
         private void SetNetToolPrefab()
         {
-            btnTrain.isEnabled = OptionsWrapper<Options>.Options.ingameTrainMetroConverter;
+            btnTrain.isEnabled = Util.IsHooked() && OptionsWrapper<Options>.Options.ingameTrainMetroConverter;
             ToggleButtonPairs((int)trackVehicleType, btnDefault, btnTrain, btnMetro);
             ToggleButtonPairs((int)trackStyle, btnModernStyle, btnClassicStyle);
             btnClassicStyle.isVisible = trackVehicleType == TrackVehicleType.Metro || (trackVehicleType == TrackVehicleType.Default && m_currentBuilding.IsMetroStation());
@@ -90,7 +90,7 @@ namespace MetroOverhaul.UI {
                     break;
                 case TrackVehicleType.Train:
                     {
-                        if (OptionsWrapper<Options>.Options.ingameTrainMetroConverter && m_currentBuilding.IsMetroStation())
+                        if (Util.IsHooked() && OptionsWrapper<Options>.Options.ingameTrainMetroConverter && m_currentBuilding.IsMetroStation())
                         {
                             var comeCorrectName = "";
                             if (m_currentBuilding.name.EndsWith(metroAnalogSuffix))
@@ -157,8 +157,13 @@ namespace MetroOverhaul.UI {
             m_activated = true;
             m_currentBuilding = bInfo;
             isVisible = true;
-            if (bInfo.IsMetroStation())
+            if (bInfo.IsTrainStation())
             {
+                trackVehicleType = TrackVehicleType.Train;
+            }
+            else if (bInfo.IsMetroStation())
+            {
+                trackVehicleType = TrackVehicleType.Metro;
                 foreach (var path in bInfo.m_paths)
                 {
                     if (path.m_netInfo.IsAbovegroundMetroStationTrack())

@@ -20,12 +20,12 @@ namespace MetroOverhaul {
         public const float MIN_BEND_STRENGTH = -1;
         public const float DEF_BEND_STRENGTH = 0;
         public static int m_PremierPath = -1;
-        public static int m_PrevAngle = 0;
+        public static float m_PrevAngle = 0;
         //private static BuildingInfo m_SuperInfo;
         private static BuildingInfo m_Info;
         private static float m_TargetDepth;
         private static float m_TargetStationTrackLength;
-        private static int m_Angle;
+        private static float m_Angle;
         private static float m_BendStrength;
         private static float StairCoeff { get { return 0.2f; } }// (11f / 64f); } }
         private static float AntiStairCoeff { get { return 1 - StairCoeff; } }
@@ -35,7 +35,7 @@ namespace MetroOverhaul {
             var multiplier = subToSuper ? 1 : -1;
             return new Vector3(node.x + (multiplier * offset.x), node.y, node.z - (multiplier * offset.z));
         }
-        public static void ModifyStation(BuildingInfo info, float targetDepth, float targetStationTrackLength, int angle, float bendStrength, bool inRecurse = false) {
+        public static void ModifyStation(BuildingInfo info, float targetDepth, float targetStationTrackLength, float angle, float bendStrength, bool inRecurse = false) {
             m_Info = info;
             m_TargetDepth = targetDepth;
             m_TargetStationTrackLength = targetStationTrackLength;
@@ -55,7 +55,9 @@ namespace MetroOverhaul {
                     if (subBuilding?.m_buildingInfo?.m_paths != null && subBuilding.m_buildingInfo.HasUndergroundMetroStationTracks()) {
                         CleanUpPaths(subBuilding.m_buildingInfo);
                         if (info.name == "Large Airport") {
-                            if (subBuilding.m_buildingInfo.name == "Integrated Metro Station") {
+                            if (subBuilding.m_buildingInfo.name == "Integrated Metro Station")
+                            {
+                                m_Angle += 45;
                                 subBuilding.m_angle = 0;
                                 var offset = new Vector3(14, 0, 20);
                                 subBuilding.m_position = offset;
@@ -65,7 +67,6 @@ namespace MetroOverhaul {
                                 var midpoint = Vector3.Lerp(airportEntranceLeft, airportEntranceRight, 0.5f);
                                 midpoint = new Vector3(midpoint.x, -4, midpoint.z);
                                 var keyNodeIndex = 0;
-                                var otherNodeIndex = 1;
                                 var superKeyNode = AdjForOffset(sbInsidePath.m_nodes[keyNodeIndex], offset);
                                 var adjOtherNode = AdjForOffset(Vector3.Lerp(superKeyNode, midpoint, 0.5f), offset, false);
                                 var pathList = new List<BuildingInfo.PathInfo>();
@@ -89,15 +90,15 @@ namespace MetroOverhaul {
                             }
                         }
 
-                        ModifyStation(subBuilding.m_buildingInfo, targetDepth, targetStationTrackLength, angle, bendStrength, true);
+                        ModifyStation(subBuilding.m_buildingInfo, m_TargetDepth, m_TargetStationTrackLength, m_Angle, m_BendStrength, true);
                     }
                 }
             }
 
             ResizeUndergroundStationTracks();
-            var connectPoints = ChangeStationDepthAndRotation();
+            ChangeStationDepthAndRotation();
 
-            ReconfigureStationAccess(connectPoints);
+            ReconfigureStationAccess();
             BendStationTrack();
             RecalculateSpawnPoints();
         }
@@ -215,7 +216,7 @@ namespace MetroOverhaul {
             }
             return retval;
         }
-        private static void ReconfigureStationAccess(List<Vector3> connectPoints) {
+        private static void ReconfigureStationAccess() {
             var pathList = new List<BuildingInfo.PathInfo>();
             var connectList = new List<Vector3[]>();
             var singleGap = 16;
@@ -342,6 +343,25 @@ namespace MetroOverhaul {
                 CheckPedestrianConnections();
             }
             pathList = CleanPaths(pathList);
+            var lowestHighPaths = m_Info.m_paths.Where(p => IsPedestrianPath(p) && p.m_nodes.Any(n => n.y > -4) && p.m_nodes.Any(nd => nd.y <= -4)).ToList();
+            if (lowestHighPaths.Count == 0)
+            {
+                lowestHighPaths.Add(m_Info.m_paths.Where(p => IsPedestrianPath(p))
+                    .OrderByDescending(p => p.m_nodes[0].y)
+                    .FirstOrDefault());
+            }
+            var connectPoints = new List<Vector3>();
+            if (lowestHighPaths != null && lowestHighPaths.Count > 0)
+            {
+                foreach (BuildingInfo.PathInfo p in lowestHighPaths)
+                {
+                    if (p != null && p.m_nodes != null && p.m_nodes.Count() > 0)
+                    {
+                        connectPoints.Add(p.m_nodes.OrderByDescending(n => n.y).ThenBy(n => n.z).LastOrDefault());
+                    }
+
+                }
+            }
             var currentVector = connectPoints.FirstOrDefault();
             if (connectPoints != null && connectPoints.Count > 0) {
                 var pool = new List<Vector3[]>();
@@ -537,7 +557,7 @@ namespace MetroOverhaul {
                 }
             }
         }
-        private static List<Vector3> ChangeStationDepthAndRotation() {
+        private static void ChangeStationDepthAndRotation() {
             var pathList = new List<BuildingInfo.PathInfo>();
             var highestStation = float.MinValue;
             var totalNode = Vector3.zero;
@@ -579,16 +599,6 @@ namespace MetroOverhaul {
                 }
                 m_Info.m_paths = pathList.ToArray();
             }
-            var lowestHighNodes = new List<Vector3>();
-            if (lowestHighPaths != null && lowestHighPaths.Count > 0) {
-                foreach (BuildingInfo.PathInfo p in lowestHighPaths) {
-                    if (p != null && p.m_nodes != null && p.m_nodes.Count() > 0) {
-                        lowestHighNodes.Add(p.m_nodes.OrderByDescending(n => n.y).ThenBy(n => n.z).LastOrDefault());
-                    }
-
-                }
-            }
-            return lowestHighNodes;
         }
 
         private static Vector3 GetMeanVector(IEnumerable<BuildingInfo.PathInfo> pathList) {

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MetroOverhaul {
     public abstract class AbstractInitializer : MonoBehaviour
@@ -17,6 +18,11 @@ namespace MetroOverhaul {
         private List<string> _netReplacements;
         private List<string> _registeredWids;
 
+        public void OnEnable()
+        {
+            SceneManager.sceneLoaded += OnLevelFinishedLoading;
+        }
+
         public void Awake()
         {
             DontDestroyOnLoad(this);
@@ -27,10 +33,10 @@ namespace MetroOverhaul {
             OriginalNetInfos.Clear();
             OriginalBuildingInfos.Clear();
         }
-
-        public void OnLevelWasLoaded(int level)
+        
+        public void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
         {
-            if (level == 6)
+            if (scene.buildIndex == 6)
             {
                 _netReplacements.Clear();
                 _customNetInfos.Clear();
@@ -91,6 +97,7 @@ namespace MetroOverhaul {
 
             return true;
         }
+
         protected void CreateStationClone(BuildingInfo info, Action<BuildingInfo> setupAction = null) {
                 var suffix = "";
                 if (info.IsMetroStation()) {
@@ -189,6 +196,11 @@ namespace MetroOverhaul {
             }
             OriginalBuildingInfos.Add(originalBuildingInfoName, foundBuildingInfo);
             return foundBuildingInfo;
+        }
+
+        public void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnLevelFinishedLoading;
         }
     }
 }

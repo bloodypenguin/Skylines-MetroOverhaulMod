@@ -83,7 +83,8 @@
     <Compile Include="TrainTrackBridgeAIMetro.cs" />
     <Compile Include="MetroTrackAIMetro.cs" />
     <Compile Include="UI\MetroAboveGroundStationCustomizerUI.cs" />
-    <Compile Include="UI\MetroCustomizerBase.cs" />
+    <Compile Include="UI\MetroBaseUI.cs" />
+    <Compile Include="UI\MetroCustomizerBaseUI.cs" />
     <Compile Include="UI\MetroTrackAssetCustomizerUI.cs" />
     <Compile Include="UI\MetroTrackCustomizerUI.cs" />
     <Compile Include="TrainTrackTunnelAIMetro.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="InitializationSteps\SetupTexture10m.cs" />
     <Compile Include="UI\MetroStationCustomizerUI.cs" />
     <Compile Include="SetStationCustomizations.cs" />
+    <Compile Include="UI\NoPrefabHookUI.cs" />
     <Compile Include="UI\UpgradeSetup.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>

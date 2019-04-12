@@ -31,64 +31,43 @@ namespace MetroOverhaul {
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
-            if (Util.IsHooked() && OptionsWrapper<Options>.Options.ingameTrainMetroConverter)
+            if (OptionsWrapper<Options>.Options.ingameTrainMetroConverter)
             {
-                BuildingInfoHook.OnPreInitialization += info =>
+                if (Util.IsHooked())
                 {
-                    try
+                    BuildingInfoHook.OnPreInitialization += info =>
                     {
-                        if (Container.RegisterWid(info))
+                        try
                         {
-                            if (info.name.StartsWith("1700703476."))
+                            if (Container.RegisterWid(info))
                             {
-                                Debug.Log("It's starting");
-                            }
-
-                            var ai = info.GetComponent<PlayerBuildingAI>();
-                            if (ai != null)
-                                if (ai is TransportStationAI)
-                                {
-                                    if (info.name.StartsWith("1700703476."))
+                                var ai = info.GetComponent<PlayerBuildingAI>();
+                                if (ai != null)
+                                    if (ai is TransportStationAI)
                                     {
-                                        Debug.Log("We have a proper AI");
-                                    }
-
-                                    if (info.m_class.m_subService == ItemClass.SubService.PublicTransportTrain &&
-                                        info.HasAbovegroundTrainStationTracks() ||
-                                        (info.m_class.m_subService == ItemClass.SubService.PublicTransportMetro &&
-                                         info.HasAbovegroundMetroStationTracks()))
-                                    {
-                                        if (info.name.StartsWith("1700703476."))
+                                        if (info.m_class.m_subService == ItemClass.SubService.PublicTransportTrain &&
+                                            info.HasAbovegroundTrainStationTracks() ||
+                                            (info.m_class.m_subService == ItemClass.SubService.PublicTransportMetro &&
+                                             info.HasAbovegroundMetroStationTracks()))
                                         {
-                                            Debug.Log("Falls in line with class conventions");
+                                            Container.InitializeBuildingInfoImpl(info);
                                         }
-
-                                        Container.InitializeBuildingInfoImpl(info);
                                     }
-                                }
-                                else
-                                {
-                                    if (info.name.StartsWith("1700703476."))
-                                    {
-                                        Debug.Log("item " + info.name + " has AI of " + ai.GetType().ToString());
-                                    }
-                                }
-                        }
-                        else
-                        {
-                            if (info.name.StartsWith("1700703476."))
-                            {
-                                Debug.Log("item " + info.name + " has no AI");
                             }
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        UnityEngine.Debug.LogError(e);
-                    }
-                };
-                BuildingInfoHook.Deploy();
+                        catch (Exception e)
+                        {
+                            UnityEngine.Debug.LogError(e);
+                        }
+                    };
+                    BuildingInfoHook.Deploy();
+                }
+                else
+                {
+                    UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Enable asset in Content Manager!", "The Mod PrefabHook is Required for this option\n<a href=\"http://www.cnn.com/\">here</a>", false);
+                }
             }
+
 
             _updater = null;
             LateBuildUpQueue.Clear();
@@ -116,7 +95,7 @@ namespace MetroOverhaul {
                 }
             }
         }
-
+        
         public static void EnqueueLateBuildUpAction(Action action)
         {
             LateBuildUpQueue.Enqueue(action);
@@ -147,29 +126,6 @@ namespace MetroOverhaul {
                 });
             }
             Done = true;
-        }
-
-        public override void OnReleased()
-        {
-            base.OnReleased();
-            if (Util.IsHooked() && OptionsWrapper<Options>.Options.ingameTrainMetroConverter)
-                BuildingInfoHook.Revert();
-
-            if (!OptionsWrapper<Options>.Options.ghostMode)
-            {
-                _updater = null;
-                if (Container == null)
-                {
-                    return;
-                }
-                UnityEngine.Object.Destroy(Container.gameObject);
-                Container = null;
-                Redirector<RoadsGroupPanelDetour>.Revert();
-                Redirector<DepotAIDetour>.Revert();
-                Redirector<MetroTrainAI>.Revert();
-                Redirector<PassengerTrainAIDetour>.Revert();
-            }
-
         }
 
         public override void OnLevelLoaded(LoadMode mode)
@@ -251,6 +207,7 @@ namespace MetroOverhaul {
                 {
                     GameObject.Destroy(go);
                 }
+
                 var transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Metro");
                 transportInfo.m_netLayer = ItemClass.Layer.MetroTunnels;
                 transportInfo.m_stationLayer = ItemClass.Layer.MetroTunnels;
@@ -258,6 +215,27 @@ namespace MetroOverhaul {
 
         }
 
+        public override void OnReleased()
+        {
+            base.OnReleased();
+            if (Util.IsHooked() && OptionsWrapper<Options>.Options.ingameTrainMetroConverter)
+                BuildingInfoHook.Revert();
+
+            if (!OptionsWrapper<Options>.Options.ghostMode)
+            {
+                _updater = null;
+                if (Container == null)
+                {
+                    return;
+                }
+                UnityEngine.Object.Destroy(Container);
+                Container = null;
+                Redirector<RoadsGroupPanelDetour>.Revert();
+                Redirector<DepotAIDetour>.Revert();
+                Redirector<MetroTrainAI>.Revert();
+                Redirector<PassengerTrainAIDetour>.Revert();
+            }
+        }
         private static void DespawnVanillaMetro()
         {
             var vehicles = Singleton<VehicleManager>.instance.m_vehicles;

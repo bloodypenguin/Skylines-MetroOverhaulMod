@@ -6,7 +6,7 @@ using MetroOverhaul.Extensions;
 using UnityEngine;
 
 namespace MetroOverhaul.UI {
-    public class MetroStationCustomizerUI : MetroCustomizerBase
+    public class MetroStationCustomizerUI : MetroCustomizerBaseUI
     {
         private const int DEPTH_STEP = 3;
         private const int LENGTH_STEP = 8;

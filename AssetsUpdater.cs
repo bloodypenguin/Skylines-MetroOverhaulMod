@@ -77,7 +77,6 @@ namespace MetroOverhaul {
                     {
                         totalStations++;
                         var highestStationNode = stationNodes.OrderBy(n => NodeFrom(n).m_position.y).LastOrDefault();
-                        Debug.Log(b.m_position.y + "," + NodeFrom(highestStationNode).m_position.y);
                         if (NodeFrom(highestStationNode).m_position.y == b.m_position.y - 4)
                         {
                             totalShallowStations++;
@@ -127,7 +126,7 @@ namespace MetroOverhaul {
                                         subBuildingID = BuildingFrom(subBuildingID).m_subBuilding;
                                     }
                                 }
-                                if (HasUndergroundMOMorVanilla(i, true))
+                                if (HasUndergroundMOMorVanilla(i, false))
                                 {
                                     UpdateBuilding(i);
                                 }
@@ -402,6 +401,7 @@ namespace MetroOverhaul {
 
             RevertBuilding(ref info);
             ReconsileOrphanedSegments(buildingID);
+            //binstance.RelocateBuilding(buildingID, building.m_position, building.m_angle);
         }
 
         private static Building BuildingFrom(ushort buildingID)
@@ -530,7 +530,6 @@ namespace MetroOverhaul {
                             {
                                 ushort startNode = cd.nonStationNodeID;
                                 ushort endNode = sNodeID;
-
                                 ushort newSegmentID = 0;
                                 if (startNode > 0 && CreateConnectionSegment(out newSegmentID, startNode, endNode))
                                     cd.connectingSegment = newSegmentID;
@@ -554,7 +553,6 @@ namespace MetroOverhaul {
                         }
                     }
                 }
-
             }
         }
         private static bool CreateConnectionSegment(out ushort segment, ushort startNode, ushort endNode)

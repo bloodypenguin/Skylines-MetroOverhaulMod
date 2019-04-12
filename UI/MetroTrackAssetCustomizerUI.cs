@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 namespace MetroOverhaul.UI {
-    public class MetroTrackAssetCustomizerUI : MetroCustomizerBase
+    public class MetroTrackAssetCustomizerUI : MetroCustomizerBaseUI
     {
         protected override bool SatisfiesTrackSpecs(PrefabInfo info)
         {

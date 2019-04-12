@@ -8,10 +8,10 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using static ColossalFramework.Plugins.PluginManager;
 using ColossalFramework.PlatformServices;
+using System.IO;
 
 namespace MetroOverhaul {
-    public static class Util
-    {
+    public static class Util {
         public static IEnumerable<FieldInfo> GetAllFieldsFromType(this Type type)
         {
             if (type == null)
@@ -53,8 +53,7 @@ namespace MetroOverhaul {
         public static string AssemblyPath => PluginInfo.modPath;
 
 
-        private static PluginInfo PluginInfo
-        {
+        private static PluginInfo PluginInfo {
             get
             {
                 var pluginManager = PluginManager.instance;
@@ -81,8 +80,7 @@ namespace MetroOverhaul {
             }
         }
 
-        public static string AssemblyDirectory
-        {
+        public static string AssemblyDirectory {
             get
             {
                 var pluginManager = PluginManager.instance;
@@ -112,7 +110,18 @@ namespace MetroOverhaul {
         {
             foreach (PluginInfo current in PluginManager.instance.GetPluginsInfo())
             {
-                if (current.publishedFileID.AsUInt64 == 530771650uL) return true;
+                if (current.isEnabled)
+                {
+                    if (current.publishedFileID.AsUInt64 == 530771650uL)
+                    {
+                        return true;
+                    }
+                    else if (current.publishedFileID.AsUInt64 == UInt64.MaxValue)
+                    {
+                        return current.name == "PrefabHook";
+                    }
+                }
+
             }
             return false;
         }
