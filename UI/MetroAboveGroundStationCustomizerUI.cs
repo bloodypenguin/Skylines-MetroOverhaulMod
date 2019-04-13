@@ -152,39 +152,34 @@ namespace MetroOverhaul.UI {
                     }
             }
         }
-        private void Activate(BuildingInfo bInfo)
+        protected override void Activate(PrefabInfo info)
         {
-            m_activated = true;
-            m_currentBuilding = bInfo;
-            isVisible = true;
+            base.Activate(info);
+            var bInfo = (BuildingInfo) info;
             if (bInfo.IsTrainStation())
             {
-                trackVehicleType = TrackVehicleType.Train;
+                btnTrain.SimulateClick();
             }
             else if (bInfo.IsMetroStation())
             {
-                trackVehicleType = TrackVehicleType.Metro;
+                btnMetro.SimulateClick();
                 foreach (var path in bInfo.m_paths)
                 {
                     if (path.m_netInfo.IsAbovegroundMetroStationTrack())
                     {
-                        trackStyle = path.m_netInfo.name.ToLower().StartsWith("steel") ? TrackStyle.Classic : TrackStyle.Modern;
+                        if (path.m_netInfo.name.ToLower().StartsWith("steel"))
+                        {
+                            btnClassicStyle.SimulateClick();
+                        }
+                        else
+                        {
+                            btnModernStyle.SimulateClick();
+                        }
+
                         break;
                     }
                 }
             }
-            SetNetToolPrefab();
-        }
-        private void Deactivate()
-        {
-            if (!m_activated)
-            {
-                return;
-            }
-            m_currentBuilding = null;
-            isVisible = false;
-            m_activated = false;
-
         }
     }
 }

@@ -62,10 +62,6 @@ namespace MetroOverhaul {
                     };
                     BuildingInfoHook.Deploy();
                 }
-                else
-                {
-                    UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Enable asset in Content Manager!", "The Mod PrefabHook is Required for this option\n<a href=\"http://www.cnn.com/\">here</a>", false);
-                }
             }
 
 

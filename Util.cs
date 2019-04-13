@@ -118,7 +118,10 @@ namespace MetroOverhaul {
                     }
                     else if (current.publishedFileID.AsUInt64 == UInt64.MaxValue)
                     {
-                        return current.name == "PrefabHook";
+                        if (current.name == "PrefabHook")
+                        {
+                            return true;
+                        }
                     }
                 }
 

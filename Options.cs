@@ -2,6 +2,7 @@
 using System.Xml.Serialization;
 using MetroOverhaul.Detours;
 using MetroOverhaul.OptionsFramework.Attibutes;
+using MetroOverhaul.UI;
 
 namespace MetroOverhaul
 {
@@ -20,7 +21,7 @@ namespace MetroOverhaul
             ghostMode = false;
             depotsNotRequiredMode = false;
         }
-        [Checkbox("In-Game Train <-> Metro Station Converter (Requres PrefabHook mod)", CONVERTER)]
+        [Checkbox("In-Game Train <-> Metro Station Converter (Requres PrefabHook mod)", CONVERTER, typeof(NoPrefabHookHelper), nameof(NoPrefabHookHelper.ChangeState))]
         public bool ingameTrainMetroConverter { get; set; }
 
         [Checkbox("Metro track customization UI (requires reloading from main menu)", GENERAL)]
