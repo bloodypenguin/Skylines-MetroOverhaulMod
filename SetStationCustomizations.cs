@@ -48,16 +48,17 @@ namespace MetroOverhaul {
             if (!inRecurse) {
                 CleanUpPaths();
             }
-
+            Debug.Log("Investigating " + m_Info.name);
             if (info?.m_subBuildings != null && info.m_subBuildings.Count() > 0) {
                 for (int i = 0; i < info.m_subBuildings.Count(); i++) {
                     var subBuilding = info.m_subBuildings[i];
                     if (subBuilding?.m_buildingInfo?.m_paths != null && subBuilding.m_buildingInfo.HasUndergroundMetroStationTracks()) {
                         CleanUpPaths(subBuilding.m_buildingInfo);
+                        var theAngle = m_Angle;
                         if (info.name == "Large Airport") {
                             if (subBuilding.m_buildingInfo.name == "Integrated Metro Station")
                             {
-                                m_Angle += 45;
+                                theAngle += 45;
                                 subBuilding.m_angle = 0;
                                 var offset = new Vector3(14, 0, 20);
                                 subBuilding.m_position = offset;
@@ -90,7 +91,7 @@ namespace MetroOverhaul {
                             }
                         }
 
-                        ModifyStation(subBuilding.m_buildingInfo, m_TargetDepth, m_TargetStationTrackLength, m_Angle, m_BendStrength, true);
+                        ModifyStation(subBuilding.m_buildingInfo, m_TargetDepth, m_TargetStationTrackLength, theAngle, m_BendStrength, true);
                     }
                 }
             }

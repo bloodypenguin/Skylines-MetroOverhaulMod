@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine;
 using System;
 using MetroOverhaul.Extensions;
+using ColossalFramework;
 
 namespace MetroOverhaul.InitializationSteps
 {
@@ -111,7 +112,7 @@ namespace MetroOverhaul.InitializationSteps
         {
             if (prefab.name.Contains("Station"))
             {
-                prefab.m_connectGroup = NetInfo.ConnectGroup.None;
+                prefab.m_connectGroup = NetInfo.ConnectGroup.DoubleMonorail;
                 //prefab.m_nodeConnectGroups = (NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.MonorailStation | NetInfo.ConnectGroup.NarrowTram;
                 //if (version != NetInfoVersion.Tunnel)
                 //{
@@ -328,7 +329,7 @@ namespace MetroOverhaul.InitializationSteps
                     theLanes[i].m_direction = NetInfo.Direction.Both;
                     theLanes[i].m_stopType = VehicleInfo.VehicleType.Metro;
                     theLanes[i].m_position = Math.Sign(theLanes[i].m_position) * 10;
-                        theLanes[i].m_width = 3;
+                    theLanes[i].m_width = 3;
                 }
             }
             prefab.m_lanes = theLanes.ToArray();
@@ -475,7 +476,8 @@ namespace MetroOverhaul.InitializationSteps
             }
             prefab.m_lanes = theLanes.ToArray();
         }
-        public static void CommonClonedStationCustomization(BuildingInfo info) {
+        public static void CommonClonedStationCustomization(BuildingInfo info)
+        {
             info.m_availableIn = ItemClass.Availability.None;
         }
 
@@ -678,27 +680,89 @@ namespace MetroOverhaul.InitializationSteps
                 locale.AddLocalizedString(key, locale.Get(new Locale.Key { m_Identifier = "NET_DESC", m_Key = "Metro Track" }));
             }
         }
-        public static void ReplaceBuildingIcon(BuildingInfo prefab) {
-            BuildingInfo vanillaBuilding = null;
-            var transportInfo = prefab.GetComponent<TransportStationAI>().m_transportInfo;
-            if (transportInfo == PrefabCollection<TransportInfo>.FindLoaded("Metro")) {
-                vanillaBuilding = PrefabCollection<BuildingInfo>.FindLoaded("Metro Entrance");
-            }else if (transportInfo == PrefabCollection<TransportInfo>.FindLoaded("Train"))
-                vanillaBuilding = PrefabCollection<BuildingInfo>.FindLoaded("Train Station");
-            prefab.m_Atlas = vanillaBuilding.m_Atlas;
-            prefab.m_Thumbnail = vanillaBuilding.m_Thumbnail;
-            prefab.m_InfoTooltipAtlas = vanillaBuilding.m_InfoTooltipAtlas;
-            prefab.m_InfoTooltipThumbnail = vanillaBuilding.m_InfoTooltipThumbnail;
-            prefab.m_isCustomContent = false;
-            var locale = LocaleManager.instance.GetLocale();
-            var key = new Locale.Key { m_Identifier = "NET_TITLE", m_Key = prefab.name };
-            if (!locale.Exists(key)) {
-                locale.AddLocalizedString(key, locale.Get(new Locale.Key { m_Identifier = "NET_TITLE", m_Key = prefab.name.Substring(0, prefab.name.IndexOf("_Analog"))} ));
-            }
-            key = new Locale.Key { m_Identifier = "NET_DESC", m_Key = prefab.name };
-            if (!locale.Exists(key)) {
-                locale.AddLocalizedString(key, locale.Get(new Locale.Key { m_Identifier = "NET_DESC", m_Key = prefab.name.Substring(0, prefab.name.IndexOf("_Analog")) }));
-            }
+        private static bool m_TrainTrackAnalogAISet = false;
+        public static void ReplaceBuildingIcon(BuildingInfo prefab)
+        {
+            //var locale = SingletonLite<LocaleManager>.instance.GetLocale();
+            //var k0 = new Locale.Key()
+            //{
+            //    m_Identifier = "MAIN_CATREGORY",
+            //    m_Key = "CSUR_Main_Category"
+            //};
+            //if (!locale.Exists(k0))
+            //{
+            //    locale.AddLocalizedString(k0, prefab.name);
+            //}
+            //var k1 = new Locale.Key()
+            //{
+            //    m_Identifier = "BUILDING_TITLE",
+            //    m_Key = prefab.name.Replace(" ", "_")
+            //};
+            //if (!locale.Exists(k1))
+            //{
+            //    locale.AddLocalizedString(k1, prefab.name);
+            //}
+            //var k2 = new Locale.Key()
+            //{
+            //    m_Identifier = "BUILDING_DESC",
+            //    m_Key = prefab.name.Replace(" ", "_")
+            //};
+            //if (!locale.Exists(k2))
+            //{
+            //    locale.AddLocalizedString(k2, prefab.name);
+            //}
         }
+        //public static void ReplaceBuildingIcon(BuildingInfo prefab)
+        //{
+        //    if (prefab.name.IndexOf("Train Station" + ModTrackNames.ANALOG_PREFIX) == -1)
+        //    {
+        //        BuildingInfo vanillaBuilding = null;
+        //        //var transportInfo = prefab.GetComponent<TransportStationAI>().m_transportInfo;
+        //        //if (transportInfo == PrefabCollection<TransportInfo>.FindLoaded("Metro"))
+        //        //{
+        //        //    vanillaBuilding = PrefabCollection<BuildingInfo>.FindLoaded("Metro Entrance");
+        //        //}
+        //        //else if (transportInfo == PrefabCollection<TransportInfo>.FindLoaded("Train"))
+        //            vanillaBuilding = PrefabCollection<BuildingInfo>.FindLoaded(prefab.name.Substring(0, prefab.name.IndexOf(ModTrackNames.ANALOG_PREFIX)));
+        //        prefab.m_Atlas = vanillaBuilding.m_Atlas;
+        //        prefab.m_Thumbnail = vanillaBuilding.m_Thumbnail;
+        //        prefab.m_InfoTooltipAtlas = vanillaBuilding.m_InfoTooltipAtlas;
+        //        prefab.m_InfoTooltipThumbnail = vanillaBuilding.m_InfoTooltipThumbnail;
+        //        prefab.m_isCustomContent = false;
+        //        var locale = LocaleManager.instance.GetLocale();
+        //        var key = new Locale.Key { m_Identifier = "BUILDING_TITLE", m_Key = prefab.name };
+        //        if (!locale.Exists(key))
+        //        {
+        //            locale.AddLocalizedString(key, locale.Get(new Locale.Key { m_Identifier = "BUILDING_TITLE", m_Key = prefab.name.Substring(0, prefab.name.IndexOf(ModTrackNames.ANALOG_PREFIX)) }));
+        //        }
+        //        key = new Locale.Key { m_Identifier = "BUILDING_DESC", m_Key = prefab.name };
+        //        if (!locale.Exists(key))
+        //        {
+        //            locale.AddLocalizedString(key, locale.Get(new Locale.Key { m_Identifier = "BUILDING_DESC", m_Key = prefab.name.Substring(0, prefab.name.IndexOf(ModTrackNames.ANALOG_PREFIX)) }));
+        //        }
+        //        if (!m_TrainTrackAnalogAISet) //&& transportInfo == PrefabCollection<TransportInfo>.FindLoaded("Train"))
+        //        {
+        //            m_TrainTrackAnalogAISet = true;
+        //            var trainStationAnalog = PrefabCollection<BuildingInfo>.FindLoaded(
+        //                "Train Station" + ModTrackNames.ANALOG_PREFIX + TrackVehicleType.Metro.ToString());
+        //            trainStationAnalog.m_Atlas = vanillaBuilding.m_Atlas;
+        //            trainStationAnalog.m_Thumbnail = vanillaBuilding.m_Thumbnail;
+        //            trainStationAnalog.m_InfoTooltipAtlas = vanillaBuilding.m_InfoTooltipAtlas;
+        //            trainStationAnalog.m_InfoTooltipThumbnail = vanillaBuilding.m_InfoTooltipThumbnail;
+        //            trainStationAnalog.m_isCustomContent = false;
+        //            var trainStationAnalogLocale = LocaleManager.instance.GetLocale();
+        //            var trainStationAnalogKey = new Locale.Key { m_Identifier = "BUILDING_TITLE", m_Key = trainStationAnalog.name };
+        //            if (!trainStationAnalogLocale.Exists(trainStationAnalogKey))
+        //            {
+        //                trainStationAnalogLocale.AddLocalizedString(trainStationAnalogKey, trainStationAnalogLocale.Get(new Locale.Key { m_Identifier = "BUILDING_TITLE", m_Key = trainStationAnalog.name.Substring(0, trainStationAnalog.name.IndexOf(ModTrackNames.ANALOG_PREFIX)) }));
+        //            }
+        //            trainStationAnalogKey = new Locale.Key { m_Identifier = "BUILDING_DESC", m_Key = trainStationAnalog.name };
+        //            if (!trainStationAnalogLocale.Exists(trainStationAnalogKey))
+        //            {
+        //                trainStationAnalogLocale.AddLocalizedString(trainStationAnalogKey, trainStationAnalogLocale.Get(new Locale.Key { m_Identifier = "BUILDING_DESC", m_Key = trainStationAnalog.name.Substring(0, trainStationAnalog.name.IndexOf(ModTrackNames.ANALOG_PREFIX)) }));
+        //            }
+        //        }
+        //    }
+        //}
     }
 }

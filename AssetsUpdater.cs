@@ -126,7 +126,7 @@ namespace MetroOverhaul {
                                         subBuildingID = BuildingFrom(subBuildingID).m_subBuilding;
                                     }
                                 }
-                                if (HasUndergroundMOMorVanilla(i, false))
+                                if (HasUndergroundMOMorVanilla(i, true))
                                 {
                                     UpdateBuilding(i);
                                 }

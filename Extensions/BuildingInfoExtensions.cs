@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace MetroOverhaul.Extensions {
-    public static partial class BuildingInfoExtensions {
+namespace MetroOverhaul.Extensions
+{
+    public static partial class BuildingInfoExtensions
+    {
         public static bool IsMetroDepot(this BuildingInfo info)
         {
             return info?.m_class != null && info.m_buildingAI is DepotAI && info.m_class.m_service == ItemClass.Service.PublicTransport && info.m_class.m_subService == ItemClass.SubService.PublicTransportMetro;
@@ -16,121 +18,195 @@ namespace MetroOverhaul.Extensions {
         }
         public static bool HasAbovegroundTrainStationTracks(this BuildingInfo info)
         {
-            return info?.m_paths != null && info.m_paths.Any(p => p?.m_netInfo != null && p.m_netInfo.IsAbovegroundTrainStationTrack());
+            if (info?.m_paths != null && info.m_paths.Any(p => (p?.m_finalNetInfo != null && p.m_finalNetInfo.IsAbovegroundTrainStationTrack()) || (p?.m_netInfo != null && p.m_netInfo.IsAbovegroundTrainStationTrack())))
+            {
+                return true;
+            }
+            else if (info.m_subBuildings != null)
+            {
+                for (int i = 0; i < info.m_subBuildings.Length; i++)
+                {
+                    var subBuilding = info.m_subBuildings[i]?.m_buildingInfo;
+                    if (subBuilding != null)
+                    {
+                        if (subBuilding.HasAbovegroundTrainStationTracks())
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
         public static bool HasAbovegroundMetroStationTracks(this BuildingInfo info)
         {
-            return info?.m_paths != null && info.m_paths.Any(p => p?.m_netInfo != null && p.m_netInfo.IsAbovegroundMetroStationTrack());
-        }
-
-        public static bool IsUndergroundMetroStation(this BuildingInfo info)
-        {
-            return IsMetroDepot(info) && info.m_buildingAI is TransportStationAI && HasUndergroundMetroStationTracks(info);
-        }
-        public static bool HasUndergroundSidePlatformMetroTracks(this BuildingInfo info)
-        {
-            return info?.m_paths != null && info.m_paths.Any(p => p?.m_netInfo != null && p.m_netInfo.IsUndergroundSidePlatformMetroStationTrack());
-        }
-        public static bool HasUndergroundIslandPlantformMetroTracks(this BuildingInfo info)
-        {
-            return info?.m_paths != null && info.m_paths.Any(p => p?.m_netInfo != null && p.m_netInfo.IsUndergroundIslandPlatformStationTrack());
-        }
-        public static bool HasUndergroundSmallPlantformMetroTracks(this BuildingInfo info)
-        {
-            return info?.m_paths != null && info.m_paths.Any(p => p?.m_netInfo != null && p.m_netInfo.IsUndergroundSmallStationTrack());
-        }
-        public static bool HasUndergroundMetroStationTracks(this BuildingInfo info)
-        {
-            return info?.m_paths != null && info.m_paths.Any(p => p?.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack());
-        }
-
-        public static void SetTrackVehicleType(this BuildingInfo info, int inx, TrackVehicleType vehicleType)
-        {
-            var path = info.m_paths[inx];
-            switch (vehicleType)
+            if (info?.m_paths != null && info.m_paths.Any(p => (p?.m_finalNetInfo != null && p.m_finalNetInfo.IsAbovegroundMetroStationTrack()) || (p?.m_netInfo != null && p.m_netInfo.IsAbovegroundMetroStationTrack())))
             {
-                case TrackVehicleType.Train:
-                    if (path.m_netInfo.IsAbovegroundMetroStationTrack())
+                return true;
+            }
+            else if (info.m_subBuildings != null)
+            {
+                for (int i = 0; i < info.m_subBuildings.Length; i++)
+                {
+                    var subBuilding = info.m_subBuildings[i]?.m_buildingInfo;
+                    if (subBuilding != null)
                     {
-                        if (path.m_netInfo.IsElevatedSidePlatformMetroStationTrack())
+                        if (subBuilding.HasAbovegroundMetroStationTracks())
                         {
-                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_ELEVA); //somehow expand this for the other types
-                        }
-                        else if (path.m_netInfo.IsGroundSidePlatformMetroStationTrack())
-                        {
-                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_GROUND);
-                        }
-                        else if (path.m_netInfo.IsElevatedIslandPlatformMetroStationTrack())
-                        {
-                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_ELEVATED_ISLAND);
-                        }
-                        else if (path.m_netInfo.IsGroundIslandPlatformMetroStationTrack())
-                        {
-                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_GROUND_ISLAND);
-                        }
-                        else if (path.m_netInfo.IsElevatedLargeSidePlatformMetroStationTrack())
-                        {
-                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_ELEVATED_LARGE);
-                        }
-                        else if (path.m_netInfo.IsGroundLargeSidePlatformMetroStationTrack())
-                        {
-                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_GROUND_LARGE);
-                        }
-                        else if (path.m_netInfo.IsElevatedDualIslandPlatformMetroStationTrack())
-                        {
-                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_ELEVATED_LARGE_DUALISLAND);
-                        }
-                        else if (path.m_netInfo.IsGroundDualIslandPlatformMetroStationTrack())
-                        {
-                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_GROUND_LARGE_DUALISLAND);
+                            return true;
                         }
                     }
-                    else if (path.m_netInfo.IsMetroTrack())
+                }
+            }
+            return false;
+        }
+
+        public static bool HasUndergroundMetroStationTracks(this BuildingInfo info)
+        {
+            if (info?.m_paths != null && info.m_paths.Any(p => (p?.m_finalNetInfo != null && p.m_finalNetInfo.IsUndergroundMetroStationTrack()) || (p?.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack())))
+            {
+                return true;
+            }
+            else if (info.m_subBuildings != null)
+            {
+                for (int i = 0; i < info.m_subBuildings.Length; i++)
+                {
+                    var subBuilding = info.m_subBuildings[i]?.m_buildingInfo;
+                    if (subBuilding != null)
                     {
-                        path.AssignNetInfo(ModTrackNames.GetTrackAnalogName(path.m_netInfo.name));
-                        FixSlopes(info, inx, vehicleType);
+                        if (subBuilding.HasUndergroundMetroStationTracks())
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        public static string GetAnalogName(this BuildingInfo info)
+        {
+            if (info.name.IndexOf(ModTrackNames.ANALOG_PREFIX) == -1)
+            {
+                if (info.IsTrainStation())
+                {
+                    return info.name + ModTrackNames.ANALOG_PREFIX + TrackVehicleType.Metro.ToString();
+                }
+                else
+                {
+                    return info.name + ModTrackNames.ANALOG_PREFIX + TrackVehicleType.Train.ToString();
+                }
+            }
+            else
+            {
+                return info.name.Substring(0, info.name.IndexOf(ModTrackNames.ANALOG_PREFIX));
+            }
+        }
+        public static void SetTrackVehicleType(this BuildingInfo info, int inx, TrackVehicleType vehicleType)
+        {
+            var path = info.GetPaths()[inx];
+            switch (vehicleType)
+            {
+                case TrackVehicleType.Default:
+                    path.AssignNetInfo(path.m_netInfo);
+                    break;
+                case TrackVehicleType.Train:
+                    Debug.Log("Info is " + info.name);
+                    Debug.Log("track is going from metro to train");
+                    if (path.m_finalNetInfo.IsAbovegroundMetroStationTrack())
+                    {
+                        if (path.m_finalNetInfo.IsElevatedSidePlatformMetroStationTrack())
+                        {
+                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_ELEVA, false); //somehow expand this for the other types
+                        }
+                        else if (path.m_finalNetInfo.IsSunkenSidePlatformMetroStationTrack())
+                        {
+                            Debug.Log("It sees a sunken metro track.  setting it to train");
+                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_SUNKEN, false);
+                        }
+                        else if (path.m_finalNetInfo.IsGroundSidePlatformMetroStationTrack())
+                        {
+                            Debug.Log("It sees a ground metro track.  setting it to train");
+                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_GROUND, false);
+                        }
+                        else if (path.m_finalNetInfo.IsElevatedIslandPlatformMetroStationTrack())
+                        {
+                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_ELEVATED_ISLAND, false);
+                        }
+                        else if (path.m_finalNetInfo.IsGroundIslandPlatformMetroStationTrack())
+                        {
+                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_GROUND_ISLAND, false);
+                        }
+                        else if (path.m_finalNetInfo.IsElevatedLargeSidePlatformMetroStationTrack())
+                        {
+                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_ELEVATED_LARGE, false);
+                        }
+                        else if (path.m_finalNetInfo.IsGroundLargeSidePlatformMetroStationTrack())
+                        {
+                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_GROUND_LARGE, false);
+                        }
+                        else if (path.m_finalNetInfo.IsElevatedDualIslandPlatformMetroStationTrack())
+                        {
+                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_ELEVATED_LARGE_DUALISLAND, false);
+                        }
+                        else if (path.m_finalNetInfo.IsGroundDualIslandPlatformMetroStationTrack())
+                        {
+                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_GROUND_LARGE_DUALISLAND, false);
+                        }
+                    }
+                    else if (path.m_finalNetInfo.IsMetroTrack())
+                    {
+                        path.AssignNetInfo(ModTrackNames.GetTrackAnalogName(path.m_finalNetInfo.name), false);
+                        //FixSlopes(info, inx, vehicleType);
                     }
                     break;
                 case TrackVehicleType.Metro:
-                    if (path.m_netInfo.IsAbovegroundTrainStationTrack())
+                    Debug.Log("Info is " + info.name);
+                    Debug.Log("track is going from train to metro");
+                    if (path.m_finalNetInfo.IsAbovegroundTrainStationTrack())
                     {
-                        if (path.m_netInfo.IsElevatedSidePlatformTrainStationTrack())
+                        if (path.m_finalNetInfo.IsElevatedSidePlatformTrainStationTrack())
                         {
-                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_ELEVATED);
+                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_ELEVATED, false);
                         }
-                        else if (path.m_netInfo.IsGroundSidePlatformTrainStationTrack())
+                        else if (path.m_finalNetInfo.IsSunkenSidePlatformTrainStationTrack())
                         {
-                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_GROUND);
+                            Debug.Log("It sees a sunken train track.  setting it to metro");
+                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_SUNKEN, false);
                         }
-                        else if (path.m_netInfo.IsElevatedIslandPlatformTrainStationTrack())
+                        else if (path.m_finalNetInfo.IsGroundSidePlatformTrainStationTrack())
                         {
-                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_ELEVATED_ISLAND);
+                            Debug.Log("It sees a ground train track.  setting it to metro");
+                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_GROUND, false);
                         }
-                        else if (path.m_netInfo.IsGroundIslandPlatformTrainStationTrack())
+                        else if (path.m_finalNetInfo.IsElevatedIslandPlatformTrainStationTrack())
                         {
-                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_GROUND_ISLAND);
+                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_ELEVATED_ISLAND, false);
                         }
-                        else if (path.m_netInfo.IsElevatedLargeSidePlatformTrainStationTrack())
+                        else if (path.m_finalNetInfo.IsGroundIslandPlatformTrainStationTrack())
                         {
-                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_ELEVATED_LARGE);
+                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_GROUND_ISLAND, false);
                         }
-                        else if (path.m_netInfo.IsGroundLargeSidePlatformTrainStationTrack())
+                        else if (path.m_finalNetInfo.IsElevatedLargeSidePlatformTrainStationTrack())
                         {
-                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_GROUND_LARGE);
+                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_ELEVATED_LARGE, false);
                         }
-                        else if (path.m_netInfo.IsElevatedDualIslandPlatformTrainStationTrack())
+                        else if (path.m_finalNetInfo.IsGroundLargeSidePlatformTrainStationTrack())
                         {
-                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_ELEVATED_LARGE_DUALISLAND);
+                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_GROUND_LARGE, false);
                         }
-                        else if (path.m_netInfo.IsGroundDualIslandPlatformTrainStationTrack())
+                        else if (path.m_finalNetInfo.IsElevatedDualIslandPlatformTrainStationTrack())
                         {
-                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_GROUND_LARGE_DUALISLAND);
+                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_ELEVATED_LARGE_DUALISLAND, false);
+                        }
+                        else if (path.m_finalNetInfo.IsGroundDualIslandPlatformTrainStationTrack())
+                        {
+                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_GROUND_LARGE_DUALISLAND, false);
                         }
                     }
-                    else if (path.m_netInfo.IsTrainTrack())
+                    else if (path.m_finalNetInfo.IsTrainTrack())
                     {
-                        path.AssignNetInfo(ModTrackNames.GetTrackAnalogName(path.m_netInfo.name));
-                        FixSlopes(info, inx, vehicleType);
+                        path.AssignNetInfo(ModTrackNames.GetTrackAnalogName(path.m_finalNetInfo.name), false);
+                        //FixSlopes(info, inx, vehicleType);
                     }
                     //var nodeArray = new Vector3[2];
 
@@ -162,8 +238,6 @@ namespace MetroOverhaul.Extensions {
                     //    }
                     //}
                     //path.m_nodes = nodeArray;
-                    break;
-                case TrackVehicleType.Default:
                     break;
             }
         }
@@ -221,7 +295,7 @@ namespace MetroOverhaul.Extensions {
                         for (int j = 0; j < info.m_paths[i].m_nodes.Length; j++)
                         {
                             var targetIndex = Array.IndexOf(path.m_nodes, info.m_paths[i].m_nodes[j]);
-                            if (targetIndex > -1) 
+                            if (targetIndex > -1)
                             {
                                 otherNode = path.m_nodes[((targetIndex + 1) % 2)];
                                 targetNode = path.m_nodes[targetIndex];
@@ -294,6 +368,92 @@ namespace MetroOverhaul.Extensions {
                 }
             }
 
+        }
+        public static bool IsTrainStation(this BuildingInfo info)
+        {
+            return info.m_class.m_subService == ItemClass.SubService.PublicTransportTrain;
+        }
+
+        public static bool IsMetroStation(this BuildingInfo info)
+        {
+            return info.m_class.m_subService == ItemClass.SubService.PublicTransportMetro;
+        }
+
+        public static List<BuildingInfo.PathInfo> GetPaths(this BuildingInfo prefab, bool compensateSubNodes = false)
+        {
+            if (prefab != null)
+            {
+                var retval = new List<BuildingInfo.PathInfo>();
+                retval.AddRange(prefab.m_paths);
+                if (prefab.m_subBuildings != null && prefab.m_subBuildings.Count() > 0)
+                {
+                    for (int i = 0; i < prefab.m_subBuildings.Count(); i++)
+                    {
+                        if (prefab?.m_subBuildings[i]?.m_buildingInfo?.m_paths != null)
+                        {
+                            if (prefab.m_subBuildings[i].m_buildingInfo.HasAbovegroundMetroStationTracks() || prefab.m_subBuildings[i].m_buildingInfo.HasAbovegroundTrainStationTracks())
+                            {
+                                //if (compensateSubNodes)
+                                //{
+                                //    foreach (var path in prefab.m_subBuildings[i].m_buildingInfo.m_paths)
+                                //    {
+                                //        var nodeList = new List<Vector3>();
+                                //        for (int j = 0; j < path.m_nodes.Count(); j++)
+                                //        {
+                                //            nodeList.Add(path.m_nodes[j] + prefab.m_subBuildings[i].m_position);
+                                //        }
+                                //        path.m_nodes = nodeList.ToArray();
+                                //        retval.Add(path);
+                                //    }
+                                //}
+                                //else
+                                //{
+                                retval.AddRange(prefab.m_subBuildings[i].m_buildingInfo.m_paths);
+                                //}
+                            }
+                        }
+                    }
+                }
+                return retval;
+            }
+            return null;
+        }
+        private static int depth = 0;
+        public static List<int> LinkedPaths(this BuildingInfo info, int inx, List<int> inxSoFar = null)
+        {
+            List<int> retval = new List<int>();
+
+            var paths = info.GetPaths(true);
+            var targetPath = paths[inx];
+
+            if (inxSoFar == null)
+            {
+                inxSoFar = new List<int>();
+            }
+            else
+            {
+                retval.Add(inx);
+            }
+            inxSoFar.Add(inx);
+            var trackPaths = paths.Where(p => p?.m_netInfo != null && (p.m_netInfo.IsTrainTrackAI() || p.m_netInfo.IsTrainTrackBridgeAI() || p.m_netInfo.IsTrainTrackAIMetro() || p.m_netInfo.IsTrainTrackBridgeAIMetro() || ((p.m_netInfo.IsTrainTrackTunnelAI() || p.m_netInfo.IsTrainTrackTunnelAIMetro()) && (p.m_netInfo.name.Contains("Sunken") || !p.m_netInfo.IsStationTrack()))));
+            for (int i = 0; i < paths.Count(); i++)
+            {
+                if (trackPaths.Contains(paths[i]))
+                {
+                    if (!inxSoFar.Contains(i))
+                    {
+                        if (targetPath.m_nodes.Any(n => paths[i].m_nodes.Contains(n)) && targetPath.m_nodes != paths[i].m_nodes)
+                        {
+                            Debug.Log("At a depth of " + depth + " from inx " + inx + ", we are drilling into " + i + " and we have already explored " + string.Join(",", retval.Select(x => x.ToString()).ToArray()));
+                            depth++;
+                            retval.AddRange(info.LinkedPaths(i, inxSoFar));
+                            depth--;
+                        }
+                    }
+                }
+            }
+            Debug.Log("At a depth of " + depth + " we have a retval of " + string.Join(",",retval.Select(x => x.ToString()).ToArray()));
+            return retval;
         }
     }
 }

@@ -12,9 +12,6 @@ namespace MetroOverhaul.UI {
             if (state && !Util.IsHooked())
             {
                 UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("PrefabHook Missing!", "This feature requires the Prefab Hook mod.  Please subscribe/enable it in order to use this feature.", false);
-                OptionsWrapper<Options>.Options.ingameTrainMetroConverter = false;
-                OptionsWrapper<Options>.SaveOptions();
-                OptionsWrapper<Options>.Ensure();
             }
         }
     }

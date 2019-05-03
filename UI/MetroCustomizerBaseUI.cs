@@ -8,8 +8,10 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 //using StationTrackType = MetroOverhaul.ModTrackNames.StationTrackType;
 
-namespace MetroOverhaul.UI {
-    public class MetroCustomizerBaseUI: UIPanel {
+namespace MetroOverhaul.UI
+{
+    public class MetroCustomizerBaseUI : UIPanel
+    {
         public TrackVehicleType trackVehicleType = TrackVehicleType.Default;
         public TrackStyle trackStyle = TrackStyle.Modern;
         public int trackSize = 1;
@@ -122,57 +124,29 @@ namespace MetroOverhaul.UI {
 
         public override void Update()
         {
-            if (GetTheTool() == null)
-            {
-                Deactivate();
-                return;
-            }
             try
             {
-                if (GetToolPrefab() == null)
+                if (GetTheTool() != null && GetTheTool().enabled)
                 {
-                    Deactivate();
-                    return;
-                }
-                var toolInfo = GetTheTool().enabled ? GetToolPrefab() : null;
-                if (toolInfo == CurrentInfo)
-                {
-                    if (!SatisfiesTrackSpecs(toolInfo))
+                    var toolInfo = GetToolPrefab();
+                    if (toolInfo != null)
                     {
-                        Deactivate();
-                    }
-                    return;
-                }
-                PrefabInfo finalInfo = null;
-                if (toolInfo != null)
-                {
-                    if (SatisfiesTrackSpecs(toolInfo))
-                    {
-                        finalInfo = toolInfo;
-                    }
-                    else if (toolInfo is BuildingInfo)
-                    {
-                        var buildingInfoSubBuildings = ((BuildingInfo)toolInfo).m_subBuildings;
-                        if (buildingInfoSubBuildings != null)
+                        if (CurrentInfo?.name == null || toolInfo.name != CurrentInfo.name)
                         {
-                            foreach (var subInfo in buildingInfoSubBuildings)
+                            if (SatisfiesTrackSpecs(toolInfo))
                             {
-                                if (subInfo.m_buildingInfo != null && subInfo.m_buildingInfo.HasUndergroundMetroStationTracks())
-                                {
-                                    finalInfo = subInfo.m_buildingInfo;
-                                    break;
-                                }
+                                Activate(toolInfo);
+                            }
+                            else
+                            {
+                                Deactivate();
                             }
                         }
                     }
-                }
-                if (finalInfo == CurrentInfo)
-                {
-                    return;
-                }
-                if (finalInfo != null)
-                {
-                    Activate(finalInfo);
+                    else
+                    {
+                        Deactivate();
+                    }
                 }
                 else
                 {
@@ -307,12 +281,14 @@ namespace MetroOverhaul.UI {
 
         protected int m_rowIndex = 1;
         private int m_colIndex = 0;
-        protected UIButton CreateButton(string text, int columnCount, MouseEventHandler eventClick, bool sameLine = false)
+        protected UIButton CreateButton(string text, int columnCount, MouseEventHandler eventClick, bool sameLine = false, bool forceRowEnd = false, bool addUIComponent = true)
         {
             var button = this.AddUIComponent<UIButton>();
+            button.text = text;
             button.relativePosition = new Vector3(8 + (((float)m_colIndex / columnCount) * width), m_rowIndex * 50);
             button.width = (width / columnCount) - 16;
             button.height = 30;
+            //button.maximumSize = new Vector2(30, 30);
             button.normalBgSprite = "ButtonMenu";
             button.color = new Color32(150, 150, 150, 255);
             button.disabledBgSprite = "ButtonMenuDisabled";
@@ -330,15 +306,18 @@ namespace MetroOverhaul.UI {
             button.opacity = 95;
             button.dropShadowColor = new Color32(0, 0, 0, 255);
             button.dropShadowOffset = new Vector2(-1, -1);
-            button.text = text;
             button.eventClick += eventClick;
-            m_colIndex++;
-            if (m_colIndex == columnCount)
+            if (addUIComponent)
             {
-                m_colIndex = 0;
-                if (sameLine == false)
-                    m_rowIndex++;
+                m_colIndex++;
+                if (m_colIndex == columnCount || forceRowEnd)
+                {
+                    m_colIndex = 0;
+                    if (sameLine == false)
+                        m_rowIndex++;
+                }
             }
+
             return button;
         }
 
@@ -407,8 +386,10 @@ namespace MetroOverhaul.UI {
             TitleLabel.text = "Station " + typeString;
             TitleLabel.isInteractive = true;
             TitleLabel.name = "lbl" + typeString;
-            TitleLabel.eventMouseDown += delegate (UIComponent sender, UIMouseEventParameter e) { OnToggleMouseDown(sender, e, type); };
-            TitleLabel.eventKeyDown += delegate (UIComponent sender, UIKeyEventParameter e) { OnToggleKeyDown(sender, e); };
+            TitleLabel.eventMouseDown += delegate (UIComponent sender, UIMouseEventParameter e)
+            { OnToggleMouseDown(sender, e, type); };
+            TitleLabel.eventKeyDown += delegate (UIComponent sender, UIKeyEventParameter e)
+            { OnToggleKeyDown(sender, e); };
 
             UIPanel sliderPanel = AddUIComponent<UIPanel>();
             PanelDict[type] = sliderPanel;
@@ -419,8 +400,10 @@ namespace MetroOverhaul.UI {
             sliderPanel.playAudioEvents = true;
             sliderPanel.size = new Vector2(width - 16, 20);
             sliderPanel.relativePosition = new Vector2(8, 48 + m_SliderCount * 40);
-            sliderPanel.eventMouseDown += delegate (UIComponent sender, UIMouseEventParameter e) { OnToggleMouseDown(sender, e, type); };
-            sliderPanel.eventKeyDown += delegate (UIComponent sender, UIKeyEventParameter e) { OnToggleKeyDown(sender, e); };
+            sliderPanel.eventMouseDown += delegate (UIComponent sender, UIMouseEventParameter e)
+            { OnToggleMouseDown(sender, e, type); };
+            sliderPanel.eventKeyDown += delegate (UIComponent sender, UIKeyEventParameter e)
+            { OnToggleKeyDown(sender, e); };
 
             UIPanel sliderLeftPanel = sliderPanel.AddUIComponent<UIPanel>();
             sliderLeftPanel.name = "pnlLeft" + typeString;
@@ -435,7 +418,8 @@ namespace MetroOverhaul.UI {
             sliderTextField.height = sliderPanel.height;
             sliderTextField.width = sliderPanel.size.x - sliderLeftPanel.size.x;
             sliderTextField.relativePosition = new Vector2(sliderLeftPanel.width, 2);
-            sliderTextField.eventMouseDown += delegate (UIComponent sender, UIMouseEventParameter e) { OnToggleMouseDown(sender, e, type); };
+            sliderTextField.eventMouseDown += delegate (UIComponent sender, UIMouseEventParameter e)
+            { OnToggleMouseDown(sender, e, type); };
 
             UISlicedSprite sliderBgSprite = sliderLeftPanel.AddUIComponent<UISlicedSprite>();
             sliderBgSprite.isInteractive = false;
@@ -591,7 +575,8 @@ namespace MetroOverhaul.UI {
             m_activated = false;
         }
 
-        public enum ToggleType {
+        public enum ToggleType
+        {
             None,
             Length,
             Depth,

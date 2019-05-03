@@ -7,6 +7,7 @@
         public const string TRAIN_STATION_TRACK_GROUND_C = "Train Station Track (C)";
         public const string TRAIN_STATION_TRACK_GROUND_NP = "Train Station Track (NP)";
         public const string TRAIN_STATION_TRACK_GROUND_CNP = "Train Station Track (CNP)";
+        public const string TRAIN_STATION_TRACK_GROUND_SMALL = "Rail1LStation";
         public const string TRAIN_STATION_TRACK_GROUND_ISLAND = "1194290640.Wide Train Station Track_Data";
         public const string TRAIN_STATION_TRACK_GROUND_LARGE = "1577947171.Bypass Station Track_Ground_Data";
         public const string TRAIN_STATION_TRACK_GROUND_LARGE_DUALISLAND = "1698282173.DualIslandStationTrack_Ground_Data";
@@ -19,9 +20,12 @@
         public const string TRAIN_STATION_TRACK_ELEVATED_NARROW_C = "Station Track Elevated Narrow (C)";
         public const string TRAIN_STATION_TRACK_ELEVATED_NARROW_NP = "Station Track Elevated Narrow (NP)";
         public const string TRAIN_STATION_TRACK_ELEVATED_NARROW_CNP = "Station Track Elevated Narrow (CNP)";
+        public const string TRAIN_STATION_TRACK_ELEVATED_SMALL = "Rail1LStation";
         public const string TRAIN_STATION_TRACK_ELEVATED_ISLAND = "1194290640.ElevatedIslandPlatStationTrack_Data";
         public const string TRAIN_STATION_TRACK_ELEVATED_LARGE = "1577947171.Bypass Station Track_Elevated_Data";
         public const string TRAIN_STATION_TRACK_ELEVATED_LARGE_DUALISLAND = "1698282173.DualIslandStationTrack_Elevated_Data";
+
+        public const string TRAIN_STATION_TRACK_SUNKEN = "Station Track Sunken";
 
         public const string MOM_TRACK = "Metro Track";
         public const string MOM_TRACK_GROUND = "Metro Track Ground";
@@ -50,6 +54,8 @@
         public const string MOM_STATION_TRACK_ELEVATED_SMALL = "Metro Station Track Elevated Small";
         public const string MOM_STATION_TRACK_ELEVATED_LARGE = "Metro Station Track Elevated Large";
         public const string MOM_STATION_TRACK_ELEVATED_LARGE_DUALISLAND = "Metro Station Track Elevated Large Dual Island";
+
+        public const string MOM_STATION_TRACK_SUNKEN = "Metro Station Track Sunken";
 
         public const string MOM_TRACK_STEEL = "Steel Metro Track Ground";
         public const string MOM_TRACK_NOBAR_STEEL = "Steel Metro Track Ground NoBar";
@@ -125,7 +131,7 @@
         public enum TrackVehicleType {
             Default,
             Train,
-            Metro
+            Metro,
         }
         public enum TrackStyle {
             Modern,

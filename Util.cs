@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.PerformanceData;
 using System.Linq;
 using System.Reflection;
 using ColossalFramework.Plugins;
@@ -106,28 +107,23 @@ namespace MetroOverhaul {
 
             }
         }
+
         public static bool IsHooked()
         {
-            foreach (PluginInfo current in PluginManager.instance.GetPluginsInfo())
-            {
-                if (current.isEnabled)
-                {
-                    if (current.publishedFileID.AsUInt64 == 530771650uL)
-                    {
-                        return true;
-                    }
-                    else if (current.publishedFileID.AsUInt64 == UInt64.MaxValue)
-                    {
-                        if (current.name == "PrefabHook")
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-            }
-            return false;
+            return IsModActive("Prefab Hook"); ;
         }
+
+        public static bool IsModActive(string modName)
+        {
+            var plugins = PluginManager.instance.GetPluginsInfo();
+            return (from plugin in plugins.Where(p => p.isEnabled)
+                    select plugin.GetInstances<IUserMod>() into instances
+                    where instances.Any()
+                    select instances[0].Name into name
+                    where name == modName
+                    select name).Any();
+        }
+
         public static bool TryGetWorkshopId(PrefabInfo info, out long workshopId)
         {
             workshopId = -1;

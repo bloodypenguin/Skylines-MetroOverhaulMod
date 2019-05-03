@@ -25,7 +25,7 @@ namespace MetroOverhaul.UI {
 
         protected override PrefabInfo GetToolPrefab()
         {
-            return ((BuildingTool)GetTheTool()).m_prefab;
+            return ((BuildingTool)GetTheTool())?.m_prefab;
         }
 
         protected override PrefabInfo CurrentInfo { get => m_currentBuilding; set => m_currentBuilding = (BuildingInfo)value; }
@@ -237,7 +237,7 @@ namespace MetroOverhaul.UI {
             base.Activate(info);
             DoStationMechanicsResetAngles();
             TunnelStationTrackToggleStyles(m_TrackType);
-            DoStationMechanics();
+            m_T.Run();
         }
         protected override void SubDeactivate()
         {

@@ -67,15 +67,5 @@ namespace MetroOverhaul.NEXT.Extensions {
 
             return info;
         }
-
-        public static bool IsTrainStation(this BuildingInfo info)
-        {
-            return info.m_class.m_subService == ItemClass.SubService.PublicTransportTrain;
-        }
-
-        public static bool IsMetroStation(this BuildingInfo info)
-        {
-            return info.m_class.m_subService == ItemClass.SubService.PublicTransportMetro;
-        }
     }
 }

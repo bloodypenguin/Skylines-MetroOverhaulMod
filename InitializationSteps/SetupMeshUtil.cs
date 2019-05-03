@@ -273,6 +273,8 @@ namespace MetroOverhaul.InitializationSteps {
                 default:
                     if (info.name.Contains("Station"))
                     {
+                        Variations = new[] { "_Merge", "_Merge", "_Single_Merge", "_Single_Merge", "_Quad" };
+                        Groups = new[] { NetInfo.ConnectGroup.NarrowTram, NetInfo.ConnectGroup.MonorailStation, NetInfo.ConnectGroup.CenterTram, NetInfo.ConnectGroup.SingleMonorail, NetInfo.ConnectGroup.WideTram };
                         if (info.name.Contains("Large"))
                         {
                             if (info.name.Contains("Dual Island"))
@@ -302,8 +304,7 @@ namespace MetroOverhaul.InitializationSteps {
                                 LikenessGroups.Add(NetInfo.ConnectGroup.MonorailStation);
                             }
                         }
-                        Variations = new[] { "_Merge", "_Merge", "_Single_Merge", "_Single_Merge", "_Quad" };
-                        Groups = new[] { NetInfo.ConnectGroup.NarrowTram, NetInfo.ConnectGroup.MonorailStation, NetInfo.ConnectGroup.CenterTram, NetInfo.ConnectGroup.SingleMonorail, NetInfo.ConnectGroup.WideTram };
+
                     }
                     break;
 

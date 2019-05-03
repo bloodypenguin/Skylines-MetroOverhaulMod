@@ -8,6 +8,7 @@ using MetroOverhaul.NEXT;
 using MetroOverhaul.NEXT.Extensions;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
+using MetroOverhaul.Extensions;
 
 namespace MetroOverhaul {
     public class Initializer: AbstractInitializer {
@@ -931,9 +932,9 @@ namespace MetroOverhaul {
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                CreateFullStationClone(info,
-                    ActionExtensions.BeginChain<BuildingInfo>().
-                    Chain(CustomizationSteps.CommonClonedStationCustomization));
+                CreateFullStationClone(info,ActionExtensions.BeginChain<BuildingInfo>().
+                    Chain(CustomizationSteps.CommonClonedStationCustomization).
+                    Chain(CustomizationSteps.ReplaceBuildingIcon));
                 sw.Stop();
                 UnityEngine.Debug.Log("Items took " + sw.ElapsedMilliseconds + "ms");
             }
@@ -1018,7 +1019,6 @@ namespace MetroOverhaul {
             }
         }
 
-        //TODO(earalov): refactor like CreateFullPrefab()
         private void CreateFullStationPrefab(Action<NetInfo, NetInfoVersion> customizationStep,
             NetInfoVersion versions,
             Action<NetInfo, Action<NetInfo, NetInfoVersion>> setupOtherVersionsStep,
@@ -1088,8 +1088,7 @@ namespace MetroOverhaul {
                             clonedAi.m_transportLineInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Line");
                             clonedAi.m_transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Metro");
                             clonedAi.m_maxVehicleCount = 0;
-                            clonedAi.m_createPassMilestone =
-                                metroEntrance.GetComponent<PlayerBuildingAI>().m_createPassMilestone;
+                            //clonedAi.m_createPassMilestone = metroEntrance.GetComponent<PlayerBuildingAI>().m_createPassMilestone;
                         }
                         else if (prefab.IsMetroStation())
                         {
@@ -1109,25 +1108,20 @@ namespace MetroOverhaul {
                             clonedAi.m_transportLineInfo = PrefabCollection<NetInfo>.FindLoaded("Train Line");
                             clonedAi.m_transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Train");
                             clonedAi.m_maxVehicleCount = vanillaVehicleCount;
-                            clonedAi.m_createPassMilestone = createPassMilestone;
+                            //clonedAi.m_createPassMilestone = createPassMilestone;
                             if (!m_TrainTrackAnalogAISet)
                             {
                                 m_TrainTrackAnalogAISet = true;
-                                Debug.Log("Train Track Analog configured here!!!");
-                                var trainStationAnalog = PrefabCollection<BuildingInfo>.FindLoaded(
-                                    "Train Station" + ModTrackNames.ANALOG_PREFIX + TrackVehicleType.Metro.ToString());
+                                var trainStationAnalog = PrefabCollection<BuildingInfo>.FindLoaded("Train Station" + ModTrackNames.ANALOG_PREFIX + TrackVehicleType.Metro.ToString());
                                 var ttsaAI = trainStationAnalog.GetComponent<TransportStationAI>();
                                 if (ttsaAI != null)
                                 {
                                     var clonedTtsaAi = ttsaAI.CloneBuildingAI(ttsaAI.name);
                                     var metroEntrance = PrefabCollection<BuildingInfo>.FindLoaded("Metro Entrance");
-                                    clonedTtsaAi.m_transportLineInfo =
-                                        PrefabCollection<NetInfo>.FindLoaded("Metro Line");
-                                    clonedTtsaAi.m_transportInfo =
-                                        PrefabCollection<TransportInfo>.FindLoaded("Metro");
+                                    clonedTtsaAi.m_transportLineInfo =PrefabCollection<NetInfo>.FindLoaded("Metro Line");
+                                    clonedTtsaAi.m_transportInfo =PrefabCollection<TransportInfo>.FindLoaded("Metro");
                                     clonedTtsaAi.m_maxVehicleCount = 0;
-                                    clonedTtsaAi.m_createPassMilestone = metroEntrance
-                                        .GetComponent<PlayerBuildingAI>().m_createPassMilestone;
+                                    //clonedTtsaAi.m_createPassMilestone = metroEntrance.GetComponent<PlayerBuildingAI>().m_createPassMilestone;
                                     clonedTtsaAi.m_info = trainStationAnalog;
                                     trainStationAnalog.m_buildingAI = clonedTtsaAi;
                                 }
@@ -1215,7 +1209,7 @@ namespace MetroOverhaul {
         public static void SetupStationTrack(NetInfo prefab, NetInfoVersion version)
         {
             prefab.m_followTerrain = false;
-            prefab.m_flattenTerrain = version == NetInfoVersion.Ground;
+            prefab.m_flattenTerrain = version == NetInfoVersion.Ground && !prefab.name.Contains("Sunken");
             prefab.m_createGravel = false;
             prefab.m_createPavement = false;
             prefab.m_createRuining = false;

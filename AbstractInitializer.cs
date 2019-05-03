@@ -83,7 +83,7 @@ namespace MetroOverhaul {
         protected abstract void InitializeNetInfoImpl();
         public abstract void InitializeBuildingInfoImpl(BuildingInfo info);
 
-        public bool RegisterWid(BuildingInfo info)
+        public bool RegisterWid(BuildingInfo info, bool isPreInitialization)
         {
             long workshopId;
             if (Util.TryGetWorkshopId(info, out workshopId))
@@ -94,8 +94,8 @@ namespace MetroOverhaul {
                 }
                 _registeredWids.Add(info.name);
             }
-
-            return true;
+            var retval = (isPreInitialization && workshopId > -1) || (!isPreInitialization && workshopId == -1);
+            return retval;
         }
 
         protected void CreateStationClone(BuildingInfo info, Action<BuildingInfo> setupAction = null) {

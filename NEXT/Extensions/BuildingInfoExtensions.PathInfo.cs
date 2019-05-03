@@ -5,9 +5,9 @@ namespace MetroOverhaul.NEXT.Extensions {
     public static partial class BuildingInfoExtensions {
         public static void SetMetroStyle(this BuildingInfo.PathInfo info, TrackStyle style)
         {
-            if (info.m_netInfo.IsAbovegroundMetroStationTrack())
+            if (info.m_finalNetInfo.IsAbovegroundMetroStationTrack())
             {
-                var trackName = info.m_netInfo.name;
+                var trackName = info.m_finalNetInfo.name;
                 if (style == TrackStyle.Modern)
                 {
                     if (trackName.ToLower().StartsWith("steel"))
@@ -15,7 +15,7 @@ namespace MetroOverhaul.NEXT.Extensions {
                         trackName = trackName.Substring(6);
                     }
 
-                    info.AssignNetInfo(trackName);
+                    info.AssignNetInfo(trackName,false);
                 }
                 else if (style == TrackStyle.Classic)
                 {
@@ -24,7 +24,7 @@ namespace MetroOverhaul.NEXT.Extensions {
                         trackName = "Steel " + trackName;
                     }
 
-                    info.AssignNetInfo(trackName);
+                    info.AssignNetInfo(trackName,false);
                 }
             }
         }

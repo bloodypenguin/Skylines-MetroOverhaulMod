@@ -83,7 +83,6 @@
     <Compile Include="TrainTrackBridgeAIMetro.cs" />
     <Compile Include="MetroTrackAIMetro.cs" />
     <Compile Include="UI\MetroAboveGroundStationCustomizerUI.cs" />
-    <Compile Include="UI\MetroBaseUI.cs" />
     <Compile Include="UI\MetroCustomizerBaseUI.cs" />
     <Compile Include="UI\MetroTrackAssetCustomizerUI.cs" />
     <Compile Include="UI\MetroTrackCustomizerUI.cs" />
@@ -170,6 +169,7 @@
     <Reference Include="PrefabHook, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\PrefabHook.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\System.dll</HintPath>

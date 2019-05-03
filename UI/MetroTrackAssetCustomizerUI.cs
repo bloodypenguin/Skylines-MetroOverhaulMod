@@ -19,7 +19,7 @@ namespace MetroOverhaul.UI {
 
         protected override PrefabInfo GetToolPrefab()
         {
-            return ((NetTool)GetTheTool()).m_prefab;
+            return ((NetTool)GetTheTool())?.m_prefab;
         }
 
         protected override PrefabInfo CurrentInfo { get => m_currentNetInfo; set => m_currentNetInfo = (NetInfo)value; }
