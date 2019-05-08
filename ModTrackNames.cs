@@ -2,12 +2,14 @@
     public static class ModTrackNames {
         public const string TRAIN_TRACK = "Train Track";
         public const string TRAIN_SINGLE_TRACK = "Train Single Track";
+        public const string TRAIN_SINGLE_TRACK_RAIL1L1W = "Rail1L1W";
+        public const string TRAIN_SINGLE_TRACK_RAIL1L2W = "Rail1L2W";
 
         public const string TRAIN_STATION_TRACK_GROUND = "Train Station Track";
         public const string TRAIN_STATION_TRACK_GROUND_C = "Train Station Track (C)";
         public const string TRAIN_STATION_TRACK_GROUND_NP = "Train Station Track (NP)";
         public const string TRAIN_STATION_TRACK_GROUND_CNP = "Train Station Track (CNP)";
-        public const string TRAIN_STATION_TRACK_GROUND_SMALL = "Rail1LStation";
+        public const string TRAIN_STATION_TRACK_GROUND_SMALL = "1731659180.GroundSingleTrackStationTrack_Data";
         public const string TRAIN_STATION_TRACK_GROUND_ISLAND = "1194290640.Wide Train Station Track_Data";
         public const string TRAIN_STATION_TRACK_GROUND_LARGE = "1577947171.Bypass Station Track_Ground_Data";
         public const string TRAIN_STATION_TRACK_GROUND_LARGE_DUALISLAND = "1698282173.DualIslandStationTrack_Ground_Data";
@@ -20,11 +22,10 @@
         public const string TRAIN_STATION_TRACK_ELEVATED_NARROW_C = "Station Track Elevated Narrow (C)";
         public const string TRAIN_STATION_TRACK_ELEVATED_NARROW_NP = "Station Track Elevated Narrow (NP)";
         public const string TRAIN_STATION_TRACK_ELEVATED_NARROW_CNP = "Station Track Elevated Narrow (CNP)";
-        public const string TRAIN_STATION_TRACK_ELEVATED_SMALL = "Rail1LStation";
+        public const string TRAIN_STATION_TRACK_ELEVATED_SMALL = "1731659180.ElevatedSingleTrackStationTrack_Data";
         public const string TRAIN_STATION_TRACK_ELEVATED_ISLAND = "1194290640.ElevatedIslandPlatStationTrack_Data";
         public const string TRAIN_STATION_TRACK_ELEVATED_LARGE = "1577947171.Bypass Station Track_Elevated_Data";
         public const string TRAIN_STATION_TRACK_ELEVATED_LARGE_DUALISLAND = "1698282173.DualIslandStationTrack_Elevated_Data";
-
         public const string TRAIN_STATION_TRACK_SUNKEN = "Station Track Sunken";
 
         public const string MOM_TRACK = "Metro Track";
@@ -90,29 +91,54 @@
         public static string GetTrackAnalogName(string trackName)
         {
             var retval = "";
-            if (trackName.IndexOf(TRAIN_TRACK) > -1)
+            UnityEngine.Debug.Log("TrackName to analog " + trackName);
+            if (trackName.IndexOf("Train") > -1 || trackName.IndexOf("Rail") > -1)
             {
                 if (trackName == TRAIN_TRACK)
                 {
                     retval = MOM_TRACK_GROUND;
                 }
+                else if(trackName == TRAIN_SINGLE_TRACK || trackName == TRAIN_SINGLE_TRACK_RAIL1L1W || trackName == TRAIN_SINGLE_TRACK_RAIL1L2W)
+                {
+                    retval = MOM_TRACK_SMALL;
+                }
+                else if(trackName.Contains(TRAIN_SINGLE_TRACK))
+                {
+                    retval = trackName.Replace(TRAIN_SINGLE_TRACK, MOM_TRACK_SMALL);
+                }
+                else if (trackName.Contains(TRAIN_SINGLE_TRACK_RAIL1L1W))
+                {
+                    retval = trackName.Replace(TRAIN_SINGLE_TRACK_RAIL1L1W, MOM_TRACK_SMALL);
+                }
+                else if (trackName.Contains(TRAIN_SINGLE_TRACK_RAIL1L2W))
+                {
+                    retval = trackName.Replace(TRAIN_SINGLE_TRACK_RAIL1L2W, MOM_TRACK_SMALL);
+                }
                 else
                 {
                     retval = trackName.Replace(TRAIN_TRACK, MOM_TRACK);
                 }
-
+                UnityEngine.Debug.Log("Analogged TrackName " + retval);
                 return retval + " NoBar";
             }
-            else if (trackName.IndexOf(MOM_TRACK) > -1)
+            else if (trackName.IndexOf("Metro") > -1)
             {
                 trackName = trackName.Replace(" NoBar", "");
                 if (trackName == MOM_TRACK_GROUND)
                 {
-                    retval = TRAIN_TRACK;
+                    return TRAIN_TRACK;
+                }
+                else if(trackName == MOM_TRACK_SMALL)
+                {
+                    return TRAIN_SINGLE_TRACK;
+                }
+                else if (trackName.Contains(MOM_TRACK_SMALL))
+                {
+                    return trackName.Replace(MOM_TRACK_SMALL, TRAIN_SINGLE_TRACK);
                 }
                 else
                 {
-                    retval = trackName.Replace(MOM_TRACK, TRAIN_TRACK);
+                    return trackName.Replace(MOM_TRACK, TRAIN_TRACK);
                 }
             }
 

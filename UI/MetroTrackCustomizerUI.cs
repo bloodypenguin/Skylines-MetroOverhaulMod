@@ -3,7 +3,8 @@ using MetroOverhaul.Extensions;
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace MetroOverhaul.UI {
+namespace MetroOverhaul.UI
+{
     public class MetroTrackCustomizerUI : MetroCustomizerBaseUI
     {
         protected override bool SatisfiesTrackSpecs(PrefabInfo info)
@@ -49,46 +50,81 @@ namespace MetroOverhaul.UI {
 
             CreateDragHandle("Track Options");
 
-            btnModernStyle = CreateButton("Modern", 2, (c, v) =>
+            btnModernStyle = CreateButton(new UIButtonParamProps()
             {
-                trackStyle = TrackStyle.Modern;
-                ExecuteUiInstructions();
+                Text = "Modern",
+                ColumnCount = 2,
+                EventClick = (c, v) =>
+                {
+                    trackStyle = TrackStyle.Modern;
+                    ExecuteUiInstructions();
+                }
             });
 
-            btnClassicStyle = CreateButton("Classic", 2, (c, v) =>
-               {
-                   trackStyle = TrackStyle.Classic;
-                   ExecuteUiInstructions();
-               });
-            btnSingleTrack = CreateButton("Single", 3, (c, v) =>
-              {
-                  trackSize = 0;
-                  ExecuteUiInstructions();
-              });
+            btnClassicStyle = CreateButton(new UIButtonParamProps()
+            {
+                Text = "Classic",
+                ColumnCount = 2,
+                EventClick = (c, v) =>
+                {
+                    trackStyle = TrackStyle.Classic;
+                    ExecuteUiInstructions();
+                }
+            });
+            btnSingleTrack = CreateButton(new UIButtonParamProps()
+            {
+                Text = "Single",
+                ColumnCount = 3,
+                EventClick = (c, v) =>
+                {
+                    trackSize = 0;
+                    ExecuteUiInstructions();
+                }
+            });
 
-            btnDoubleTrack = CreateButton("Double", 3, (c, v) =>
-              {
-                  trackSize = 1;
-                  ExecuteUiInstructions();
-              });
+            btnDoubleTrack = CreateButton(new UIButtonParamProps()
+            {
+                Text = "Double",
+                ColumnCount = 3,
+                EventClick = (c, v) =>
+                {
+                    trackSize = 1;
+                    ExecuteUiInstructions();
+                }
+            });
 
-            btnQuadTrack = CreateButton("Quad", 3, (c, v) =>
-           {
-               trackSize = 2;
-               ExecuteUiInstructions();
-           });
+            btnQuadTrack = CreateButton(new UIButtonParamProps()
+            {
+                Text = "Quad",
+                ColumnCount = 3,
+                EventClick = (c, v) =>
+                {
+                    trackSize = 2;
+                    ExecuteUiInstructions();
+                }
+            });
 
-            btnOneWay = CreateButton("OneWay", 2, (c, v) =>
-             {
-                 trackDirection = 0;
-                 ExecuteUiInstructions();
-             });
+            btnOneWay = CreateButton(new UIButtonParamProps()
+            {
+                Text = "OneWay",
+                ColumnCount = 2,
+                EventClick = (c, v) =>
+                {
+                    trackDirection = 0;
+                    ExecuteUiInstructions();
+                }
+            });
 
-            btnTwoWay = CreateButton("TwoWay", 2, (c, v) =>
-              {
-                  trackDirection = 1;
-                  ExecuteUiInstructions();
-              });
+            btnTwoWay = CreateButton(new UIButtonParamProps()
+            {
+                Text = "TwoWay",
+                ColumnCount = 2,
+                EventClick = (c, v) =>
+                {
+                    trackDirection = 1;
+                    ExecuteUiInstructions();
+                }
+            });
 
             CheckboxDict = new Dictionary<string, UICheckBox>();
             CreateCheckbox(ALT_BARRIER);

@@ -162,7 +162,7 @@ namespace MetroOverhaul.InitializationSteps
 
         public static void CommonCustomizationSmall(NetInfo prefab, NetInfoVersion version)
         {
-            var isTwoWay = prefab.name.Contains("Station") || prefab.name.Contains("Two-Way");
+            var isTwoWay = prefab.name.Contains("Two-Way");
             if (isTwoWay)
             {
                 prefab.m_connectGroup = NetInfo.ConnectGroup.SingleMonorail;
@@ -189,38 +189,60 @@ namespace MetroOverhaul.InitializationSteps
                 LayoutStyle = LanesLayoutStyle.AsymL1R2
             });
             var theLanes = prefab.m_lanes.ToList();
+            var vehichleLanes = theLanes.Where(l => l.m_laneType == NetInfo.LaneType.Vehicle).ToList();
             var removedLanes = new List<NetInfo.Lane>();
+            var isStation = prefab.name.Contains("Station");
             for (var i = 0; i < theLanes.Count; i++)
             {
                 if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
                 {
                     if (Math.Sign(theLanes[i].m_position) > 0)
                     {
-                        theLanes[i].m_position -= 2;
-                    }
-                    else if (Math.Sign(theLanes[i].m_position) < 0)
-                    {
                         if (version == NetInfoVersion.Tunnel)
                         {
-                            removedLanes.Add(theLanes[i]);
+                            theLanes[i].m_position = 3.5f;
+                            theLanes[i].m_width = 3;
                         }
                         else
                         {
-                            theLanes[i].m_position += 2;
+                            theLanes[i].m_position = 4;
+                            theLanes[i].m_width = 4;
                         }
-                    }
-                }
-                if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)
-                {
-                    if (Math.Sign(theLanes[i].m_position) > 0 || version == NetInfoVersion.Tunnel)
-                    {
-                        theLanes[i].m_stopOffset = 3;
-                        theLanes[i].m_position = 0.0001f;
                     }
                     else if (Math.Sign(theLanes[i].m_position) < 0)
                     {
-                        theLanes[i].m_stopOffset = -3;
-                        theLanes[i].m_position = -0.0001f;
+                        removedLanes.Add(theLanes[i]);
+                    }
+                    theLanes[i].m_stopType = VehicleInfo.VehicleType.Metro;
+                }
+                if (theLanes[i].m_laneType == NetInfo.LaneType.Vehicle)
+                {
+                    if (vehichleLanes.Count > 1)
+                    {
+                        if (Math.Sign(theLanes[i].m_position) > 0 || version == NetInfoVersion.Tunnel)
+                        {
+                            if (isStation)
+                            {
+                                theLanes[i].m_stopOffset = 3;
+                            }
+                            theLanes[i].m_position = 0.0001f;
+                        }
+                        else if (Math.Sign(theLanes[i].m_position) < 0)
+                        {
+                            if (isStation)
+                            {
+                                theLanes[i].m_stopOffset = -3;
+                            }
+                            theLanes[i].m_position = -0.0001f;
+                        }
+                    }
+                    else
+                    {
+                        theLanes[i].m_position = 0;
+                        if (isStation)
+                        {
+                            theLanes[i].m_direction = NetInfo.Direction.AvoidBackward;
+                        }
                     }
                     theLanes[i].m_verticalOffset = 0.35f;
                 }

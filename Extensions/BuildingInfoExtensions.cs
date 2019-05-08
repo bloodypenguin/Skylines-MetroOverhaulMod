@@ -107,11 +107,14 @@ namespace MetroOverhaul.Extensions
             switch (vehicleType)
             {
                 case TrackVehicleType.Default:
+                    if ((path.m_finalNetInfo.IsElevatedSidePlatformTrainStationTrack() || path.m_finalNetInfo.IsGroundSinglePlatformTrainStationTrack()) && (path.m_netInfo.IsElevatedSidePlatformMetroStationTrack() || path.m_netInfo.IsGroundSinglePlatformMetroStationTrack()) ||
+                        (path.m_finalNetInfo.IsElevatedSidePlatformMetroStationTrack() || path.m_finalNetInfo.IsGroundSinglePlatformMetroStationTrack()) && (path.m_netInfo.IsElevatedSidePlatformTrainStationTrack() || path.m_netInfo.IsGroundSinglePlatformTrainStationTrack()))
+                    {
+                        InvertPath(path);
+                    }
                     path.AssignNetInfo(path.m_netInfo);
                     break;
                 case TrackVehicleType.Train:
-                    Debug.Log("Info is " + info.name);
-                    Debug.Log("track is going from metro to train");
                     if (path.m_finalNetInfo.IsAbovegroundMetroStationTrack())
                     {
                         if (path.m_finalNetInfo.IsElevatedSidePlatformMetroStationTrack())
@@ -120,13 +123,21 @@ namespace MetroOverhaul.Extensions
                         }
                         else if (path.m_finalNetInfo.IsSunkenSidePlatformMetroStationTrack())
                         {
-                            Debug.Log("It sees a sunken metro track.  setting it to train");
                             path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_SUNKEN, false);
                         }
                         else if (path.m_finalNetInfo.IsGroundSidePlatformMetroStationTrack())
                         {
-                            Debug.Log("It sees a ground metro track.  setting it to train");
                             path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_GROUND, false);
+                        }
+                        else if (path.m_finalNetInfo.IsElevatedSinglePlatformMetroStationTrack())
+                        {
+                            InvertPath(path);
+                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_ELEVATED_SMALL, false);
+                        }
+                        else if (path.m_finalNetInfo.IsGroundSinglePlatformMetroStationTrack())
+                        {
+                            InvertPath(path);
+                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_GROUND_SMALL, false);
                         }
                         else if (path.m_finalNetInfo.IsElevatedIslandPlatformMetroStationTrack())
                         {
@@ -155,13 +166,12 @@ namespace MetroOverhaul.Extensions
                     }
                     else if (path.m_finalNetInfo.IsMetroTrack())
                     {
+                        if (path.m_finalNetInfo)
                         path.AssignNetInfo(ModTrackNames.GetTrackAnalogName(path.m_finalNetInfo.name), false);
                         //FixSlopes(info, inx, vehicleType);
                     }
                     break;
                 case TrackVehicleType.Metro:
-                    Debug.Log("Info is " + info.name);
-                    Debug.Log("track is going from train to metro");
                     if (path.m_finalNetInfo.IsAbovegroundTrainStationTrack())
                     {
                         if (path.m_finalNetInfo.IsElevatedSidePlatformTrainStationTrack())
@@ -170,13 +180,21 @@ namespace MetroOverhaul.Extensions
                         }
                         else if (path.m_finalNetInfo.IsSunkenSidePlatformTrainStationTrack())
                         {
-                            Debug.Log("It sees a sunken train track.  setting it to metro");
                             path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_SUNKEN, false);
                         }
                         else if (path.m_finalNetInfo.IsGroundSidePlatformTrainStationTrack())
                         {
-                            Debug.Log("It sees a ground train track.  setting it to metro");
                             path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_GROUND, false);
+                        }
+                        else if (path.m_finalNetInfo.IsElevatedSinglePlatformTrainStationTrack())
+                        {
+                            InvertPath(path);
+                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_ELEVATED_SMALL, false);
+                        }
+                        else if (path.m_finalNetInfo.IsGroundSinglePlatformTrainStationTrack())
+                        {
+                            InvertPath(path);
+                            path.AssignNetInfo(ModTrackNames.MOM_STATION_TRACK_GROUND_SMALL, false);
                         }
                         else if (path.m_finalNetInfo.IsElevatedIslandPlatformTrainStationTrack())
                         {
@@ -208,36 +226,6 @@ namespace MetroOverhaul.Extensions
                         path.AssignNetInfo(ModTrackNames.GetTrackAnalogName(path.m_finalNetInfo.name), false);
                         //FixSlopes(info, inx, vehicleType);
                     }
-                    //var nodeArray = new Vector3[2];
-
-                    //for (int i = 0; i < path.m_nodes.Length; i++)
-                    //{
-                    //    var connectedGroundPaths = info.m_paths.Where(p => p != path && p.m_netInfo.name.StartsWith(ModTrackNames.MOM_TRACK_GROUND) && p.m_nodes.Any(n => n == path.m_nodes[i])).ToList();
-                    //    if (connectedGroundPaths != null && connectedGroundPaths.Count() > 0)
-                    //    {
-                    //        var targetNode = path.m_nodes[i];
-                    //        var otherNode = path.m_nodes[(i + 1) % 2];
-                    //        var adjTargetNode = (otherNode - targetNode) * slopeDist;
-
-
-                    //        nodeArray[i] = adjTargetNode;
-                    //        nodeArray[(i + 1) % 2] = otherNode;
-
-                    //        for (int j = 0; j < connectedGroundPaths.Count(); j++)
-                    //        {
-                    //            for (int k = 0; k < connectedGroundPaths[j].m_nodes.Length; k++)
-                    //            {
-                    //                if (connectedGroundPaths[j].m_nodes[k] == path.m_nodes[i])
-                    //                {
-
-                    //                }
-                    //            }
-                    //        }
-
-                    //        break;
-                    //    }
-                    //}
-                    //path.m_nodes = nodeArray;
                     break;
             }
         }

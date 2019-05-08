@@ -1,4 +1,6 @@
-﻿namespace MetroOverhaul.Extensions
+﻿using System;
+
+namespace MetroOverhaul.Extensions
 {
     public static partial class BuildingInfoExtensions
     {
@@ -21,6 +23,11 @@
                 path.m_netInfo = netInfo;
             }
             path.m_finalNetInfo = netInfo;
+        }
+        public static void InvertPath(this BuildingInfo.PathInfo path) 
+        {
+            Array.Reverse(path.m_nodes);
+            Array.Reverse(path.m_curveTargets);
         }
     }
 }

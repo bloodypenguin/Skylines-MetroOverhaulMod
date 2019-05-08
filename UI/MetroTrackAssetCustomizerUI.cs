@@ -52,26 +52,43 @@ namespace MetroOverhaul.UI {
 
             CreateDragHandle("Track/Station Options");
 
-            btnModernStyle = CreateButton("Modern", 2, (c, v) =>
+            btnModernStyle = CreateButton(new UIButtonParamProps(){Text= "Modern",ColumnCount= 2,
+                EventClick = (c, v) =>
             {
                 trackStyle = TrackStyle.Modern;
                 ExecuteUiInstructions();
+            }
             });
 
-            btnClassicStyle = CreateButton("Classic", 2, (c, v) =>
+            btnClassicStyle = CreateButton(new UIButtonParamProps()
+            {
+                Text = "Classic",
+                ColumnCount = 2,
+                EventClick = (c, v) =>
               {
                   trackStyle = TrackStyle.Classic;
                   ExecuteUiInstructions();
+              }
               });
-            btnStation = CreateButton("Stn Trk", 2, (c, v) =>
+            btnStation = CreateButton(new UIButtonParamProps()
+            {
+                Text = "Stn Trk",
+                ColumnCount = 2,
+                EventClick = (c, v) =>
             {
                 isStation = 1;
                 ExecuteUiInstructions();
+            }
             });
-            btnTrack = CreateButton("Track", 2, (c, v) =>
+            btnTrack = CreateButton(new UIButtonParamProps()
+            {
+                Text = "Track",
+                ColumnCount = 2,
+                EventClick = (c, v) =>
             {
                 isStation = 0;
                 ExecuteUiInstructions();
+            }
             });
 
             var rowIndex2 = m_rowIndex;
@@ -106,34 +123,58 @@ namespace MetroOverhaul.UI {
             var rowIndexTemp = m_rowIndex;
             m_rowIndex = rowIndex2;
 
-            btnSingleTrack = CreateButton("Single", 3, (c, v) =>
+            btnSingleTrack = CreateButton(new UIButtonParamProps()
+            {
+                Text = "Single",
+                ColumnCount = 3,
+                EventClick = (c, v) =>
               {
                   trackSize = 0;
                   ExecuteUiInstructions();
+              }
               });
 
-            btnDoubleTrack = CreateButton("Double", 3, (c, v) =>
+            btnDoubleTrack = CreateButton(new UIButtonParamProps()
+            {
+                Text = "Double",
+                ColumnCount = 3,
+                EventClick = (c, v) =>
               {
                   trackSize = 1;
                   ExecuteUiInstructions();
+              }
               });
 
-            btnQuadTrack = CreateButton("Quad", 3, (c, v) =>
+            btnQuadTrack = CreateButton(new UIButtonParamProps()
+            {
+                Text = "Quad",
+                ColumnCount = 3,
+                EventClick = (c, v) =>
             {
                 trackSize = 2;
                 ExecuteUiInstructions();
+            }
             });
 
-            btnOneWay = CreateButton("OneWay", 2, (c, v) =>
+            btnOneWay = CreateButton(new UIButtonParamProps()
+            {
+                Text = "OneWay",
+                ColumnCount = 2,
+                EventClick = (c, v) =>
               {
                   trackDirection = 0;
                   ExecuteUiInstructions();
+              }
               });
 
-            btnTwoWay = CreateButton("TwoWay", 2, (c, v) =>
+            btnTwoWay = CreateButton(new UIButtonParamProps()
+            {
+                Text = "TwoWay",
+                ColumnCount = 2, EventClick= (c, v) =>
               {
                   trackDirection = 1;
                   ExecuteUiInstructions();
+              }
               });
             m_height = (Math.Max(rowIndexTemp, m_rowIndex) * 60) + 20;
             CheckboxDict = new Dictionary<string, UICheckBox>();

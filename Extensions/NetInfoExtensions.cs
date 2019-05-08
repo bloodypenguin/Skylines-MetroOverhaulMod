@@ -22,6 +22,8 @@ namespace MetroOverhaul.Extensions
             var retval = info.IsGroundSidePlatformTrainStationTrack() ||
                          info.IsElevatedSidePlatformTrainStationTrack() ||
                          info.IsSunkenSidePlatformTrainStationTrack() ||
+                         info.IsElevatedSinglePlatformTrainStationTrack() ||
+                         info.IsGroundSinglePlatformTrainStationTrack() ||
                          info.IsGroundIslandPlatformTrainStationTrack() ||
                          info.IsElevatedIslandPlatformTrainStationTrack() ||
                          info.IsGroundLargeSidePlatformTrainStationTrack() ||
@@ -65,9 +67,10 @@ namespace MetroOverhaul.Extensions
             {
                 return false;
             }
-            return info.name == ModTrackNames.TRAIN_STATION_TRACK_SUNKEN || 
+            return info.name == ModTrackNames.TRAIN_STATION_TRACK_SUNKEN ||
                 (info.IsTrainTrackTunnelAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.SidePlatform && info.name.Contains("Sunken"));
         }
+
         public static bool IsGroundSinglePlatformTrainStationTrack(this NetInfo info)
         {
             if (info?.name == null)
@@ -83,8 +86,8 @@ namespace MetroOverhaul.Extensions
             {
                 return false;
             }
-            return info.name == ModTrackNames.TRAIN_STATION_TRACK_GROUND_SMALL ||
-                   (info.IsTrainTrackAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.SingleTrack);
+            return info.name == ModTrackNames.TRAIN_STATION_TRACK_ELEVATED_SMALL ||
+                   (info.IsTrainTrackBridgeAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.SingleTrack);
         }
         public static bool IsGroundIslandPlatformTrainStationTrack(this NetInfo info)
         {
@@ -353,7 +356,15 @@ namespace MetroOverhaul.Extensions
             {
                 return false;
             }
-            return netInfo.name.Contains("Train Track");
+            return netInfo.name.Contains(ModTrackNames.TRAIN_TRACK) || netInfo.name.Contains(ModTrackNames.TRAIN_SINGLE_TRACK) || netInfo.name.StartsWith("Rail1L");
+        }
+        public static bool IsTrainSingleTrack(this NetInfo netInfo)
+        {
+            if (netInfo?.name == null)
+            {
+                return false;
+            }
+            return netInfo.name == ModTrackNames.TRAIN_SINGLE_TRACK || netInfo.name == ModTrackNames.TRAIN_SINGLE_TRACK_RAIL1L1W || netInfo.name == ModTrackNames.TRAIN_SINGLE_TRACK_RAIL1L2W;
         }
         public static bool IsPedestrianNetwork(this NetInfo info)
         {
@@ -394,55 +405,58 @@ namespace MetroOverhaul.Extensions
             if (info.IsStationTrack())
             {
                 var sortedVehicleLanes = info.m_lanes.Where(l => l.m_laneType == NetInfo.LaneType.Vehicle && (l.m_vehicleType & (VehicleInfo.VehicleType.Train | VehicleInfo.VehicleType.Metro)) != VehicleInfo.VehicleType.None).OrderBy(o => o.m_position).ToArray();
-                if (sortedVehicleLanes.Count() == 2)
+                switch (sortedVehicleLanes.Count())
                 {
-                    if (sortedVehicleLanes.All(s => s.m_position > -0.1f && s.m_position < 0.1f))
-                    {
+                    case 1:
                         return StationTrackType.SingleTrack;
-                    }
-                    if (sortedVehicleLanes[0].m_position < -1.9f && sortedVehicleLanes[0].m_position > -2.1f)
-                    {
-                        if (sortedVehicleLanes[1].m_position > 1.9f && sortedVehicleLanes[1].m_position < 2.1f)
+                    case 2:
+                        if (sortedVehicleLanes.All(s => s.m_position > -0.1f && s.m_position < 0.1f))
                         {
-                            return StationTrackType.SidePlatform;
+                            return StationTrackType.SingleTrack;
                         }
-                    }
-                    else if (sortedVehicleLanes[0].m_position < -6.4f && sortedVehicleLanes[0].m_position > -6.6f)
-                    {
-                        if (sortedVehicleLanes[1].m_position > 6.4f && sortedVehicleLanes[1].m_position < 6.6f)
+                        if (sortedVehicleLanes[0].m_position < -1.9f && sortedVehicleLanes[0].m_position > -2.1f)
                         {
-                            return StationTrackType.IslandPlatform;
-                        }
-                    }
-                }
-                else if (sortedVehicleLanes.Count() == 4)
-                {
-                    if (sortedVehicleLanes[0].m_position < -5.785f && sortedVehicleLanes[0].m_position > -5.985f)
-                    {
-                        if (sortedVehicleLanes[1].m_position < -1.9f && sortedVehicleLanes[1].m_position > -2.1f)
-                        {
-                            if (sortedVehicleLanes[2].m_position > 1.9f && sortedVehicleLanes[2].m_position < 2.1f)
+                            if (sortedVehicleLanes[1].m_position > 1.9f && sortedVehicleLanes[1].m_position < 2.1f)
                             {
-                                if (sortedVehicleLanes[3].m_position > 5.785f && sortedVehicleLanes[3].m_position < 5.985f)
+                                return StationTrackType.SidePlatform;
+                            }
+                        }
+                        else if (sortedVehicleLanes[0].m_position < -6.4f && sortedVehicleLanes[0].m_position > -6.6f)
+                        {
+                            if (sortedVehicleLanes[1].m_position > 6.4f && sortedVehicleLanes[1].m_position < 6.6f)
+                            {
+                                return StationTrackType.IslandPlatform;
+                            }
+                        }
+                        break;
+                    case 4:
+                        if (sortedVehicleLanes[0].m_position < -5.785f && sortedVehicleLanes[0].m_position > -5.985f)
+                        {
+                            if (sortedVehicleLanes[1].m_position < -1.9f && sortedVehicleLanes[1].m_position > -2.1f)
+                            {
+                                if (sortedVehicleLanes[2].m_position > 1.9f && sortedVehicleLanes[2].m_position < 2.1f)
                                 {
-                                    return StationTrackType.QuadSidePlatform;
+                                    if (sortedVehicleLanes[3].m_position > 5.785f && sortedVehicleLanes[3].m_position < 5.985f)
+                                    {
+                                        return StationTrackType.QuadSidePlatform;
+                                    }
                                 }
                             }
                         }
-                    }
-                }
-                else if (sortedVehicleLanes[0].m_position < -12.28f && sortedVehicleLanes[0].m_position > -12.48f)
-                {
-                    if (sortedVehicleLanes[1].m_position < -1.9f && sortedVehicleLanes[1].m_position > -2.1f)
-                    {
-                        if (sortedVehicleLanes[2].m_position > 1.9f && sortedVehicleLanes[2].m_position < 2.1f)
+                        else if (sortedVehicleLanes[0].m_position < -12.28f && sortedVehicleLanes[0].m_position > -12.48f)
                         {
-                            if (sortedVehicleLanes[3].m_position > 12.28f && sortedVehicleLanes[3].m_position < 12.48f)
+                            if (sortedVehicleLanes[1].m_position < -1.9f && sortedVehicleLanes[1].m_position > -2.1f)
                             {
-                                return StationTrackType.QuadDualIslandPlatform;
+                                if (sortedVehicleLanes[2].m_position > 1.9f && sortedVehicleLanes[2].m_position < 2.1f)
+                                {
+                                    if (sortedVehicleLanes[3].m_position > 12.28f && sortedVehicleLanes[3].m_position < 12.48f)
+                                    {
+                                        return StationTrackType.QuadDualIslandPlatform;
+                                    }
+                                }
                             }
                         }
-                    }
+                        break;
                 }
             }
             return StationTrackType.None;

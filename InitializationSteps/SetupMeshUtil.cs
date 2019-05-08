@@ -34,7 +34,7 @@ namespace MetroOverhaul.InitializationSteps {
             var isSteel = info.name.Contains("Steel");
             PopulateMetaData(info);
             CreateBaseLevelCrossing(info, version);
-            if (LikenessGroups != null && (WidthName == "10m" || WidthName == "18m" || info.name.Contains("Station") == false))
+            if (LikenessGroups != null && (WidthName == "6m" || WidthName == "10m" || WidthName == "18m" || info.name.Contains("Station") == false))
             {
                 NetInfo.Node node0 = null;
                 NetInfo.Node node1 = null;

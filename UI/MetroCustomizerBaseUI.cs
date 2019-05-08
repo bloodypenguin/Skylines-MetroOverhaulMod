@@ -281,12 +281,12 @@ namespace MetroOverhaul.UI
 
         protected int m_rowIndex = 1;
         private int m_colIndex = 0;
-        protected UIButton CreateButton(string text, int columnCount, MouseEventHandler eventClick, bool sameLine = false, bool forceRowEnd = false, bool addUIComponent = true)
+        protected UIButton CreateButton(UIButtonParamProps props)
         {
             var button = this.AddUIComponent<UIButton>();
-            button.text = text;
-            button.relativePosition = new Vector3(8 + (((float)m_colIndex / columnCount) * width), m_rowIndex * 50);
-            button.width = (width / columnCount) - 16;
+            button.text = props.Text;
+            button.relativePosition = new Vector3(8 + (((float)m_colIndex / props.ColumnCount) * width), m_rowIndex * 50);
+            button.width = (width / props.ColumnCount) - 16;
             button.height = 30;
             //button.maximumSize = new Vector2(30, 30);
             button.normalBgSprite = "ButtonMenu";
@@ -301,19 +301,21 @@ namespace MetroOverhaul.UI
             button.pressedColor = new Color32(163, 255, 16, 255);
             button.textColor = new Color32(255, 255, 255, 255);
             button.normalBgSprite = "ButtonMenu";
+            if (!string.IsNullOrEmpty(props.NormalFgSprite))
+                button.normalFgSprite = props.NormalFgSprite;
             button.focusedBgSprite = "ButtonMenuFocused";
             button.playAudioEvents = true;
             button.opacity = 95;
             button.dropShadowColor = new Color32(0, 0, 0, 255);
             button.dropShadowOffset = new Vector2(-1, -1);
-            button.eventClick += eventClick;
-            if (addUIComponent)
+            button.eventClick += props.EventClick;
+            if (props.AddUIComponent)
             {
                 m_colIndex++;
-                if (m_colIndex == columnCount || forceRowEnd)
+                if (m_colIndex == props.ColumnCount || props.ForceRowEnd)
                 {
                     m_colIndex = 0;
-                    if (sameLine == false)
+                    if (props.SameLine == false)
                         m_rowIndex++;
                 }
             }
@@ -364,7 +366,13 @@ namespace MetroOverhaul.UI
         private int m_CheckboxCount = 0;
         protected UIButton CreateButton(StationTrackType type, int columnCount, MouseEventHandler eventClick, bool sameLine = false)
         {
-            return CreateButton(GetNameFromStationType(type), columnCount, eventClick, sameLine);
+            return CreateButton(new UIButtonParamProps()
+            {
+                Text = GetNameFromStationType(type),
+                ColumnCount = columnCount,
+                EventClick = eventClick,
+                SameLine = sameLine
+            });
         }
 
         protected virtual void OnToggleMouseDown(UIComponent c, UIMouseEventParameter e, ToggleType type)

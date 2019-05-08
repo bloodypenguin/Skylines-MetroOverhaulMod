@@ -146,6 +146,7 @@
     <Compile Include="UI\MetroStationCustomizerUI.cs" />
     <Compile Include="SetStationCustomizations.cs" />
     <Compile Include="UI\NoPrefabHookHelper.cs" />
+    <Compile Include="UI\UIHelper.cs" />
     <Compile Include="UI\UpgradeSetup.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
@@ -3095,7 +3096,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Resources\UI\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)"

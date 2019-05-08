@@ -487,8 +487,7 @@ namespace MetroOverhaul.InitializationSteps {
                     {
                         var segment0 = prefab.m_segments[0].ShallowClone();
                         var segment1 = prefab.m_segments[1].ShallowClone();
-                        var segment2 = prefab.m_segments[0].ShallowClone();
-                        var segment3 = prefab.m_segments[0].ShallowClone();
+                        var segment2 = prefab.m_segments[1].ShallowClone();
                         var node0 = prefab.m_nodes[0].ShallowClone();
                         nodeList.Add(node0);
 
@@ -508,11 +507,6 @@ namespace MetroOverhaul.InitializationSteps {
                             (@"Meshes\6m\Station_ThirdRail.obj",
                              @"Meshes\6m\Rail_LOD.obj")
                             .SetConsistentUVs();
-                        segment3
-                              .SetFlagsDefault()
-                              .SetMeshes
-                              (@"Meshes\6m\Boosted_Rail.obj",
-                              @"Meshes\10m\Blank.obj");
 
                         node0
                             .SetMeshes
@@ -523,7 +517,7 @@ namespace MetroOverhaul.InitializationSteps {
                         segment0.m_lodMaterial = elevatedLODMaterial;
                         node0.m_material = elevatedMaterial;
                         node0.m_lodMaterial = elevatedLODMaterial;
-                        prefab.m_segments = new[] { segment0, segment1, segment2, segment3 };
+                        prefab.m_segments = new[] { segment0, segment1, segment2 };
                         break;
                     }
                 case NetInfoVersion.Elevated:
