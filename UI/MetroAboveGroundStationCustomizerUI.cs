@@ -26,78 +26,370 @@ namespace MetroOverhaul.UI
             return ((BuildingTool)GetTheTool())?.m_prefab;
         }
 
+        private int maxColumns = 6;
+        private int m_StationTrackPathCount;
+
+        protected override PrefabInfo CurrentInfo { get => m_currentBuilding; set => m_currentBuilding = (BuildingInfo)value; }
+        protected override void Activate(PrefabInfo info)
+        {
+            var newBuildingChosen = CurrentInfo == null || info.name != ((BuildingInfo)CurrentInfo).GetAnalogName();
+            base.Activate(info);
+            if (newBuildingChosen)
+            {
+                RemoveTrackVehicleTypeArrayButtons();
+                m_LinkedPathDict = null;
+                m_TrackStyleArray = null;
+                m_ButtonArray = null;
+                m_IntermediateStyle = TrackStyle.Modern;
+                AddTrackVehicleTypeArrayButtons();
+                if (btnDefault != null)
+                    btnDefault.SimulateClick();
+            }
+        }
+        protected override void CreateUI()
+        {
+#if DEBUG
+            Next.Debug.Log("MOM ABOVE GROUND STATION TRACK GUI Created");
+#endif
+            base.CreateUI();
+            width = 350;
+            position = new Vector3(350, 0, 0);
+
+            CreateDragHandle("Surface Station Options");
+            var pnlLabelContainer = CreatePanel(new UIPanelParamProps()
+            {
+                Name = "pnlLabelContainer",
+                ColumnCount = 1,
+                Margins = new Vector2(0, 20)
+            });
+            var lblStationTypeSelector = CreateLabel(new UILabelParamProps()
+            {
+                Name = "lblStationTypeSelector",
+                Text = "Station Type Selector",
+                ParentComponent = pnlLabelContainer,
+                StackWidths = true,
+                ColumnCount = 2
+            });
+            var btnStationTypeSelectorInfo = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnStationTypeSelectorInfo",
+                Atlas = atlas,
+                ParentComponent = pnlLabelContainer,
+                NormalBgSprite = "EconomyMoreInfo",
+                HoveredBgSprite = "EconomyMoreInfoHovered",
+                PressedBgSprite = "EconomyMoreInfoHovered",
+                Height = 12,
+                Width = 12,
+                Margins = new Vector2(20, 0),
+                StackWidths = true,
+                ColumnCount = 2
+            });
+            var pnlStationTypeSelectorInfoContainer = CreatePanel(new UIPanelParamProps()
+            {
+                Name = "pnlStationTypeSelectorInfoContainer",
+                ColumnCount = 1
+            });
+
+            tsStationTypeSelector = CreateTabStrip(new UITabstripParamProps()
+            {
+                Name = "tsStationTypeSelector",
+                ParentComponent = pnlStationTypeSelectorInfoContainer,
+                ColumnCount = 2,
+                Margins = new Vector2(0, 0)
+            });
+            var pnlSeparator = CreatePanel(new UIPanelParamProps()
+            {
+                Name = "pnlStationTypeSelectorSeparator",
+                ParentComponent = pnlStationTypeSelectorInfoContainer,
+                ColumnCount = 2,
+                Margins = new Vector2(0, 0)
+            });
+            AddTrackVehicleTypeButtons();
+            pnlOuterContainer = CreatePanel(new UIPanelParamProps()
+            {
+                Name = "pnlOuterContainer",
+                Atlas = atlas,
+                ColumnCount = 1,
+                BackgroundSprite = "GenericPanel"
+            });
+            lblTabTitle = CreateLabel(new UILabelParamProps()
+            {
+                Name = "lblTabTitle",
+                Text = "",
+                ParentComponent = pnlOuterContainer,
+                ColumnCount = 1,
+                Margins = new Vector2(8, 0)
+            });
+            pnlInnerContainer = CreatePanel(new UIPanelParamProps()
+            {
+                Name = "pnlInnerContainer",
+                ParentComponent = pnlOuterContainer,
+                Atlas = atlas,
+                ColumnCount = 1,
+                Color = color,
+                Margins = new Vector4(8, 8, 8, 8),
+                BackgroundSprite = "GenericPanel"
+            });
+            pnlTrackSelectorContainer = CreatePanel(new UIPanelParamProps()
+            {
+                Name = "pnlTrackSelectorContainer",
+                ParentComponent = pnlInnerContainer,
+                ColumnCount = 1
+            });
+            var lblTrackSelectorTitle = CreateLabel(new UILabelParamProps()
+            {
+                Name = "lblTrackSelectorTitle",
+                Text = "Customize Individual Tracks",
+                ParentComponent = pnlTrackSelectorContainer,
+                ColumnCount = 1,
+                Margins = new Vector4(8, 8, 8, 8),
+            });
+            tsIndividualTrackSelector = CreateTabStrip(new UITabstripParamProps()
+            {
+                Name = "tsIndividualTrackSelector",
+                ParentComponent = pnlTrackSelectorContainer,
+                Height = 50,
+                ColumnCount = 1,
+                Margins = new Vector4(8, 8, 8, 8),
+            });
+            var pnlStyleContainer = CreatePanel(new UIPanelParamProps()
+            {
+                Name = "pnlStyleContainer",
+                ParentComponent = pnlInnerContainer,
+                ColumnCount = 1
+            });
+            var lblStyles = CreateLabel(new UILabelParamProps()
+            {
+                Name = "lblStyles",
+                Text = "Style Selector",
+                ParentComponent = pnlStyleContainer,
+                ColumnCount = 1
+            });
+            tsStyles = CreateTabStrip(new UITabstripParamProps()
+            {
+                Name = "tsStyles",
+                ParentComponent = pnlStyleContainer,
+                ColumnCount = 1,
+                Height = 40,
+                Margins = new Vector4(8, 8, 8, 8),
+            });
+            AddTrackStyleButtons();
+        }
         private void AddTrackStyleButtons()
         {
             btnModernStyle = CreateButton(new UIButtonParamProps()
             {
-                Text = "Modern",
-                ColumnCount = 2,
+                Name = "btnModernStyle",
+                ColumnCount = 3,
+                ParentComponent = tsStyles,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_ModernStyleAtlas", UIHelper.ModernStyle),
+                Width = 59,
+                Height = 52,
+                StackWidths = true,
                 EventClick = (c, v) =>
                 {
                     trackStyle = TrackStyle.Modern;
                     SetNetToolPrefab();
                 }
             });
-
             btnClassicStyle = CreateButton(new UIButtonParamProps()
             {
-                Text = "Classic",
-                ColumnCount = 2,
-                SameLine = true,
+                Name = "btnClassicStyle",
+                ColumnCount = 3,
+                ParentComponent = tsStyles,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_ClassicStyleAtlas", UIHelper.ClassicStyle),
+                Width = 59,
+                Height = 52,
+                StackWidths = true,
                 EventClick = (c, v) =>
                 {
                     trackStyle = TrackStyle.Classic;
                     SetNetToolPrefab();
                 }
             });
-        }
-
-        private void RemoveTrackStyleButtons()
-        {
-            if (btnModernStyle != null || btnClassicStyle != null)
+            btnNoStyle = CreateButton(new UIButtonParamProps()
             {
-                RemoveUIComponent(btnModernStyle);
-                RemoveUIComponent(btnClassicStyle);
-                btnModernStyle = null;
-                btnClassicStyle = null;
-            }
-        }
-
-        private void RemoveLinkedPathPanels()
-        {
-            if (m_LinkedPathPanelArray != null && m_LinkedPathPanelArray.Count > 0)
-            {
-                for (var i = 0; i < LinkedPathPanelArray.Count; i++)
+                Name = "btnNoStyle",
+                ColumnCount = 3,
+                ParentComponent = tsStyles,
+                Atlas = atlas,
+                Width = 1,
+                Height = 1,
+                StackWidths = true,
+                EventClick = (c, v) =>
                 {
-                    RemoveUIComponent(LinkedPathPanelArray[i]);
+                    trackStyle = TrackStyle.None;
+                    SetNetToolPrefab();
                 }
-                m_LinkedPathPanelArray = null;
+            });
+
+        }
+        private void AddTrackVehicleTypeButtons()
+        {
+            btnDefault = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnDefault",
+                ColumnCount = 3,
+                ParentComponent = tsStationTypeSelector,
+                Margins = new Vector2(0, 0),
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_SteamTabAtlas", UIHelper.SteamTab, 10),
+                Height = 35,
+                Width = 57,
+                StackWidths = true,
+                HasFgBgSprites = true,
+                EventClick = (c, v) =>
+                {
+                    m_TrackStyleArray = null;
+                    trackVehicleType = TrackVehicleType.Default;
+                    pnlOuterContainer.color = new Color32(90, 115, 217, 255);
+                    var paths = m_currentBuilding.GetPaths();
+
+                    for (int i = 0; i < paths.Count(); i++)
+                    {
+                        if (paths[i]?.m_netInfo != null)
+                        {
+                            if (paths[i].m_netInfo.IsAbovegroundMetroStationTrack())
+                            {
+                                TrackVehicleTypeArray[i] = TrackVehicleType.Metro;
+                                if (ButtonArray.Length > i && ButtonArray[i].atlas != this.atlas)
+                                    ButtonArray[i].atlas = UIHelper.GenerateLinearAtlas("MOM_MetroTrackToggleAtlas", UIHelper.MetroTrackToggle, 3);
+                            }
+                            else if (paths[i].m_netInfo.IsAbovegroundTrainStationTrack())
+                            {
+                                TrackVehicleTypeArray[i] = TrackVehicleType.Train;
+                                if (ButtonArray.Length > i && ButtonArray[i].atlas != this.atlas)
+                                    ButtonArray[i].atlas = UIHelper.GenerateLinearAtlas("MOM_TrainTrackToggleAtlas", UIHelper.TrainTrackToggle, 3);
+                            }
+                            if (ButtonArray[i]?.atlas != null)
+                                RefreshSprites(ButtonArray[i]);
+                        }
+                        HandleLinkedPathPropagations(i);
+                    }
+                    SetNetToolPrefab();
+                }
+            });
+
+            btnTrain = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnTrain",
+                ColumnCount = 3,
+                ParentComponent = tsStationTypeSelector,
+                Margins = new Vector2(0, 0),
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_TrainTabAtlas", UIHelper.TrainTab, 10),
+                Height = 35,
+                Width = 57,
+                StackWidths = true,
+                HasFgBgSprites = true,
+                EventClick = (c, v) =>
+                {
+                    m_TrackStyleArray = null;
+                    trackVehicleType = TrackVehicleType.Train;
+                    pnlOuterContainer.color = new Color32(233, 85, 38, 255);
+                    var paths = m_currentBuilding.GetPaths();
+                    for (int i = 0; i < paths.Count(); i++)
+                    {
+                        if (paths[i]?.m_netInfo != null)
+                        {
+                            if (paths[i].m_netInfo.IsAbovegroundMetroStationTrack() || paths[i].m_netInfo.IsAbovegroundTrainStationTrack())
+                            {
+                                TrackVehicleTypeArray[i] = TrackVehicleType.Train;
+                                if (ButtonArray.Length > i && ButtonArray[i].atlas != this.atlas)
+                                    ButtonArray[i].atlas = UIHelper.GenerateLinearAtlas("MOM_TrainTrackToggleAtlas", UIHelper.TrainTrackToggle, 3);
+                                RefreshSprites(ButtonArray[i]);
+                            }
+                        }
+                        HandleLinkedPathPropagations(i);
+                    }
+                    SetNetToolPrefab();
+                }
+            });
+
+            btnMetro = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnMetro",
+                ColumnCount = 3,
+                ParentComponent = tsStationTypeSelector,
+                Margins = new Vector2(0, 0),
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_MetroTabAtlas", UIHelper.MetroTab, 10),
+                Height = 35,
+                Width = 57,
+                StackWidths = true,
+                HasFgBgSprites = true,
+                EventClick = (c, v) =>
+                {
+                    m_TrackStyleArray = null;
+                    trackVehicleType = TrackVehicleType.Metro;
+                    pnlOuterContainer.color = new Color32(6, 213, 73, 255);
+                    var paths = m_currentBuilding.GetPaths();
+                    for (int i = 0; i < paths.Count(); i++)
+                    {
+                        if (paths[i]?.m_netInfo != null)
+                        {
+                            if (paths[i].m_netInfo.IsAbovegroundMetroStationTrack() || paths[i].m_netInfo.IsAbovegroundTrainStationTrack())
+                            {
+                                TrackVehicleTypeArray[i] = TrackVehicleType.Metro;
+                                if (ButtonArray.Length > i && ButtonArray[i].atlas != this.atlas)
+                                    ButtonArray[i].atlas = UIHelper.GenerateLinearAtlas("MOM_MetroTrackToggleAtlas", UIHelper.MetroTrackToggle, 3);
+                                RefreshSprites(ButtonArray[i]);
+                            }
+                        }
+                        HandleLinkedPathPropagations(i);
+                    }
+                    SetNetToolPrefab();
+                }
+            });
+        }
+        private void HandleLinkedPathPropagations(int i)
+        {
+            if (!m_InRecursion)
+            {
+                if (m_LinkedPathDict != null && m_LinkedPathDict.ContainsKey(i) && m_LinkedPathDict[i].Count > 0)
+                {
+                    foreach (var inx in m_LinkedPathDict[i])
+                    {
+                        if (m_buildingTool?.m_prefab?.m_paths[inx]?.m_netInfo != null)
+                        {
+                            if (m_buildingTool.m_prefab.m_paths[inx].m_netInfo.IsStationTrack())
+                            {
+                                m_InRecursion = true;
+                                if (ButtonArray[inx] != null)
+                                    ButtonArray[inx].SimulateClick();
+                                m_InRecursion = false;
+                            }
+                            else
+                            {
+                                TrackVehicleTypeArray[inx] = TrackVehicleTypeArray[i];
+                                SetNetToolPrefab();
+                            }
+                        }
+                    }
+                }
             }
         }
-        private void AddLinkedPathPanel(int inx, int lastInx)
+        private void RemoveTrackVehicleTypeArrayButtons()
         {
-            var linkedPathPanel = this.AddUIComponent<UIPanel>();
-            var lastButton = ButtonArray[m_LinkedPathDict[inx][lastInx]];
-            linkedPathPanel.atlas = atlas;
-            linkedPathPanel.backgroundSprite = "GenericPanel";
-            linkedPathPanel.height = 10;
-            linkedPathPanel.width = (lastButton.position.x + lastButton.width) - ButtonArray[inx].position.x;
-            linkedPathPanel.relativePosition = new Vector3(ButtonArray[inx].relativePosition.x, ButtonArray[inx].relativePosition.y + 10);
-            linkedPathPanel.color = new Color32(163, 255, 16, 255);
-            linkedPathPanel.opacity = 50;
-            linkedPathPanel.SendToBack();
-            LinkedPathPanelArray.Add(linkedPathPanel);
+            if (ButtonArray.Length > 0)
+            {
+                for (int i = 0; i < ButtonArray.Length; i++)
+                {
+                    UIComponent uIComponent = ButtonArray[i];
+                    if (uIComponent?.parent != null)
+                    {
+                        uIComponent.parent.RemoveUIComponent(uIComponent);
+                        if (uIComponent != null)
+                        {
+                            DestroyImmediate(uIComponent.gameObject);
+                        }
+                    }
+                }
+                //tsIndividualTrackSelector.height = 0;
+            }
         }
-        private int maxColumns = 6;
-        private int m_StationTrackPathCount;
-
         private void AddTrackVehicleTypeArrayButtons()
         {
             if (m_currentBuilding != null)
             {
-                Debug.Log("Checkpoint3");
                 var paths = m_currentBuilding.GetPaths();
-                Debug.Log("Checkpoint4");
                 var trackStationPaths = paths.Where(p => p?.m_netInfo != null && (p.m_netInfo.IsAbovegroundMetroStationTrack() || p.m_netInfo.IsAbovegroundTrainStationTrack())).ToList();
                 if (trackStationPaths != null && trackStationPaths.Count() > 0)
                 {
@@ -116,23 +408,17 @@ namespace MetroOverhaul.UI
                                     {
                                         m_LinkedPathDict = new Dictionary<int, List<int>>();
                                     }
-                                    Debug.Log("Checkpoint5");
                                     AddTrackVehicleTypeArrayButton(i, path, trackStationPaths.Count());
-                                    Debug.Log("Getting linked paths for index " + i);
                                     m_LinkedPathDict.Add(i, m_buildingTool.m_prefab.LinkedPaths(i));
-                                    Debug.Log("Checkpoint7");
                                     var linkedPathCount = m_LinkedPathDict[i].Count();
                                     if (linkedPathCount > 0)
                                     {
-                                        //var lastLinkedStationPathIndex = -1;
                                         for (int j = 0; j < linkedPathCount; j++)
                                         {
                                             var inx = m_LinkedPathDict[i][j];
                                             if (trackStationPaths.Contains(paths[inx]))
                                             {
-                                                Debug.Log("Checkpoint8");
                                                 AddTrackVehicleTypeArrayButton(inx, path, trackStationPaths.Count(), false);
-                                                Debug.Log("Checkpoint9");
                                                 excludeList.Add(inx);
                                                 //lastLinkedStationPathIndex = j;
                                             }
@@ -152,16 +438,31 @@ namespace MetroOverhaul.UI
                     }
                 }
             }
-
         }
         private void AddTrackVehicleTypeArrayButton(int i, BuildingInfo.PathInfo path, int trackPathCount, bool addUIComponent = true)
         {
             m_StationTrackPathCount++;
+            UITextureAtlas atlas = null;
+            if (path.m_finalNetInfo.IsAbovegroundMetroStationTrack())
+            {
+                TrackVehicleTypeArray[i] = TrackVehicleType.Metro;
+                atlas = UIHelper.GenerateLinearAtlas("MOM_MetroTrackToggleAtlas", UIHelper.MetroTrackToggle, 3);
+            }
+            else if (path.m_finalNetInfo.IsAbovegroundTrainStationTrack())
+            {
+                TrackVehicleTypeArray[i] = TrackVehicleType.Train;
+                atlas = UIHelper.GenerateLinearAtlas("MOM_TrainTrackToggleAtlas", UIHelper.TrainTrackToggle, 3);
+            }
             ButtonArray[i] = CreateButton(new UIButtonParamProps()
             {
-                Text = i.ToString(),
-                ColumnCount = maxColumns,
-                ForceRowEnd = m_StationTrackPathCount == trackPathCount,
+                Name = "btnTrackSelector" + i,
+                Atlas = addUIComponent ? atlas : this.atlas,
+                ParentComponent = tsIndividualTrackSelector,
+                ColumnCount = 8,
+                //StackWidths = true,
+                Height = 37,
+                Width = 37,
+                //ForceRowEnd = m_StationTrackPathCount == trackPathCount,
                 AddUIComponent = addUIComponent,
                 EventClick = (c, v) =>
                 {
@@ -177,188 +478,24 @@ namespace MetroOverhaul.UI
                             trackVehicleType = TrackVehicleType.Train;
                         }
                     }
-                    if (m_InRecursion)
-                        Debug.Log("We are hitting the right place if we are in index " + inx);
                     if (TrackVehicleTypeArray[inx] == TrackVehicleType.Train)
                     {
                         TrackVehicleTypeArray[inx] = TrackVehicleType.Metro;
-                        ButtonArray[inx].text = "M";
+                        if (ButtonArray[inx].atlas != this.atlas)
+                            ButtonArray[inx].atlas = UIHelper.GenerateLinearAtlas("MOM_MetroTrackToggleAtlas", UIHelper.MetroTrackToggle, 3);
                     }
                     else if (TrackVehicleTypeArray[inx] == TrackVehicleType.Metro)
                     {
                         TrackVehicleTypeArray[inx] = TrackVehicleType.Train;
-                        ButtonArray[inx].text = "T";
+                        if (ButtonArray[inx].atlas != this.atlas)
+                            ButtonArray[inx].atlas = UIHelper.GenerateLinearAtlas("MOM_TrainTrackToggleAtlas", UIHelper.TrainTrackToggle, 3);
                     }
+                    if (ButtonArray[i]?.atlas != null)
+                        RefreshSprites(ButtonArray[i]);
                     HandleLinkedPathPropagations(inx);
                     SetNetToolPrefab();
                 }
             });
-
-            if (path.m_finalNetInfo.IsAbovegroundMetroStationTrack())
-            {
-                TrackVehicleTypeArray[i] = TrackVehicleType.Metro;
-                ButtonArray[i].text = "M";
-            }
-            else if (path.m_finalNetInfo.IsAbovegroundTrainStationTrack())
-            {
-                TrackVehicleTypeArray[i] = TrackVehicleType.Train;
-                ButtonArray[i].text = "T";
-            }
-        }
-        private void RemoveTrackVehicleTypeArrayButtons()
-        {
-            var buttonArrayCount = ButtonArray.Count();
-            for (int i = 0; i < buttonArrayCount; i++)
-            {
-                if (ButtonArray[i] != null)
-                {
-                    RemoveUIComponent(ButtonArray[i]);
-                }
-            }
-        }
-
-        private void AddTrackVehicleTypeButtons()
-        {
-            btnDefault = CreateButton(new UIButtonParamProps()
-            {
-                Text = "Default",
-                ColumnCount = 3,
-                EventClick = (c, v) =>
-                {
-                    m_TrackStyleArray = null;
-                    trackVehicleType = TrackVehicleType.Default;
-                    var paths = m_currentBuilding.GetPaths();
-
-                    for (int i = 0; i < paths.Count(); i++)
-                    {
-                        if (paths[i]?.m_netInfo != null)
-                        {
-                            if (paths[i].m_netInfo.IsAbovegroundMetroStationTrack())
-                            {
-                                TrackVehicleTypeArray[i] = TrackVehicleType.Metro;
-                                ButtonArray[i].text = "M";
-                            }
-                            else if (paths[i].m_netInfo.IsAbovegroundTrainStationTrack())
-                            {
-                                TrackVehicleTypeArray[i] = TrackVehicleType.Train;
-                                ButtonArray[i].text = "T";
-                            }
-                        }
-                        HandleLinkedPathPropagations(i);
-                    }
-                    SetNetToolPrefab();
-                }
-            });
-
-            btnTrain = CreateButton(new UIButtonParamProps()
-            {
-                Text = "Train",
-                NormalFgSprite = "SubBarPublicTransportTrain",
-                ColumnCount = 3,
-                EventClick = (c, v) =>
-                {
-                    m_TrackStyleArray = null;
-                    trackVehicleType = TrackVehicleType.Train;
-                    var paths = m_currentBuilding.GetPaths();
-                    for (int i = 0; i < paths.Count(); i++)
-                    {
-                        if (paths[i]?.m_netInfo != null)
-                        {
-                            if (paths[i].m_netInfo.IsAbovegroundMetroStationTrack() || paths[i].m_netInfo.IsAbovegroundTrainStationTrack())
-                            {
-                                TrackVehicleTypeArray[i] = TrackVehicleType.Train;
-                                ButtonArray[i].text = "T";
-                            }
-                        }
-                        HandleLinkedPathPropagations(i);
-                    }
-                    SetNetToolPrefab();
-                }
-            });
-
-            btnMetro = CreateButton(new UIButtonParamProps()
-            {
-                Text = "Metro",
-                NormalFgSprite = "SubBarPublicTransportMetro",
-                ColumnCount = 3,
-                EventClick = (c, v) =>
-                {
-                    m_TrackStyleArray = null;
-                    trackVehicleType = TrackVehicleType.Metro;
-                    var paths = m_currentBuilding.GetPaths();
-                    for (int i = 0; i < paths.Count(); i++)
-                    {
-                        if (paths[i]?.m_netInfo != null)
-                        {
-                            if (paths[i].m_netInfo.IsAbovegroundMetroStationTrack() || paths[i].m_netInfo.IsAbovegroundTrainStationTrack())
-                            {
-                                TrackVehicleTypeArray[i] = TrackVehicleType.Metro;
-                                ButtonArray[i].text = "M";
-                            }
-                        }
-                        HandleLinkedPathPropagations(i);
-                    }
-                    SetNetToolPrefab();
-                }
-            });
-        }
-        private void HandleLinkedPathPropagations(int i)
-        {
-            if (!m_InRecursion)
-            {
-                if (m_LinkedPathDict.ContainsKey(i) && m_LinkedPathDict[i].Count > 0)
-                {
-                    foreach (var inx in m_LinkedPathDict[i])
-                    {
-                        if (m_buildingTool.m_prefab.m_paths[inx].m_netInfo.IsStationTrack())
-                        {
-                            m_InRecursion = true;
-                            ButtonArray[inx].SimulateClick();
-                            m_InRecursion = false;
-                        }
-                        else
-                        {
-                            TrackVehicleTypeArray[inx] = TrackVehicleTypeArray[i];
-                            SetNetToolPrefab();
-                        }
-                    }
-                }
-            }
-        }
-        protected override PrefabInfo CurrentInfo { get => m_currentBuilding; set => m_currentBuilding = (BuildingInfo)value; }
-        protected override void Activate(PrefabInfo info)
-        {
-            var newBuildingChosen = CurrentInfo == null || info.name != ((BuildingInfo)CurrentInfo).GetAnalogName();
-            base.Activate(info);
-            if (newBuildingChosen)
-            {
-                RemoveTrackVehicleTypeArrayButtons();
-                m_LinkedPathDict = null;
-                m_TrackStyleArray = null;
-                m_ButtonArray = null;
-                m_rowIndex = 2;
-                AddTrackVehicleTypeArrayButtons();
-                btnDefault.SimulateClick();
-            }
-        }
-        protected override void CreateUI()
-        {
-#if DEBUG
-            Next.Debug.Log("MOM ABOVE GROUND STATION TRACK GUI Created");
-#endif
-
-            backgroundSprite = "GenericPanel";
-            color = new Color32(68, 84, 68, 170);
-            width = 300;
-            height = 300;
-            opacity = 60;
-            position = new Vector3(300, 0, 0);
-            isVisible = false;
-            isInteractive = true;
-            padding = new RectOffset() { bottom = 8, left = 8, right = 8, top = 8 };
-
-            CreateDragHandle("Surface Station Options");
-            AddTrackVehicleTypeButtons();
         }
         private TrackVehicleType[] m_TrackStyleArray = null;
         private TrackVehicleType[] TrackVehicleTypeArray {
@@ -394,15 +531,36 @@ namespace MetroOverhaul.UI
             }
         }
         private bool m_InRecursion = false;
+        private TrackStyle m_IntermediateStyle = TrackStyle.Modern;
         private Dictionary<int, List<int>> m_LinkedPathDict = null;
         private void SetNetToolPrefab()
         {
             btnTrain.isEnabled = Util.IsHooked() && OptionsWrapper<Options>.Options.ingameTrainMetroConverter;
-            ToggleButtonPairs((int)trackVehicleType, btnDefault, btnTrain, btnMetro);
-            if (btnModernStyle != null && btnClassicStyle != null)
+            var hasMetroTrack = TrackVehicleTypeArray.Any(t => t == TrackVehicleType.Metro);
+            if (hasMetroTrack)
             {
-                ToggleButtonPairs((int)trackStyle, btnModernStyle, btnClassicStyle);
+                btnClassicStyle.isInteractive = true;
+                btnModernStyle.isInteractive = true;
+                if (trackStyle == TrackStyle.None)
+                {
+                    btnModernStyle.SimulateClick();
+                }
             }
+            else
+            {
+                if (trackStyle != TrackStyle.None)
+                {
+                    btnNoStyle.SimulateClick();
+                }
+
+                btnClassicStyle.state = UIButton.ButtonState.Disabled;
+                btnModernStyle.state = UIButton.ButtonState.Disabled;
+                btnClassicStyle.isInteractive = false;
+                btnModernStyle.isInteractive = false;
+            }
+
+            btnClassicStyle.isInteractive = hasMetroTrack;
+            btnModernStyle.isInteractive = hasMetroTrack;
 
             var trainAnalogSuffix = ModTrackNames.ANALOG_PREFIX + TrackVehicleType.Train.ToString();
             var metroAnalogSuffix = ModTrackNames.ANALOG_PREFIX + TrackVehicleType.Metro.ToString();
@@ -518,18 +676,6 @@ namespace MetroOverhaul.UI
                         }
                         break;
                     }
-            }
-
-            if (TrackVehicleTypeArray.Any(t => t == TrackVehicleType.Metro))
-            {
-                if (btnClassicStyle == null && btnModernStyle == null)
-                {
-                    AddTrackStyleButtons();
-                }
-            }
-            else
-            {
-                RemoveTrackStyleButtons();
             }
         }
 

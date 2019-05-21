@@ -6,20 +6,53 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
+using static ColossalFramework.UI.UIButton;
 
 namespace MetroOverhaul.UI
 {
     class UIHelper
     {
-        public static readonly Texture2D TrackTrainToggleButtonTexture;
-        public static readonly Texture2D TrackMetroToggleButtonTexture;
-
+        public static readonly Texture2D HeaderIconTexture;
+        public static readonly Texture2D InfoToolTips;
+        public static readonly Texture2D QuadMetroTracks;
+        public static readonly Texture2D DualMetroTracks;
+        public static readonly Texture2D SingleMetroTracks;
+        public static readonly Texture2D ModernStyle;
+        public static readonly Texture2D ClassicStyle;
+        public static readonly Texture2D TwowayDirection;
+        public static readonly Texture2D OnewayDirection;
+        public static readonly Texture2D Checkbox;
+        public static readonly Texture2D WideMedianPillar;
+        public static readonly Texture2D WidePillar;
+        public static readonly Texture2D NarrowMedianPillar;
+        public static readonly Texture2D NarrowPillar;
+        public static readonly Texture2D SteamTab;
+        public static readonly Texture2D MetroTab;
+        public static readonly Texture2D TrainTab;
+        public static readonly Texture2D MetroTrackToggle;
+        public static readonly Texture2D TrainTrackToggle;
         static UIHelper()
         {
-            TrackTrainToggleButtonTexture = LoadDllResource("MenuButton.png", 300, 50);
-            TrackTrainToggleButtonTexture.name = "TMPE_MainMenuButtonIcon";
-            TrackMetroToggleButtonTexture = LoadDllResource("MenuButton.png", 300, 50);
-            TrackMetroToggleButtonTexture.name = "TMPE_MainMenuButtonIcon";
+            HeaderIconTexture = LoadDllResource("Header-Icon.png", 40, 40);
+            HeaderIconTexture.name = "MOM_MainHeaderIcon";
+            InfoToolTips = LoadDllResource("InfoToolTips.png", 482, 134);
+            QuadMetroTracks = LoadDllResource("Thumbs.Menu.QuadThumbnails.png", 545, 100);
+            DualMetroTracks = LoadDllResource("Thumbs.Menu.DualThumbnails.png", 545, 100);
+            SingleMetroTracks = LoadDllResource("Thumbs.Menu.SingleThumbnails.png", 545, 100);
+            ModernStyle = LoadDllResource("Thumbs.Button.ModernThumbnails.png", 295, 52);
+            ClassicStyle = LoadDllResource("Thumbs.Button.ClassicThumbnails.png", 295, 52);
+            TwowayDirection = LoadDllResource("Thumbs.Button.TwowayThumbnails.png", 180, 33);
+            OnewayDirection = LoadDllResource("Thumbs.Button.OnewayThumbnails.png", 180, 33);
+            Checkbox = LoadDllResource("Thumbs.CheckboxThumbnails.png", 95, 20);
+            WideMedianPillar = LoadDllResource("Thumbs.Button.WideMedianPillarThumbnails.png", 250, 50);
+            WidePillar = LoadDllResource("Thumbs.Button.WidePillarThumbnails.png", 250, 50);
+            NarrowMedianPillar = LoadDllResource("Thumbs.Button.NarrowMedianPillarThumbnails.png", 250, 50);
+            NarrowPillar = LoadDllResource("Thumbs.Button.NarrowPillarThumbnails.png", 250, 50);
+            SteamTab = LoadDllResource("Thumbs.Tab.SteamTabThumbnails.png", 380, 23);
+            MetroTab = LoadDllResource("Thumbs.Tab.MetroTabThumbnails.png", 380, 23);
+            TrainTab = LoadDllResource("Thumbs.Tab.TrainTabThumbnails.png", 380, 23);
+            MetroTrackToggle = LoadDllResource("Thumbs.Toggle.MetroTrackToggleThumbnails.png", 111, 37);
+            TrainTrackToggle = LoadDllResource("Thumbs.Toggle.TrainTrackToggleThumbnails.png", 111, 37);
         }
 
         private static Texture2D LoadDllResource(string resourceName, int width, int height)
@@ -27,7 +60,7 @@ namespace MetroOverhaul.UI
             try
             {
                 var myAssembly = Assembly.GetExecutingAssembly();
-                var myStream = myAssembly.GetManifestResourceStream("TrafficManager.Resources." + resourceName);
+                var myStream = myAssembly.GetManifestResourceStream("MetroOverhaul.Resources.UI." + resourceName);
 
                 var texture = new Texture2D(width, height, TextureFormat.ARGB32, false);
 
@@ -89,21 +122,89 @@ namespace MetroOverhaul.UI
                 stream.Position = originalPosition;
             }
         }
-    }
-    public class UIButtonParamProps
-    {
-        public string Text;
-        public int ColumnCount;
-        public MouseEventHandler EventClick;
-        public bool SameLine;
-        public bool ForceRowEnd;
-        public bool AddUIComponent;
-        public string NormalFgSprite;
-        public UIButtonParamProps()
+        public static UITextureAtlas GenerateLinearAtlas(string name, Texture2D texture, int numSprites = 5)
         {
-            SameLine = false;
-            ForceRowEnd = false;
-            AddUIComponent = true;
+            string[] ts = null;
+            
+            if (numSprites == 5 || numSprites == 10)
+            {
+                ts = new[] { "", "Disabled", "Focused", "Hovered", "Pressed" };
+            }
+            else if (numSprites == 3)
+            {
+                ts = new[] { "", "Hovered", "Pressed" };
+            }
+            List<string> spriteNames = new List<string>();
+            if (numSprites > 5)
+            {
+                foreach (var value in ts)
+                {
+                    spriteNames.Add(name + "Bg" + value.ToString());
+                }
+                foreach (var value in ts)
+                {
+                    spriteNames.Add(name + "Fg" + value.ToString());
+                }
+            }
+            else
+            {
+                foreach (var value in ts)
+                {
+                    spriteNames.Add(name + "Bg" + value.ToString());
+                }
+            }
+
+            return GenerateLinearAtlas(name, texture, numSprites, spriteNames.ToArray());
         }
+        public static UITextureAtlas GenerateLinearAtlas(string name, Texture2D texture, int numSprites, string[] spriteNames)
+        {
+            return Generate2DAtlas(name, texture, numSprites, 1, spriteNames);
         }
+
+        public static UITextureAtlas Generate2DAtlas(string name, Texture2D texture, int numX, int numY, string[] spriteNames)
+        {
+            if (spriteNames.Length != numX * numY)
+            {
+                throw new ArgumentException($"Number of sprite name does not match dimensions (expected {numX} x {numY}, was {spriteNames.Length})");
+            }
+
+            UITextureAtlas atlas = ScriptableObject.CreateInstance<UITextureAtlas>();
+            atlas.padding = 0;
+            atlas.name = name;
+
+            var shader = Shader.Find("UI/Default UI Shader");
+            if (shader != null)
+                atlas.material = new Material(shader);
+            atlas.material.mainTexture = texture;
+
+            int spriteWidth = Mathf.RoundToInt((float)texture.width / (float)numX);
+            int spriteHeight = Mathf.RoundToInt((float)texture.height / (float)numY);
+
+            int k = 0;
+            for (int i = 0; i < numX; ++i)
+            {
+                float x = (float)i / (float)numX;
+                for (int j = 0; j < numY; ++j)
+                {
+                    float y = (float)j / (float)numY;
+
+                    var sprite = new UITextureAtlas.SpriteInfo
+                    {
+                        name = spriteNames[k],
+                        region = new Rect(x, y, (float)spriteWidth / (float)texture.width, (float)spriteHeight / (float)texture.height)
+                    };
+
+                    var spriteTexture = new Texture2D(spriteWidth, spriteHeight);
+                    spriteTexture.SetPixels(texture.GetPixels((int)((float)texture.width * sprite.region.x), (int)((float)texture.height * sprite.region.y), spriteWidth, spriteHeight));
+                    sprite.texture = spriteTexture;
+
+                    atlas.AddSprite(sprite);
+
+                    ++k;
+                }
+            }
+
+            return atlas;
+        }
+    }
 }

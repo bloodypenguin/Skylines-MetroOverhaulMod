@@ -14,6 +14,7 @@ namespace MetroOverhaul.UI
     {
         public TrackVehicleType trackVehicleType = TrackVehicleType.Default;
         public TrackStyle trackStyle = TrackStyle.Modern;
+        public PillarType pillarType = PillarType.None;
         public int trackSize = 1;
         public int trackDirection = 1;
         protected BulldozeTool m_bulldozeTool;
@@ -64,6 +65,7 @@ namespace MetroOverhaul.UI
         protected UIButton btnDefault;
         protected UIButton btnModernStyle;
         protected UIButton btnClassicStyle;
+        protected UIButton btnNoStyle;
         protected UIButton btnSingleTrack;
         protected UIButton btnDoubleTrack;
         protected UIButton btnQuadTrack;
@@ -71,7 +73,19 @@ namespace MetroOverhaul.UI
         protected UIButton btnTwoWay;
         protected UIButton btnStation;
         protected UIButton btnTrack;
-
+        protected UIButton btnWideMedianPillar;
+        protected UIButton btnWidePillar;
+        protected UIButton btnNarrowMedianPillar;
+        protected UIButton btnNarrowPillar;
+        protected UITabstrip tsPillarChooser;
+        protected UITabstrip tsTrackVsStation;
+        protected UITabstrip tsStationTypeSelector;
+        protected UITabstrip tsIndividualTrackSelector;
+        protected UITabstrip tsStyles;
+        protected UIPanel pnlOuterContainer;
+        protected UIPanel pnlInnerContainer;
+        protected UIPanel pnlTrackSelectorContainer;
+        protected UILabel lblTabTitle;
         protected Task m_T = null;
 
         protected bool m_valueChanged = false;
@@ -102,7 +116,7 @@ namespace MetroOverhaul.UI
         protected NetInfo steelQuadSideStationPrefab;
         protected NetInfo steelQuadDualIslandStationPrefab;
 
-        protected const string ALT_BARRIER = "Alt/Barrier";
+        protected const string ALT_BARRIER = "Alternate Design";
         protected const string OVER_ROAD_FRIENDLY = "Over-Road Friendly";
         protected const string EXTRA_PILLARS = "Extra Pillars";
 
@@ -202,7 +216,19 @@ namespace MetroOverhaul.UI
             SubStart();
         }
 
-        protected virtual void CreateUI() { }
+        private float m_SetWidth = 250;
+        protected virtual void CreateUI()
+        {
+            backgroundSprite = "GenericPanel";
+            color = new Color32(73, 68, 84, 170);
+            width = m_SetWidth;
+            height = 0;
+            opacity = 90;
+            position = Vector2.zero;
+            isVisible = false;
+            isInteractive = true;
+            padding = new RectOffset() { bottom = 8, left = 8, right = 8, top = 8 };
+        }
         protected virtual void SubStart() { }
 
         public override void Awake()
@@ -273,118 +299,123 @@ namespace MetroOverhaul.UI
             dragHandle.target = this;
 
             UILabel titleLabel = dragHandlePanel.AddUIComponent<UILabel>();
-            titleLabel.relativePosition = new Vector3() { x = 5, y = 5, z = 0 };
+            titleLabel.relativePosition = new Vector3() { x = 50, y = 3, z = 0 };
             titleLabel.textAlignment = UIHorizontalAlignment.Center;
             titleLabel.text = title;
             titleLabel.isInteractive = false;
+
+            UIButton headerIcon = dragHandlePanel.AddUIComponent<UIButton>();
+            headerIcon.atlas = UIHelper.GenerateLinearAtlas("MOM_HeaderIconAtlas", UIHelper.HeaderIconTexture, 1, new string[] { UIHelper.HeaderIconTexture.name });
+            headerIcon.relativePosition = new Vector3() { x = 5, y = -10 };
+            headerIcon.width = 40;
+            headerIcon.height = 40;
+            headerIcon.normalFgSprite = UIHelper.HeaderIconTexture.name;
+
+            height += 2 * dragHandle.height;
         }
 
-        protected int m_rowIndex = 1;
-        private int m_colIndex = 0;
-        protected UIButton CreateButton(UIButtonParamProps props)
+        protected UIPanel CreatePanel(UIPanelParamProps properties)
         {
-            var button = this.AddUIComponent<UIButton>();
-            button.text = props.Text;
-            button.relativePosition = new Vector3(8 + (((float)m_colIndex / props.ColumnCount) * width), m_rowIndex * 50);
-            button.width = (width / props.ColumnCount) - 16;
-            button.height = 30;
-            //button.maximumSize = new Vector2(30, 30);
-            button.normalBgSprite = "ButtonMenu";
-            button.color = new Color32(150, 150, 150, 255);
-            button.disabledBgSprite = "ButtonMenuDisabled";
-            button.disabledColor = new Color32(204, 204, 204, 255);
-            button.hoveredBgSprite = "ButtonMenuHovered";
-            button.hoveredColor = new Color32(163, 255, 16, 255);
-            button.focusedBgSprite = "ButtonMenu";
-            button.focusedColor = new Color32(163, 255, 16, 255);
-            button.pressedBgSprite = "ButtonMenuPressed";
-            button.pressedColor = new Color32(163, 255, 16, 255);
-            button.textColor = new Color32(255, 255, 255, 255);
-            button.normalBgSprite = "ButtonMenu";
-            if (!string.IsNullOrEmpty(props.NormalFgSprite))
-                button.normalFgSprite = props.NormalFgSprite;
-            button.focusedBgSprite = "ButtonMenuFocused";
+            var parentComponent = GetParentComponent(properties);
+            var panel = (UIPanel)InitComponent(parentComponent.AddUIComponent<UIPanel>(), properties);
+            panel.backgroundSprite = properties.BackgroundSprite;
+            if (properties.Color != null)
+            {
+                panel.color = (Color32)properties.Color;
+            }
+            panel.zOrder = 10;
+            HandleNextPositioning(properties);
+            return panel;
+        }
+        protected UITabstrip CreateTabStrip(UITabstripParamProps properties)
+        {
+            var parentComponent = GetParentComponent(properties);
+            var tabstrip = (UITabstrip)InitComponent(parentComponent.AddUIComponent<UITabstrip>(), properties);
+            tabstrip.startSelectedIndex = properties.StartSelectedIndex;
+            tabstrip.zOrder = 5;
+            HandleNextPositioning(properties);
+            return tabstrip;
+        }
+        protected UILabel CreateLabel(UILabelParamProps properties)
+        {
+            var parentComponent = GetParentComponent(properties);
+            var label = (UILabel)InitComponent(parentComponent.AddUIComponent<UILabel>(), properties);
+            label.textColor = properties.TextColor;
+            label.textAlignment = properties.TextAlignment;
+            label.textScale = properties.TextScale;
+            if (!string.IsNullOrEmpty(properties.Text))
+                label.text = properties.Text;
+            HandleNextPositioning(properties);
+            return label;
+        }
+        protected void RefreshSprites(UIButton button)
+        {
+            button.normalBgSprite = button.atlas.name + "Bg";
+            button.disabledBgSprite = button.atlas.name + "BgDisabled";
+            button.focusedBgSprite = button.atlas.name + "BgFocused";
+            button.hoveredBgSprite = button.atlas.name + "BgHovered";
+            button.pressedBgSprite = button.atlas.name + "BgPressed";
+
+            button.normalFgSprite = button.atlas.name + "Fg";
+            button.disabledFgSprite = button.atlas.name + "FgDisabled";
+            button.focusedFgSprite = button.atlas.name + "FgFocused";
+            button.hoveredFgSprite = button.atlas.name + "FgHovered";
+            button.pressedFgSprite = button.atlas.name + "FgPressed";
+        }
+        protected UIButton CreateButton(UIButtonParamProps properties)
+        {
+            var parentComponent = GetParentComponent(properties);
+            var button = (UIButton)InitComponent(parentComponent.AddUIComponent<UIButton>(), properties);
+            if (!string.IsNullOrEmpty(properties.Text))
+                button.text = properties.Text;
+            if (properties.Atlas != null)
+            {
+                button.atlas = properties.Atlas;
+                if (properties.HasFgBgSprites)
+                {
+                    RefreshSprites(button);
+                }
+                else
+                {
+                    button.normalBgSprite = properties.NormalBgSprite != null ? properties.NormalBgSprite : properties.Atlas.name + "Bg";
+                    button.disabledBgSprite = properties.DisabledBgSprite != null ? properties.DisabledBgSprite : properties.Atlas.name + "BgDisabled";
+                    button.focusedBgSprite = properties.FocusedBgSprite != null ? properties.FocusedBgSprite : properties.Atlas.name + "BgFocused";
+                    button.hoveredBgSprite = properties.HoveredBgSprite != null ? properties.HoveredBgSprite : properties.Atlas.name + "BgHovered";
+                    button.pressedBgSprite = properties.PressedBgSprite != null ? properties.PressedBgSprite : properties.Atlas.name + "BgPressed";
+                }
+            }
+            else
+            {
+                button.normalBgSprite = "ButtonMenu";
+                button.color = new Color32(150, 150, 150, 255);
+                button.disabledBgSprite = "ButtonMenuDisabled";
+                button.disabledColor = new Color32(204, 204, 204, 255);
+                button.hoveredBgSprite = "ButtonMenuHovered";
+                button.hoveredColor = new Color32(163, 255, 16, 255);
+                button.focusedBgSprite = "ButtonMenu";
+                button.focusedColor = new Color32(163, 255, 16, 255);
+                button.pressedBgSprite = "ButtonMenuPressed";
+                button.pressedColor = new Color32(163, 255, 16, 255);
+                button.textColor = new Color32(255, 255, 255, 255);
+                button.normalBgSprite = "ButtonMenu";
+                if (!string.IsNullOrEmpty(properties.NormalFgSprite))
+                    button.normalFgSprite = properties.NormalFgSprite;
+                button.focusedBgSprite = "ButtonMenuFocused";
+            }
             button.playAudioEvents = true;
             button.opacity = 95;
             button.dropShadowColor = new Color32(0, 0, 0, 255);
             button.dropShadowOffset = new Vector2(-1, -1);
-            button.eventClick += props.EventClick;
-            if (props.AddUIComponent)
+            button.eventClick += properties.EventClick;
+            if (properties.AddUIComponent)
             {
-                m_colIndex++;
-                if (m_colIndex == props.ColumnCount || props.ForceRowEnd)
-                {
-                    m_colIndex = 0;
-                    if (props.SameLine == false)
-                        m_rowIndex++;
-                }
+                HandleNextPositioning(properties);
+                button.zOrder = 1;
             }
 
             return button;
         }
 
-        protected void ToggleButtonPairs(int activeIndex, params UIButton[] buttons)
-        {
-            var active = buttons[activeIndex];
-            if (active.isEnabled)
-            {
-                active.color = new Color32(163, 255, 16, 255);
-                active.normalBgSprite = "ButtonMenuFocused";
-                active.useDropShadow = true;
-                active.opacity = 95;
-                var inactives = buttons.Except(new List<UIButton>() { active });
-                foreach (UIButton inactive in inactives)
-                {
-                    if (inactive.isEnabled)
-                    {
-                        inactive.color = new Color32(150, 150, 150, 255);
-                        inactive.normalBgSprite = "ButtonMenu";
-                        inactive.useDropShadow = false;
-                        inactive.opacity = 95;
-                    }
-                }
-            }
-
-        }
-
-        protected void ToggleButtonPairs(StationTrackType activeStationtype)
-        {
-            foreach (var kvp in buttonStationDict)
-            {
-                kvp.Value.color = new Color32(150, 150, 150, 255);
-                kvp.Value.normalBgSprite = "ButtonMenu";
-                kvp.Value.useDropShadow = false;
-                kvp.Value.opacity = 95;
-            }
-            buttonStationDict[activeStationtype].color = new Color32(163, 255, 16, 255);
-            buttonStationDict[activeStationtype].normalBgSprite = "ButtonMenuFocused";
-            buttonStationDict[activeStationtype].useDropShadow = true;
-            buttonStationDict[activeStationtype].opacity = 95;
-        }
-
-        private int m_SliderCount = 0;
-        private int m_CheckboxCount = 0;
-        protected UIButton CreateButton(StationTrackType type, int columnCount, MouseEventHandler eventClick, bool sameLine = false)
-        {
-            return CreateButton(new UIButtonParamProps()
-            {
-                Text = GetNameFromStationType(type),
-                ColumnCount = columnCount,
-                EventClick = eventClick,
-                SameLine = sameLine
-            });
-        }
-
-        protected virtual void OnToggleMouseDown(UIComponent c, UIMouseEventParameter e, ToggleType type)
-        {
-
-        }
-        protected virtual void OnToggleKeyDown(UIComponent c, UIKeyEventParameter e)
-        {
-
-        }
-
-        protected float m_height = 50;
         protected void CreateSlider(ToggleType type)
         {
             SliderData sData = SliderDataDict[type];
@@ -484,6 +515,231 @@ namespace MetroOverhaul.UI
             m_height += 40;
             m_SliderCount++;
         }
+        protected UICheckBox CreateCheckbox(UICheckboxParamProps properties)
+        {
+            var parentComponent = GetParentComponent(properties);
+            UICheckBox checkbox = (UICheckBox)InitComponent(parentComponent.AddUIComponent<UICheckBox>(), properties);
+            if (!string.IsNullOrEmpty(properties.Text))
+                checkbox.text = properties.Text;
+            checkbox.isInteractive = true;
+
+            UISprite cbClicker = checkbox.AddUIComponent<UISprite>();
+            cbClicker.atlas = properties.Atlas;
+            cbClicker.spriteName = properties.Atlas.name;
+            cbClicker.relativePosition = new Vector2(0, 0);
+            cbClicker.size = new Vector2(16, 16);
+            cbClicker.isInteractive = true;
+            checkbox.eventCheckChanged += (c, v) =>
+            {
+                if (checkbox.isChecked)
+                {
+                    cbClicker.spriteName = properties.Atlas.name + "Focused";
+                }
+                else
+                {
+                    cbClicker.spriteName = properties.Atlas.name;
+                }
+                ExecuteUiInstructions();
+            };
+
+            UILabel checkboxLabel = checkbox.AddUIComponent<UILabel>();
+            checkboxLabel.relativePosition = new Vector2(20, 0);
+            checkboxLabel.text = properties.Text;
+            checkboxLabel.height = 16;
+            checkboxLabel.isInteractive = true;
+            HandleNextPositioning(properties);
+            return checkbox;
+        }
+
+        protected int m_rowIndex = 1;
+        private int m_colIndex = 0;
+        private float m_stackedWidths = 0;
+        private int m_totalColShare = 0;
+        private Dictionary<UIComponent, UIComponent> m_ParentTreeDict;
+        private Dictionary<UIComponent, UIComponent> ParentTreeDict {
+            get
+            {
+                if (m_ParentTreeDict == null)
+                {
+                    m_ParentTreeDict = new Dictionary<UIComponent, UIComponent>();
+                }
+                return m_ParentTreeDict;
+            }
+        }
+        private void HandleNextPositioning(UIParamPropsBase properties)
+        {
+            m_colIndex++;
+            if (properties.StackWidths)
+            {
+                m_stackedWidths += properties.Width + properties.Margins.x;
+            }
+            if (properties.ColShare > -1)
+            {
+                m_totalColShare += properties.ColShare + properties.ColOffset;
+            }
+            if (m_colIndex * properties.Component.width > ParentTreeDict[properties.Component].width)
+            {
+                //var diff = ((m_colIndex + 1) * properties.Component.width) - ParentTreeDict[properties.Component].width;
+                //PropagateParentComponentWidthUpdates(ParentTreeDict[properties.Component], diff);
+            }
+            if (m_colIndex == properties.ColumnCount || properties.ForceRowEnd || m_totalColShare >= 12)
+            {
+                m_colIndex = 0;
+                m_totalColShare = 0;
+                m_stackedWidths = 0;
+                if (properties.SameLine == false)
+                {
+                    m_rowIndex++;
+                    var rowHeightAdditive = properties.Component.height + properties.Margins.y + properties.Margins.w;
+                    PropagateParentComponentHeightUpdates(properties.Component, rowHeightAdditive);
+                    foreach (var kvp in ParentTreeDict)
+                    {
+                        if (kvp.Key.parent != this && kvp.Key.parent != null)
+                        {
+                            if (properties.Component?.parent?.parent != null)
+                            {
+                                if (kvp.Key.parent == properties.Component.parent.parent)
+                                {
+
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+            }
+        }
+        private void PropagateParentComponentWidthUpdates(UIComponent target, float widthAdditive)
+        {
+            target.width += widthAdditive;
+            if (target != this && ParentTreeDict[target] != null)
+            {
+                    PropagateParentComponentWidthUpdates(ParentTreeDict[target], widthAdditive);
+            }
+        }
+        private void PropagateParentComponentHeightUpdates(UIComponent target, float heightAdditive)
+        {
+            if (target != this && ParentTreeDict[target] != null)
+            {
+                var targetHeight = target.height + target.absolutePosition.y;
+                var parentHeight = ParentTreeDict[target].height + ParentTreeDict[target].absolutePosition.y;
+                if (targetHeight > parentHeight)
+                {
+                    ParentTreeDict[target].height += heightAdditive;
+                    PropagateParentComponentHeightUpdates(ParentTreeDict[target], heightAdditive);
+                }
+            }
+        }
+        private UIComponent InitComponent(UIComponent component, UIParamPropsBase properties)
+        {
+            var parentComponent = GetParentComponent(properties);
+            ParentTreeDict.Add(component, parentComponent);
+            properties.Component = component;
+            var addUIComponent = !(properties is UIButtonParamProps) || (properties as UIButtonParamProps).AddUIComponent;
+            if (!string.IsNullOrEmpty(properties.Name))
+                component.name = properties.Name;
+            if (properties.StackWidths)
+            {
+                component.relativePosition = properties.GetRelativePositionByStackedWidths(m_stackedWidths);
+            }
+            if (properties.ColumnCount > 0 && addUIComponent)
+            {
+                component.relativePosition = properties.GetRelativePositionByColumnCount(m_colIndex);
+            }
+            else if (properties.ColShare > -1)
+            {
+                component.relativePosition = properties.GetRelativePositionByColumnShare(m_totalColShare);
+            }
+            component.width = addUIComponent ? properties.GetWidth() : 0;
+            component.height = addUIComponent ? properties.Height : 0;
+            return component;
+        }
+        protected UIComponent GetParentComponent(UIParamPropsBase properties)
+        {
+            if (properties.ParentComponent == null)
+            {
+                properties.ParentComponent = this;
+            }
+            return properties.ParentComponent;
+        }
+        protected void ToggleButtonPairs(int activeIndex, params UIButton[] buttons)
+        {
+            var active = buttons[activeIndex];
+            if (active.isEnabled)
+            {
+                active.color = new Color32(163, 255, 16, 255);
+                active.normalBgSprite = "ButtonMenuFocused";
+                active.useDropShadow = true;
+                active.opacity = 95;
+                var inactives = buttons.Except(new List<UIButton>() { active });
+                foreach (UIButton inactive in inactives)
+                {
+                    if (inactive.isEnabled)
+                    {
+                        inactive.color = new Color32(150, 150, 150, 255);
+                        inactive.normalBgSprite = "ButtonMenu";
+                        inactive.useDropShadow = false;
+                        inactive.opacity = 95;
+                    }
+                }
+            }
+        }
+        protected void ToggleCustomAtlasButtonPairs(int activeIndex, params UIButton[] buttons)
+        {
+            var active = buttons[activeIndex];
+            if (active.isEnabled)
+            {
+                active.hoveredBgSprite = active.atlas.name + "Focused";
+                var inactives = buttons.Except(new List<UIButton>() { active });
+                foreach (UIButton inactive in inactives)
+                {
+                    if (inactive.isEnabled)
+                    {
+                        inactive.hoveredBgSprite = inactive.atlas.name + "Hovered";
+                    }
+                }
+            }
+        }
+        protected void ToggleButtonPairs(StationTrackType activeStationtype)
+        {
+            foreach (var kvp in buttonStationDict)
+            {
+                kvp.Value.color = new Color32(150, 150, 150, 255);
+                kvp.Value.normalBgSprite = "ButtonMenu";
+                kvp.Value.useDropShadow = false;
+                kvp.Value.opacity = 95;
+            }
+            buttonStationDict[activeStationtype].color = new Color32(163, 255, 16, 255);
+            buttonStationDict[activeStationtype].normalBgSprite = "ButtonMenuFocused";
+            buttonStationDict[activeStationtype].useDropShadow = true;
+            buttonStationDict[activeStationtype].opacity = 95;
+        }
+
+        private int m_SliderCount = 0;
+        private int m_CheckboxCount = 0;
+        protected UIButton CreateButton(StationTrackType type, int columnCount, MouseEventHandler eventClick, bool sameLine = false)
+        {
+            return CreateButton(new UIButtonParamProps()
+            {
+                Text = GetNameFromStationType(type),
+                ColumnCount = columnCount,
+                EventClick = eventClick,
+                SameLine = sameLine
+            });
+        }
+
+        protected virtual void OnToggleMouseDown(UIComponent c, UIMouseEventParameter e, ToggleType type)
+        {
+
+        }
+        protected virtual void OnToggleKeyDown(UIComponent c, UIKeyEventParameter e)
+        {
+
+        }
+
+        protected float m_height = 50;
+
         protected virtual void TunnelStationTrackToggleStyles(StationTrackType type)
         {
 
@@ -492,42 +748,7 @@ namespace MetroOverhaul.UI
         {
 
         }
-        protected void CreateCheckbox(string label)
-        {
-            UICheckBox checkbox = AddUIComponent<UICheckBox>();
-            checkbox.text = label;
-            checkbox.size = new Vector2(width - 16, 16);
-            checkbox.relativePosition = new Vector2(8, 200 + (30 * CheckboxDict.Count));
-            CheckboxDict[label] = checkbox;
-            checkbox.isInteractive = true;
 
-            UISprite cbClicker = checkbox.AddUIComponent<UISprite>();
-            cbClicker.atlas = atlas;
-            cbClicker.spriteName = "check-unchecked";
-            cbClicker.relativePosition = new Vector2(0, 0);
-            cbClicker.size = new Vector2(16, 16);
-            cbClicker.isInteractive = true;
-            checkbox.eventCheckChanged += (c, v) =>
-            {
-                if (checkbox.isChecked)
-                {
-                    cbClicker.spriteName = "check-checked";
-                }
-                else
-                {
-                    cbClicker.spriteName = "check-unchecked";
-                }
-                ExecuteUiInstructions();
-            };
-
-            UILabel checkboxLabel = checkbox.AddUIComponent<UILabel>();
-            checkboxLabel.relativePosition = new Vector2(20, 0);
-            checkboxLabel.text = label;
-            checkboxLabel.height = 16;
-            checkboxLabel.isInteractive = true;
-
-            m_height = Math.Max(m_height + 30, 230);
-        }
         protected string GetNameFromStationType(StationTrackType type)
         {
             return Regex.Replace(type.ToString(), "[a-z][A-Z]", m => m.Value[0] + " " + char.ToLower(m.Value[1]));

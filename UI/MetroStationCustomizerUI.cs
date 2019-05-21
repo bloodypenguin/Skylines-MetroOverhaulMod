@@ -86,18 +86,11 @@ namespace MetroOverhaul.UI {
 #if DEBUG
             Next.Debug.Log("MOM UNDERGROUND STATION TRACK GUI Created");
 #endif
+            base.CreateUI();
             Action stationMechanicsTask = DoStationMechanics;
             Task t = Task.Create(stationMechanicsTask);
             m_T = t;
-            backgroundSprite = "GenericPanel";
-            color = new Color32(68, 84, 68, 170);
             width = 280;
-            //height = 300;
-            opacity = 60;
-            position = Vector2.zero;
-            isVisible = false;
-            isInteractive = true;
-            padding = new RectOffset() { bottom = 8, left = 8, right = 8, top = 8 };
 
             CreateDragHandle("Subway Station Options");
 

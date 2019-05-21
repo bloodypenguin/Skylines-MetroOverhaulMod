@@ -154,6 +154,7 @@ namespace MetroOverhaul {
                         Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationLarge).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
+                        Chain(CustomizationSteps.ReplaceTrackIcon).
                         Chain(CustomizationSteps.SetLargeTrackWidths).
                         Chain(SetupMesh.Setup10mMesh, elevatedInfo, metroInfo).
                         Chain(SetupMesh.Setup10mBarMesh, elevatedInfo).
@@ -210,6 +211,7 @@ namespace MetroOverhaul {
                         Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
+                        Chain(CustomizationSteps.ReplaceTrackIcon).
                         Chain(CustomizationSteps.SetSmallTrackWidths).
                         Chain(SetupMesh.Setup6mMesh).
                         Chain(SetupMesh.Setup6mMeshBar).

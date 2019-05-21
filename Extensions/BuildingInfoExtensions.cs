@@ -432,7 +432,6 @@ namespace MetroOverhaul.Extensions
                     {
                         if (targetPath.m_nodes.Any(n => paths[i].m_nodes.Contains(n)) && targetPath.m_nodes != paths[i].m_nodes)
                         {
-                            Debug.Log("At a depth of " + depth + " from inx " + inx + ", we are drilling into " + i + " and we have already explored " + string.Join(",", retval.Select(x => x.ToString()).ToArray()));
                             depth++;
                             retval.AddRange(info.LinkedPaths(i, inxSoFar));
                             depth--;
@@ -440,7 +439,6 @@ namespace MetroOverhaul.Extensions
                     }
                 }
             }
-            Debug.Log("At a depth of " + depth + " we have a retval of " + string.Join(",",retval.Select(x => x.ToString()).ToArray()));
             return retval;
         }
     }

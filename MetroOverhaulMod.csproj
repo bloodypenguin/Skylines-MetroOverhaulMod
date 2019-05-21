@@ -146,7 +146,13 @@
     <Compile Include="UI\MetroStationCustomizerUI.cs" />
     <Compile Include="SetStationCustomizations.cs" />
     <Compile Include="UI\NoPrefabHookHelper.cs" />
+    <Compile Include="UI\UIButtonParamProps.cs" />
+    <Compile Include="UI\UICheckboxParamProps.cs" />
+    <Compile Include="UI\UILabelParamProps.cs" />
+    <Compile Include="UI\UIPanelParamProps.cs" />
+    <Compile Include="UI\UIParamPropsBase.cs" />
     <Compile Include="UI\UIHelper.cs" />
+    <Compile Include="UI\UITabStripParamProps.cs" />
     <Compile Include="UI\UpgradeSetup.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
@@ -3095,10 +3101,27 @@
     <Content Include="Resources\Textures\Tunnel_Station_Segment_Pavement__XYSMap_LOD.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Resources\UI\Thumbs\Toggle\MetroTrackToggleThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Toggle\TrainTrackToggleThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Tab\MetroTabThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Tab\SteamTabThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Tab\TrainTabThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\NarrowMedianPillarThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\WideMedianPillarThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\NarrowPillarThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\WidePillarThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\CheckboxThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\OnewayThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\TwowayThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\ClassicThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\ModernThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Menu\DualThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Menu\QuadThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Menu\SingleThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\InfoToolTips.png" />
+    <EmbeddedResource Include="Resources\UI\Header-Icon.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\UI\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)"

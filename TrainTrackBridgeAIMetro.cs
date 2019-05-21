@@ -1,4 +1,5 @@
 ﻿using ColossalFramework;
+using MetroOverhaul;
 using MetroOverhaul.NEXT.Extensions;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace MetroOverhaul {
         private NetTool m_NetTool = null;
         public ItemClass m_IntersectClass = null;
         public bool NoPillarCollision { get; set; }
+        public PillarType pillarType { get; set; }
         //public List<BridgePillarPropItem> pillarPropList { get; set; }
         //public PropInfo m_ElevatedPillarPropInfo { get; set; }
         private static NetNode NodeFrom(ushort nodeID)
@@ -48,9 +50,34 @@ namespace MetroOverhaul {
                             } else {
                                 thePillarInfo = theList.FirstOrDefault();
                             }
+                            BuildingInfo info = null;
+                            BuildingInfo noColInfo = null;
+                            if (m_NetTool.Prefab.name.Contains("Bridge"))
+                            {
+                                pillarType = PillarType.WideMedian;
+                            }
+                            switch (pillarType)
+                            {
+                                case PillarType.WideMedian:
+                                    info = thePillarInfo.WideMedianInfo;
+                                    noColInfo = thePillarInfo.WideMedianInfoNoCol;
+                                    break;
+                                case PillarType.Wide:
+                                    info = thePillarInfo.WideInfo;
+                                    noColInfo = thePillarInfo.WideInfoNoCol;
+                                    break;
+                                case PillarType.NarrowMedian:
+                                    info = thePillarInfo.NarrowMedianInfo;
+                                    noColInfo = thePillarInfo.NarrowMedianInfoNoCol;
+                                    break;
+                                case PillarType.Narrow:
+                                    info = thePillarInfo.NarrowInfo;
+                                    noColInfo = thePillarInfo.NarrowInfoNoCol;
+                                    break;
+                            }
                             var prefab = m_NetTool.Prefab;
                             if (NoPillarCollision && elevation >= 0) {
-                                building = thePillarInfo.noCollisionInfo;
+                                building = noColInfo;
                                 building.m_elevated = true;
                                 building.m_generatedInfo.m_min.y = 32;
                                 if (m_IntersectClass == null) {
@@ -58,12 +85,12 @@ namespace MetroOverhaul {
                                 }
                                 prefab.m_intersectClass = null;
                             } else {
-                                building = thePillarInfo.info;
+                                building = info;
                                 if (m_IntersectClass != null) {
                                     prefab.m_intersectClass = m_IntersectClass;
                                 }
                             }
-                            heightOffset = thePillarInfo.HeightOffset - 1f - thePillarInfo.info.m_generatedInfo.m_size.y;
+                            heightOffset = thePillarInfo.HeightOffset - 1f - info.m_generatedInfo.m_size.y;
                         }
                     }
                     return;
@@ -170,15 +197,18 @@ public class BridgePillarItem
 {
     public float HeightLimit { get; set; }
     public float HeightOffset { get; set; }
-    public BuildingInfo info { get; set; }
-    public BuildingInfo noCollisionInfo { get; set; }
-
+    public BuildingInfo WideMedianInfo { get; set; }
+    public BuildingInfo WideInfo { get; set; }
+    public BuildingInfo NarrowMedianInfo { get; set; }
+    public BuildingInfo NarrowInfo { get; set; }
+    public BuildingInfo WideMedianInfoNoCol { get; set; }
+    public BuildingInfo WideInfoNoCol { get; set; }
+    public BuildingInfo NarrowMedianInfoNoCol { get; set; }
+    public BuildingInfo NarrowInfoNoCol { get; set; }
     public BridgePillarItem()
     {
         HeightLimit = 0;
         HeightOffset = 0;
-        info = null;
-        noCollisionInfo = null;
     }
 }
 public class BridgePillarPropItem

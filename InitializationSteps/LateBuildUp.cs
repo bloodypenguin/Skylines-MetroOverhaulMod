@@ -24,6 +24,7 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         var epBuildingInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"MetroElevatedPillar{smallWord}")}.MetroElevatedPillar{smallWord}_Data");
                         var epBuildingInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"MetroElevatedPillar{smallWord}NoCol")}.MetroElevatedPillar{smallWord}NoCol_Data");
+
                         if (epBuildingInfo == null)
                         {
                             throw new Exception($"{prefab.name}: MetroElevatedPillar not found!");
@@ -34,7 +35,18 @@ namespace MetroOverhaul.InitializationSteps
                             bridgeAI.m_bridgePillarInfo = epBuildingInfo;
                             bridgeAI.m_bridgePillarOffset = -0.75f;
                             bridgeAI.pillarList = new List<BridgePillarItem>();
-                            bridgeAI.pillarList.Add(new BridgePillarItem() { HeightLimit = 0, HeightOffset = 0, info = epBuildingInfo, noCollisionInfo = epBuildingInfoNoCol });
+                            bridgeAI.pillarList.Add(new BridgePillarItem() {
+                                WideMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("MetroElevatedPillarLarge")}.MetroElevatedPillarLarge_Data"),
+                                WideInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Wide_O-R-F")}.Modern Wide O-R-F_Data"),
+                                NarrowMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Median_O-R-F")}.Modern Median O-R-F_Data"),
+                                NarrowInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Narrow_O-R-F")}.Modern Narrow O-R-F_Data"),
+                                WideMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("MetroElevatedPillarLargeNoCol")}.MetroElevatedPillarLargeNoCol_Data"),
+                                WideInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Wide_O-R-F_NoCol")}.Modern Wide O-R-F NoCol_Data"),
+                                NarrowMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Median_O-R-F_NoCol")}.Modern Median O-R-F NoCol_Data"),
+                                NarrowInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Narrow_O-R-F_NoCol")}.Modern Narrow O-R-F NoCol_Data"),
+                                HeightLimit = 0,
+                                HeightOffset = 0
+                            });
                         }
                         break;
                     }
@@ -50,8 +62,9 @@ namespace MetroOverhaul.InitializationSteps
                         if (bridgeAI != null)
                         {
                             bridgeAI.m_bridgePillarInfo = bpBuildingInfo;
+                            bridgeAI.pillarType = PillarType.WideMedian;
                             bridgeAI.pillarList = new List<BridgePillarItem>();
-                            bridgeAI.pillarList.Add(new BridgePillarItem() { HeightLimit = 0, HeightOffset = 0, info = bpBuildingInfo, noCollisionInfo = bpBuildingInfoNoCol });
+                            bridgeAI.pillarList.Add(new BridgePillarItem() { HeightLimit = 0, HeightOffset = 0, WideMedianInfo = bpBuildingInfo, WideMedianInfoNoCol = bpBuildingInfoNoCol });
                         }
                         break;
                     }

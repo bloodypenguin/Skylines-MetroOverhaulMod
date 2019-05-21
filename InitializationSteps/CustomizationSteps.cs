@@ -676,6 +676,22 @@ namespace MetroOverhaul.InitializationSteps
                     break;
             }
         }
+        private const string SINGLE_TRACK_INFOTOOLTIP = "SingleTrackInfoToolTip";
+        private const string DUAL_TRACK_INFOTOOLTIP = "DualTrackInfoToolTip";
+        private const string QUAD_TRACK_INFOTOOLTIP = "QuadTrackInfoToolTip";
+        private static ColossalFramework.UI.UITextureAtlas m_InfoToolTipAtlas = null;
+        private static ColossalFramework.UI.UITextureAtlas InfoToolTipAtlas()
+        {
+            if (m_InfoToolTipAtlas == null)
+            {
+                m_InfoToolTipAtlas = UI.UIHelper.GenerateLinearAtlas("MOM_InfoToolTipAtlas", UI.UIHelper.InfoToolTips, 3, new string[] {
+                    SINGLE_TRACK_INFOTOOLTIP,
+                    DUAL_TRACK_INFOTOOLTIP,
+                    QUAD_TRACK_INFOTOOLTIP
+                });
+            }
+            return m_InfoToolTipAtlas;
+        }
 
         public static void ReplaceTrackIcon(NetInfo prefab, NetInfoVersion version)
         {
@@ -684,17 +700,43 @@ namespace MetroOverhaul.InitializationSteps
                 return;
             }
             var metroTrack = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
-            prefab.m_Atlas = metroTrack.m_Atlas;
-            prefab.m_Thumbnail = metroTrack.m_Thumbnail;
-            prefab.m_InfoTooltipAtlas = metroTrack.m_InfoTooltipAtlas;
-            prefab.m_InfoTooltipThumbnail = metroTrack.m_InfoTooltipThumbnail;
+
+            prefab.m_InfoTooltipAtlas = InfoToolTipAtlas();
+            string netTitle;
+            if (prefab.name.Contains("Large"))
+            {
+                var atlas = UI.UIHelper.GenerateLinearAtlas("MOM_QuadMetroTrackAtlas", UI.UIHelper.QuadMetroTracks);
+                prefab.m_Atlas = atlas;
+                prefab.m_Thumbnail = atlas.name + "Bg";
+                prefab.m_InfoTooltipThumbnail = QUAD_TRACK_INFOTOOLTIP;
+                prefab.m_UIPriority = 3;
+                netTitle = "Quad Metro Track";
+            }
+            else if (prefab.name.Contains("Small"))
+            {
+                var atlas = UI.UIHelper.GenerateLinearAtlas("MOM_SingleMetroTrackAtlas", UI.UIHelper.SingleMetroTracks);
+                prefab.m_Atlas = atlas;
+                prefab.m_Thumbnail = atlas.name + "Bg";
+                prefab.m_InfoTooltipThumbnail = SINGLE_TRACK_INFOTOOLTIP;
+                prefab.m_UIPriority = 1;
+                netTitle = "Single Metro Track";
+            }
+            else
+            {
+                var atlas = UI.UIHelper.GenerateLinearAtlas("MOM_DualMetroTrackAtlas", UI.UIHelper.DualMetroTracks);
+                prefab.m_Atlas = atlas;
+                prefab.m_Thumbnail = atlas.name + "Bg";
+                prefab.m_InfoTooltipThumbnail = DUAL_TRACK_INFOTOOLTIP;
+                prefab.m_UIPriority = 2;
+                netTitle = "Dual Metro Track";
+            }
             prefab.m_isCustomContent = false;
             prefab.m_availableIn = ItemClass.Availability.All;
             var locale = LocaleManager.instance.GetLocale();
             var key = new Locale.Key { m_Identifier = "NET_TITLE", m_Key = prefab.name };
             if (!locale.Exists(key))
             {
-                locale.AddLocalizedString(key, locale.Get(new Locale.Key { m_Identifier = "NET_TITLE", m_Key = "Metro Track" }));
+                locale.AddLocalizedString(key, locale.Get(new Locale.Key { m_Identifier = "NET_TITLE", m_Key = netTitle }));
             }
             key = new Locale.Key { m_Identifier = "NET_DESC", m_Key = prefab.name };
             if (!locale.Exists(key))

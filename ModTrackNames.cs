@@ -160,7 +160,16 @@
             Metro,
         }
         public enum TrackStyle {
+            None,
             Modern,
             Classic
         }
+public enum PillarType
+    {
+        None,
+        WideMedian,
+        Wide,
+        NarrowMedian,
+        Narrow
+    }
 }
