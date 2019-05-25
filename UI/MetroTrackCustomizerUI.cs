@@ -71,6 +71,7 @@ namespace MetroOverhaul.UI
             btnModernStyle = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnModernStyle",
+                ToolTip = "Modern Style",
                 ColumnCount = 2,
                 ParentComponent = tsStyles,
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_ModernStyleAtlas", UIHelper.ModernStyle),
@@ -85,6 +86,7 @@ namespace MetroOverhaul.UI
             btnClassicStyle = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnClassicStyle",
+                ToolTip = "Classic Style",
                 ColumnCount = 2,
                 ParentComponent = tsStyles,
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_ClassicStyleAtlas", UIHelper.ClassicStyle),
@@ -116,6 +118,7 @@ namespace MetroOverhaul.UI
             btnOneWay = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnOneWay",
+                ToolTip = "One Way",
                 ColumnCount = 2,
                 ParentComponent = tsDirections,
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_OnewayDirectionAtlas", UIHelper.OnewayDirection),
@@ -131,6 +134,7 @@ namespace MetroOverhaul.UI
             btnTwoWay = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnTwoWay",
+                ToolTip = "Two Way",
                 ColumnCount = 2,
                 ParentComponent = tsDirections,
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_TwowayDirectionAtlas", UIHelper.TwowayDirection),
@@ -166,6 +170,7 @@ namespace MetroOverhaul.UI
             btnWideMedianPillar = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnWideMedianPillar",
+                ToolTip = "Wide Median Pillar",
                 ParentComponent = tsPillarChooser,
                 ColumnCount = 4,
                 Width = 50,
@@ -180,6 +185,7 @@ namespace MetroOverhaul.UI
             btnWidePillar = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnWidePillar",
+                ToolTip = "Wide Pillar",
                 ParentComponent = tsPillarChooser,
                 ColumnCount = 4,
                 Width = 50,
@@ -194,6 +200,7 @@ namespace MetroOverhaul.UI
             btnNarrowPillar = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnNarrowPillar",
+                ToolTip = "Narrow Pillar",
                 ParentComponent = tsPillarChooser,
                 ColumnCount = 4,
                 Width = 50,
@@ -208,6 +215,7 @@ namespace MetroOverhaul.UI
             btnNarrowMedianPillar = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnNarrowMedianPillar",
+                ToolTip = "Narrow Median Pillar",
                 ParentComponent = tsPillarChooser,
                 ColumnCount = 4,
                 Width = 50,
@@ -219,7 +227,6 @@ namespace MetroOverhaul.UI
                     ExecuteUiInstructions();
                 }
             });
-
             var pnlCheckboxOptions = CreatePanel(new UIPanelParamProps()
             {
                 Name = "pnlCheckboxOptions",

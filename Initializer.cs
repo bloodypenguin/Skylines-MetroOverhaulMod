@@ -910,6 +910,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.SetupStationProps).
                         Chain(CustomizationSteps.CommonSteelCustomization).
+                        Chain(CustomizationSteps.CommonCustomizationLarge).
                         Chain(CustomizationSteps.SetLargeStationTrackWidths).
                         Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo).
                         Chain(SetupSteelTexture.Setup10mSteelTexture),

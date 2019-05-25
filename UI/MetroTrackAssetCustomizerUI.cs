@@ -386,13 +386,13 @@ namespace MetroOverhaul.UI
                                     case StationTrackType.IslandPlatform:
                                         prefab = concreteIslandStationPrefab;
                                         break;
-                                    case StationTrackType.SingleTrack:
+                                    case StationTrackType.SinglePlatform:
                                         prefab = concreteSingleStationPrefab;
                                         break;
-                                    case StationTrackType.QuadSidePlatform:
+                                    case StationTrackType.ExpressSidePlatform:
                                         prefab = concreteQuadSideStationPrefab;
                                         break;
-                                    case StationTrackType.QuadDualIslandPlatform:
+                                    case StationTrackType.DualIslandPlatform:
                                         prefab = concreteQuadDualIslandStationPrefab;
                                         break;
                                 }
@@ -462,13 +462,13 @@ namespace MetroOverhaul.UI
                                         case StationTrackType.IslandPlatform:
                                             prefab = steelIslandStationPrefab;
                                             break;
-                                        case StationTrackType.SingleTrack:
+                                        case StationTrackType.SinglePlatform:
                                             prefab = steelSingleStationPrefab;
                                             break;
-                                        case StationTrackType.QuadSidePlatform:
+                                        case StationTrackType.ExpressSidePlatform:
                                             prefab = steelQuadSideStationPrefab;
                                             break;
-                                        case StationTrackType.QuadDualIslandPlatform:
+                                        case StationTrackType.DualIslandPlatform:
                                             prefab = steelQuadDualIslandStationPrefab;
                                             break;
                                     }

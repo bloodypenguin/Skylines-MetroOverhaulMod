@@ -31,6 +31,12 @@ namespace MetroOverhaul.UI
         public static readonly Texture2D TrainTab;
         public static readonly Texture2D MetroTrackToggle;
         public static readonly Texture2D TrainTrackToggle;
+        public static readonly Texture2D SidePlatformStationTrack;
+        public static readonly Texture2D IslandPlatformStationTrack;
+        public static readonly Texture2D SinglePlatformStationTrack;
+        public static readonly Texture2D ExpressSidePlatformStationTrack;
+        public static readonly Texture2D DualIslandPlatformStationTrack;
+
         static UIHelper()
         {
             HeaderIconTexture = LoadDllResource("Header-Icon.png", 40, 40);
@@ -53,6 +59,11 @@ namespace MetroOverhaul.UI
             TrainTab = LoadDllResource("Thumbs.Tab.TrainTabThumbnails.png", 380, 23);
             MetroTrackToggle = LoadDllResource("Thumbs.Toggle.MetroTrackToggleThumbnails.png", 111, 37);
             TrainTrackToggle = LoadDllResource("Thumbs.Toggle.TrainTrackToggleThumbnails.png", 111, 37);
+            SidePlatformStationTrack = LoadDllResource("Thumbs.Button.SidePlatformThumbnails.png", 395, 69);
+            IslandPlatformStationTrack = LoadDllResource("Thumbs.Button.IslandThumbnails.png", 395, 69);
+            SinglePlatformStationTrack = LoadDllResource("Thumbs.Button.SinglePlatformThumbnails.png", 395, 69);
+            ExpressSidePlatformStationTrack = LoadDllResource("Thumbs.Button.ExpressSideThumbnails.png", 395, 69);
+            DualIslandPlatformStationTrack = LoadDllResource("Thumbs.Button.DualIslandThumbnails.png", 395, 69);
         }
 
         private static Texture2D LoadDllResource(string resourceName, int width, int height)
@@ -125,7 +136,7 @@ namespace MetroOverhaul.UI
         public static UITextureAtlas GenerateLinearAtlas(string name, Texture2D texture, int numSprites = 5)
         {
             string[] ts = null;
-            
+
             if (numSprites == 5 || numSprites == 10)
             {
                 ts = new[] { "", "Disabled", "Focused", "Hovered", "Pressed" };

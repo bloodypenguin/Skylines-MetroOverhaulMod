@@ -16,8 +16,8 @@ namespace MetroOverhaul {
         public const float MAX_LENGTH = 192;
         public const float MIN_LENGTH = 88;
         public const float DEF_LENGTH = 144;
-        public const float MAX_BEND_STRENGTH = 1;
-        public const float MIN_BEND_STRENGTH = -1;
+        public const float MAX_BEND_STRENGTH = 90;
+        public const float MIN_BEND_STRENGTH = -90;
         public const float DEF_BEND_STRENGTH = 0;
         public static int m_PremierPath = -1;
         public static float m_PrevAngle = 0;
@@ -40,7 +40,7 @@ namespace MetroOverhaul {
             m_TargetDepth = targetDepth;
             m_TargetStationTrackLength = targetStationTrackLength;
             m_Angle = angle;
-            m_BendStrength = bendStrength;
+            m_BendStrength = bendStrength / 90;
 
             if (m_TargetDepth <= 0 || targetStationTrackLength <= 0 || (!info.HasUndergroundMetroStationTracks() && (info?.m_subBuildings == null || info?.m_subBuildings.Count() == 0))) {
                 return;

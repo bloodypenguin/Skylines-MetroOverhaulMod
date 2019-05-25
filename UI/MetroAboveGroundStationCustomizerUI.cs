@@ -40,7 +40,6 @@ namespace MetroOverhaul.UI
                 m_LinkedPathDict = null;
                 m_TrackStyleArray = null;
                 m_ButtonArray = null;
-                m_IntermediateStyle = TrackStyle.Modern;
                 AddTrackVehicleTypeArrayButtons();
                 if (btnDefault != null)
                     btnDefault.SimulateClick();
@@ -53,38 +52,50 @@ namespace MetroOverhaul.UI
 #endif
             base.CreateUI();
             width = 350;
-            position = new Vector3(350, 0, 0);
+            position = new Vector3(450, 0, 0);
 
             CreateDragHandle("Surface Station Options");
             var pnlLabelContainer = CreatePanel(new UIPanelParamProps()
             {
                 Name = "pnlLabelContainer",
                 ColumnCount = 1,
-                Margins = new Vector2(0, 20)
+                Margins = new Vector4(0, 0, 0, 8)
             });
             var lblStationTypeSelector = CreateLabel(new UILabelParamProps()
             {
                 Name = "lblStationTypeSelector",
                 Text = "Station Type Selector",
                 ParentComponent = pnlLabelContainer,
-                StackWidths = true,
                 ColumnCount = 2
             });
+            var pnlStationTypeSelectorInfo = CreatePanel(new UIPanelParamProps()
+            {
+                Name = "pnlStationTypeSelectorInfo",
+                ParentComponent = pnlLabelContainer,
+                ColumnCount = 2
+            });
+
+            //var ttpStationTypeSelectorTooltip = CreateToolTipPanel(new UIToolTipPanelParamProps()
+            //{
+            //    Name = "ttpStationTypeSelectorTooltip",
+            //    ToolTipPanelText = STATION_TYPE_SELECTOR_INFO
+            //});
+
             var btnStationTypeSelectorInfo = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnStationTypeSelectorInfo",
                 Atlas = atlas,
-                ParentComponent = pnlLabelContainer,
+                ParentComponent = pnlStationTypeSelectorInfo,
                 NormalBgSprite = "EconomyMoreInfo",
                 HoveredBgSprite = "EconomyMoreInfoHovered",
                 PressedBgSprite = "EconomyMoreInfoHovered",
                 Height = 12,
                 Width = 12,
-                Margins = new Vector2(20, 0),
                 StackWidths = true,
-                ColumnCount = 2
+                //TooltipComponent = ttpStationTypeSelectorTooltip
             });
-            var pnlStationTypeSelectorInfoContainer = CreatePanel(new UIPanelParamProps()
+
+            var pnlStationTypeSelectorContainer = CreatePanel(new UIPanelParamProps()
             {
                 Name = "pnlStationTypeSelectorInfoContainer",
                 ColumnCount = 1
@@ -93,14 +104,14 @@ namespace MetroOverhaul.UI
             tsStationTypeSelector = CreateTabStrip(new UITabstripParamProps()
             {
                 Name = "tsStationTypeSelector",
-                ParentComponent = pnlStationTypeSelectorInfoContainer,
+                ParentComponent = pnlStationTypeSelectorContainer,
                 ColumnCount = 2,
                 Margins = new Vector2(0, 0)
             });
             var pnlSeparator = CreatePanel(new UIPanelParamProps()
             {
                 Name = "pnlStationTypeSelectorSeparator",
-                ParentComponent = pnlStationTypeSelectorInfoContainer,
+                ParentComponent = pnlStationTypeSelectorContainer,
                 ColumnCount = 2,
                 Margins = new Vector2(0, 0)
             });
@@ -110,7 +121,8 @@ namespace MetroOverhaul.UI
                 Name = "pnlOuterContainer",
                 Atlas = atlas,
                 ColumnCount = 1,
-                BackgroundSprite = "GenericPanel"
+                BackgroundSprite = "GenericPanel",
+                Margins = Vector4.zero
             });
             lblTabTitle = CreateLabel(new UILabelParamProps()
             {
@@ -118,7 +130,7 @@ namespace MetroOverhaul.UI
                 Text = "",
                 ParentComponent = pnlOuterContainer,
                 ColumnCount = 1,
-                Margins = new Vector2(8, 0)
+                Margins = new Vector4(8, 0, 0, 5)
             });
             pnlInnerContainer = CreatePanel(new UIPanelParamProps()
             {
@@ -180,6 +192,7 @@ namespace MetroOverhaul.UI
             btnModernStyle = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnModernStyle",
+                ToolTip = "Modern Style",
                 ColumnCount = 3,
                 ParentComponent = tsStyles,
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_ModernStyleAtlas", UIHelper.ModernStyle),
@@ -195,6 +208,7 @@ namespace MetroOverhaul.UI
             btnClassicStyle = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnClassicStyle",
+                ToolTip = "Classic Style",
                 ColumnCount = 3,
                 ParentComponent = tsStyles,
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_ClassicStyleAtlas", UIHelper.ClassicStyle),
@@ -229,6 +243,7 @@ namespace MetroOverhaul.UI
             btnDefault = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnDefault",
+                ToolTip = "Default Station Configuration",
                 ColumnCount = 3,
                 ParentComponent = tsStationTypeSelector,
                 Margins = new Vector2(0, 0),
@@ -239,9 +254,18 @@ namespace MetroOverhaul.UI
                 HasFgBgSprites = true,
                 EventClick = (c, v) =>
                 {
+                    if (m_currentBuilding.IsMetroStation())
+                    {
+                        lblTabTitle.text = METRO_DEFAULT_TAB_LABEL;
+                    }
+                    else if (m_currentBuilding.IsTrainStation())
+                    {
+                        lblTabTitle.text = TRAIN_DEFAULT_TAB_LABEL;
+                    }
+
                     m_TrackStyleArray = null;
                     trackVehicleType = TrackVehicleType.Default;
-                    pnlOuterContainer.color = new Color32(90, 115, 217, 255);
+                    pnlOuterContainer.color = DefaultColor;
                     var paths = m_currentBuilding.GetPaths();
 
                     for (int i = 0; i < paths.Count(); i++)
@@ -268,10 +292,10 @@ namespace MetroOverhaul.UI
                     SetNetToolPrefab();
                 }
             });
-
             btnTrain = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnTrain",
+                ToolTip = "Train Station Configuration",
                 ColumnCount = 3,
                 ParentComponent = tsStationTypeSelector,
                 Margins = new Vector2(0, 0),
@@ -282,9 +306,10 @@ namespace MetroOverhaul.UI
                 HasFgBgSprites = true,
                 EventClick = (c, v) =>
                 {
+                    lblTabTitle.text = TRAIN_TAB_LABEL;
                     m_TrackStyleArray = null;
                     trackVehicleType = TrackVehicleType.Train;
-                    pnlOuterContainer.color = new Color32(233, 85, 38, 255);
+                    pnlOuterContainer.color = TrainColor;
                     var paths = m_currentBuilding.GetPaths();
                     for (int i = 0; i < paths.Count(); i++)
                     {
@@ -303,10 +328,10 @@ namespace MetroOverhaul.UI
                     SetNetToolPrefab();
                 }
             });
-
             btnMetro = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnMetro",
+                ToolTip = "Metro Station Configuration",
                 ColumnCount = 3,
                 ParentComponent = tsStationTypeSelector,
                 Margins = new Vector2(0, 0),
@@ -317,9 +342,10 @@ namespace MetroOverhaul.UI
                 HasFgBgSprites = true,
                 EventClick = (c, v) =>
                 {
+                    lblTabTitle.text = METRO_TAB_LABEL;
                     m_TrackStyleArray = null;
                     trackVehicleType = TrackVehicleType.Metro;
-                    pnlOuterContainer.color = new Color32(6, 213, 73, 255);
+                    pnlOuterContainer.color = MetroColor;
                     var paths = m_currentBuilding.GetPaths();
                     for (int i = 0; i < paths.Count(); i++)
                     {
@@ -338,6 +364,7 @@ namespace MetroOverhaul.UI
                     SetNetToolPrefab();
                 }
             });
+
         }
         private void HandleLinkedPathPropagations(int i)
         {
@@ -443,19 +470,23 @@ namespace MetroOverhaul.UI
         {
             m_StationTrackPathCount++;
             UITextureAtlas atlas = null;
+            string tooltip = "";
             if (path.m_finalNetInfo.IsAbovegroundMetroStationTrack())
             {
                 TrackVehicleTypeArray[i] = TrackVehicleType.Metro;
                 atlas = UIHelper.GenerateLinearAtlas("MOM_MetroTrackToggleAtlas", UIHelper.MetroTrackToggle, 3);
+                tooltip = "Metro Track";
             }
             else if (path.m_finalNetInfo.IsAbovegroundTrainStationTrack())
             {
                 TrackVehicleTypeArray[i] = TrackVehicleType.Train;
                 atlas = UIHelper.GenerateLinearAtlas("MOM_TrainTrackToggleAtlas", UIHelper.TrainTrackToggle, 3);
+                tooltip = "Train Track";
             }
             ButtonArray[i] = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnTrackSelector" + i,
+                ToolTip = tooltip,
                 Atlas = addUIComponent ? atlas : this.atlas,
                 ParentComponent = tsIndividualTrackSelector,
                 ColumnCount = 8,
@@ -471,11 +502,19 @@ namespace MetroOverhaul.UI
                     {
                         if (m_currentBuilding.IsMetroStation())
                         {
+                            Debug.Log($"Building {m_currentBuilding} has triggered a tabchange to metro");
                             trackVehicleType = TrackVehicleType.Metro;
+                            lblTabTitle.text = METRO_TAB_LABEL;
+                            tsStationTypeSelector.selectedIndex = 2;
+                            pnlOuterContainer.color = MetroColor;
                         }
                         else if (m_currentBuilding.IsTrainStation())
                         {
+                            Debug.Log($"Building {m_currentBuilding} has triggered a tabchange to train");
                             trackVehicleType = TrackVehicleType.Train;
+                            lblTabTitle.text = TRAIN_TAB_LABEL;
+                            tsStationTypeSelector.selectedIndex = 1;
+                            pnlOuterContainer.color = TrainColor;
                         }
                     }
                     if (TrackVehicleTypeArray[inx] == TrackVehicleType.Train)
@@ -530,8 +569,8 @@ namespace MetroOverhaul.UI
                 return m_LinkedPathPanelArray;
             }
         }
+
         private bool m_InRecursion = false;
-        private TrackStyle m_IntermediateStyle = TrackStyle.Modern;
         private Dictionary<int, List<int>> m_LinkedPathDict = null;
         private void SetNetToolPrefab()
         {
@@ -678,6 +717,16 @@ namespace MetroOverhaul.UI
                     }
             }
         }
-
+        private UIComponent m_StationTypeSelectorTooltip = null;
+        protected UIComponent StationTypeSelectorTooltip {
+            get
+            {
+                if (m_StationTypeSelectorTooltip == null)
+                {
+                    m_StationTypeSelectorTooltip = UIView.Find("StationTypeSelectorTooltip");
+                }
+                return m_StationTypeSelectorTooltip;
+            }
+        }
     }
 }

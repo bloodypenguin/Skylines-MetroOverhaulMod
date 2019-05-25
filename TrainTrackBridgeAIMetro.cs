@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace MetroOverhaul {
+namespace MetroOverhaul
+{
     class TrainTrackBridgeAIMetro : TrainTrackBridgeAI
     {
         public List<BridgePillarItem> pillarList { get; set; }
@@ -41,13 +42,17 @@ namespace MetroOverhaul {
                         {
                             m_NetTool = FindObjectOfType<NetTool>();
                         }
-                        if (m_NetTool != null) {
+                        if (m_NetTool?.Prefab != null)
+                        {
                             var elevation = m_NetTool.GetElevation();
                             var theList = pillarList.Where(d => d.HeightLimit == 0 || d.HeightLimit >= elevation).OrderBy(x => x.HeightLimit).ToList();
                             BridgePillarItem thePillarInfo = null;
-                            if (theList == null || theList.Count == 0) {
+                            if (theList == null || theList.Count == 0)
+                            {
                                 thePillarInfo = pillarList.LastOrDefault();
-                            } else {
+                            }
+                            else
+                            {
                                 thePillarInfo = theList.FirstOrDefault();
                             }
                             BuildingInfo info = null;
@@ -76,21 +81,27 @@ namespace MetroOverhaul {
                                     break;
                             }
                             var prefab = m_NetTool.Prefab;
-                            if (NoPillarCollision && elevation >= 0) {
+                            if (NoPillarCollision && elevation >= 0)
+                            {
                                 building = noColInfo;
                                 building.m_elevated = true;
                                 building.m_generatedInfo.m_min.y = 32;
-                                if (m_IntersectClass == null) {
+                                if (m_IntersectClass == null)
+                                {
                                     m_IntersectClass = prefab.m_intersectClass;
                                 }
                                 prefab.m_intersectClass = null;
-                            } else {
+                            }
+                            else
+                            {
                                 building = info;
-                                if (m_IntersectClass != null) {
+                                if (m_IntersectClass != null)
+                                {
                                     prefab.m_intersectClass = m_IntersectClass;
                                 }
                             }
-                            heightOffset = thePillarInfo.HeightOffset - 1f - info.m_generatedInfo.m_size.y;
+                            if (thePillarInfo != null && info != null)
+                                heightOffset = thePillarInfo.HeightOffset - 1f - info.m_generatedInfo.m_size.y;
                         }
                     }
                     return;

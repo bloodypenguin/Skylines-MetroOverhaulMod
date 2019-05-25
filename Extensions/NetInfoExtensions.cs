@@ -78,7 +78,7 @@ namespace MetroOverhaul.Extensions
                 return false;
             }
             return info.name == ModTrackNames.TRAIN_STATION_TRACK_GROUND_SMALL ||
-                   (info.IsTrainTrackAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.SingleTrack);
+                   (info.IsTrainTrackAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.SinglePlatform);
         }
         public static bool IsElevatedSinglePlatformTrainStationTrack(this NetInfo info)
         {
@@ -87,7 +87,7 @@ namespace MetroOverhaul.Extensions
                 return false;
             }
             return info.name == ModTrackNames.TRAIN_STATION_TRACK_ELEVATED_SMALL ||
-                   (info.IsTrainTrackBridgeAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.SingleTrack);
+                   (info.IsTrainTrackBridgeAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.SinglePlatform);
         }
         public static bool IsGroundIslandPlatformTrainStationTrack(this NetInfo info)
         {
@@ -115,7 +115,7 @@ namespace MetroOverhaul.Extensions
                 return false;
             }
             return info.name == ModTrackNames.TRAIN_STATION_TRACK_GROUND_LARGE ||
-                   (info.IsTrainTrackAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.QuadSidePlatform);
+                   (info.IsTrainTrackAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.ExpressSidePlatform);
         }
         public static bool IsElevatedLargeSidePlatformTrainStationTrack(this NetInfo info)
         {
@@ -124,7 +124,7 @@ namespace MetroOverhaul.Extensions
                 return false;
             }
             return info.name == ModTrackNames.TRAIN_STATION_TRACK_ELEVATED_LARGE ||
-                   (info.IsTrainTrackBridgeAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.QuadSidePlatform);
+                   (info.IsTrainTrackBridgeAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.ExpressSidePlatform);
         }
 
         public static bool IsGroundDualIslandPlatformTrainStationTrack(this NetInfo info)
@@ -134,7 +134,7 @@ namespace MetroOverhaul.Extensions
                 return false;
             }
             return info.name == ModTrackNames.TRAIN_STATION_TRACK_GROUND_LARGE_DUALISLAND ||
-                   (info.IsTrainTrackAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.QuadDualIslandPlatform);
+                   (info.IsTrainTrackAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.DualIslandPlatform);
         }
         public static bool IsElevatedDualIslandPlatformTrainStationTrack(this NetInfo info)
         {
@@ -143,7 +143,7 @@ namespace MetroOverhaul.Extensions
                 return false;
             }
             return info.name == ModTrackNames.TRAIN_STATION_TRACK_ELEVATED_LARGE_DUALISLAND ||
-                   (info.IsTrainTrackBridgeAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.QuadDualIslandPlatform);
+                   (info.IsTrainTrackBridgeAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.DualIslandPlatform);
         }
 
         public static bool IsStationTrack(this NetInfo info)
@@ -208,7 +208,7 @@ namespace MetroOverhaul.Extensions
                 return false;
             }
             return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_GROUND_SMALL + "\b") ||
-                   (info.IsTrainTrackAIMetro() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.SingleTrack);
+                   (info.IsTrainTrackAIMetro() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.SinglePlatform);
         }
 
         public static bool IsElevatedSinglePlatformMetroStationTrack(this NetInfo info)
@@ -218,7 +218,7 @@ namespace MetroOverhaul.Extensions
                 return false;
             }
             return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_ELEVATED_SMALL + "\b") ||
-                   (info.IsTrainTrackBridgeAIMetro() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.SingleTrack);
+                   (info.IsTrainTrackBridgeAIMetro() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.SinglePlatform);
         }
 
         public static bool IsGroundIslandPlatformMetroStationTrack(this NetInfo info)
@@ -247,7 +247,7 @@ namespace MetroOverhaul.Extensions
                 return false;
             }
             return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_GROUND_LARGE + "\b") ||
-                   (info.IsTrainTrackAIMetro() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.QuadSidePlatform);
+                   (info.IsTrainTrackAIMetro() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.ExpressSidePlatform);
         }
         public static bool IsElevatedLargeSidePlatformMetroStationTrack(this NetInfo info)
         {
@@ -256,7 +256,7 @@ namespace MetroOverhaul.Extensions
                 return false;
             }
             return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_ELEVATED_LARGE + "\b") ||
-                   (info.IsTrainTrackBridgeAIMetro() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.QuadSidePlatform);
+                   (info.IsTrainTrackBridgeAIMetro() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.ExpressSidePlatform);
         }
 
         public static bool IsGroundDualIslandPlatformMetroStationTrack(this NetInfo info)
@@ -266,7 +266,7 @@ namespace MetroOverhaul.Extensions
                 return false;
             }
             return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_GROUND_LARGE_DUALISLAND + "\b") ||
-                   (info.IsTrainTrackAIMetro() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.QuadDualIslandPlatform);
+                   (info.IsTrainTrackAIMetro() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.DualIslandPlatform);
         }
         public static bool IsElevatedDualIslandPlatformMetroStationTrack(this NetInfo info)
         {
@@ -275,7 +275,7 @@ namespace MetroOverhaul.Extensions
                 return false;
             }
             return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_ELEVATED_LARGE_DUALISLAND + "\b") ||
-                   (info.IsTrainTrackBridgeAIMetro() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.QuadDualIslandPlatform);
+                   (info.IsTrainTrackBridgeAIMetro() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.DualIslandPlatform);
         }
 
         public static bool IsUndergroundMetroStationTrack(this NetInfo netInfo)
@@ -408,11 +408,11 @@ namespace MetroOverhaul.Extensions
                 switch (sortedVehicleLanes.Count())
                 {
                     case 1:
-                        return StationTrackType.SingleTrack;
+                        return StationTrackType.SinglePlatform;
                     case 2:
                         if (sortedVehicleLanes.All(s => s.m_position > -0.1f && s.m_position < 0.1f))
                         {
-                            return StationTrackType.SingleTrack;
+                            return StationTrackType.SinglePlatform;
                         }
                         if (sortedVehicleLanes[0].m_position < -1.9f && sortedVehicleLanes[0].m_position > -2.1f)
                         {
@@ -438,7 +438,7 @@ namespace MetroOverhaul.Extensions
                                 {
                                     if (sortedVehicleLanes[3].m_position > 5.785f && sortedVehicleLanes[3].m_position < 5.985f)
                                     {
-                                        return StationTrackType.QuadSidePlatform;
+                                        return StationTrackType.ExpressSidePlatform;
                                     }
                                 }
                             }
@@ -451,7 +451,7 @@ namespace MetroOverhaul.Extensions
                                 {
                                     if (sortedVehicleLanes[3].m_position > 12.28f && sortedVehicleLanes[3].m_position < 12.48f)
                                     {
-                                        return StationTrackType.QuadDualIslandPlatform;
+                                        return StationTrackType.DualIslandPlatform;
                                     }
                                 }
                             }

@@ -11,7 +11,7 @@ namespace MetroOverhaul.UI {
         private const int DEPTH_STEP = 3;
         private const int LENGTH_STEP = 8;
         private const int ANGLE_STEP = 15;
-        private const float BEND_STRENGTH_STEP = 0.5f;
+        private const float BEND_STRENGTH_STEP = 15;
 
         protected override bool SatisfiesTrackSpecs(PrefabInfo info)
         {
@@ -32,15 +32,15 @@ namespace MetroOverhaul.UI {
 
         protected override void SubStart()
         {
-            SetDict[ToggleType.Depth] = SetStationCustomizations.DEF_DEPTH;
-            SetDict[ToggleType.Length] = SetStationCustomizations.DEF_LENGTH;
-            SetDict[ToggleType.Angle] = SetStationCustomizations.DEF_ANGLE;
-            SetDict[ToggleType.Bend] = SetStationCustomizations.DEF_BEND_STRENGTH;
+            SetDict[MetroStationTrackAlterType.Depth] = SetStationCustomizations.DEF_DEPTH;
+            SetDict[MetroStationTrackAlterType.Length] = SetStationCustomizations.DEF_LENGTH;
+            SetDict[MetroStationTrackAlterType.Angle] = SetStationCustomizations.DEF_ANGLE;
+            SetDict[MetroStationTrackAlterType.Bend] = SetStationCustomizations.DEF_BEND_STRENGTH;
         }
 
         protected override void OnToggleKeyDown(UIComponent c, UIKeyEventParameter e)
         {
-            if (SliderDataDict != null && m_Toggle != ToggleType.None)
+            if (SliderDataDict != null && m_Toggle != MetroStationTrackAlterType.None)
             {
                 SliderData sData = SliderDataDict[m_Toggle];
 
@@ -66,10 +66,10 @@ namespace MetroOverhaul.UI {
                 m_T.Run();
             }
         }
-        protected override void OnToggleMouseDown(UIComponent c, UIMouseEventParameter e, ToggleType type)
+        protected override void OnToggleMouseDown(UIComponent c, UIMouseEventParameter e, MetroStationTrackAlterType type)
         {
             m_Toggle = type;
-            if (SliderDataDict != null && type != ToggleType.None)
+            if (SliderDataDict != null && type != MetroStationTrackAlterType.None)
             {
                 foreach (UIPanel pnl in PanelDict.Values)
                 {
@@ -90,12 +90,12 @@ namespace MetroOverhaul.UI {
             Action stationMechanicsTask = DoStationMechanics;
             Task t = Task.Create(stationMechanicsTask);
             m_T = t;
-            width = 280;
+            width = 450;
 
             CreateDragHandle("Subway Station Options");
 
-            SliderDataDict = new Dictionary<ToggleType, SliderData>();
-            SliderDataDict.Add(ToggleType.Depth, new SliderData()
+            SliderDataDict = new Dictionary<MetroStationTrackAlterType, SliderData>();
+            SliderDataDict.Add(MetroStationTrackAlterType.Depth, new SliderData()
             {
                 Def = SetStationCustomizations.DEF_DEPTH,
                 Max = SetStationCustomizations.MAX_DEPTH,
@@ -103,7 +103,7 @@ namespace MetroOverhaul.UI {
                 SetVal = SetStationCustomizations.DEF_DEPTH,
                 Step = DEPTH_STEP
             });
-            SliderDataDict.Add(ToggleType.Length, new SliderData()
+            SliderDataDict.Add(MetroStationTrackAlterType.Length, new SliderData()
             {
                 Def = SetStationCustomizations.DEF_LENGTH,
                 Max = SetStationCustomizations.MAX_LENGTH,
@@ -111,7 +111,7 @@ namespace MetroOverhaul.UI {
                 SetVal = SetStationCustomizations.DEF_LENGTH,
                 Step = LENGTH_STEP
             });
-            SliderDataDict.Add(ToggleType.Angle, new SliderData()
+            SliderDataDict.Add(MetroStationTrackAlterType.Angle, new SliderData()
             {
                 Def = SetStationCustomizations.DEF_ANGLE,
                 Max = SetStationCustomizations.MAX_ANGLE,
@@ -119,7 +119,7 @@ namespace MetroOverhaul.UI {
                 SetVal = SetStationCustomizations.DEF_ANGLE,
                 Step = ANGLE_STEP
             });
-            SliderDataDict.Add(ToggleType.Bend, new SliderData()
+            SliderDataDict.Add(MetroStationTrackAlterType.Bend, new SliderData()
             {
                 Def = SetStationCustomizations.DEF_BEND_STRENGTH,
                 Max = SetStationCustomizations.MAX_BEND_STRENGTH,
@@ -127,22 +127,178 @@ namespace MetroOverhaul.UI {
                 SetVal = SetStationCustomizations.DEF_BEND_STRENGTH,
                 Step = BEND_STRENGTH_STEP
             });
-            SliderDict = new Dictionary<ToggleType, UISlider>();
-            PanelDict = new Dictionary<ToggleType, UIPanel>();
+            SliderDict = new Dictionary<MetroStationTrackAlterType, UISlider>();
+            PanelDict = new Dictionary<MetroStationTrackAlterType, UIPanel>();
             CheckboxStationDict = new Dictionary<StationTrackType, UICheckBox>();
+            var stationLengthPanel = CreatePanel(new UIPanelParamProps()
+            {
+                Name = "stationLengthPanel",
+                Margins = new Vector4(8,0,8,8),
+                ColumnCount = 1
+            });
+            //var ttpStationLengthSelectorTooltip = CreateToolTipPanel(new UIToolTipPanelParamProps()
+            //{
+            //    Name = "ttpStationLengthSelectorTooltip",
+            //    ToolTipPanelText = Station_Length_Info
+            //});
+            var lengthSlider = CreateSlider(new UISliderParamProps()
+            {
+                Name = "lengthSlider",
+                ParentComponent = stationLengthPanel,
+                TrackAlterType = MetroStationTrackAlterType.Length,
+                //TooltipComponent = ttpStationLengthSelectorTooltip,
+                ColumnCount = 1
+            });
 
-            CreateSlider(ToggleType.Length);
-            CreateSlider(ToggleType.Depth);
-            CreateSlider(ToggleType.Angle);
-            CreateSlider(ToggleType.Bend);
+            var stationDepthPanel = CreatePanel(new UIPanelParamProps()
+            {
+                Name = "stationDepthPanel",
+                Margins = new Vector4(8, 0, 8, 0),
+                ColumnCount = 1
+            });
+            //var ttpStationDepthSelectorTooltip = CreateToolTipPanel(new UIToolTipPanelParamProps()
+            //{
+            //    Name = "ttpStationDepthSelectorTooltip",
+            //    ToolTipPanelText = Station_Depth_Info
+            //});
+            var depththSlider = CreateSlider(new UISliderParamProps()
+            {
+                Name = "depththSlider",
+                ParentComponent = stationDepthPanel,
+                TrackAlterType = MetroStationTrackAlterType.Depth,
+                //TooltipComponent = ttpStationDepthSelectorTooltip,
+                ColumnCount = 1
+            });
 
-            CreateCheckbox(StationTrackType.SidePlatform);
-            CreateCheckbox(StationTrackType.IslandPlatform);
-            CreateCheckbox(StationTrackType.SingleTrack);
-            CreateCheckbox(StationTrackType.QuadSidePlatform);
-            CreateCheckbox(StationTrackType.QuadDualIslandPlatform);
+            var stationAnglePanel = CreatePanel(new UIPanelParamProps()
+            {
+                Name = "stationAnglePanel",
+                Margins = new Vector4(8, 0, 8, 0),
+                ColumnCount = 1
+            });
+            //var ttpStationAngleSelectorTooltip = CreateToolTipPanel(new UIToolTipPanelParamProps()
+            //{
+            //    Name = "ttpStationAngleSelectorTooltip",
+            //    ToolTipPanelText = Station_Angle_Info
+            //});
+            var angleSlider = CreateSlider(new UISliderParamProps()
+            {
+                Name = "angleSlider",
+                ParentComponent = stationAnglePanel,
+                TrackAlterType = MetroStationTrackAlterType.Angle,
+                //TooltipComponent = ttpStationAngleSelectorTooltip,
+                ColumnCount = 1
+            });
 
-            height = m_height;
+            var stationBendPanel = CreatePanel(new UIPanelParamProps()
+            {
+                Name = "stationBendPanel",
+                Margins = new Vector4(8, 0, 8, 0),
+                ColumnCount = 1
+            });
+            //var ttpStationBendSelectorTooltip = CreateToolTipPanel(new UIToolTipPanelParamProps()
+            //{
+            //    Name = "ttpStationBendSelectorTooltip",
+            //    ToolTipPanelText = Station_Bend_Info
+            //});
+            var bendSlider = CreateSlider(new UISliderParamProps()
+            {
+                Name = "bendSlider",
+                ParentComponent = stationBendPanel,
+                TrackAlterType = MetroStationTrackAlterType.Bend,
+                //TooltipComponent = ttpStationBendSelectorTooltip,
+                ColumnCount = 1
+            });
+
+            var pnlStationTrackChooser = CreatePanel(new UIPanelParamProps()
+            {
+                Name = "pnlStationTrackChooser",
+                Margins = new Vector4(28, 4, 8, 16),
+                ColumnCount = 1
+            });
+            var lblStationTrackChooser = CreateLabel(new UILabelParamProps()
+            {
+                Name = "lblStationTrackChooser",
+                Text = "Subway Station Track Styles",
+                ParentComponent = pnlStationTrackChooser,
+                ColumnCount = 1
+            });
+            var tsStationTrackChooser = CreateTabStrip(new UITabstripParamProps()
+            {
+                Name = "tsStationTrackChooser",
+                ColumnCount = 1,
+                ParentComponent = pnlStationTrackChooser
+            });
+            var btnSidePlatformStationTrack = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnSidePlatformStationTrack",
+                ToolTip = "Side Platform Station",
+                ParentComponent = tsStationTrackChooser,
+                ColumnCount = 5,
+                Width = 79,
+                Height = 69,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_SidePlatformStationTrackAtlas", UIHelper.SidePlatformStationTrack),
+                EventClick = (c, v) =>
+                {
+                    TunnelStationTrackToggleStyles(StationTrackType.SidePlatform);
+                }
+            });
+            var btnIslandPlatformStationTrack = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnIslandPlatformStationTrack",
+                ToolTip = "Island Platform Station",
+                ParentComponent = tsStationTrackChooser,
+                ColumnCount = 5,
+                Width = 79,
+                Height = 69,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_IslandPlatformStationTrackAtlas", UIHelper.IslandPlatformStationTrack),
+                EventClick = (c, v) =>
+                {
+                    TunnelStationTrackToggleStyles(StationTrackType.IslandPlatform);
+                }
+            });
+            var btnSinglePlatformStationTrack = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnSinglePlatformStationTrack",
+                ToolTip = "Single Platform Station",
+                ParentComponent = tsStationTrackChooser,
+                ColumnCount = 5,
+                Width = 79,
+                Height = 69,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_SinglePlatformStationTrackAtlas", UIHelper.SinglePlatformStationTrack),
+                EventClick = (c, v) =>
+                {
+                    TunnelStationTrackToggleStyles(StationTrackType.SinglePlatform);
+                }
+            });
+            var btnExpressSidePlatformStationTrack = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnExpressSidePlatformStationTrack",
+                ToolTip = "Express Side Platform Station",
+                ParentComponent = tsStationTrackChooser,
+                ColumnCount = 5,
+                Width = 79,
+                Height = 69,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_ExpressSidePlatformStationTrackAtlas", UIHelper.ExpressSidePlatformStationTrack),
+                EventClick = (c, v) =>
+                {
+                    TunnelStationTrackToggleStyles(StationTrackType.ExpressSidePlatform);
+                }
+            });
+            var btnDualIslandPlatformStationTrack = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnDualIslandPlatformStationTrack",
+                ToolTip = "Dual Island Platform Station",
+                ParentComponent = tsStationTrackChooser,
+                ColumnCount = 5,
+                Width = 79,
+                Height = 69,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_DualIslandPlatformStationTrackAtlas", UIHelper.DualIslandPlatformStationTrack),
+                EventClick = (c, v) =>
+                {
+                    TunnelStationTrackToggleStyles(StationTrackType.DualIslandPlatform);
+                }
+            });
         }
 
         protected override void TunnelStationTrackToggleStyles(StationTrackType type)
@@ -156,21 +312,6 @@ namespace MetroOverhaul.UI {
                 m_TrackType = type;
             }
 
-            foreach (var kvp in CheckboxStationDict)
-            {
-                var cbSprite = kvp.Value.GetComponentInChildren<UISprite>();
-                if (cbSprite != null)
-                {
-                    if (kvp.Key == m_TrackType)
-                    {
-                        cbSprite.spriteName = "check-checked";
-                    }
-                    else
-                    {
-                        cbSprite.spriteName = "check-unchecked";
-                    }
-                }
-            }
             if (m_currentBuilding.HasUndergroundMetroStationTracks())
             {
                 SetTunnelInfoByType();
@@ -209,16 +350,16 @@ namespace MetroOverhaul.UI {
                         case StationTrackType.IslandPlatform:
                             path.AssignNetInfo("Metro Station Track Tunnel Island");
                             break;
-                        case StationTrackType.SingleTrack:
+                        case StationTrackType.SinglePlatform:
                             path.AssignNetInfo("Metro Station Track Tunnel Small");
                             break;
-                        case StationTrackType.QuadSidePlatform:
+                        case StationTrackType.ExpressSidePlatform:
                             path.AssignNetInfo("Metro Station Track Tunnel Large");
                             break;
                         //case StationTrackType.QuadSideIslandPlatform:
                         //    path.AssignNetInfo("Metro Station Track Tunnel Large Side Island");
                         //    break;
-                        case StationTrackType.QuadDualIslandPlatform:
+                        case StationTrackType.DualIslandPlatform:
                             path.AssignNetInfo("Metro Station Track Tunnel Large Dual Island");
                             break;
                     }
@@ -228,9 +369,12 @@ namespace MetroOverhaul.UI {
         protected override void Activate(PrefabInfo info)
         {
             base.Activate(info);
-            DoStationMechanicsResetAngles();
-            TunnelStationTrackToggleStyles(m_TrackType);
-            m_T.Run();
+            if (SetDict != null && SetDict.Count > 0)
+            {
+                DoStationMechanicsResetAngles();
+                TunnelStationTrackToggleStyles(m_TrackType);
+                m_T.Run();
+            }
         }
         protected override void SubDeactivate()
         {
@@ -249,7 +393,7 @@ namespace MetroOverhaul.UI {
         {
             if (m_currentBuilding != null)
             {
-                SetStationCustomizations.ModifyStation(m_currentBuilding, SetDict[ToggleType.Depth], SetDict[ToggleType.Length], (int)SetDict[ToggleType.Angle], SetDict[ToggleType.Bend]);
+                SetStationCustomizations.ModifyStation(m_currentBuilding, SetDict[MetroStationTrackAlterType.Depth], SetDict[MetroStationTrackAlterType.Length], (int)SetDict[MetroStationTrackAlterType.Angle], SetDict[MetroStationTrackAlterType.Bend]);
             }
 
         }
@@ -257,7 +401,7 @@ namespace MetroOverhaul.UI {
         {
             if (m_currentBuilding != null)
             {
-                SetStationCustomizations.ModifyStation(m_currentBuilding, SetDict[ToggleType.Depth], SetDict[ToggleType.Length], 0, SetDict[ToggleType.Bend]);
+                SetStationCustomizations.ModifyStation(m_currentBuilding, SetDict[MetroStationTrackAlterType.Depth], SetDict[MetroStationTrackAlterType.Length], 0, SetDict[MetroStationTrackAlterType.Bend]);
             }
         }
     }

@@ -30,10 +30,12 @@ namespace MetroOverhaul.UI
         public string PressedBgSprite;
         public bool HasFgBgSprites;
         public bool StackWidths;
+        public UIComponent TooltipComponent;
         public UIComponent Component;
         public UIComponent ParentComponent;
         public Vector4 Margins;
         public UITextureAtlas Atlas;
+        public string ToolTip;
         public string Name;
         public UIParamPropsBase()
         {
@@ -41,6 +43,7 @@ namespace MetroOverhaul.UI
             ForceRowEnd = false;
             HasFgBgSprites = false;
             StackWidths = false;
+            ColumnCount = 1;
             Margins = new Vector4(8, 8, 0, 0);
             Width = 0;
             Height = 0;
@@ -53,7 +56,6 @@ namespace MetroOverhaul.UI
         public Vector3 GetRelativePositionByColumnCount(int colIndex)
         {
             var retval = new Vector3(Margins.x + (ParentComponent.width * ((float)(colIndex + ColOffset) / ColumnCount)), ParentComponent.height + Margins.w);
-            Debug.Log("the set relpos was " + retval.ToString());
             return retval;
         }
         public Vector3 GetRelativePositionByColumnShare(int totalColShare)

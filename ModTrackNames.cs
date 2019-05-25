@@ -149,10 +149,10 @@
             None,
             SidePlatform,
             IslandPlatform,
-            SingleTrack,
-            QuadSidePlatform,
+            SinglePlatform,
+            ExpressSidePlatform,
             //QuadSideIslandPlatform,
-            QuadDualIslandPlatform
+            DualIslandPlatform
         }
         public enum TrackVehicleType {
             Default,
@@ -171,5 +171,13 @@ public enum PillarType
         Wide,
         NarrowMedian,
         Narrow
+    }
+    public enum MetroStationTrackAlterType
+    {
+        None,
+        Length,
+        Depth,
+        Angle,
+        Bend
     }
 }

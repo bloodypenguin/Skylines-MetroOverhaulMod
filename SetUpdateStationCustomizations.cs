@@ -18,8 +18,8 @@ namespace MetroOverhaul {
         public const int MAX_LENGTH = 192;
         public const int MIN_LENGTH = 88;
         public const int DEF_LENGTH = 144;
-        public const int MAX_BEND_STRENGTH = 1;
-        public const int MIN_BEND_STRENGTH = -1;
+        public const int MAX_BEND_STRENGTH = 90;
+        public const int MIN_BEND_STRENGTH = -90;
         public const int DEF_BEND_STRENGTH = 0;
         private static float StairCoeff { get { return (11f / 64f); } }
         private static float AntiStairCoeff { get { return 1 - StairCoeff; } }

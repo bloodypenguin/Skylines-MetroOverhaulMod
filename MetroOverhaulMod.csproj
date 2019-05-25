@@ -82,6 +82,7 @@
     <Compile Include="TrainTrackAIMetro.cs" />
     <Compile Include="TrainTrackBridgeAIMetro.cs" />
     <Compile Include="MetroTrackAIMetro.cs" />
+    <Compile Include="UI\StationTypeSelectorTooltip.cs" />
     <Compile Include="UI\MetroAboveGroundStationCustomizerUI.cs" />
     <Compile Include="UI\MetroCustomizerBaseUI.cs" />
     <Compile Include="UI\MetroTrackAssetCustomizerUI.cs" />
@@ -152,7 +153,9 @@
     <Compile Include="UI\UIPanelParamProps.cs" />
     <Compile Include="UI\UIParamPropsBase.cs" />
     <Compile Include="UI\UIHelper.cs" />
+    <Compile Include="UI\UISliderParamProps.cs" />
     <Compile Include="UI\UITabStripParamProps.cs" />
+    <Compile Include="UI\UIToolTipPanelParamProps.cs" />
     <Compile Include="UI\UpgradeSetup.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
@@ -3101,6 +3104,11 @@
     <Content Include="Resources\Textures\Tunnel_Station_Segment_Pavement__XYSMap_LOD.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\DualIslandThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\ExpressSideThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\IslandThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\SidePlatformThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\SinglePlatformThumbnails.png" />
     <EmbeddedResource Include="Resources\UI\Thumbs\Toggle\MetroTrackToggleThumbnails.png" />
     <EmbeddedResource Include="Resources\UI\Thumbs\Toggle\TrainTrackToggleThumbnails.png" />
     <EmbeddedResource Include="Resources\UI\Thumbs\Tab\MetroTabThumbnails.png" />
