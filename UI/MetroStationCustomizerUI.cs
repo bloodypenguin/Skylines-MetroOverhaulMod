@@ -139,7 +139,8 @@ namespace MetroOverhaul.UI {
             //var ttpStationLengthSelectorTooltip = CreateToolTipPanel(new UIToolTipPanelParamProps()
             //{
             //    Name = "ttpStationLengthSelectorTooltip",
-            //    ToolTipPanelText = Station_Length_Info
+            //    ParentComponent = stationLengthPanel,
+            //    ToolTipPanelText = Station_Length_Info,
             //});
             var lengthSlider = CreateSlider(new UISliderParamProps()
             {

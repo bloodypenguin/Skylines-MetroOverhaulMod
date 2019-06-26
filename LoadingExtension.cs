@@ -5,13 +5,14 @@ using MetroOverhaul.Redirection;
 using MetroOverhaul.NEXT;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Harmony;
 using ColossalFramework.UI;
 using MetroOverhaul.OptionsFramework;
 using MetroOverhaul.UI;
-using PrefabHook;
 using UnityEngine;
 using MetroOverhaul.Extensions;
+using System.Reflection;
+using System.Linq;
 
 namespace MetroOverhaul
 {
@@ -19,6 +20,7 @@ namespace MetroOverhaul
     {
         public static Initializer Container;
         private static AssetsUpdater _updater;
+        private HarmonyInstance _harmony;
         public static bool Done { get; private set; } // Only one Assets installation throughout the application
 
         private static readonly Queue<Action> LateBuildUpQueue = new Queue<Action>();
@@ -30,76 +32,10 @@ namespace MetroOverhaul
 
         private LoadMode _cachedMode;
 
+
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
-            if (Util.IsHooked())
-            {
-                if (OptionsWrapper<Options>.Options.ingameTrainMetroConverter)
-                {
-                    BuildingInfoHook.OnPreInitialization += info =>
-                    {
-                        try
-                        {
-                            if (Container.RegisterWid(info,true))
-                            {
-                                var ai = info.GetComponent<PlayerBuildingAI>();
-                                if (ai != null)
-                                {
-                                    if (ai is TransportStationAI)
-                                    {
-                                        if (info.m_class.m_subService == ItemClass.SubService.PublicTransportTrain || info.m_class.m_subService == ItemClass.SubService.PublicTransportMetro)
-                                        {
-                                            if (info.name.IndexOf(ModTrackNames.ANALOG_PREFIX) == -1)
-                                            {
-                                                if (info.HasAbovegroundTrainStationTracks() || info.HasAbovegroundMetroStationTracks())
-                                                {
-                                                    Container.InitializeBuildingInfoImpl(info);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            UnityEngine.Debug.LogError(e);
-                        }
-                    };
-                    BuildingInfoHook.OnPostInitialization += info =>
-                    {
-                        try
-                        {
-                            if (Container.RegisterWid(info, false))
-                            {
-                                var ai = info.GetComponent<PlayerBuildingAI>();
-                                if (ai != null)
-                                {
-                                    if (ai is TransportStationAI)
-                                    {
-                                        if (info.m_class.m_subService == ItemClass.SubService.PublicTransportTrain || info.m_class.m_subService == ItemClass.SubService.PublicTransportMetro)
-                                        {
-                                            if (info.name.IndexOf(ModTrackNames.ANALOG_PREFIX) == -1)
-                                            {
-                                                if (info.HasAbovegroundTrainStationTracks() || info.HasAbovegroundMetroStationTracks())
-                                                {
-                                                    Container.InitializeBuildingInfoImpl(info);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            UnityEngine.Debug.LogError(e);
-                        }
-                    };
-                    BuildingInfoHook.Deploy();
-                }
-            }
 
             _updater = null;
             LateBuildUpQueue.Clear();
@@ -108,6 +44,11 @@ namespace MetroOverhaul
             {
                 Container = new GameObject("MetroOverhaul").AddComponent<Initializer>();
                 Container.AppMode = loading.currentMode;
+            }
+            if (OptionsWrapper<Options>.Options.ingameTrainMetroConverter)
+            {
+                _harmony = HarmonyInstance.Create("andreharv.Skylines-MetroOverhaulMod");
+                Patch.Apply(_harmony, ref Container);
             }
 
             if (loading.currentMode == AppMode.AssetEditor)
@@ -250,8 +191,8 @@ namespace MetroOverhaul
         public override void OnReleased()
         {
             base.OnReleased();
-            if (Util.IsHooked() && OptionsWrapper<Options>.Options.ingameTrainMetroConverter)
-                BuildingInfoHook.Revert();
+            if (OptionsWrapper<Options>.Options.ingameTrainMetroConverter)
+                Patch.Revert(_harmony);
 
             if (!OptionsWrapper<Options>.Options.ghostMode)
             {

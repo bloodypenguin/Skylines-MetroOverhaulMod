@@ -129,7 +129,7 @@ namespace MetroOverhaul.UI
         protected const string TRAIN_TAB_LABEL = "PLOPS A TRAIN STATION";
         protected const string METRO_TAB_LABEL = "PLOPS A METRO STATION";
 
-        protected const string STATION_TYPE_SELECTOR_INFO = "Convert your station from Default, to Train or to Metro. Default tab leaves the station as normal, Train tab converts all tracks to accept train vehicles and allows intercity trains. Metro tab converts all tracks to accept metro vehicles. After selecting a station type you can further customize individual track types below.";
+        protected const string STATION_TYPE_SELECTOR_INFO = "Convert your station from Default, to Train or to Metro.\n Default tab leaves the station as normal, Train tab converts all tracks to accept train vehicles and allows intercity trains.\n Metro tab converts all tracks to accept metro vehicles. After selecting a station type you can further customize individual track types below.";
         protected string Station_Length_Info { get { return $"Adjusts the length of your station track. It is recommended to set this to about the length of your Metro Trains. Default is {SetStationCustomizations.DEF_LENGTH}m with a maximum length of {SetStationCustomizations.MAX_LENGTH}m and a minimum length of {SetStationCustomizations.MIN_LENGTH}m."; } }
         protected string Station_Depth_Info { get { return $"Adjusts the depth of your station track. It is recommended you set your tracks deeper on uneven terrain. Default depth is {SetStationCustomizations.DEF_DEPTH}m with a maximum depth of {SetStationCustomizations.MAX_DEPTH}m and a minimum depth of {SetStationCustomizations.MIN_DEPTH}m."; } }
         protected string Station_Angle_Info { get { return $"Adjusts the angle of your station track. This allows you to spin your tracks to align to your metro layout. Default angle is {SetStationCustomizations.DEF_ANGLE}° with a maximum angle of {SetStationCustomizations.MAX_ANGLE}° and a minimum angle of {SetStationCustomizations.MIN_ANGLE}°."; } }
@@ -331,10 +331,10 @@ namespace MetroOverhaul.UI
             height += 2 * dragHandle.height;
         }
 
-        protected UIPanel CreatePanel(UIPanelParamProps properties)
+        protected UIPanel CreatePanel(UIPanelParamProps properties, bool isFixed = true)
         {
             var parentComponent = GetParentComponent(properties);
-            var panel = (UIPanel)InitComponent(parentComponent.AddUIComponent<UIPanel>(), properties);
+            var panel = (UIPanel)InitComponent(parentComponent.AddUIComponent<UIPanel>(), properties, isFixed);
             panel.backgroundSprite = properties.BackgroundSprite;
             if (properties.Color != null)
             {
@@ -418,9 +418,13 @@ namespace MetroOverhaul.UI
                 button.focusedBgSprite = "ButtonMenuFocused";
             }
             if (properties.TooltipComponent != null)
+            {
+                button.tooltip = "-";
                 button.tooltipBox = properties.TooltipComponent;
+            }
+
             //button.gameObject.GetComponent<TutorialUITag>().tutorialTag = name;
-            
+
             //button.tooltipAnchor = UITooltipAnchor.Anchored;
             //button.horizontalAlignment = UIHorizontalAlignment.Center;
             //button.verticalAlignment = UIVerticalAlignment.Middle;
@@ -429,7 +433,7 @@ namespace MetroOverhaul.UI
             button.opacity = 95;
             button.dropShadowColor = new Color32(0, 0, 0, 255);
             button.dropShadowOffset = new Vector2(-1, -1);
-            
+
             return button;
         }
         protected UISlicedSprite CreateUISlicedSprite(UIParamPropsBase properties)
@@ -444,28 +448,26 @@ namespace MetroOverhaul.UI
         }
         protected UIPanel CreateToolTipPanel(UIToolTipPanelParamProps properties)
         {
-            var size = new Vector2(252, 100);
             var pnlStationTypeSelectorTooltip = CreatePanel(new UIPanelParamProps()
             {
-                Name = properties.Name.Replace("ttp","pnl"),
+                Name = properties.Name.Replace("ttp", "pnl"),
                 Atlas = atlas,
-                Width = size.x,
-                Height = size.y,
+                ParentComponent = properties.ParentComponent,
                 BackgroundSprite = "GenericPanel"
-            });
+            }, false);
             pnlStationTypeSelectorTooltip.isVisible = false;
             pnlStationTypeSelectorTooltip.autoLayoutDirection = LayoutDirection.Vertical;
             pnlStationTypeSelectorTooltip.autoLayout = true;
             pnlStationTypeSelectorTooltip.pivot = UIPivotPoint.BottomLeft;
             pnlStationTypeSelectorTooltip.opacity = 0;
-            pnlStationTypeSelectorTooltip.eventMouseHover += (c, v) =>
-            { pnlStationTypeSelectorTooltip.tooltipBox.Show(); };
-            pnlStationTypeSelectorTooltip.eventMouseLeave += (c, v) =>
-            { pnlStationTypeSelectorTooltip.tooltipBox.Hide(); };
-            UITextField tfStationTypeSelectorTooltip = (UITextField)InitComponent(pnlStationTypeSelectorTooltip.AddUIComponent<UITextField>(), properties);
-            tfStationTypeSelectorTooltip.text = properties.ToolTipPanelText;
-            tfStationTypeSelectorTooltip.size = size;
-            tfStationTypeSelectorTooltip.relativePosition = Vector3.zero;
+            pnlStationTypeSelectorTooltip.relativePosition = new Vector3(420, -50);
+            UILabel tfStationTypeSelectorTooltip = CreateLabel(new UILabelParamProps()
+            {
+                Name = "tfStationTypeSelectorTooltip",
+                Text = properties.ToolTipPanelText,
+                ParentComponent = pnlStationTypeSelectorTooltip
+            });
+            tfStationTypeSelectorTooltip.wordWrap = true;
             return pnlStationTypeSelectorTooltip;
         }
         protected UISlider CreateSlider(UISliderParamProps properties)
@@ -480,7 +482,9 @@ namespace MetroOverhaul.UI
                 Text = "Station " + typeString,
                 ParentComponent = parentComponent,
                 ColShare = 4,
+                Margins = new Vector4(8, 8, 8, 8)
             });
+            
             titleLabel.isInteractive = true;
             titleLabel.eventMouseDown += delegate (UIComponent sender, UIMouseEventParameter e)
             { OnToggleMouseDown(sender, e, properties.TrackAlterType); };
@@ -491,7 +495,7 @@ namespace MetroOverhaul.UI
             {
                 Name = "sldPanel" + typeString,
                 ParentComponent = parentComponent,
-                ColShare = 7,
+                ColShare = 8,
                 Atlas = atlas,
                 BackgroundSprite = "GenericPanel",
                 Color = new Color32(150, 150, 150, 210)
@@ -503,25 +507,25 @@ namespace MetroOverhaul.UI
             sliderPanel.eventKeyDown += delegate (UIComponent sender, UIKeyEventParameter e)
             { OnToggleKeyDown(sender, e); };
 
-            var pnlStationTypeSelectorInfo = CreatePanel(new UIPanelParamProps()
-            {
-                Name = "pnlStationTypeSelectorInfo" + typeString,
-                ParentComponent = parentComponent,
-                ColShare = 1
-            });
-            var btnStationTypeSelectorInfo = CreateButton(new UIButtonParamProps()
-            {
-                Name = "btnStationTypeSelectorInfo" + typeString,
-                Atlas = atlas,
-                ParentComponent = pnlStationTypeSelectorInfo,
-                NormalBgSprite = "EconomyMoreInfo",
-                HoveredBgSprite = "EconomyMoreInfoHovered",
-                PressedBgSprite = "EconomyMoreInfoHovered",
-                Height = 12,
-                Width = 12,
-                TooltipComponent = properties.TooltipComponent,
-                StackWidths = true
-            });
+            //var pnlStationTypeSelectorInfo = CreatePanel(new UIPanelParamProps()
+            //{
+            //    Name = "pnlStationTypeSelectorInfo" + typeString,
+            //    ParentComponent = parentComponent,
+            //    ColShare = 1
+            //});
+            //var btnStationTypeSelectorInfo = CreateButton(new UIButtonParamProps()
+            //{
+            //    Name = "btnStationTypeSelectorInfo" + typeString,
+            //    Atlas = atlas,
+            //    ParentComponent = pnlStationTypeSelectorInfo,
+            //    NormalBgSprite = "EconomyMoreInfo",
+            //    HoveredBgSprite = "EconomyMoreInfoHovered",
+            //    PressedBgSprite = "EconomyMoreInfoHovered",
+            //    Height = 12,
+            //    Width = 12,
+            //    TooltipComponent = properties.TooltipComponent,
+            //    StackWidths = true
+            //});
 
             UIPanel sliderLeftPanel = CreatePanel(new UIPanelParamProps()
             {
@@ -720,7 +724,7 @@ namespace MetroOverhaul.UI
                 }
             }
         }
-        private UIComponent InitComponent(UIComponent component, UIParamPropsBase properties)
+        private UIComponent InitComponent(UIComponent component, UIParamPropsBase properties, bool isFixed = true)
         {
             var parentComponent = GetParentComponent(properties);
             ParentTreeDict.Add(component, parentComponent);
@@ -729,23 +733,25 @@ namespace MetroOverhaul.UI
             var addUIComponent = !(properties is UIButtonParamProps) || (properties as UIButtonParamProps).AddUIComponent;
             if (!string.IsNullOrEmpty(properties.Name))
                 component.name = properties.Name;
-            if (properties.StackWidths)
-            {
-                component.relativePosition = properties.GetRelativePositionByStackedWidths(m_stackedWidths);
-            }
-            else if (properties.ColShare > -1)
-            {
-                component.relativePosition = properties.GetRelativePositionByColumnShare(m_totalColShare);
-            }
-            else if (addUIComponent)
-            {
-                component.relativePosition = properties.GetRelativePositionByColumnCount(m_colIndex);
-            }
-
             component.width = addUIComponent ? properties.GetWidth() : 0;
             component.height = addUIComponent ? properties.Height : 0;
             component.eventClick += properties.EventClick;
-            HandleNextPositioning(properties);
+            if (isFixed)
+            {
+                if (properties.StackWidths)
+                {
+                    component.relativePosition = properties.GetRelativePositionByStackedWidths(m_stackedWidths);
+                }
+                else if (properties.ColShare > -1)
+                {
+                    component.relativePosition = properties.GetRelativePositionByColumnShare(m_totalColShare);
+                }
+                else if (addUIComponent)
+                {
+                    component.relativePosition = properties.GetRelativePositionByColumnCount(m_colIndex);
+                }
+                HandleNextPositioning(properties);
+            }
             return component;
         }
         protected UIComponent GetParentComponent(UIParamPropsBase properties)

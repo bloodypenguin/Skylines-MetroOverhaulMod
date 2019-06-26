@@ -91,7 +91,7 @@ namespace MetroOverhaul.UI
                 PressedBgSprite = "EconomyMoreInfoHovered",
                 Height = 12,
                 Width = 12,
-                StackWidths = true,
+                StackWidths = true
                 //TooltipComponent = ttpStationTypeSelectorTooltip
             });
 

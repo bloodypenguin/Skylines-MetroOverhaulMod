@@ -414,14 +414,7 @@ namespace MetroOverhaul.UI
             {
                 trackSize = 2;
                 pillarType = PillarType.Wide;
-                if (trackStyle == TrackStyle.Classic)
-                {
-                    tsPillarChooser.selectedIndex = 1;
-                }
-                else if (trackStyle == TrackStyle.Modern)
-                {
-                    tsPillarChooser.selectedIndex = 2;
-                }
+                tsPillarChooser.selectedIndex = 1;
             }
             else if (info.name.Contains("Small"))
             {

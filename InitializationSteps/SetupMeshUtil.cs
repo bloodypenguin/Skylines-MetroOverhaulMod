@@ -273,7 +273,7 @@ namespace MetroOverhaul.InitializationSteps {
                 default:
                     if (info.name.Contains("Station"))
                     {
-                        Variations = new[] { "_Merge", "_Merge", "_Single_Merge", "_Single_Merge", "_Quad" };
+                        Variations = new[] { "_Station_Merge", "_Merge", "_Single_Merge", "_Single_Merge", "_Station_Quad" };
                         Groups = new[] { NetInfo.ConnectGroup.NarrowTram, NetInfo.ConnectGroup.MonorailStation, NetInfo.ConnectGroup.CenterTram, NetInfo.ConnectGroup.SingleMonorail, NetInfo.ConnectGroup.WideTram };
                         if (info.name.Contains("Large"))
                         {

@@ -1359,37 +1359,28 @@ namespace MetroOverhaul {
         {
             if (newPrefab.name.Contains("Metro"))
             {
-                var metroTrackInfo = FindOriginalNetInfo("Metro Track");
+                var metroTrackInfo = FindOriginalNetInfo("Metro Track" + (version == NetInfoVersion.Ground ? "" : " " + version));
                 var baseConstructionCost = metroTrackInfo.GetComponent<PlayerNetAI>().m_constructionCost;
                 var baseMaintenanceCost = metroTrackInfo.GetComponent<PlayerNetAI>().m_maintenanceCost;
                 var newAi = newPrefab.GetComponent<PlayerNetAI>();
 
-                var multiplier = GetCostMultiplier(version);
+                var multiplier = GetCostMultiplier(newPrefab, version);
                 newAi.m_constructionCost = (int)(baseConstructionCost * multiplier);
                 newAi.m_maintenanceCost = (int)(baseMaintenanceCost * multiplier);
             }
         }
 
-        public static float GetCostMultiplier(NetInfoVersion version)
+        public static float GetCostMultiplier(PrefabInfo newPrefab, NetInfoVersion version)
         {
-            float multiplier;
-            switch (version)
+            if (newPrefab.name.Contains("Small"))
             {
-                case NetInfoVersion.Elevated:
-                    multiplier = 2f;
-                    break;
-                case NetInfoVersion.Bridge:
-                    multiplier = 3f;
-                    break;
-                case NetInfoVersion.Tunnel:
-                case NetInfoVersion.Slope:
-                    multiplier = 4f;
-                    break;
-                default:
-                    multiplier = 1f;
-                    break;
+                return 2f / 3f;
             }
-            return multiplier;
+            else if (newPrefab.name.Contains("Large"))
+            {
+                return 1.5f;
+            }
+            return 1;
         }
         #endregion
     }

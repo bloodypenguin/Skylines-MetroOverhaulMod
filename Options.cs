@@ -21,7 +21,7 @@ namespace MetroOverhaul
             ghostMode = false;
             depotsNotRequiredMode = false;
         }
-        [Checkbox("In-Game Train <-> Metro Station Converter (Requres PrefabHook mod)", CONVERTER, typeof(NoPrefabHookHelper), nameof(NoPrefabHookHelper.ChangeState))]
+        [Checkbox("In-Game Train <-> Metro Station Converter", CONVERTER)]
         public bool ingameTrainMetroConverter { get; set; }
 
         [Checkbox("Metro track customization UI (requires reloading from main menu)", GENERAL)]

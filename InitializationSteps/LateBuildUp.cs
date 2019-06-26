@@ -10,7 +10,8 @@ namespace MetroOverhaul.InitializationSteps
         public static void BuildUp(NetInfo prefab, NetInfoVersion version)
         {
             var smallWord = "";
-            switch (prefab.m_lanes.Where(l => l.m_vehicleType == VehicleInfo.VehicleType.Metro).GroupBy(g => Math.Round(g.m_position)).Count()) {
+            switch (prefab.m_lanes.Where(l => l.m_vehicleType == VehicleInfo.VehicleType.Metro).GroupBy(g => Math.Round(g.m_position)).Count())
+            {
                 case 1:
                     smallWord = "Small";
                     break;
@@ -22,28 +23,24 @@ namespace MetroOverhaul.InitializationSteps
             {
                 case NetInfoVersion.Elevated:
                     {
-                        var epBuildingInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"MetroElevatedPillar{smallWord}")}.MetroElevatedPillar{smallWord}_Data");
-                        var epBuildingInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"MetroElevatedPillar{smallWord}NoCol")}.MetroElevatedPillar{smallWord}NoCol_Data");
-
-                        if (epBuildingInfo == null)
-                        {
-                            throw new Exception($"{prefab.name}: MetroElevatedPillar not found!");
-                        }
                         var bridgeAI = prefab.GetComponent<TrainTrackBridgeAIMetro>();
                         if (bridgeAI != null)
                         {
-                            bridgeAI.m_bridgePillarInfo = epBuildingInfo;
+                            var narrowInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Narrow")}.Modern Narrow_Data");
+                            var narrowNoColInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Narrow_NoCol")}.Modern Narrow NoCol_Data");
+                            bridgeAI.m_bridgePillarInfo = narrowNoColInfo;
                             bridgeAI.m_bridgePillarOffset = -0.75f;
                             bridgeAI.pillarList = new List<BridgePillarItem>();
-                            bridgeAI.pillarList.Add(new BridgePillarItem() {
-                                WideMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("MetroElevatedPillarLarge")}.MetroElevatedPillarLarge_Data"),
-                                WideInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Wide_O-R-F")}.Modern Wide O-R-F_Data"),
-                                NarrowMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Median_O-R-F")}.Modern Median O-R-F_Data"),
-                                NarrowInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Narrow_O-R-F")}.Modern Narrow O-R-F_Data"),
-                                WideMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("MetroElevatedPillarLargeNoCol")}.MetroElevatedPillarLargeNoCol_Data"),
-                                WideInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Wide_O-R-F_NoCol")}.Modern Wide O-R-F NoCol_Data"),
-                                NarrowMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Median_O-R-F_NoCol")}.Modern Median O-R-F NoCol_Data"),
-                                NarrowInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Narrow_O-R-F_NoCol")}.Modern Narrow O-R-F NoCol_Data"),
+                            bridgeAI.pillarList.Add(new BridgePillarItem()
+                            {
+                                NarrowInfo = narrowInfo,
+                                WideMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Wide Median")}.Modern Wide Median_Data"),
+                                WideInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Wide")}.Modern Wide_Data"),
+                                NarrowMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Median")}.Modern Median_Data"),
+                                WideMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Wide Median_NoCol")}.Modern Wide Median NoCol_Data"),
+                                WideInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Wide_NoCol")}.Modern Wide NoCol_Data"),
+                                NarrowMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Median_NoCol")}.Modern Median NoCol_Data"),
+                                NarrowInfoNoCol = narrowNoColInfo,
                                 HeightLimit = 0,
                                 HeightOffset = 0
                             });

@@ -277,7 +277,7 @@ namespace MetroOverhaul.Extensions
             return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_ELEVATED_LARGE_DUALISLAND + "\b") ||
                    (info.IsTrainTrackBridgeAIMetro() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.DualIslandPlatform);
         }
-
+        
         public static bool IsUndergroundMetroStationTrack(this NetInfo netInfo)
         {
             if (netInfo?.name == null)

@@ -25,45 +25,36 @@ namespace MetroOverhaul.InitializationSteps
             {
                 case NetInfoVersion.Elevated:
                     {
-                        var lowPillarProp = PrefabCollection<PropInfo>.FindLoaded($"{Util.PackageName($"Classic {laneCount}L Pillar (Low) Prop")}.Classic {laneCount}L Pillar (Low) Prop_Data");
-                        var highPillarProp = PrefabCollection<PropInfo>.FindLoaded($"{Util.PackageName($"Classic {laneCount}L Pillar (High) Prop")}.Classic {laneCount}L Pillar (High) Prop_Data");
-
-                        var epBuildingInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"MetroElevatedPillar{smallWord}")}.MetroElevatedPillar{smallWord}_Data");
-                        var epBuildingInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"MetroElevatedPillar{smallWord}NoCol")}.MetroElevatedPillar{smallWord}NoCol_Data");
-
-                        if (epBuildingInfo == null)
-                        {
-                            throw new Exception($"{prefab.name}: MetroElevatedPillar not found!");
-                        }
                         var bridgeAI = prefab.GetComponent<TrainTrackBridgeAIMetro>();
                         if (bridgeAI != null)
                         {
-                            bridgeAI.m_bridgePillarInfo = epBuildingInfo;
+                            var narrowInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Narrow_Low")}.Classic Narrow (Low)_Data");
+                            bridgeAI.m_bridgePillarInfo = narrowInfo;
                             bridgeAI.m_bridgePillarOffset = -0.75f;
                             bridgeAI.pillarList = new List<BridgePillarItem>();
                             bridgeAI.pillarList.Add(new BridgePillarItem()
                             {
-                                WideMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic 4L Pillar (Low)")}.Classic 4L Pillar (Low)_Data"),
-                                WideInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Wide_O-R-F_Low")}.Classic Wide O-R-F Low_Data"),
-                                NarrowMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Median_O-R-F_Low")}.Classic Median O-R-F Low_Data"),
-                                NarrowInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic 2L Pillar (Low)")}.Classic 2L Pillar (Low)_Data"),
-                                WideMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic 4L Pillar NoCol (Low)")}.Classic 4L Pillar NoCol (Low)_Data"),
-                                WideInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Wide_O-R-F_Low_NoCol")}.Classic Wide O-R-F Low NoCol_Data"),
-                                NarrowMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Median_O-R-F_Low_NoCol")}.Classic Median O-R-F Low NoCol_Data"),
-                                NarrowInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic 2L Pillar NoCol (Low)")}.Classic 2L Pillar NoCol (Low)_Data"),
+                                NarrowInfo = narrowInfo,
+                                WideMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Wide_Median_Low")}.Classic Wide Median (Low)_Data"),
+                                WideInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Wide_Low")}.Classic Wide (Low)_Data"),
+                                NarrowMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Median_Low")}.Classic Median (Low)_Data"),
+                                WideMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Wide_Median_Low_NoCol")}.Classic Wide Median (Low) NoCol_Data"),
+                                WideInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Wide_Low_NoCol")}.Classic Wide (Low) NoCol_Data"),
+                                NarrowMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Median_Low_NoCol")}.Classic Median (Low) NoCol_Data"),
+                                NarrowInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Narrow_Low_NoCol")}.Classic Narrow (Low) NoCol_Data"),
                                 HeightLimit = 18,
                                 HeightOffset = 0
                             });
                             bridgeAI.pillarList.Add(new BridgePillarItem()
                             {
-                                WideMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic 4L Pillar (High)")}.Classic 4L Pillar (High)_Data"),
-                                WideInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Wide_O-R-F_High")}.Classic Wide O-R-F High_Data"),
-                                NarrowMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Median_O-R-F_High")}.Classic Median O-R-F High_Data"),
-                                NarrowInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic 2L Pillar (High)")}.Classic 2L Pillar (High)_Data"),
-                                WideMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic 4L Pillar NoCol (High)")}.Classic 4L Pillar NoCol (High)_Data"),
-                                WideInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Wide_O-R-F_High_NoCol")}.Classic Wide O-R-F High NoCol_Data"),
-                                NarrowMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Median_O-R-F_High_NoCol")}.Classic Median O-R-F High NoCol_Data"),
-                                NarrowInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic 2L Pillar NoCol (High)")}.Classic 2L Pillar NoCol (High)_Data"),
+                                WideMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Wide_Median_High")}.Classic Wide Median (High)_Data"),
+                                WideInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Wide_High")}.Classic Wide (High)_Data"),
+                                NarrowMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Median_High")}.Classic Median (High)_Data"),
+                                NarrowInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Narrow_High")}.Classic Narrow (High)_Data"),
+                                WideMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Wide_Median_High_NoCol")}.Classic Wide Median (High) NoCol_Data"),
+                                WideInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Wide_High_NoCol")}.Classic Wide (High) NoCol_Data"),
+                                NarrowMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Median_High_NoCol")}.Classic Median (High) NoCol_Data"),
+                                NarrowInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Narrow_High_NoCol")}.Classic Narrow (High) NoCol_Data"),
                                 HeightLimit = 60,
                                 HeightOffset = 0
                             });
@@ -71,7 +62,7 @@ namespace MetroOverhaul.InitializationSteps
 
                         //var pillarPropList = new List<BridgePillarPropItem>();
 
-                        //pillarPropList.Add(new BridgePillarPropItem() { HeightLimit = 12, RepeatDistance = 60, Position = new Vector3(0, -15.75f, 0), Prop = lowPillarProp });
+                        //pillarPropList.Add(new BridgePillarPropItem() { HeightLimit = 12, RepeatDistance = 60, Position = new Vector3(0, -15.75f, 0), Prop = (Low)PillarProp });
                         //pillarPropList.Add(new BridgePillarPropItem() { HeightLimit = 60, RepeatDistance = 60, Position = new Vector3(0, -24.9f, 0), Prop = highPillarProp });
                         //var lanes = prefab.m_lanes.ToList();
                         //var propLane = lanes.FirstOrDefault(l => l.m_laneType == NetInfo.LaneType.None);

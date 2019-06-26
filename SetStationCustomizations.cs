@@ -35,7 +35,7 @@ namespace MetroOverhaul {
             var multiplier = subToSuper ? 1 : -1;
             return new Vector3(node.x + (multiplier * offset.x), node.y, node.z - (multiplier * offset.z));
         }
-        public static void ModifyStation(BuildingInfo info, float targetDepth, float targetStationTrackLength, float angle, float bendStrength, bool inRecurse = false) {
+        public static void ModifyStation(BuildingInfo info, float targetDepth, float targetStationTrackLength, float angle, float bendStrength) {
             m_Info = info;
             m_TargetDepth = targetDepth;
             m_TargetStationTrackLength = targetStationTrackLength;
@@ -45,63 +45,14 @@ namespace MetroOverhaul {
             if (m_TargetDepth <= 0 || targetStationTrackLength <= 0 || (!info.HasUndergroundMetroStationTracks() && (info?.m_subBuildings == null || info?.m_subBuildings.Count() == 0))) {
                 return;
             }
-            if (!inRecurse) {
-                CleanUpPaths();
-            }
-            Debug.Log("Investigating " + m_Info.name);
-            if (info?.m_subBuildings != null && info.m_subBuildings.Count() > 0) {
-                for (int i = 0; i < info.m_subBuildings.Count(); i++) {
-                    var subBuilding = info.m_subBuildings[i];
-                    if (subBuilding?.m_buildingInfo?.m_paths != null && subBuilding.m_buildingInfo.HasUndergroundMetroStationTracks()) {
-                        CleanUpPaths(subBuilding.m_buildingInfo);
-                        var theAngle = m_Angle;
-                        if (info.name == "Large Airport") {
-                            if (subBuilding.m_buildingInfo.name == "Integrated Metro Station")
-                            {
-                                theAngle += 45;
-                                subBuilding.m_angle = 0;
-                                var offset = new Vector3(14, 0, 20);
-                                subBuilding.m_position = offset;
-                                var sbInsidePath = subBuilding.m_buildingInfo.m_paths.FirstOrDefault(p => p.m_nodes.Any(n => n == new Vector3(0, -4, 6)));
-                                var airportEntranceLeft = new Vector3(-40, 0, -27);
-                                var airportEntranceRight = new Vector3(10, 0, 40);
-                                var midpoint = Vector3.Lerp(airportEntranceLeft, airportEntranceRight, 0.5f);
-                                midpoint = new Vector3(midpoint.x, -4, midpoint.z);
-                                var keyNodeIndex = 0;
-                                var superKeyNode = AdjForOffset(sbInsidePath.m_nodes[keyNodeIndex], offset);
-                                var adjOtherNode = AdjForOffset(Vector3.Lerp(superKeyNode, midpoint, 0.5f), offset, false);
-                                var pathList = new List<BuildingInfo.PathInfo>();
-                                BuildingInfo.PathInfo thePath = null;
-                                for (int j = 0; j < subBuilding.m_buildingInfo.m_paths.Count(); j++) {
-                                    var path = subBuilding.m_buildingInfo.m_paths[j];
-                                    if (path.m_nodes.Contains(new Vector3(0, -4, 6))) {
-                                        var nodeList = new List<Vector3>() { new Vector3(0, -4, 6), adjOtherNode };
-                                        path.m_nodes = nodeList.ToArray();
-                                        thePath = path;
-                                    }
-                                    pathList.Add(path);
-                                }
-                                var airportEntranceLeftToSub = AdjForOffset(airportEntranceLeft, offset, false);
-                                var airportEntranceRightToSub = AdjForOffset(airportEntranceRight, offset, false);
-                                var pathBranchLeft = ChainPath(thePath, airportEntranceLeftToSub, 1);
-                                var pathBranchRight = ChainPath(thePath, airportEntranceRightToSub, 1);
-                                pathList.Add(pathBranchLeft);
-                                pathList.Add(pathBranchRight);
-                                subBuilding.m_buildingInfo.m_paths = pathList.ToArray();
-                            }
-                        }
 
-                        ModifyStation(subBuilding.m_buildingInfo, m_TargetDepth, m_TargetStationTrackLength, theAngle, m_BendStrength, true);
-                    }
-                }
-            }
-
+            CleanUpPaths();
             ResizeUndergroundStationTracks();
             ChangeStationDepthAndRotation();
-
             ReconfigureStationAccess();
             BendStationTrack();
             RecalculateSpawnPoints();
+            HandleSubBuildings();
         }
         private static NetInfo m_SpecialNetInfo = null;
         private static NetInfo SpecialNetInfo {
@@ -541,6 +492,61 @@ namespace MetroOverhaul {
             }
         }
 
+        public static void HandleSubBuildings()
+        {
+            Debug.Log("Investigating " + m_Info.name);
+            if (m_Info?.m_subBuildings != null && m_Info.m_subBuildings.Count() > 0)
+            {
+                for (int i = 0; i < m_Info.m_subBuildings.Count(); i++)
+                {
+                    var subBuilding = m_Info.m_subBuildings[i];
+                    if (subBuilding?.m_buildingInfo?.m_paths != null && subBuilding.m_buildingInfo.HasUndergroundMetroStationTracks())
+                    {
+                        CleanUpPaths(subBuilding.m_buildingInfo);
+                        var theAngle = m_Angle;
+                        if (m_Info.name == "Large Airport")
+                        {
+                            if (subBuilding.m_buildingInfo.name == "Integrated Metro Station")
+                            {
+                                theAngle += 45;
+                                subBuilding.m_angle = 0;
+                                var offset = new Vector3(14, 0, 20);
+                                subBuilding.m_position = offset;
+                                var sbInsidePath = subBuilding.m_buildingInfo.m_paths.FirstOrDefault(p => p.m_nodes.Any(n => n == new Vector3(0, -4, 6)));
+                                var airportEntranceLeft = new Vector3(-40, 0, -27);
+                                var airportEntranceRight = new Vector3(10, 0, 40);
+                                var midpoint = Vector3.Lerp(airportEntranceLeft, airportEntranceRight, 0.5f);
+                                midpoint = new Vector3(midpoint.x, -4, midpoint.z);
+                                var keyNodeIndex = 0;
+                                var superKeyNode = AdjForOffset(sbInsidePath.m_nodes[keyNodeIndex], offset);
+                                var adjOtherNode = AdjForOffset(Vector3.Lerp(superKeyNode, midpoint, 0.5f), offset, false);
+                                var pathList = new List<BuildingInfo.PathInfo>();
+                                BuildingInfo.PathInfo thePath = null;
+                                for (int j = 0; j < subBuilding.m_buildingInfo.m_paths.Count(); j++)
+                                {
+                                    var path = subBuilding.m_buildingInfo.m_paths[j];
+                                    if (path.m_nodes.Contains(new Vector3(0, -4, 6)))
+                                    {
+                                        var nodeList = new List<Vector3>() { new Vector3(0, -4, 6), adjOtherNode };
+                                        path.m_nodes = nodeList.ToArray();
+                                        thePath = path;
+                                    }
+                                    pathList.Add(path);
+                                }
+                                var airportEntranceLeftToSub = AdjForOffset(airportEntranceLeft, offset, false);
+                                var airportEntranceRightToSub = AdjForOffset(airportEntranceRight, offset, false);
+                                var pathBranchLeft = ChainPath(thePath, airportEntranceLeftToSub, 1);
+                                var pathBranchRight = ChainPath(thePath, airportEntranceRightToSub, 1);
+                                pathList.Add(pathBranchLeft);
+                                pathList.Add(pathBranchRight);
+                                subBuilding.m_buildingInfo.m_paths = pathList.ToArray();
+                            }
+                        }
+                        ModifyStation(subBuilding.m_buildingInfo, m_TargetDepth, m_TargetStationTrackLength, theAngle, m_BendStrength);
+                    }
+                }
+            }
+        }
         private static bool IsVehicleStop(BuildingInfo.PathInfo path) {
             return (path?.m_nodes?.Length ?? 0) > 1 && (path?.m_netInfo?.IsUndergroundMetroStationTrack() ?? false);
         }
@@ -550,12 +556,11 @@ namespace MetroOverhaul {
             var processedConnectedPaths = new List<int>();
             for (var index = 0; index < m_Info.m_paths.Length; index++) {
                 var path = m_Info.m_paths[index];
-                if (!path.m_netInfo.IsUndergroundMetroStationTrack()) {
+                if (!path.m_netInfo.IsUndergroundMetroStationTrack())
                     continue;
-                }
-                if (!linkedStationTracks.Contains(path)) {
-                    ChangeStationTrackLength(m_Info.m_paths, index, processedConnectedPaths);
-                }
+
+                if (!linkedStationTracks.Contains(path)) 
+                    ChangeStationTrackLength(m_Info.m_paths, index, processedConnectedPaths); 
             }
         }
         private static void ChangeStationDepthAndRotation() {
@@ -564,9 +569,9 @@ namespace MetroOverhaul {
             var totalNode = Vector3.zero;
             foreach (var path in m_Info.m_paths) {
 
-                if (path.m_netInfo?.m_netAI == null || !path.m_netInfo.IsUndergroundMetroStationTrack()) {
+                if (path.m_netInfo?.m_netAI == null || !path.m_netInfo.IsUndergroundMetroStationTrack())
                     continue;
-                }
+                
                 var highest = path.m_nodes.OrderByDescending(n => n.y).FirstOrDefault().y;
                 highestStation = Math.Max(highest, highestStation);
             }

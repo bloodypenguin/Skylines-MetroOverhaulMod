@@ -324,7 +324,7 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         case 0:
                             theLanes[i].m_position = -5.885f;
-                            theLanes[i].m_direction = NetInfo.Direction.Backward;
+                            theLanes[i].m_direction = isStation ? NetInfo.Direction.AvoidForward : NetInfo.Direction.Backward;
                             theLanes[i].m_speedLimit = speedLimit;
                             break;
                         case 1:
@@ -339,7 +339,7 @@ namespace MetroOverhaul.InitializationSteps
                             break;
                         case 3:
                             theLanes[i].m_position = 5.886f;
-                            theLanes[i].m_direction = NetInfo.Direction.Forward;
+                            theLanes[i].m_direction = isStation ? NetInfo.Direction.AvoidBackward : NetInfo.Direction.Forward;
                             theLanes[i].m_speedLimit = speedLimit;
                             break;
                     }
@@ -348,7 +348,6 @@ namespace MetroOverhaul.InitializationSteps
                 }
                 else if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
                 {
-                    theLanes[i].m_direction = NetInfo.Direction.Both;
                     theLanes[i].m_stopType = VehicleInfo.VehicleType.Metro;
                     theLanes[i].m_position = Math.Sign(theLanes[i].m_position) * 10;
                     theLanes[i].m_width = 3;
@@ -699,10 +698,10 @@ namespace MetroOverhaul.InitializationSteps
             {
                 return;
             }
-            var metroTrack = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
 
             prefab.m_InfoTooltipAtlas = InfoToolTipAtlas();
             string netTitle;
+            string netDescription;
             if (prefab.name.Contains("Large"))
             {
                 var atlas = UI.UIHelper.GenerateLinearAtlas("MOM_QuadMetroTrackAtlas", UI.UIHelper.QuadMetroTracks);
@@ -711,6 +710,7 @@ namespace MetroOverhaul.InitializationSteps
                 prefab.m_InfoTooltipThumbnail = QUAD_TRACK_INFOTOOLTIP;
                 prefab.m_UIPriority = 3;
                 netTitle = "Quad Metro Track";
+                netDescription = "A four-lane metro track suitable for heavy traffic. Designate separate local and express lines for best results.";
             }
             else if (prefab.name.Contains("Small"))
             {
@@ -720,6 +720,7 @@ namespace MetroOverhaul.InitializationSteps
                 prefab.m_InfoTooltipThumbnail = SINGLE_TRACK_INFOTOOLTIP;
                 prefab.m_UIPriority = 1;
                 netTitle = "Single Metro Track";
+                netDescription = "A one-lane metro track. This track is suitable for light traffic or as a connector to other tracks.";
             }
             else
             {
@@ -729,20 +730,17 @@ namespace MetroOverhaul.InitializationSteps
                 prefab.m_InfoTooltipThumbnail = DUAL_TRACK_INFOTOOLTIP;
                 prefab.m_UIPriority = 2;
                 netTitle = "Dual Metro Track";
+                netDescription = "A two-lane metro track. This track supports moderate traffic and is adequate for most situations.";
             }
             prefab.m_isCustomContent = false;
             prefab.m_availableIn = ItemClass.Availability.All;
             var locale = LocaleManager.instance.GetLocale();
             var key = new Locale.Key { m_Identifier = "NET_TITLE", m_Key = prefab.name };
-            if (!locale.Exists(key))
-            {
-                locale.AddLocalizedString(key, locale.Get(new Locale.Key { m_Identifier = "NET_TITLE", m_Key = netTitle }));
-            }
-            key = new Locale.Key { m_Identifier = "NET_DESC", m_Key = prefab.name };
-            if (!locale.Exists(key))
-            {
-                locale.AddLocalizedString(key, locale.Get(new Locale.Key { m_Identifier = "NET_DESC", m_Key = "Metro Track" }));
-            }
+            if (!Locale.Exists("NET_TITLE", prefab.name))
+                locale.AddLocalizedString(key, netTitle);
+            var dkey = new Locale.Key { m_Identifier = "NET_DESC", m_Key = prefab.name };
+            if (!Locale.Exists("NET_DESC", prefab.name))
+                locale.AddLocalizedString(dkey, netDescription);
         }
         private static bool m_TrainTrackAnalogAISet = false;
         public static void ReplaceBuildingIcon(BuildingInfo prefab)

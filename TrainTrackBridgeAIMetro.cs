@@ -32,77 +32,74 @@ namespace MetroOverhaul
                     heightOffset = this.m_middlePillarOffset - 1f - this.m_middlePillarInfo.m_generatedInfo.m_size.y;
                     return;
                 }
-                if (this.m_bridgePillarInfo != null)
+                heightOffset = this.m_bridgePillarOffset - 1f - this.m_bridgePillarInfo.m_generatedInfo.m_size.y;
+                building = m_bridgePillarInfo;
+                if (pillarList != null && pillarList.Count > 0)
                 {
-                    building = this.m_bridgePillarInfo;
-                    heightOffset = this.m_bridgePillarOffset - 1f - this.m_bridgePillarInfo.m_generatedInfo.m_size.y;
-                    if (pillarList != null && pillarList.Count > 0)
+                    if (m_NetTool == null)
                     {
-                        if (m_NetTool == null)
+                        m_NetTool = FindObjectOfType<NetTool>();
+                    }
+                    if (m_NetTool?.Prefab != null)
+                    {
+                        var elevation = m_NetTool.GetElevation();
+                        var theList = pillarList.Where(d => d.HeightLimit == 0 || d.HeightLimit >= elevation).OrderBy(x => x.HeightLimit).ToList();
+                        BridgePillarItem thePillarInfo = null;
+                        if (theList == null || theList.Count == 0)
                         {
-                            m_NetTool = FindObjectOfType<NetTool>();
+                            thePillarInfo = pillarList.LastOrDefault();
                         }
-                        if (m_NetTool?.Prefab != null)
+                        else
                         {
-                            var elevation = m_NetTool.GetElevation();
-                            var theList = pillarList.Where(d => d.HeightLimit == 0 || d.HeightLimit >= elevation).OrderBy(x => x.HeightLimit).ToList();
-                            BridgePillarItem thePillarInfo = null;
-                            if (theList == null || theList.Count == 0)
-                            {
-                                thePillarInfo = pillarList.LastOrDefault();
-                            }
-                            else
-                            {
-                                thePillarInfo = theList.FirstOrDefault();
-                            }
-                            BuildingInfo info = null;
-                            BuildingInfo noColInfo = null;
-                            if (m_NetTool.Prefab.name.Contains("Bridge"))
-                            {
-                                pillarType = PillarType.WideMedian;
-                            }
-                            switch (pillarType)
-                            {
-                                case PillarType.WideMedian:
-                                    info = thePillarInfo.WideMedianInfo;
-                                    noColInfo = thePillarInfo.WideMedianInfoNoCol;
-                                    break;
-                                case PillarType.Wide:
-                                    info = thePillarInfo.WideInfo;
-                                    noColInfo = thePillarInfo.WideInfoNoCol;
-                                    break;
-                                case PillarType.NarrowMedian:
-                                    info = thePillarInfo.NarrowMedianInfo;
-                                    noColInfo = thePillarInfo.NarrowMedianInfoNoCol;
-                                    break;
-                                case PillarType.Narrow:
-                                    info = thePillarInfo.NarrowInfo;
-                                    noColInfo = thePillarInfo.NarrowInfoNoCol;
-                                    break;
-                            }
-                            var prefab = m_NetTool.Prefab;
-                            if (NoPillarCollision && elevation >= 0)
-                            {
-                                building = noColInfo;
-                                building.m_elevated = true;
-                                building.m_generatedInfo.m_min.y = 32;
-                                if (m_IntersectClass == null)
-                                {
-                                    m_IntersectClass = prefab.m_intersectClass;
-                                }
-                                prefab.m_intersectClass = null;
-                            }
-                            else
-                            {
-                                building = info;
-                                if (m_IntersectClass != null)
-                                {
-                                    prefab.m_intersectClass = m_IntersectClass;
-                                }
-                            }
-                            if (thePillarInfo != null && info != null)
-                                heightOffset = thePillarInfo.HeightOffset - 1f - info.m_generatedInfo.m_size.y;
+                            thePillarInfo = theList.FirstOrDefault();
                         }
+                        BuildingInfo info = null;
+                        BuildingInfo noColInfo = null;
+                        if (m_NetTool.Prefab.name.Contains("Bridge"))
+                        {
+                            pillarType = PillarType.WideMedian;
+                        }
+                        switch (pillarType)
+                        {
+                            case PillarType.WideMedian:
+                                info = thePillarInfo.WideMedianInfo;
+                                noColInfo = thePillarInfo.WideMedianInfoNoCol;
+                                break;
+                            case PillarType.Wide:
+                                info = thePillarInfo.WideInfo;
+                                noColInfo = thePillarInfo.WideInfoNoCol;
+                                break;
+                            case PillarType.NarrowMedian:
+                                info = thePillarInfo.NarrowMedianInfo;
+                                noColInfo = thePillarInfo.NarrowMedianInfoNoCol;
+                                break;
+                            case PillarType.Narrow:
+                                info = thePillarInfo.NarrowInfo;
+                                noColInfo = thePillarInfo.NarrowInfoNoCol;
+                                break;
+                        }
+
+                        var prefab = m_NetTool.Prefab;
+                        if (NoPillarCollision && elevation >= 0)
+                        {
+                            building = noColInfo;
+                            if (m_IntersectClass == null)
+                            {
+                                m_IntersectClass = prefab.m_intersectClass;
+                            }
+                            prefab.m_intersectClass = null;
+                        }
+                        else
+                        {
+                            building = info;
+                            if (m_IntersectClass != null)
+                            {
+                                prefab.m_intersectClass = m_IntersectClass;
+                            }
+                        }
+                        m_bridgePillarInfo = building;
+                        if (thePillarInfo != null && info != null)
+                            heightOffset = thePillarInfo.HeightOffset - 1f - info.m_generatedInfo.m_size.y;
                     }
                     return;
                 }

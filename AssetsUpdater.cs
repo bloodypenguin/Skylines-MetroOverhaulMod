@@ -18,6 +18,7 @@ namespace MetroOverhaul {
         public void UpdateExistingAssets(LoadMode mode)
         {
             UpdateMetroTrainEffects();
+            UpdateNoColPillars();
             if (mode == LoadMode.LoadAsset || mode == LoadMode.NewAsset)
             {
                 return;
@@ -681,7 +682,14 @@ namespace MetroOverhaul {
                 metroStationTrack.m_availableIn = ItemClass.Availability.Editors;
             }
         }
-
+        private static void UpdateNoColPillars()
+        {
+            var noColBuildingInfos = Resources.FindObjectsOfTypeAll<BuildingInfo>().Where(b=>b.name.IndexOf("NoCol") > -1);
+            foreach(var info in noColBuildingInfos)
+            {
+                info.m_generatedInfo.m_min.y = 32;
+            }
+        }
         private static void UpdateMetroTrainEffects()
         {
             var vanillaMetro = PrefabCollection<VehicleInfo>.FindLoaded("Metro");
