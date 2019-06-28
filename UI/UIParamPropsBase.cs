@@ -11,8 +11,8 @@ namespace MetroOverhaul.UI
     {
         public string Text;
         public int ColumnCount;
-        public int ColShare;
-        public int ColOffset;
+        public float ColShare;
+        public float ColOffset;
         public MouseEventHandler EventClick;
         public bool SameLine;
         public bool ForceRowEnd;
@@ -58,7 +58,7 @@ namespace MetroOverhaul.UI
             var retval = new Vector3(Margins.x + (ParentComponent.width * ((float)(colIndex + ColOffset) / ColumnCount)), ParentComponent.height + Margins.w);
             return retval;
         }
-        public Vector3 GetRelativePositionByColumnShare(int totalColShare)
+        public Vector3 GetRelativePositionByColumnShare(float totalColShare)
         {
             return new Vector3(Margins.x + (ParentComponent.width * ((float)(totalColShare + ColOffset) / 12)), ParentComponent.height + Margins.w);
         }

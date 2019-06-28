@@ -154,7 +154,7 @@ namespace MetroOverhaul.UI {
             var stationDepthPanel = CreatePanel(new UIPanelParamProps()
             {
                 Name = "stationDepthPanel",
-                Margins = new Vector4(8, 0, 8, 0),
+                Margins = new Vector4(8, 0, 8, 8),
                 ColumnCount = 1
             });
             //var ttpStationDepthSelectorTooltip = CreateToolTipPanel(new UIToolTipPanelParamProps()
@@ -174,7 +174,7 @@ namespace MetroOverhaul.UI {
             var stationAnglePanel = CreatePanel(new UIPanelParamProps()
             {
                 Name = "stationAnglePanel",
-                Margins = new Vector4(8, 0, 8, 0),
+                Margins = new Vector4(8, 0, 8, 8),
                 ColumnCount = 1
             });
             //var ttpStationAngleSelectorTooltip = CreateToolTipPanel(new UIToolTipPanelParamProps()
@@ -194,7 +194,7 @@ namespace MetroOverhaul.UI {
             var stationBendPanel = CreatePanel(new UIPanelParamProps()
             {
                 Name = "stationBendPanel",
-                Margins = new Vector4(8, 0, 8, 0),
+                Margins = new Vector4(8, 0, 8, 8),
                 ColumnCount = 1
             });
             //var ttpStationBendSelectorTooltip = CreateToolTipPanel(new UIToolTipPanelParamProps()

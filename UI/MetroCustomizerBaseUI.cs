@@ -481,8 +481,8 @@ namespace MetroOverhaul.UI
                 Name = "lblTitle" + typeString,
                 Text = "Station " + typeString,
                 ParentComponent = parentComponent,
-                ColShare = 4,
-                Margins = new Vector4(8, 8, 8, 8)
+                ColShare = 3.25f,
+                Margins = new Vector4(0, 2, 0, 0)
             });
             
             titleLabel.isInteractive = true;
@@ -495,7 +495,7 @@ namespace MetroOverhaul.UI
             {
                 Name = "sldPanel" + typeString,
                 ParentComponent = parentComponent,
-                ColShare = 8,
+                ColShare = 8.75f,
                 Atlas = atlas,
                 BackgroundSprite = "GenericPanel",
                 Color = new Color32(150, 150, 150, 210)
@@ -532,7 +532,7 @@ namespace MetroOverhaul.UI
                 Name = "sliderLeftPanel" + typeString,
                 ParentComponent = sliderPanel,
                 Height = 12,
-                ColShare = 9,
+                ColShare = 10,
                 Margins = new Vector4(2, 0, 0, 2)
             });
             //sliderLeftPanel.height = sliderPanel.height - 4;
@@ -540,7 +540,7 @@ namespace MetroOverhaul.UI
             {
                 Name = "sliderRightPanel" + typeString,
                 ParentComponent = sliderPanel,
-                ColShare = 3
+                ColShare = 2
             });
 
             UILabel sliderValueLabel = CreateLabel(new UILabelParamProps()
@@ -647,7 +647,7 @@ namespace MetroOverhaul.UI
         protected int m_rowIndex = 1;
         private int m_colIndex = 0;
         private float m_stackedWidths = 0;
-        private int m_totalColShare = 0;
+        private float m_totalColShare = 0;
         private Dictionary<UIComponent, UIComponent> m_ParentTreeDict;
         private Dictionary<UIComponent, UIComponent> ParentTreeDict {
             get

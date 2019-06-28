@@ -81,19 +81,19 @@ namespace MetroOverhaul.UI
             //    ToolTipPanelText = STATION_TYPE_SELECTOR_INFO
             //});
 
-            var btnStationTypeSelectorInfo = CreateButton(new UIButtonParamProps()
-            {
-                Name = "btnStationTypeSelectorInfo",
-                Atlas = atlas,
-                ParentComponent = pnlStationTypeSelectorInfo,
-                NormalBgSprite = "EconomyMoreInfo",
-                HoveredBgSprite = "EconomyMoreInfoHovered",
-                PressedBgSprite = "EconomyMoreInfoHovered",
-                Height = 12,
-                Width = 12,
-                StackWidths = true
-                //TooltipComponent = ttpStationTypeSelectorTooltip
-            });
+            //var btnStationTypeSelectorInfo = CreateButton(new UIButtonParamProps()
+            //{
+            //    Name = "btnStationTypeSelectorInfo",
+            //    Atlas = atlas,
+            //    ParentComponent = pnlStationTypeSelectorInfo,
+            //    NormalBgSprite = "EconomyMoreInfo",
+            //    HoveredBgSprite = "EconomyMoreInfoHovered",
+            //    PressedBgSprite = "EconomyMoreInfoHovered",
+            //    Height = 12,
+            //    Width = 12,
+            //    StackWidths = true
+            //    //TooltipComponent = ttpStationTypeSelectorTooltip
+            //});
 
             var pnlStationTypeSelectorContainer = CreatePanel(new UIPanelParamProps()
             {

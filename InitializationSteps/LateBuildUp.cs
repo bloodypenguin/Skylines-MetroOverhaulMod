@@ -27,8 +27,7 @@ namespace MetroOverhaul.InitializationSteps
                         if (bridgeAI != null)
                         {
                             var narrowInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Narrow")}.Modern Narrow_Data");
-                            var narrowNoColInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Narrow_NoCol")}.Modern Narrow NoCol_Data");
-                            bridgeAI.m_bridgePillarInfo = narrowNoColInfo;
+                            bridgeAI.m_bridgePillarInfo = narrowInfo;
                             bridgeAI.m_bridgePillarOffset = -0.75f;
                             bridgeAI.pillarList = new List<BridgePillarItem>();
                             bridgeAI.pillarList.Add(new BridgePillarItem()
@@ -40,7 +39,7 @@ namespace MetroOverhaul.InitializationSteps
                                 WideMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Wide Median_NoCol")}.Modern Wide Median NoCol_Data"),
                                 WideInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Wide_NoCol")}.Modern Wide NoCol_Data"),
                                 NarrowMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Median_NoCol")}.Modern Median NoCol_Data"),
-                                NarrowInfoNoCol = narrowNoColInfo,
+                                NarrowInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Narrow_NoCol")}.Modern Narrow NoCol_Data"),
                                 HeightLimit = 0,
                                 HeightOffset = 0
                             });
