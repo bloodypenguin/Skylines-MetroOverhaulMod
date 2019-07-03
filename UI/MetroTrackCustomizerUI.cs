@@ -317,19 +317,18 @@ namespace MetroOverhaul.UI
 
                         case 2:
                             {
+
                                 if (trackDirection == 0)
                                 {
-                                    btnOneWay.enabled = false;
+                                    //btnOneWay.enabled = false;
                                     btnTwoWay.SimulateClick();
                                 }
-                                else
-                                {
-                                    prefab = fence ? concreteLargePrefab : concreteLargePrefabNoBar;
-                                    btnOneWay.state = UIButton.ButtonState.Disabled;
-                                    btnOneWay.isInteractive = false;
-                                    btnNarrowMedianPillar.state = UIButton.ButtonState.Disabled;
-                                    btnNarrowMedianPillar.isInteractive = false;
-                                }
+
+                                prefab = fence ? concreteLargePrefab : concreteLargePrefabNoBar;
+                                btnOneWay.state = UIButton.ButtonState.Disabled;
+                                btnOneWay.isInteractive = false;
+                                btnNarrowMedianPillar.state = UIButton.ButtonState.Disabled;
+                                btnNarrowMedianPillar.isInteractive = false;
                             }
                             break;
                     }
@@ -365,17 +364,15 @@ namespace MetroOverhaul.UI
                             {
                                 if (trackDirection == 0)
                                 {
-                                    btnOneWay.enabled = false;
+                                    //btnOneWay.enabled = false;
                                     btnTwoWay.SimulateClick();
                                 }
-                                else
-                                {
-                                    prefab = fence ? steelLargePrefab : steelLargePrefabNoBar;
-                                    btnOneWay.state = UIButton.ButtonState.Disabled;
-                                    btnOneWay.isInteractive = false;
-                                    btnNarrowMedianPillar.state = UIButton.ButtonState.Disabled;
-                                    btnNarrowMedianPillar.isInteractive = false;
-                                }
+
+                                prefab = fence ? steelLargePrefab : steelLargePrefabNoBar;
+                                btnOneWay.state = UIButton.ButtonState.Disabled;
+                                btnOneWay.isInteractive = false;
+                                btnNarrowMedianPillar.state = UIButton.ButtonState.Disabled;
+                                btnNarrowMedianPillar.isInteractive = false;
                             }
                             break;
                     }

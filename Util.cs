@@ -108,11 +108,6 @@ namespace MetroOverhaul {
             }
         }
 
-        public static bool IsHooked()
-        {
-            return IsModActive("Prefab Hook"); ;
-        }
-
         public static bool IsModActive(string modName)
         {
             var plugins = PluginManager.instance.GetPluginsInfo();

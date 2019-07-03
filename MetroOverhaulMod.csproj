@@ -49,8 +49,10 @@
     <Compile Include="Detours\DepotAIDetour.cs" />
     <Compile Include="Detours\MetroTrainAIDetour.cs" />
     <Compile Include="Extensions\BuildingInfoExtensions.PathInfo.cs" />
+    <Compile Include="Extensions\EffectInfoExtensions.cs" />
     <Compile Include="Extensions\NetInfoExtensions.cs" />
     <Compile Include="Extensions\NetToolExtensions.cs" />
+    <Compile Include="Extensions\PropInfoExtensions.cs" />
     <Compile Include="InitializationSteps\SetupMeshUtil.cs" />
     <Compile Include="InitializationSteps\SetupSteelMesh19m.cs" />
     <Compile Include="InitializationSteps\SetupMesh19m.cs" />
@@ -195,6 +197,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\BP_flurotube_light_3.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Assets\Classic 1L Pillar %28Bridge%29.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

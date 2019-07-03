@@ -93,7 +93,7 @@ namespace MetroOverhaul.InitializationSteps
                 case NetInfoVersion.Bridge:
                     {
                         var steelBridgePillarInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"Classic {laneCount}L Pillar (Bridge)")}.Classic {laneCount}L Pillar (Bridge)_Data");
-                        var steelNoColBridgePillarInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"Classic {laneCount}L Pillar NoCol (Bridge)")}.Classic {laneCount}L Pillar NoCol (Bridge)_Data");
+                        //var steelNoColBridgePillarInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"Classic {laneCount}L Pillar NoCol (Bridge)")}.Classic {laneCount}L Pillar NoCol (Bridge)_Data");
                         if (steelBridgePillarInfo == null)
                         {
                             throw new Exception($"{prefab.name}: MetroBridgePillar not found!");
@@ -105,8 +105,20 @@ namespace MetroOverhaul.InitializationSteps
                             bridgeAI.m_bridgePillarInfo = steelBridgePillarInfo;
                             bridgeAI.m_middlePillarInfo = steelBridgePillarInfo;
                             bridgeAI.pillarList = new List<BridgePillarItem>();
-                            bridgeAI.pillarList.Add(new BridgePillarItem() { HeightLimit = 0, HeightOffset = 0, WideMedianInfo = steelBridgePillarInfo, WideMedianInfoNoCol = steelNoColBridgePillarInfo });
+                            bridgeAI.pillarList.Add(new BridgePillarItem() { HeightLimit = 0, HeightOffset = 0, WideMedianInfo = steelBridgePillarInfo, WideMedianInfoNoCol = steelBridgePillarInfo });
                             bridgeAI.m_bridgePillarOffset = 0.55f;
+                        }
+                        break;
+                    }
+                case NetInfoVersion.Tunnel:
+                    {
+                        if (prefab.name.Contains("Station"))
+                        {
+                            CustomizationSteps.SetupStationProps(prefab, version);
+                        }
+                        else
+                        {
+                            CustomizationSteps.SetupTrackProps(prefab, version);
                         }
                         break;
                     }

@@ -14,51 +14,71 @@ namespace MetroOverhaul.InitializationSteps
     {
         public static void SetupTrackProps(NetInfo prefab, NetInfoVersion version)
         {
-            if (version != NetInfoVersion.Tunnel)
+            if (version == NetInfoVersion.Tunnel)
             {
-                return;
-            }
-            var lanes = prefab.m_lanes.ToList();
-            var propLane = new NetInfo.Lane();
-            propLane.m_laneProps = ScriptableObject.CreateInstance<NetLaneProps>();
-            var propsList = new List<NetLaneProps.Prop>();
-            var thePropInfo = PrefabCollection<PropInfo>.FindLoaded("Tunnel Light Small Road") ??
-                              PrefabCollection<PropInfo>.FindLoaded("Wall Light White");
-            if (prefab.name.Contains("Steel"))
-            {
-                propsList.AddBasicProp(thePropInfo, new Vector3(-5.5f, 6, 0), 270);
-            }
-            else
-            {
-                propsList.AddBasicProp(thePropInfo, new Vector3(-3.5f, 6, 0), 270);
-            }
+                var lanes = prefab.m_lanes.ToList();
+                var propLane = new NetInfo.Lane();
+                propLane.m_laneProps = ScriptableObject.CreateInstance<NetLaneProps>();
+                propLane.m_laneProps.name = "LightLane";
+                var propsList = new List<NetLaneProps.Prop>();
+                var thePropInfo = PrefabCollection<PropInfo>.FindLoaded("Tunnel Light Small Road").ShallowClone();
+                thePropInfo.SetAsTunnelLightProp(1, 20);
+                Debug.Log("We are in here with " + prefab.name);
+                if (prefab.name.Contains("Steel"))
+                {
+                    if (prefab.name.Contains("Large"))
+                    {
+                        propsList.AddBasicProp(thePropInfo, new Vector3(-9.5f, 6, 0), 270, 60);
+                        propsList.AddBasicProp(thePropInfo, new Vector3(9.5f, 6, 0), 90, 60);
+                    }
+                    else if (prefab.name.Contains("Small"))
+                    {
+                        propsList.AddBasicProp(thePropInfo, new Vector3(-3.5f, 6, 0), 270, 60);
+                    }
+                    else
+                    {
+                        propsList.AddBasicProp(thePropInfo, new Vector3(-5.5f, 6, 0), 270, 60);
+                    }
 
-            propLane.m_laneProps.m_props = propsList.ToArray();
-            lanes.Add(propLane);
-            prefab.m_lanes = lanes.ToArray();
+                }
+                else
+                {
+                    if (prefab.name.Contains("Large"))
+                    {
+                        propsList.AddBasicProp(thePropInfo, new Vector3(-7.5f, 6, 0), 270, 60);
+                        propsList.AddBasicProp(thePropInfo, new Vector3(7.5f, 6, 0), 90, 60);
+                    }
+                    else if (prefab.name.Contains("Small"))
+                    {
+                        propsList.AddBasicProp(thePropInfo, new Vector3(-1.5f, 5.5f, 0), 270, 60);
+                    }
+                    else
+                    {
+                        propsList.AddBasicProp(thePropInfo, new Vector3(-3.5f, 6, 0), 270, 60);
+                    }
+
+                }
+
+                propLane.m_laneProps.m_props = propsList.ToArray();
+                lanes.Add(propLane);
+                prefab.m_lanes = lanes.ToArray();
+            }
         }
 
         public static void SetupStationProps(NetInfo prefab, NetInfoVersion version)
         {
-            var propLanes = prefab.m_lanes.Where(l => l.m_laneType == NetInfo.LaneType.Pedestrian).ToList();
-            foreach (NetInfo.Lane t in propLanes)
+            if (version == NetInfoVersion.Tunnel)
             {
-                t.m_laneProps = ScriptableObject.CreateInstance<NetLaneProps>();
-                var propsList = new List<NetLaneProps.Prop>();
-                if (version == NetInfoVersion.Tunnel)
+                var propLanes = prefab.m_lanes.Where(l => l.m_laneType == NetInfo.LaneType.Pedestrian).ToList();
+                foreach (NetInfo.Lane t in propLanes)
                 {
-                    var thePropInfo = PrefabCollection<PropInfo>.FindLoaded("Wall Light White");
-                    if (prefab.name.Contains("Island"))
-                    {
-                        propsList.AddBasicProp(thePropInfo, new Vector3(0, 6.3f, 0), 90, 14);
-                    }
-                    else
-                    {
-                        propsList.AddBasicProp(thePropInfo, new Vector3(-1, 6.7f, 0), 90, 10);
-                    }
-
+                    t.m_laneProps = ScriptableObject.CreateInstance<NetLaneProps>();
+                    var propsList = new List<NetLaneProps.Prop>();
+                    var thePropInfo = PrefabCollection<PropInfo>.FindLoaded($"{Util.PackageName($"BP_flurotube_light_3")}.flurotube_light_3_Data");
+                    thePropInfo.SetAsTunnelLightProp(3, 18);
+                    propsList.AddBasicProp(thePropInfo, new Vector3(0, 5.8f, 0), 0, 20);
+                    t.m_laneProps.m_props = propsList.ToArray();
                 }
-                t.m_laneProps.m_props = propsList.ToArray();
             }
         }
 
@@ -66,6 +86,7 @@ namespace MetroOverhaul.InitializationSteps
         {
             var theProp = new NetLaneProps.Prop();
             theProp.m_prop = thePropInfo;
+            theProp.m_finalProp = thePropInfo;
             theProp.m_position = position;
             theProp.m_repeatDistance = repeatDistance;
             theProp.m_angle = angle;
@@ -162,7 +183,7 @@ namespace MetroOverhaul.InitializationSteps
 
         public static void CommonCustomizationSmall(NetInfo prefab, NetInfoVersion version)
         {
-            var isTwoWay = prefab.name.Contains("Two-Way");
+            var isTwoWay = prefab.name.Contains("Two-Way") || prefab.name.Contains("Station");
             if (isTwoWay)
             {
                 prefab.m_connectGroup = NetInfo.ConnectGroup.SingleMonorail;

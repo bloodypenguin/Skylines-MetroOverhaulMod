@@ -289,6 +289,8 @@ namespace MetroOverhaul.InitializationSteps {
                             .SetConsistentUVs();
 
                         RoadHelper.HandleAsymSegmentFlags(segments4);
+                        segments1.m_material = defaultMaterial;
+                        segments1.m_lodMaterial = defaultLODMaterial;
                         segments3.m_material = defaultMaterial;
                         segments3.m_lodMaterial = defaultLODMaterial;
                         segments4.m_material = railMaterial;

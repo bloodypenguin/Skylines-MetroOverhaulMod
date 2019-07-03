@@ -23,6 +23,10 @@ namespace MetroOverhaul.InitializationSteps
             {
                 case NetInfoVersion.Elevated:
                     {
+                        if (prefab.name.Contains("Station"))
+                        {
+                            return;
+                        }
                         var bridgeAI = prefab.GetComponent<TrainTrackBridgeAIMetro>();
                         if (bridgeAI != null)
                         {
@@ -48,8 +52,12 @@ namespace MetroOverhaul.InitializationSteps
                     }
                 case NetInfoVersion.Bridge:
                     {
+                        if (prefab.name.Contains("Station"))
+                        {
+                            return;
+                        }
                         var bpBuildingInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"MetroBridgePillar{smallWord}")}.MetroBridgePillar{smallWord}_Data");
-                        var bpBuildingInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"MetroBridgePillar{smallWord}NoCol")}.MetroBridgePillar{smallWord}NoCol_Data");
+                        //var bpBuildingInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName($"MetroBridgePillar{smallWord}NoCol")}.MetroBridgePillar{smallWord}NoCol_Data");
                         if (bpBuildingInfo == null)
                         {
                             throw new Exception($"{prefab.name}: MetroBridgePillar not found!");
@@ -60,7 +68,19 @@ namespace MetroOverhaul.InitializationSteps
                             bridgeAI.m_bridgePillarInfo = bpBuildingInfo;
                             bridgeAI.pillarType = PillarType.WideMedian;
                             bridgeAI.pillarList = new List<BridgePillarItem>();
-                            bridgeAI.pillarList.Add(new BridgePillarItem() { HeightLimit = 0, HeightOffset = 0, WideMedianInfo = bpBuildingInfo, WideMedianInfoNoCol = bpBuildingInfoNoCol });
+                            bridgeAI.pillarList.Add(new BridgePillarItem() { HeightLimit = 0, HeightOffset = 0, WideMedianInfo = bpBuildingInfo, WideMedianInfoNoCol = bpBuildingInfo });
+                        }
+                        break;
+                    }
+                case NetInfoVersion.Tunnel:
+                    {
+                        if (prefab.name.Contains("Station"))
+                        {
+                            CustomizationSteps.SetupStationProps(prefab, version);
+                        }
+                        else
+                        {
+                            CustomizationSteps.SetupTrackProps(prefab, version);
                         }
                         break;
                     }

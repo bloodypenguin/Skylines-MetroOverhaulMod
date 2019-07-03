@@ -29,26 +29,20 @@ namespace MetroOverhaul
             {
                 try
                 {
-                    //if (Container.RegisterWid(info, false))
-                    //{
-                    var ai = __instance.GetComponent<PlayerBuildingAI>();
+                    var ai = __instance.GetComponent<TransportStationAI>();
                     if (ai != null)
                     {
-                        if (ai is TransportStationAI)
+                        if (__instance.m_class.m_subService == ItemClass.SubService.PublicTransportTrain || __instance.m_class.m_subService == ItemClass.SubService.PublicTransportMetro)
                         {
-                            if (__instance.m_class.m_subService == ItemClass.SubService.PublicTransportTrain || __instance.m_class.m_subService == ItemClass.SubService.PublicTransportMetro)
+                            if (__instance.name.IndexOf(ModTrackNames.ANALOG_PREFIX) == -1)
                             {
-                                if (__instance.name.IndexOf(ModTrackNames.ANALOG_PREFIX) == -1)
+                                if (__instance.HasAbovegroundTrainStationTracks() || __instance.HasAbovegroundMetroStationTracks())
                                 {
-                                    if (__instance.HasAbovegroundTrainStationTracks() || __instance.HasAbovegroundMetroStationTracks())
-                                    {
-                                        m_Container.InitializeBuildingInfoImpl(__instance);
-                                    }
+                                    m_Container.InitializeBuildingInfoImpl(__instance);
                                 }
                             }
                         }
                     }
-                    //}
                 }
                 catch (Exception e)
                 {

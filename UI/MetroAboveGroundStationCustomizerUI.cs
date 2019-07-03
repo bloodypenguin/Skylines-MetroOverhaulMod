@@ -13,7 +13,7 @@ namespace MetroOverhaul.UI
     {
         protected override bool SatisfiesTrackSpecs(PrefabInfo info)
         {
-            return ((BuildingInfo)info).HasAbovegroundMetroStationTracks() || (Util.IsHooked() && OptionsWrapper<Options>.Options.ingameTrainMetroConverter && ((BuildingInfo)info).HasAbovegroundTrainStationTracks());
+            return OptionsWrapper<Options>.Options.ingameTrainMetroConverter && ((BuildingInfo)info).GetComponent<TransportStationAI>() != null && (((BuildingInfo)info).HasAbovegroundTrainStationTracks() || ((BuildingInfo)info).HasAbovegroundMetroStationTracks());
         }
 
         protected override ToolBase GetTheTool()
@@ -574,7 +574,7 @@ namespace MetroOverhaul.UI
         private Dictionary<int, List<int>> m_LinkedPathDict = null;
         private void SetNetToolPrefab()
         {
-            btnTrain.isEnabled = Util.IsHooked() && OptionsWrapper<Options>.Options.ingameTrainMetroConverter;
+            btnTrain.isEnabled = OptionsWrapper<Options>.Options.ingameTrainMetroConverter;
             var hasMetroTrack = TrackVehicleTypeArray.Any(t => t == TrackVehicleType.Metro);
             if (hasMetroTrack)
             {
@@ -609,7 +609,7 @@ namespace MetroOverhaul.UI
             {
                 case TrackVehicleType.Default:
                     {
-                        if (Util.IsHooked() && OptionsWrapper<Options>.Options.ingameTrainMetroConverter)
+                        if (OptionsWrapper<Options>.Options.ingameTrainMetroConverter)
                         {
                             string comeCorrectName;
                             if (m_currentBuilding.name.Contains(ModTrackNames.ANALOG_PREFIX))
@@ -643,7 +643,7 @@ namespace MetroOverhaul.UI
                     }
                 case TrackVehicleType.Train:
                     {
-                        if (Util.IsHooked() && OptionsWrapper<Options>.Options.ingameTrainMetroConverter)
+                        if (OptionsWrapper<Options>.Options.ingameTrainMetroConverter)
                         {
                             if (m_currentBuilding.IsMetroStation())
                             {
