@@ -1,12 +1,6 @@
 ﻿using ColossalFramework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
 
-namespace MetroOverhaul
-{
+namespace MetroOverhaul {
     class TrainTrackAIMetro : TrainTrackAI
     {
         public override void UpdateNodeFlags(ushort nodeID, ref NetNode data)

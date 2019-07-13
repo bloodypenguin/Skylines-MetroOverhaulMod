@@ -15,9 +15,10 @@ namespace MetroOverhaul.NEXT
         Tunnel = 8,
         Slope = 16,
         All = 31,
-        GroundGrass = 32,
-        GroundTrees = 64,
-        AllWithDecoration = 127,
+        Sunken = 32, 
+        GroundGrass = 64,
+        GroundTrees = 128,
+        AllWithDecoration = 223,
     }
 
     public static class NetInfoVersionExtensions

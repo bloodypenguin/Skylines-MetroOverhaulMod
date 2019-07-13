@@ -1,541 +1,406 @@
 ﻿using System;
-using ColossalFramework.Threading;
 using ColossalFramework.UI;
 using MetroOverhaul.Extensions;
 using UnityEngine;
-using MetroOverhaul.NEXT.Extensions;
-using System.Linq;
 using System.Collections.Generic;
-using ColossalFramework;
 
 namespace MetroOverhaul.UI
 {
-    public class MetroTrackAssetCustomizerUI : UIPanel
+    public class MetroTrackAssetCustomizerUI : MetroCustomizerBaseUI
     {
-        public int trackStyle = 0;
-        public int trackSize = 1;
-        public int trackDirection = 1;
-        public int isStation = 1;
-        public int stationType = 0;
-        public bool fence = false;
-        public bool extraElevated = false;
-        private BulldozeTool m_bulldozeTool;
-        private NetTool m_netTool;
-        private UIButton m_upgradeButtonTemplate;
-        private NetInfo m_currentNetInfo;
-        private bool m_activated = false;
-        public static MetroTrackAssetCustomizerUI instance;
-
-        UISprite m_useFenceCheckBoxClicker = null;
-        UISprite m_useExtraElevatedPillarClicker = null;
-        UICheckBox m_useFenceCheckBox = null;
-        UICheckBox m_useExtraElevatedPillarsCheckBox = null;
-
-        private NetInfo concretePrefab;
-        private NetInfo concretePrefabNoBar;
-
-        private NetInfo concreteTwoLaneOneWayPrefab;
-        private NetInfo concreteTwoLaneOneWayPrefabNoBar;
-
-        private NetInfo concreteLargePrefab;
-        private NetInfo concreteLargePrefabNoBar;
-
-        private NetInfo concreteSmallPrefab;
-        private NetInfo concreteSmallPrefabNoBar;
-
-        private NetInfo concreteSmallTwoWayPrefab;
-        private NetInfo concreteSmallTwoWayPrefabNoBar;
-
-        private NetInfo concreteSidePlatformStationPrefab;
-        private NetInfo concreteIslandPlatformStationPrefab;
-        private NetInfo concreteSinglePlatformStationPrefab;
-
-        private NetInfo steelPrefab;
-        private NetInfo steelPrefabNoBar;
-
-        private NetInfo steelTwoLaneOneWayPrefab;
-        private NetInfo steelTwoLaneOneWayPrefabNoBar;
-
-        private NetInfo steelLargePrefab;
-        private NetInfo steelLargePrefabNoBar;
-
-        private NetInfo steelSmallPrefab;
-        private NetInfo steelSmallPrefabNoBar;
-
-        private NetInfo steelSmallTwoWayPrefab;
-        private NetInfo steelSmallTwoWayPrefabNoBar;
-
-        private NetInfo steelSidePlatformStationPrefab;
-        private NetInfo steelIslandPlatformStationPrefab;
-        private NetInfo steelSinglePlatformStationPrefab;
-
-
-        private UIButton btnModernStyle;
-        private UIButton btnClassicStyle;
-        private UIButton btnStation;
-        private UIButton btnTrack;
-        private UIButton btnSidePlatform;
-        private UIButton btnIslandPlatform;
-        private UIButton btnSinglePlatform;
-        private UIButton btnSingleTrack;
-        private UIButton btnDoubleTrack;
-        private UIButton btnOneWay;
-        private UIButton btnTwoWay;
-
-        public override void Awake()
+        protected override bool SatisfiesTrackSpecs(PrefabInfo info)
         {
-            concretePrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground");
-            concretePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground NoBar");
-
-            concreteTwoLaneOneWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Two-Lane One-Way");
-            concreteTwoLaneOneWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Two-Lane One-Way NoBar");
-
-            concreteLargePrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Large");
-            concreteLargePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Large NoBar");
-
-            concreteSmallPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small");
-            concreteSmallPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small NoBar");
-
-            concreteSmallTwoWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small Two-Way");
-            concreteSmallTwoWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small Two-Way NoBar");
-
-            concreteSidePlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground");
-            concreteIslandPlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Island");
-            concreteSinglePlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Small");
-
-            steelPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground");
-            steelPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground NoBar");
-
-            steelTwoLaneOneWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Two-Lane One-Way");
-            steelTwoLaneOneWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Two-Lane One-Way NoBar");
-
-            steelSmallPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small");
-            steelSmallPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small NoBar");
-
-            steelSmallTwoWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small Two-Way");
-            steelSmallTwoWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small Two-Way NoBar");
-
-            steelLargePrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Large");
-            steelLargePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Large NoBar");
-
-            steelSidePlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground");
-            steelIslandPlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Island");
-            steelSinglePlatformStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Small");
+            return ((NetInfo)info).IsMetroTrack() || ((NetInfo)info).IsMetroStationTrack();
         }
 
-        public override void Update()
+        protected override ToolBase GetTheTool()
         {
-            if (m_netTool == null)
-            {
-                return;
-            }
-            try
-            {
-                var toolInfo = m_netTool.enabled ? m_netTool.m_prefab : null;
-                if (toolInfo == m_currentNetInfo)
-                {
-                    return;
-                }
-                NetInfo finalInfo = null;
-                if (toolInfo != null)
-                {
-                    //RestoreStationTrackStyle(toolInfo);
-                    if (toolInfo.IsMetroTrack() || toolInfo.IsMetroStationTrack())
-                    {
-                        finalInfo = toolInfo;
-                    }
-                }
-                if (finalInfo == m_currentNetInfo)
-                {
-                    return;
-                }
-                if (finalInfo != null)
-                {
-                    Activate(finalInfo);
-                }
-                else
-                {
-                    Deactivate();
-                }
-            }
-            catch (Exception e)
-            {
-                UnityEngine.Debug.LogException(e);
-                Deactivate();
-            }
-
+            return m_netTool;
         }
-        public override void Start()
+
+        protected override PrefabInfo GetToolPrefab()
         {
-            m_netTool = FindObjectOfType<NetTool>();
-            if (m_netTool == null)
-            {
-#if DEBUG
-                Next.Debug.Log("NetTool Not Found");
-#endif
-                enabled = false;
-                return;
-            }
+            return ((NetTool)GetTheTool())?.m_prefab;
+        }
 
-            m_bulldozeTool = FindObjectOfType<BulldozeTool>();
-            if (m_bulldozeTool == null)
-            {
-#if DEBUG
-                Next.Debug.Log("BulldozeTool Not Found");
-#endif
-                enabled = false;
-                return;
-            }
-            m_netTool = FindObjectOfType<NetTool>();
-            if (m_netTool == null)
-            {
-#if DEBUG
-                Next.Debug.Log("NetTool Not Found");
-#endif
-                enabled = false;
-                return;
-            }
+        protected override PrefabInfo CurrentInfo { get => m_currentNetInfo; set => m_currentNetInfo = (NetInfo)value; }
 
-            try
-            {
-                m_upgradeButtonTemplate = GameObject.Find("RoadsSmallPanel").GetComponent<GeneratedScrollPanel>().m_OptionsBar.Find<UIButton>("Upgrade");
-            }
-            catch
-            {
-#if DEBUG
-                Next.Debug.Log("Upgrade button template not found");
-#endif
-            }
-
-            CreateUI();
-            trackStyle = 0;
-            trackSize = 1;
+        protected override void SubStart()
+        {
+            trackStyle = TrackStyle.Modern;
             trackDirection = 1;
-            isStation = 1;
-            stationType = 0;
-            fence = false;
-            SetNetToolPrefab();
+            pillarType = PillarType.WideMedian;
+            ExecuteUiInstructions();
         }
 
-        private void CreateUI()
+        protected override void CreateUI()
         {
 #if DEBUG
             Next.Debug.Log("MOM TRACK GUI Created");
 #endif
-
-            backgroundSprite = "GenericPanel";
-            color = new Color32(73, 68, 84, 170);
-            width = 300;
-            height = 300;
-            opacity = 90;
-            position = Vector2.zero;
-            isVisible = false;
-            isInteractive = true;
-            padding = new RectOffset() { bottom = 8, left = 8, right = 8, top = 8 };
-
-            UIPanel dragHandlePanel = AddUIComponent<UIPanel>();
-            dragHandlePanel.atlas = atlas;
-            dragHandlePanel.backgroundSprite = "GenericPanel";
-            dragHandlePanel.width = width;
-            dragHandlePanel.height = 20;
-            dragHandlePanel.opacity = 100;
-            dragHandlePanel.color = new Color32(21, 140, 34, 255);
-            dragHandlePanel.relativePosition = Vector3.zero;
-
-            UIDragHandle dragHandle = dragHandlePanel.AddUIComponent<UIDragHandle>();
-            dragHandle.width = width;
-            dragHandle.height = dragHandle.parent.height;
-            dragHandle.relativePosition = Vector3.zero;
-            dragHandle.target = this;
-
-            UILabel titleLabel = dragHandlePanel.AddUIComponent<UILabel>();
-            titleLabel.relativePosition = new Vector3() { x = 5, y = 5, z = 0 };
-            titleLabel.textAlignment = UIHorizontalAlignment.Center;
-            titleLabel.text = "Track/Station Options";
-            titleLabel.isInteractive = false;
-
-
-            btnModernStyle = CreateButton("Modern", new Vector3(8, 50), (c, v) =>
+            base.CreateUI();
+            width = 250;
+            CreateDragHandle("Track Options");
+            var pnlStyles = CreatePanel(new UIPanelParamProps()
             {
-                trackStyle = 0;
-                SetNetToolPrefab();
+                Name = "pnlStyles",
+                ColShare = 6,
+                Margins = new Vector2(10, 0)
             });
-
-            btnClassicStyle = CreateButton("Classic", new Vector3(8 + (0.5f * width) - 16, 50), (c, v) =>
-              {
-                  trackStyle = 1;
-                  SetNetToolPrefab();
-              });
-            btnStation = CreateButton("Stn Trk", new Vector3(8, 100), (c, v) =>
+            var pnlDirections = CreatePanel(new UIPanelParamProps()
             {
-                isStation = 1;
-                SetNetToolPrefab();
+                Name = "pnlDirections",
+                ColShare = 5,
+                ColOffset = 1,
             });
-            btnTrack = CreateButton("Track", new Vector3(8 + (0.5f * width) - 16, 100), (c, v) =>
+            var lblStyles = CreateLabel(new UILabelParamProps()
             {
-                isStation = 0;
-                SetNetToolPrefab();
+                Name = "lblStyles",
+                Text = "Style Selector",
+                ParentComponent = pnlStyles,
+                ColumnCount = 1
             });
-            btnSidePlatform = CreateButton("Side", new Vector3(8, 150), (c, v) =>
-             {
-                 stationType = 0;
-                 SetNetToolPrefab();
-             });
-            btnIslandPlatform = CreateButton("Island", new Vector3(8 + (0.33333f * width) - 16, 150), (c, v) =>
+            var tsStyles = CreateTabStrip(new UITabstripParamProps()
             {
-                stationType = 1;
-                SetNetToolPrefab();
+                Name = "tsStyles",
+                ParentComponent = pnlStyles,
+                Margins = new Vector2(9, 0),
+                ColumnCount = 1
             });
-            btnSinglePlatform = CreateButton("Single", new Vector3(8 + (0.66666f * width) - 32, 150), (c, v) =>
+            btnModernStyle = CreateButton(new UIButtonParamProps()
             {
-                stationType = 2;
-                SetNetToolPrefab();
-            });
-            btnSingleTrack = CreateButton("Single", new Vector3(8, 150), (c, v) =>
-              {
-                  trackSize = 0;
-                  SetNetToolPrefab();
-              });
-
-            btnDoubleTrack = CreateButton("Double", new Vector3(8 + (0.5f * width) - 16, 150), (c, v) =>
-              {
-                  trackSize = 1;
-                  SetNetToolPrefab();
-              });
-
-            btnOneWay = CreateButton("OneWay", new Vector3(8, 200), (c, v) =>
-             {
-                 trackDirection = 0;
-                 SetNetToolPrefab();
-             });
-
-            btnTwoWay = CreateButton("TwoWay", new Vector3(8 + (0.5f * width) - 16, 200), (c, v) =>
-              {
-                  trackDirection = 1;
-                  SetNetToolPrefab();
-              });
-
-
-
-            m_useFenceCheckBox = AddUIComponent<UICheckBox>();
-            m_useFenceCheckBox.text = "Island Platform";
-            m_useFenceCheckBox.size = new Vector2(width - 16, 16);
-            m_useFenceCheckBox.relativePosition = new Vector2(8, 250);
-            m_useFenceCheckBox.isInteractive = true;
-            m_useFenceCheckBox.eventCheckChanged += (c, v) =>
-            {
-                fence = m_useFenceCheckBox.isChecked;
-                if (fence)
+                Name = "btnModernStyle",
+                ColumnCount = 2,
+                ParentComponent = tsStyles,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_ModernStyleAtlas", UIHelper.ModernStyle),
+                Width = 59,
+                Height = 52,
+                EventClick = (c, v) =>
                 {
-                    m_useFenceCheckBoxClicker.spriteName = "check-checked";
+                    trackStyle = TrackStyle.Modern;
+                    ExecuteUiInstructions();
                 }
-                else
-                {
-                    m_useFenceCheckBoxClicker.spriteName = "check-unchecked";
-                }
-                SetNetToolPrefab();
-            };
-
-            m_useFenceCheckBoxClicker = m_useFenceCheckBox.AddUIComponent<UISprite>();
-            m_useFenceCheckBoxClicker.atlas = atlas;
-            m_useFenceCheckBoxClicker.spriteName = "check-unchecked";
-            m_useFenceCheckBoxClicker.relativePosition = new Vector2(0, 0);
-            m_useFenceCheckBoxClicker.size = new Vector2(16, 16);
-            m_useFenceCheckBoxClicker.isInteractive = true;
-
-            UILabel useFenceLabel = m_useFenceCheckBox.AddUIComponent<UILabel>();
-            useFenceLabel.relativePosition = new Vector2(20, 0);
-            useFenceLabel.text = "Alt/Barrier";
-            useFenceLabel.height = 16;
-            useFenceLabel.isInteractive = true;
-
-            m_useExtraElevatedPillarsCheckBox = AddUIComponent<UICheckBox>();
-            m_useExtraElevatedPillarsCheckBox.text = "Island Platform";
-            m_useExtraElevatedPillarsCheckBox.size = new Vector2(width - 16, 16);
-            m_useExtraElevatedPillarsCheckBox.relativePosition = new Vector2(8, 280);
-            m_useExtraElevatedPillarsCheckBox.isInteractive = true;
-            m_useExtraElevatedPillarsCheckBox.eventCheckChanged += (c, v) =>
+            });
+            btnClassicStyle = CreateButton(new UIButtonParamProps()
             {
-                extraElevated = m_useExtraElevatedPillarsCheckBox.isChecked;
-                if (extraElevated)
+                Name = "btnClassicStyle",
+                ColumnCount = 2,
+                ParentComponent = tsStyles,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_ClassicStyleAtlas", UIHelper.ClassicStyle),
+                Width = 59,
+                Height = 52,
+                EventClick = (c, v) =>
                 {
-                    m_useExtraElevatedPillarClicker.spriteName = "check-checked";
+                    trackStyle = TrackStyle.Classic;
+                    ExecuteUiInstructions();
                 }
-                else
+            });
+
+            var lblDirections = CreateLabel(new UILabelParamProps()
+            {
+                Name = "lblDirections",
+                Text = "Direction",
+                ParentComponent = pnlDirections,
+                Margins = new Vector2(8, 16),
+                ColumnCount = 1
+            });
+            var tsDirections = CreateTabStrip(new UITabstripParamProps()
+            {
+                Name = "tsStyles",
+                ParentComponent = pnlDirections,
+                Margins = new Vector2(9, 0),
+                StartSelectedIndex = 1,
+                ColumnCount = 1
+            });
+            btnOneWay = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnOneWay",
+                ColumnCount = 2,
+                ParentComponent = tsDirections,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_OnewayDirectionAtlas", UIHelper.OnewayDirection),
+                Width = 36,
+                Height = 33,
+                Margins = new Vector2(8, 27),
+                EventClick = (c, v) =>
                 {
-                    m_useExtraElevatedPillarClicker.spriteName = "check-unchecked";
+                    trackDirection = 0;
+                    ExecuteUiInstructions();
                 }
-                SetNetToolPrefab();
-            };
+            });
+            btnTwoWay = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnTwoWay",
+                ColumnCount = 2,
+                ParentComponent = tsDirections,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_TwowayDirectionAtlas", UIHelper.TwowayDirection),
+                Width = 36,
+                Height = 33,
+                Margins = new Vector2(8, 27),
+                EventClick = (c, v) =>
+                {
+                    trackDirection = 1;
+                    ExecuteUiInstructions();
+                }
+            });
+            var pnlTrackVsStation = CreatePanel(new UIPanelParamProps()
+            {
+                Name = "pnlTrackVsStation",
+                ColShare = 10,
+                ColOffset = 2,
+                Margins = new Vector2(0, 20)
+            });
+            var lblTrackVsStation = CreateLabel(new UILabelParamProps()
+            {
+                Name = "lblTrackVsStation",
+                Text = "Track / Station Track",
+                ParentComponent = pnlTrackVsStation,
+                ColumnCount = 1
+            });
+            tsTrackVsStation = CreateTabStrip(new UITabstripParamProps()
+            {
+                Name = "tsTrackVsStation",
+                ColumnCount = 1,
+                ParentComponent = pnlTrackVsStation
+            });
+            btnTrack = CreateButton(new UIButtonParamProps()
+            {
+                Text = "Track",
+                ColumnCount = 2,
+                EventClick = (c, v) =>
+                {
+                    isStation = 0;
+                    ExecuteUiInstructions();
+                }
+            });
+            btnStation = CreateButton(new UIButtonParamProps()
+            {
+                Text = "Stn Trk",
+                ColumnCount = 2,
+                EventClick = (c, v) =>
+                {
+                    isStation = 1;
+                    ExecuteUiInstructions();
+                }
+            });
+            var pnlPillarChooser = CreatePanel(new UIPanelParamProps()
+            {
+                Name = "pnlPillarChooser",
+                ColShare = 11,
+                ColOffset = 1,
+                Margins = new Vector2(0, 20)
+            });
+            var lblPillarChooser = CreateLabel(new UILabelParamProps()
+            {
+                Name = "lblPillarChooser",
+                Text = "Pillar Selector",
+                ParentComponent = pnlPillarChooser,
+                ColumnCount = 1
+            });
+            tsPillarChooser = CreateTabStrip(new UITabstripParamProps()
+            {
+                Name = "tsPillarChooser",
+                ColumnCount = 1,
+                ParentComponent = pnlPillarChooser
+            });
+            btnWideMedianPillar = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnWideMedianPillar",
+                ParentComponent = tsPillarChooser,
+                ColumnCount = 4,
+                Width = 50,
+                Height = 50,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_WideMedianPillarAtlas", UIHelper.WideMedianPillar),
+                EventClick = (c, v) =>
+                {
+                    pillarType = PillarType.WideMedian;
+                    ExecuteUiInstructions();
+                }
+            });
+            btnWidePillar = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnWidePillar",
+                ParentComponent = tsPillarChooser,
+                ColumnCount = 4,
+                Width = 50,
+                Height = 50,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_WidePillarAtlas", UIHelper.WidePillar),
+                EventClick = (c, v) =>
+                {
+                    pillarType = PillarType.Wide;
+                    ExecuteUiInstructions();
+                }
+            });
+            btnNarrowPillar = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnNarrowPillar",
+                ParentComponent = tsPillarChooser,
+                ColumnCount = 4,
+                Width = 50,
+                Height = 50,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_NarrowPillarAtlas", UIHelper.NarrowPillar),
+                EventClick = (c, v) =>
+                {
+                    pillarType = PillarType.Narrow;
+                    ExecuteUiInstructions();
+                }
+            });
+            btnNarrowMedianPillar = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnNarrowMedianPillar",
+                ParentComponent = tsPillarChooser,
+                ColumnCount = 4,
+                Width = 50,
+                Height = 50,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_NarrowMedianPillarAtlas", UIHelper.NarrowMedianPillar),
+                EventClick = (c, v) =>
+                {
+                    pillarType = PillarType.NarrowMedian;
+                    ExecuteUiInstructions();
+                }
+            });
 
-            m_useExtraElevatedPillarClicker = m_useExtraElevatedPillarsCheckBox.AddUIComponent<UISprite>();
-            m_useExtraElevatedPillarClicker.atlas = atlas;
-            m_useExtraElevatedPillarClicker.spriteName = "check-unchecked";
-            m_useExtraElevatedPillarClicker.relativePosition = new Vector2(0, 0);
-            m_useExtraElevatedPillarClicker.size = new Vector2(16, 16);
-            m_useExtraElevatedPillarClicker.isInteractive = true;
+            var pnlCheckboxOptions = CreatePanel(new UIPanelParamProps()
+            {
+                Name = "pnlCheckboxOptions",
+                ColumnCount = 1,
+                Margins = new Vector2(0, 10)
+            });
+            CheckboxDict = new Dictionary<string, UICheckBox>();
 
-            UILabel useExtraElevatedPillarLabel = m_useExtraElevatedPillarsCheckBox.AddUIComponent<UILabel>();
-            useExtraElevatedPillarLabel.relativePosition = new Vector2(20, 0);
-            useExtraElevatedPillarLabel.text = "Extra Elevated Pillars";
-            useExtraElevatedPillarLabel.height = 16;
-            useExtraElevatedPillarLabel.isInteractive = true;
+            CheckboxDict[ALT_BARRIER] = CreateCheckbox(new UICheckboxParamProps()
+            {
+                Text = ALT_BARRIER,
+                ColumnCount = 1,
+                ParentComponent = pnlCheckboxOptions,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_CheckboxAtlas", UIHelper.Checkbox),
+            });
+            CheckboxDict[OVER_ROAD_FRIENDLY] = CreateCheckbox(new UICheckboxParamProps()
+            {
+                Text = OVER_ROAD_FRIENDLY,
+                ColumnCount = 1,
+                ParentComponent = pnlCheckboxOptions,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_CheckboxAtlas", UIHelper.Checkbox),
+            });
+            //CreateCheckbox(EXTRA_PILLARS);
         }
-        private UITextureAtlas m_InGameAtlas = null;
-        private UITextureAtlas InGameAtlas()
+        protected override void ExecuteUiInstructions()
         {
-            if (m_InGameAtlas == null)
-            {
-                var atlases = Resources.FindObjectsOfTypeAll<UITextureAtlas>();
-                foreach (UITextureAtlas atlas in atlases)
-                {
-                    if (atlas.name == "Ingame")
-                    {
-                        m_InGameAtlas = atlas;
-                    }
-                }
-            }
-            return m_InGameAtlas;
-        }
-        private UIButton CreateButton(string text, Vector3 pos, MouseEventHandler eventClick)
-        {
-            var button = this.AddUIComponent<UIButton>();
-            button.atlas = InGameAtlas();
-            button.width = 80;
-            button.height = 30;
-            button.normalBgSprite = "ButtonMenu";
-            button.color = new Color32(150, 150, 150, 255);
-            button.disabledBgSprite = "ButtonMenuDisabled";
-            button.hoveredBgSprite = "ButtonMenuHovered";
-            button.hoveredColor = new Color32(163, 255, 16, 255);
-            button.focusedBgSprite = "ButtonMenu";
-            button.focusedColor = new Color32(163, 255, 16, 255);
-            button.pressedBgSprite = "ButtonMenuPressed";
-            button.pressedColor = new Color32(163, 255, 16, 255);
-            button.textColor = new Color32(255, 255, 255, 255);
-            button.normalBgSprite = "ButtonMenu";
-            button.focusedBgSprite = "ButtonMenuFocused";
-            button.playAudioEvents = true;
-            button.opacity = 75;
-            button.dropShadowColor = new Color32(0, 0, 0, 255);
-            button.dropShadowOffset = new Vector2(-1, -1);
-            button.text = text;
-            button.relativePosition = pos;
-            button.eventClick += eventClick;
-
-            return button;
-        }
-        private void ToggleButtonPairs(UIButton active, params UIButton[] inactives)
-        {
-            active.color = new Color32(163, 255, 16, 255);
-            active.normalBgSprite = "ButtonMenuFocused";
-            active.useDropShadow = true;
-            active.opacity = 95;
-            foreach (UIButton inactive in inactives)
-            {
-                inactive.color = new Color32(150, 150, 150, 255);
-                inactive.normalBgSprite = "ButtonMenu";
-                inactive.useDropShadow = false;
-                inactive.opacity = 75;
-            }
-        }
-        private void SetNetToolPrefab()
-        {
-            if (trackStyle == 0)
-                ToggleButtonPairs(btnModernStyle, btnClassicStyle);
-            else if (trackStyle == 1)
-                ToggleButtonPairs(btnClassicStyle, btnModernStyle);
-
             btnSingleTrack.isVisible = isStation == 0;
             btnDoubleTrack.isVisible = isStation == 0;
+            btnQuadTrack.isVisible = isStation == 0;
             btnOneWay.isVisible = isStation == 0;
             btnTwoWay.isVisible = isStation == 0;
-            m_useFenceCheckBox.isVisible = isStation == 0;
-            m_useExtraElevatedPillarsCheckBox.isVisible = isStation == 0;
 
-            btnSidePlatform.isVisible = isStation == 1;
-            btnIslandPlatform.isVisible = isStation == 1;
-            btnSinglePlatform.isVisible = isStation == 1;
+            foreach (var kvp in CheckboxDict)
+            {
+                kvp.Value.isVisible = isStation == 0;
+            }
+            foreach (var kvp in buttonStationDict)
+            {
+                kvp.Value.isVisible = isStation == 1;
+            }
+
+            ToggleButtonPairs((int)trackStyle, btnModernStyle, btnClassicStyle);
+            ToggleButtonPairs(isStation, btnTrack, btnStation);
 
             if (isStation == 0)
             {
-                ToggleButtonPairs(btnTrack, btnStation);
-                if (trackSize == 0)
-                    ToggleButtonPairs(btnSingleTrack, btnDoubleTrack);
-                else if (trackSize == 1)
-                    ToggleButtonPairs(btnDoubleTrack, btnSingleTrack);
-                if (trackDirection == 0)
-                    ToggleButtonPairs(btnOneWay, btnTwoWay);
-                else if (trackDirection == 1)
-                    ToggleButtonPairs(btnTwoWay, btnOneWay);
+                ToggleButtonPairs(trackDirection, btnOneWay, btnTwoWay);
             }
             else if (isStation == 1)
             {
-                ToggleButtonPairs(btnStation, btnTrack);
-                if (stationType == 0)
-                    ToggleButtonPairs(btnSidePlatform, btnIslandPlatform, btnSinglePlatform);
-                else if (stationType == 1)
-                    ToggleButtonPairs(btnIslandPlatform, btnSidePlatform, btnSinglePlatform);
-                else if (stationType == 2)
-                    ToggleButtonPairs(btnSinglePlatform, btnIslandPlatform, btnSidePlatform);
+                ToggleButtonPairs(stationType);
             }
             NetInfo prefab = null;
+            var fence = CheckboxDict[ALT_BARRIER].isChecked;
+            if (!btnOneWay.isInteractive)
+            {
+                btnOneWay.isInteractive = true;
+                if (trackDirection == 0)
+                {
+                    btnOneWay.state = UIButton.ButtonState.Focused;
+                }
+                else
+                {
+                    btnOneWay.state = UIButton.ButtonState.Normal;
+                }
+            }
+            if (!btnNarrowMedianPillar.isInteractive)
+            {
+                btnNarrowMedianPillar.isInteractive = true;
+                if (pillarType == PillarType.NarrowMedian)
+                {
+                    btnNarrowMedianPillar.state = UIButton.ButtonState.Focused;
+                }
+                else
+                {
+                    btnNarrowMedianPillar.state = UIButton.ButtonState.Normal;
+                }
+            }
             switch (trackStyle)
             {
-                case 0:
+                case TrackStyle.Modern:
                     {
                         switch (isStation)
                         {
                             case 0:
+                                switch (trackSize)
                                 {
-                                    switch (trackSize)
-                                    {
-                                        case 0:
+                                    case 0:
+                                        if (trackDirection == 0)
+                                            prefab = fence ? concreteSmallPrefab : concreteSmallPrefabNoBar;
+                                        else
+                                            prefab = fence ? concreteSmallTwoWayPrefab : concreteSmallTwoWayPrefabNoBar;
+                                        break;
+                                    case 1:
+                                        if (trackDirection == 0)
+                                            prefab = fence ? concreteTwoLaneOneWayPrefab : concreteTwoLaneOneWayPrefabNoBar;
+                                        else
+                                            prefab = fence ? concretePrefab : concretePrefabNoBar;
+                                        break;
+                                    case 2:
+                                        {
+                                            if (trackDirection == 0)
                                             {
-                                                if (trackDirection == 0)
-                                                    prefab = fence ? concreteSmallPrefab : concreteSmallPrefabNoBar;
-                                                else
-                                                    prefab = fence ? concreteSmallTwoWayPrefab : concreteSmallTwoWayPrefabNoBar;
+                                                btnOneWay.enabled = false;
+                                                btnTwoWay.SimulateClick();
                                             }
-                                            break;
-                                        case 1:
+                                            else
                                             {
-                                                if (trackDirection == 0)
-                                                    prefab = fence ? concreteTwoLaneOneWayPrefab : concreteTwoLaneOneWayPrefabNoBar;
-                                                else
-                                                    prefab = fence ? concretePrefab : concretePrefabNoBar;
+                                                prefab = fence ? concreteLargePrefab : concreteLargePrefabNoBar;
+                                                btnOneWay.state = UIButton.ButtonState.Disabled;
+                                                btnOneWay.isInteractive = false;
+                                                btnNarrowMedianPillar.state = UIButton.ButtonState.Disabled;
+                                                btnNarrowMedianPillar.isInteractive = false;
                                             }
-                                            break;
-                                        case 2:
-                                            {
-                                                if (trackDirection == 0) { }
-                                                else
-                                                    prefab = fence ? concreteLargePrefab : concreteLargePrefabNoBar;
-                                            }
-                                            break;
-                                    }
-                                    break;
+                                        }
+                                        break;
                                 }
+                                break;
                             case 1:
+                                switch (stationType)
                                 {
-                                    switch (stationType)
-                                    {
-                                        case 0:
-                                            prefab = concreteSidePlatformStationPrefab;
-                                            break;
-                                        case 1:
-                                            prefab = concreteIslandPlatformStationPrefab;
-                                            break;
-                                        case 2:
-                                            prefab = concreteSinglePlatformStationPrefab;
-                                            break;
-                                    }
+                                    case StationTrackType.SidePlatform:
+                                        prefab = concreteSideStationPrefab;
+                                        break;
+                                    case StationTrackType.IslandPlatform:
+                                        prefab = concreteIslandStationPrefab;
+                                        break;
+                                    case StationTrackType.SinglePlatform:
+                                        prefab = concreteSingleStationPrefab;
+                                        break;
+                                    case StationTrackType.ExpressSidePlatform:
+                                        prefab = concreteQuadSideStationPrefab;
+                                        break;
+                                    case StationTrackType.DualIslandPlatform:
+                                        prefab = concreteQuadDualIslandStationPrefab;
+                                        break;
                                 }
                                 break;
                         }
                     }
                     break;
-                case 1:
+                case TrackStyle.Classic:
                     {
                         switch (isStation)
                         {
@@ -571,11 +436,16 @@ namespace MetroOverhaul.UI
                                             {
                                                 if (trackDirection == 0)
                                                 {
-                                                    //prefab = fence ? steelTwoLaneOneWayPrefab : steelTwoLaneOneWayPrefabNoBar;
+                                                    btnOneWay.enabled = false;
+                                                    btnTwoWay.SimulateClick();
                                                 }
                                                 else
                                                 {
                                                     prefab = fence ? steelLargePrefab : steelLargePrefabNoBar;
+                                                    btnOneWay.state = UIButton.ButtonState.Disabled;
+                                                    btnOneWay.isInteractive = false;
+                                                    btnNarrowMedianPillar.state = UIButton.ButtonState.Disabled;
+                                                    btnNarrowMedianPillar.isInteractive = false;
                                                 }
                                             }
                                             break;
@@ -586,14 +456,20 @@ namespace MetroOverhaul.UI
                                 {
                                     switch (stationType)
                                     {
-                                        case 0:
-                                            prefab = steelSidePlatformStationPrefab;
+                                        case StationTrackType.SidePlatform:
+                                            prefab = steelSideStationPrefab;
                                             break;
-                                        case 1:
-                                            prefab = steelIslandPlatformStationPrefab;
+                                        case StationTrackType.IslandPlatform:
+                                            prefab = steelIslandStationPrefab;
                                             break;
-                                        case 2:
-                                            prefab = steelSinglePlatformStationPrefab;
+                                        case StationTrackType.SinglePlatform:
+                                            prefab = steelSingleStationPrefab;
+                                            break;
+                                        case StationTrackType.ExpressSidePlatform:
+                                            prefab = steelQuadSideStationPrefab;
+                                            break;
+                                        case StationTrackType.DualIslandPlatform:
+                                            prefab = steelQuadDualIslandStationPrefab;
                                             break;
                                     }
                                 }
@@ -604,75 +480,52 @@ namespace MetroOverhaul.UI
             }
             if (prefab != null)
             {
-                m_netTool.m_prefab = prefab;
-                var elevation = m_netTool.GetElevation();
-                var lanes = m_netTool.m_prefab.m_lanes.ToList();
-                Next.Debug.Log($"MOM EE lane count: {lanes.Count()}");
-                var lane = lanes.FirstOrDefault(l => l.m_laneType == NetInfo.LaneType.None);
-                NetLaneProps.Prop prop = null;
-                if (lane != null)
+                if (CheckboxDict.ContainsKey(OVER_ROAD_FRIENDLY))
                 {
-                    var propList = lane.m_laneProps.m_props?.ToList();
-                    if (propList != null)
+                    var noCollisionPillars = CheckboxDict[OVER_ROAD_FRIENDLY].isChecked;
+                    var elevatedPrefab = PrefabCollection<NetInfo>.FindLoaded(prefab.name.Replace("Ground", "Elevated"));
+                    var ttbai = elevatedPrefab?.GetComponent<TrainTrackBridgeAIMetro>();
+                    if (ttbai != null)
                     {
-                        Next.Debug.Log($"MOM EE lane found with {propList.Count()} props");
-                        prop = propList.FirstOrDefault(p => p.m_prop.name.ToLower().Contains("l pillar ("));
-                        if (prop != null)
-                        {
-                            Next.Debug.Log($"MOM EE Examining aLane");
-                            var name = prop.m_prop.name;
-                            if (extraElevated)
-                            {
-                                prop.m_probability = 100;
-                                Next.Debug.Log("MOM EE Enabled");
-                            }
-                            else
-                            {
-                                prop.m_probability = 0;
-                                Next.Debug.Log("MOM EE Disabled");
-                            }
-                            var props = lane.m_laneProps.m_props?.ToList();
-                            if (props != null)
-                            {
-                                var replacementPair = new KeyValuePair<string, PropInfo>(name, prop.m_prop);
+                        ttbai.NoPillarCollision = noCollisionPillars;
+                    }
 
-                                if (props.Any(p => p.m_prop.name.ToLower().Contains(replacementPair.Key.ToLower())))
-                                {
-                                    var tempProp = new NetLaneProps.Prop();
-                                    var propsToReplace = props.Where(p => p.m_prop.name.ToLower().Contains(replacementPair.Key.ToLower())).ToList();
-                                    for (var i = 0; i < propsToReplace.Count; i++)
-                                    {
-                                        tempProp = propsToReplace[i].ShallowClone();
-                                        props.Remove(propsToReplace[i]);
-                                        tempProp.m_prop = replacementPair.Value;
-                                        props.Add(tempProp);
-                                    }
-                                }
-                                lane.m_laneProps.m_props = props.ToArray();
-                            }
-                        }
+                    var bridgePrefab = PrefabCollection<NetInfo>.FindLoaded(prefab.name.Replace("Ground", "Bridge"));
+                    var ttbai2 = bridgePrefab?.GetComponent<TrainTrackBridgeAIMetro>();
+                    if (ttbai2 != null)
+                    {
+                        ttbai2.NoPillarCollision = noCollisionPillars;
                     }
                 }
-                m_netTool.m_prefab.m_lanes = lanes.ToArray();
+
+                m_netTool.m_prefab = prefab;
+                m_currentNetInfo = prefab;
             }
         }
 
-        private void Activate(NetInfo nInfo)
+        protected override void Activate(PrefabInfo info)
         {
-            m_activated = true;
-            m_currentNetInfo = nInfo;
-            isVisible = true;
-            SetNetToolPrefab();
-        }
-        private void Deactivate()
-        {
-            if (!m_activated)
+            base.Activate(info);
+            if (info.name.Contains("Large"))
             {
-                return;
+                trackSize = 2;
             }
-            m_currentNetInfo = null;
-            isVisible = false;
-            m_activated = false;
+            else if (info.name.Contains("Small"))
+            {
+                trackSize = 0;
+            }
+            else
+            {
+                trackSize = 1;
+            }
+            ExecuteUiInstructions();
+        }
+        protected override void SubDeactivate()
+        {
+            if (m_TheIntersectClass != null)
+            {
+                m_currentNetInfo.m_intersectClass = m_TheIntersectClass;
+            }
         }
     }
 }

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace MetroOverhaul.NEXT.Extensions
-{
+namespace MetroOverhaul.NEXT.Extensions {
     public static class NetToolExtensions
     {
         public static float GetElevation(this NetTool tool)

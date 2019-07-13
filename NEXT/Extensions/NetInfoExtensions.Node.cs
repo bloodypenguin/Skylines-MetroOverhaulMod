@@ -65,7 +65,13 @@ namespace MetroOverhaul.NEXT.Extensions
 
             return node;
         }
+        public static NetInfo.Node SetFlagsDefault(this NetInfo.Node node)
+        {
+            node.m_flagsRequired = NetNode.Flags.None;
+            node.m_flagsForbidden = NetNode.Flags.None;
 
+            return node;
+        }
         public static NetInfo.Node SetConsistentUVs(this NetInfo.Node node, bool lodOnly = false)
         {
             var colors = new List<Color>();

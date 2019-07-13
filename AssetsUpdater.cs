@@ -10,13 +10,15 @@ using MetroOverhaul.OptionsFramework;
 using UnityEngine;
 
 namespace MetroOverhaul {
-    public class AssetsUpdater {
+    public class AssetsUpdater
+    {
         private static NetManager ninstance = Singleton<NetManager>.instance;
         private static BuildingManager binstance = Singleton<BuildingManager>.instance;
         private static TerrainManager tinstance = Singleton<TerrainManager>.instance;
         public void UpdateExistingAssets(LoadMode mode)
         {
             UpdateMetroTrainEffects();
+            UpdateNoColPillars();
             if (mode == LoadMode.LoadAsset || mode == LoadMode.NewAsset)
             {
                 return;
@@ -125,7 +127,7 @@ namespace MetroOverhaul {
                                         subBuildingID = BuildingFrom(subBuildingID).m_subBuilding;
                                     }
                                 }
-                                if (HasUndergroundMOMorVanilla(i, false))
+                                if (HasUndergroundMOMorVanilla(i, true))
                                 {
                                     UpdateBuilding(i);
                                 }
@@ -415,7 +417,8 @@ namespace MetroOverhaul {
         {
             return Singleton<NetManager>.instance.m_segments.m_buffer[segmentID];
         }
-        private struct ConnectData {
+        private struct ConnectData
+        {
             public ushort connectingSegment { get; set; }
             public ushort nonStationNodeID { get; set; }
             public Vector3 oldPosition { get; set; }
@@ -679,7 +682,14 @@ namespace MetroOverhaul {
                 metroStationTrack.m_availableIn = ItemClass.Availability.Editors;
             }
         }
-
+        private static void UpdateNoColPillars()
+        {
+            var noColBuildingInfos = Resources.FindObjectsOfTypeAll<BuildingInfo>().Where(b=>b.name.IndexOf("NoCol") > -1);
+            foreach(var info in noColBuildingInfos)
+            {
+                info.m_generatedInfo.m_min.y = 32;
+            }
+        }
         private static void UpdateMetroTrainEffects()
         {
             var vanillaMetro = PrefabCollection<VehicleInfo>.FindLoaded("Metro");

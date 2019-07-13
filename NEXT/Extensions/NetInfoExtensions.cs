@@ -1,12 +1,10 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Globalization;
-using MetroOverhaul;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace MetroOverhaul.NEXT.Extensions
-{
+namespace MetroOverhaul.NEXT.Extensions {
     public static partial class NetInfoExtensions
     {
         public static void ReplaceProps(NetInfo info, PropInfo newPropInfo, PropInfo oldPropInfo)

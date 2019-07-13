@@ -3,11 +3,13 @@ namespace MetroOverhaul.NEXT
 {
     public class LanesConfiguration
     {
-        public int LanesToAdd { get; set; }
+        public int VehicleLanesToAdd { get; set; }
+        public int PedestrianLanesToAdd { get; set; }
         public float PedLaneOffset { get; set; }
         public float? PedPropOffsetX { get; set; }
         public float? SpeedLimit { get; set; }
-        public float LaneWidth { get; set; }
+        public float VehicleLaneWidth { get; set; }
+        public float PedestrianLaneWidth { get; set; }
         public float LanePositionOffst { get; set; }
         public bool IsTwoWay { get; set; }
         public bool HasBusStop { get; set; }
@@ -19,11 +21,13 @@ namespace MetroOverhaul.NEXT
 
         public LanesConfiguration()
         {
-            LanesToAdd = 0;
+            VehicleLanesToAdd = 0;
+            PedestrianLanesToAdd = 0;
             PedLaneOffset = 0.0f;
             PedPropOffsetX = null;
             SpeedLimit = null;
-            LaneWidth = 3.0f;
+            VehicleLaneWidth = 3.0f;
+            PedestrianLaneWidth = -1;
             LanePositionOffst = 0;
             IsTwoWay = true;
             HasBusStop = true;

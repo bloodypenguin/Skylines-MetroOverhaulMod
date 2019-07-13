@@ -1,13 +1,8 @@
 ﻿using MetroOverhaul.NEXT;
 using MetroOverhaul.NEXT.Extensions;
 using MetroOverhaul.NEXT.Texturing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace MetroOverhaul.InitializationSteps
-{
+namespace MetroOverhaul.InitializationSteps {
     partial class SetupTexture
     {
         public static void Setup19mTexture(NetInfo info, NetInfoVersion version)
@@ -38,9 +33,9 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\Ground_Segment_Pavement_Island__AlphaMap.png",
                                             @"Textures\Ground_Segment_Pavement_Small__XYSMap.png"),
                                     new LODTextureSet 
-                                        (@"Textures\Ground_Segment_Pavement__MainTex_LOD.png",
-                                            @"Textures\Ground_Segment_Pavement__AlphaMap_LOD.png",
-                                            @"Textures\Ground_Segment_Pavement__XYSMap_LOD.png"));
+                                        (@"Textures\Ground_Segment_Pavement_Small__MainTex_LOD.png",
+                                            @"Textures\Ground_Segment_Pavement_Small__AlphaMap_LOD.png",
+                                            @"Textures\Ground_Segment_Pavement_Small__XYSMap_LOD.png"));
 
                             }
                             else if (segment.m_mesh.name.Contains("ThirdRail"))
@@ -120,7 +115,7 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\ThirdRail__XYSMap.png"),
                                     new LODTextureSet
                                         (@"Textures\ThirdRail__MainTex_LOD.png",
-                                            @"Textures\ThirdRail__AlphaMap_LOD.png",
+                                            @"Textures\ThirdRail_Node__AlphaMap_LOD.png",
                                             @"Textures\ThirdRail__XYSMap_LOD.png"));
                             }
                             else
@@ -213,7 +208,7 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\ThirdRail__XYSMap.png"),
                                     new LODTextureSet
                                         (@"Textures\ThirdRail__MainTex_LOD.png",
-                                            @"Textures\ThirdRail__AlphaMap_LOD.png",
+                                            @"Textures\ThirdRail_Node__AlphaMap_LOD.png",
                                             @"Textures\ThirdRail__XYSMap_LOD.png"));
                             }
                             else
@@ -288,7 +283,7 @@ namespace MetroOverhaul.InitializationSteps
                                             @"Textures\ThirdRail__XYSMap.png"),
                                     new LODTextureSet
                                         (@"Textures\ThirdRail__MainTex_LOD.png",
-                                            @"Textures\ThirdRail__AlphaMap_LOD.png",
+                                            @"Textures\ThirdRail_Node__AlphaMap_LOD.png",
                                             @"Textures\ThirdRail__XYSMap_LOD.png"));
                             }
                             else

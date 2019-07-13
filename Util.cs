@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Diagnostics.PerformanceData;
 using System.Linq;
 using System.Reflection;
 using ColossalFramework.Plugins;
@@ -9,11 +9,10 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using static ColossalFramework.Plugins.PluginManager;
 using ColossalFramework.PlatformServices;
+using System.IO;
 
-namespace MetroOverhaul
-{
-    public static class Util
-    {
+namespace MetroOverhaul {
+    public static class Util {
         public static IEnumerable<FieldInfo> GetAllFieldsFromType(this Type type)
         {
             if (type == null)
@@ -55,8 +54,7 @@ namespace MetroOverhaul
         public static string AssemblyPath => PluginInfo.modPath;
 
 
-        private static PluginInfo PluginInfo
-        {
+        private static PluginInfo PluginInfo {
             get
             {
                 var pluginManager = PluginManager.instance;
@@ -83,8 +81,7 @@ namespace MetroOverhaul
             }
         }
 
-        public static string AssemblyDirectory
-        {
+        public static string AssemblyDirectory {
             get
             {
                 var pluginManager = PluginManager.instance;
@@ -111,6 +108,31 @@ namespace MetroOverhaul
             }
         }
 
+        public static bool IsModActive(string modName)
+        {
+            var plugins = PluginManager.instance.GetPluginsInfo();
+            return (from plugin in plugins.Where(p => p.isEnabled)
+                    select plugin.GetInstances<IUserMod>() into instances
+                    where instances.Any()
+                    select instances[0].Name into name
+                    where name == modName
+                    select name).Any();
+        }
+
+        public static bool TryGetWorkshopId(PrefabInfo info, out long workshopId)
+        {
+            workshopId = -1;
+            if (info?.name == null)
+            {
+                return false;
+            }
+            if (!info.name.Contains(".")) //only for custom prefabs
+            {
+                return false;
+            }
+            var idStr = info.name.Split('.')[0];
+            return long.TryParse(idStr, out workshopId);
+        }
         public static bool IsGameMode()
         {
             return ToolManager.instance.m_properties.m_mode == ItemClass.Availability.Game;

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MetroOverhaul.NEXT;
-using UnityEngine;
+﻿using MetroOverhaul.NEXT;
 
-namespace MetroOverhaul.InitializationSteps
-{
+namespace MetroOverhaul.InitializationSteps {
     public static class CommonSteps
     {
 

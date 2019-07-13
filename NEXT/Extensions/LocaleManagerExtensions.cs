@@ -1,9 +1,7 @@
 ﻿using System.Reflection;
 using ColossalFramework.Globalization;
-using MetroOverhaul;
 
-namespace MetroOverhaul.NEXT.Extensions
-{
+namespace MetroOverhaul.NEXT.Extensions {
     public static class LocaleManagerExtensions
     {
         private static readonly FieldInfo s_localeField = typeof(LocaleManager).GetFieldByName("m_Locale");

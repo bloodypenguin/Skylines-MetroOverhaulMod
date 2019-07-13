@@ -1,8 +1,6 @@
-﻿using System.Reflection;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace MetroOverhaul.NEXT.Extensions
-{
+namespace MetroOverhaul.NEXT.Extensions {
     public static class BuildingAIExtensions
     {
         public static T CloneBuildingAI<T>(this T originalBuildingAI, string newName)
