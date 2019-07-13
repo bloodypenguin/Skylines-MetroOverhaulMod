@@ -45,14 +45,13 @@ namespace MetroOverhaul {
             if (m_TargetDepth <= 0 || targetStationTrackLength <= 0 || (!info.HasUndergroundMetroStationTracks() && (info?.m_subBuildings == null || info?.m_subBuildings.Count() == 0))) {
                 return;
             }
-
+            HandleSubBuildings();
             CleanUpPaths();
             ResizeUndergroundStationTracks();
             ChangeStationDepthAndRotation();
             ReconfigureStationAccess();
             BendStationTrack();
             RecalculateSpawnPoints();
-            HandleSubBuildings();
         }
         private static NetInfo m_SpecialNetInfo = null;
         private static NetInfo SpecialNetInfo {
