@@ -1,6 +1,7 @@
 ﻿using ColossalFramework;
 using MetroOverhaul;
 using MetroOverhaul.NEXT.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -40,7 +41,7 @@ namespace MetroOverhaul
                     {
                         if (m_NetTool == null)
                         {
-                            m_NetTool = FindObjectOfType<NetTool>();
+                            m_NetTool = GetExactTool<NetTool>();
                         }
                         if (m_NetTool?.Prefab != null)
                         {
@@ -109,6 +110,8 @@ namespace MetroOverhaul
             }
             base.GetNodeBuilding(nodeID, ref data, out building, out heightOffset);
         }
+
+        private T GetExactTool<T>() where T : UnityEngine.Object => FindObjectsOfType<T>().Where(x => x.GetType() == typeof(T)).FirstOrDefault();
 
         public override void UpdateNodeFlags(ushort nodeID, ref NetNode data)
         {
@@ -184,7 +187,7 @@ namespace MetroOverhaul
             //        prop.m_probability = 100;
             //        prop.m_repeatDistance = thePillarPropInfo.RepeatDistance;
             //        prop.m_segmentOffset = thePillarPropInfo.SegmentOffset;
-            //        var prefab = FindObjectOfType<NetTool>().Prefab;
+            //        var prefab = GetExactTool<NetTool>().Prefab;
             //        var centerLane = prefab.m_lanes.FirstOrDefault(l => l != null && l.m_laneType == NetInfo.LaneType.None);
             //        if (centerLane == null)
             //        {
