@@ -24,6 +24,7 @@ namespace MetroOverhaul.NEXT.Extensions
                 if (segment.m_material != null)
                 {
                     segment.m_material = newTextures.CreateRoadMaterial(segment.m_material);
+                    segment.m_segmentMaterial = newTextures.CreateRoadMaterial(segment.m_material);
                 }
             }
 
@@ -48,7 +49,7 @@ namespace MetroOverhaul.NEXT.Extensions
         public static NetInfo.Segment SetMeshes(this NetInfo.Segment segment, string newMeshPath, string newLODMeshPath = null)
         {
             segment.m_mesh = AssetManager.instance.GetMesh(newMeshPath);
-
+            segment.m_segmentMesh = AssetManager.instance.GetMesh(newMeshPath);
             if (newLODMeshPath != null)
             {
                 segment.m_lodMesh = AssetManager.instance.GetMesh(newLODMeshPath);

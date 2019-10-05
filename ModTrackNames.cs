@@ -1,5 +1,7 @@
-﻿namespace MetroOverhaul {
-    public static class ModTrackNames {
+﻿namespace MetroOverhaul
+{
+    public static class ModTrackNames
+    {
         public const string TRAIN_TRACK = "Train Track";
         public const string TRAIN_SINGLE_TRACK = "Train Single Track";
         public const string TRAIN_SINGLE_TRACK_RAIL1L1W = "Rail1L1W";
@@ -29,34 +31,34 @@
         public const string TRAIN_STATION_TRACK_SUNKEN = "Station Track Sunken";
 
         public const string MOM_TRACK = "Metro Track";
-        public const string MOM_TRACK_GROUND = "Metro Track Ground";
-        public const string MOM_TRACK_NOBAR = "Metro Track Ground NoBar";
+        public const string MOM_TRACK_GROUND = "Concrete Metro Track Ground";
+        public const string MOM_TRACK_NOBAR = "Concrete Metro Track Ground NoBar";
 
-        public const string MOM_TRACK_TWOLANE_ONEWAY = "Metro Track Ground Two-Lane One-Way";
-        public const string MOM_TRACK_TWOLANE_ONEWAY_NOBAR = "Metro Track Ground Two-Lane One-Way NoBar";
+        public const string MOM_TRACK_TWOLANE_ONEWAY = "Concrete Metro Track Ground Two-Lane One-Way";
+        public const string MOM_TRACK_TWOLANE_ONEWAY_NOBAR = "Concrete Metro Track Ground Two-Lane One-Way NoBar";
 
-        public const string MOM_TRACK_LARGE = "Metro Track Ground Large";
-        public const string MOM_TRACK_LARGE_NOBAR = "Metro Track Ground Large NoBar";
+        public const string MOM_TRACK_LARGE = "Concrete Metro Track Ground Large";
+        public const string MOM_TRACK_LARGE_NOBAR = "Concrete Metro Track Ground Large NoBar";
 
-        public const string MOM_TRACK_SMALL = "Metro Track Ground Small";
-        public const string MOM_TRACK_SMALL_NOBAR = "Metro Track Ground Small NoBar";
+        public const string MOM_TRACK_SMALL = "Concrete Metro Track Ground Small";
+        public const string MOM_TRACK_SMALL_NOBAR = "Concrete Metro Track Ground Small NoBar";
 
-        public const string MOM_TRACK_SMALL_TWOWAY = "Metro Track Ground Small Two-Way";
-        public const string MOM_TRACK_SMALL_TWOWAY_NOBAR = "Metro Track Ground Small Two-Way NoBar";
+        public const string MOM_TRACK_SMALL_TWOWAY = "Concrete Metro Track Ground Small Two-Way";
+        public const string MOM_TRACK_SMALL_TWOWAY_NOBAR = "Concrete Metro Track Ground Small Two-Way NoBar";
 
-        public const string MOM_STATION_TRACK_GROUND = "Metro Station Track Ground";
-        public const string MOM_STATION_TRACK_GROUND_ISLAND = "Metro Station Track Ground Island";
-        public const string MOM_STATION_TRACK_GROUND_SMALL = "Metro Station Track Ground Small";
-        public const string MOM_STATION_TRACK_GROUND_LARGE = "Metro Station Track Ground Large";
+        public const string MOM_STATION_TRACK_GROUND = "Concrete Metro Station Track Ground";
+        public const string MOM_STATION_TRACK_GROUND_ISLAND = "Concrete Metro Station Track Ground Island";
+        public const string MOM_STATION_TRACK_GROUND_SMALL = "Concrete Metro Station Track Ground Small";
+        public const string MOM_STATION_TRACK_GROUND_LARGE = "Concrete Metro Station Track Ground Large";
         public const string MOM_STATION_TRACK_GROUND_LARGE_DUALISLAND = "Metro Station Track Ground Large Dual Island";
 
-        public const string MOM_STATION_TRACK_ELEVATED = "Metro Station Track Elevated";
-        public const string MOM_STATION_TRACK_ELEVATED_ISLAND = "Metro Station Track Elevated Island";
-        public const string MOM_STATION_TRACK_ELEVATED_SMALL = "Metro Station Track Elevated Small";
-        public const string MOM_STATION_TRACK_ELEVATED_LARGE = "Metro Station Track Elevated Large";
-        public const string MOM_STATION_TRACK_ELEVATED_LARGE_DUALISLAND = "Metro Station Track Elevated Large Dual Island";
+        public const string MOM_STATION_TRACK_ELEVATED = "Concrete Metro Station Track Elevated";
+        public const string MOM_STATION_TRACK_ELEVATED_ISLAND = "Concrete Metro Station Track Elevated Island";
+        public const string MOM_STATION_TRACK_ELEVATED_SMALL = "Concrete Metro Station Track Elevated Small";
+        public const string MOM_STATION_TRACK_ELEVATED_LARGE = "Concrete Metro Station Track Elevated Large";
+        public const string MOM_STATION_TRACK_ELEVATED_LARGE_DUALISLAND = "Concrete Metro Station Track Elevated Large Dual Island";
 
-        public const string MOM_STATION_TRACK_SUNKEN = "Metro Station Track Sunken";
+        public const string MOM_STATION_TRACK_SUNKEN = "Concrete Metro Station Track Sunken";
 
         public const string MOM_TRACK_STEEL = "Steel Metro Track Ground";
         public const string MOM_TRACK_NOBAR_STEEL = "Steel Metro Track Ground NoBar";
@@ -98,11 +100,11 @@
                 {
                     retval = MOM_TRACK_GROUND;
                 }
-                else if(trackName == TRAIN_SINGLE_TRACK || trackName == TRAIN_SINGLE_TRACK_RAIL1L1W || trackName == TRAIN_SINGLE_TRACK_RAIL1L2W)
+                else if (trackName == TRAIN_SINGLE_TRACK || trackName == TRAIN_SINGLE_TRACK_RAIL1L1W || trackName == TRAIN_SINGLE_TRACK_RAIL1L2W)
                 {
                     retval = MOM_TRACK_SMALL;
                 }
-                else if(trackName.Contains(TRAIN_SINGLE_TRACK))
+                else if (trackName.Contains(TRAIN_SINGLE_TRACK))
                 {
                     retval = trackName.Replace(TRAIN_SINGLE_TRACK, MOM_TRACK_SMALL);
                 }
@@ -128,7 +130,7 @@
                 {
                     return TRAIN_TRACK;
                 }
-                else if(trackName == MOM_TRACK_SMALL)
+                else if (trackName == MOM_TRACK_SMALL)
                 {
                     return TRAIN_SINGLE_TRACK;
                 }
@@ -145,26 +147,39 @@
             return "";
         }
     }
-        public enum StationTrackType {
-            None,
-            SidePlatform,
-            IslandPlatform,
-            SinglePlatform,
-            ExpressSidePlatform,
-            //QuadSideIslandPlatform,
-            DualIslandPlatform
-        }
-        public enum TrackVehicleType {
-            Default,
-            Train,
-            Metro,
-        }
-        public enum TrackStyle {
-            None,
-            Modern,
-            Classic
-        }
-public enum PillarType
+    public enum StationTrackType : byte
+    {
+        None = 0,
+        SidePlatform = 1,
+        IslandPlatform = 2,
+        SinglePlatform = 3,
+        ExpressSidePlatform = 4,
+        DualIslandPlatform = 5
+        //QuadSideIslandPlatform = 6
+    }
+    public enum TrackType
+    {
+        None,
+        TwowayTwoLane,
+        OnewayTwoLane,
+        TwowayOneLane,
+        OnewayOneLane,
+        Quad
+    }
+    public enum TrackVehicleType
+    {
+        Default,
+        Train,
+        Metro,
+    }
+    public enum TrackStyle
+    {
+        None,
+        Vanilla,
+        Modern,
+        Classic
+    }
+    public enum PillarType
     {
         None,
         WideMedian,
@@ -177,7 +192,7 @@ public enum PillarType
         None,
         Length,
         Depth,
-        Angle,
+        Rotation,
         Bend
     }
 }

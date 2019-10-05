@@ -7,6 +7,7 @@ using UnityEngine;
 using System;
 using MetroOverhaul.Extensions;
 using ColossalFramework;
+using MetroOverhaul.NEXT.Texturing;
 
 namespace MetroOverhaul.InitializationSteps
 {
@@ -23,7 +24,6 @@ namespace MetroOverhaul.InitializationSteps
                 var propsList = new List<NetLaneProps.Prop>();
                 var thePropInfo = PrefabCollection<PropInfo>.FindLoaded("Tunnel Light Small Road").ShallowClone();
                 thePropInfo.SetAsTunnelLightProp(1, 20);
-                Debug.Log("We are in here with " + prefab.name);
                 if (prefab.name.Contains("Steel"))
                 {
                     if (prefab.name.Contains("Large"))
@@ -92,16 +92,72 @@ namespace MetroOverhaul.InitializationSteps
             theProp.m_angle = angle;
             propList.Add(theProp);
         }
-
-        public static void CommonConcreteCustomization(NetInfo prefab, NetInfoVersion version)
+        public static void CommonVanillaCustomization(NetInfo prefab, NetInfoVersion version)
         {
             if (version == NetInfoVersion.Elevated || version == NetInfoVersion.Bridge)
             {
+                prefab.m_nodes[0].m_flagsForbidden |= NetNode.Flags.Transition;
+                var nodeTrans = prefab.m_nodes[0].ShallowClone();
+                nodeTrans
+                    .SetFlags(NetNode.Flags.Transition, NetNode.Flags.LevelCrossing)
+                    .SetMeshes
+                    ($@"Meshes\10m\Elevated_Node_Pavement_Vanilla.obj");
+                var nodeList = new List<NetInfo.Node>();
+                nodeList.AddRange(prefab.m_nodes);
+                nodeList.Add(nodeTrans);
+                prefab.m_nodes = nodeList.ToArray();
                 prefab.m_class.m_level = ItemClass.Level.Level1;
             }
             else
             {
                 prefab.m_class.m_level = ItemClass.Level.Level2;
+            }
+
+            for (int i = 0; i < prefab.m_segments.Count(); i++)
+            {
+                if (prefab.m_segments[i].m_mesh.name.ToLower().Contains("rail"))
+                {
+                    prefab.m_segments[i]
+                        .SetFlagsDefault()
+                        .SetMeshes
+                        ($@"Meshes\10m\Rail.obj",
+                            $@"Meshes\10m\Rail_LOD.obj")
+                        .SetConsistentUVs();
+                    prefab.m_segments[i].SetTextures(new TextureSet
+                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                    break;
+                }
+            }
+            for (int i = 0; i < prefab.m_nodes.Count(); i++)
+            {
+                if (prefab.m_nodes[i].m_mesh.name.ToLower().Contains("rail"))
+                {
+                    prefab.m_nodes[i]
+                        .SetFlagsDefault()
+                        .SetMeshes
+                        ($@"Meshes\10m\Rail.obj",
+                            $@"Meshes\10m\Rail_LOD.obj")
+                        .SetConsistentUVs();
+                    prefab.m_nodes[i].SetTextures(new TextureSet
+                        (@"Textures\Ground_Segment_Rail__MainTex.png",
+                            @"Textures\Ground_Segment_Rail__AlphaMap.png",
+                            @"Textures\Ground_Segment_Rail__XYSMap.png"));
+                    break;
+                }
+            }
+
+        }
+        public static void CommonConcreteCustomization(NetInfo prefab, NetInfoVersion version)
+        {
+            if (version == NetInfoVersion.Elevated || version == NetInfoVersion.Bridge)
+            {
+                prefab.m_class.m_level = ItemClass.Level.Level5;
+            }
+            else
+            {
+                prefab.m_class.m_level = (ItemClass.Level)6;
             }
             var lanes = prefab.m_lanes.ToList();
             var propLane = new NetInfo.Lane();
@@ -133,8 +189,8 @@ namespace MetroOverhaul.InitializationSteps
         {
             if (prefab.name.Contains("Station"))
             {
-                prefab.m_connectGroup = NetInfo.ConnectGroup.DoubleMonorail;
-                //prefab.m_nodeConnectGroups = (NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.MonorailStation | NetInfo.ConnectGroup.NarrowTram;
+                prefab.m_connectGroup = NetInfo.ConnectGroup.MetroStation;
+                //prefab.m_nodeConnectGroups = (NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.MonorailStation | NetInfo.ConnectGroup.DoubleMetro;
                 //if (version != NetInfoVersion.Tunnel)
                 //{
                 //    prefab.m_nodes[1].m_connectGroup = (NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.MonorailStation;
@@ -142,11 +198,11 @@ namespace MetroOverhaul.InitializationSteps
             }
             else
             {
-                prefab.m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
-                //prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.NarrowTram;
+                prefab.m_connectGroup = NetInfo.ConnectGroup.DoubleMetro;
+                //prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.DoubleMetro;
                 //if (version != NetInfoVersion.Tunnel)
                 //{
-                //    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.NarrowTram;
+                //    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.DoubleMetro;
                 //}
             }
             foreach (var lane in prefab.m_lanes)
@@ -161,7 +217,7 @@ namespace MetroOverhaul.InitializationSteps
         public static void CommonCustomizationTwoLaneOneWay(NetInfo prefab, NetInfoVersion version)
         {
             prefab.m_connectGroup = NetInfo.ConnectGroup.MonorailStation;
-            //prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.MonorailStation | (NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.NarrowTram | NetInfo.ConnectGroup.WideTram;
+            //prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.MonorailStation | (NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.DoubleMetro | NetInfo.ConnectGroup.WideTram;
 
             //if (version != NetInfoVersion.Tunnel)
             //{
@@ -187,7 +243,7 @@ namespace MetroOverhaul.InitializationSteps
             if (isTwoWay)
             {
                 prefab.m_connectGroup = NetInfo.ConnectGroup.SingleMonorail;
-                //prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.SingleMonorail | NetInfo.ConnectGroup.MonorailStation | (NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.NarrowTram | NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.CenterTram;
+                //prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.SingleMonorail | NetInfo.ConnectGroup.MonorailStation | (NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.DoubleMetro | NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.SingleMetro;
                 //if (version != NetInfoVersion.Tunnel)
                 //{
                 //    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.SingleMonorail;
@@ -195,11 +251,11 @@ namespace MetroOverhaul.InitializationSteps
             }
             else
             {
-                prefab.m_connectGroup = NetInfo.ConnectGroup.CenterTram;
-                //prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.NarrowTram | NetInfo.ConnectGroup.CenterTram | (NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.WideTram;
+                prefab.m_connectGroup = NetInfo.ConnectGroup.SingleMetro;
+                //prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.DoubleMetro | NetInfo.ConnectGroup.SingleMetro | (NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.WideTram;
                 //if (version != NetInfoVersion.Tunnel)
                 //{
-                //    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.CenterTram | NetInfo.ConnectGroup.Oneway;
+                //    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.SingleMetro | NetInfo.ConnectGroup.Oneway;
                 //}
             }
 
@@ -274,10 +330,10 @@ namespace MetroOverhaul.InitializationSteps
         public static void CommonIslandCustomization(NetInfo prefab, NetInfoVersion version)
         {
             prefab.m_connectGroup = NetInfo.ConnectGroup.None;
-            //prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.NarrowTram;
+            //prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.DoubleMetro;
             //if (version != NetInfoVersion.Tunnel)
             //{
-            //    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.NarrowTram | NetInfo.ConnectGroup.MonorailStation;
+            //    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.DoubleMetro | NetInfo.ConnectGroup.MonorailStation;
             //}
 
             var theLanes = prefab.m_lanes.ToList();
@@ -320,7 +376,7 @@ namespace MetroOverhaul.InitializationSteps
             else
             {
                 prefab.m_connectGroup = NetInfo.ConnectGroup.WideTram;
-                prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.NarrowTram | NetInfo.ConnectGroup.SingleMonorail;
+                prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.DoubleMetro | NetInfo.ConnectGroup.SingleMonorail;
                 //if (version != NetInfoVersion.Tunnel)
                 //{
                 //    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.WideTram;
@@ -333,7 +389,7 @@ namespace MetroOverhaul.InitializationSteps
                 VehicleLanesToAdd = 2
             });
             prefab.m_minCornerOffset = 18;
-            var vanillaMetroTrack = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+            var vanillaMetroTrack = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Tunnel, TrackStyle.Vanilla));
             var speedLimit = vanillaMetroTrack.m_lanes.First(l => l.m_vehicleType != VehicleInfo.VehicleType.None).m_speedLimit;
             var theLanes = prefab.m_lanes.ToList();
             var count = 0;
@@ -763,89 +819,5 @@ namespace MetroOverhaul.InitializationSteps
             if (!Locale.Exists("NET_DESC", prefab.name))
                 locale.AddLocalizedString(dkey, netDescription);
         }
-        private static bool m_TrainTrackAnalogAISet = false;
-        public static void ReplaceBuildingIcon(BuildingInfo prefab)
-        {
-            //var locale = SingletonLite<LocaleManager>.instance.GetLocale();
-            //var k0 = new Locale.Key()
-            //{
-            //    m_Identifier = "MAIN_CATREGORY",
-            //    m_Key = "CSUR_Main_Category"
-            //};
-            //if (!locale.Exists(k0))
-            //{
-            //    locale.AddLocalizedString(k0, prefab.name);
-            //}
-            //var k1 = new Locale.Key()
-            //{
-            //    m_Identifier = "BUILDING_TITLE",
-            //    m_Key = prefab.name.Replace(" ", "_")
-            //};
-            //if (!locale.Exists(k1))
-            //{
-            //    locale.AddLocalizedString(k1, prefab.name);
-            //}
-            //var k2 = new Locale.Key()
-            //{
-            //    m_Identifier = "BUILDING_DESC",
-            //    m_Key = prefab.name.Replace(" ", "_")
-            //};
-            //if (!locale.Exists(k2))
-            //{
-            //    locale.AddLocalizedString(k2, prefab.name);
-            //}
-        }
-        //public static void ReplaceBuildingIcon(BuildingInfo prefab)
-        //{
-        //    if (prefab.name.IndexOf("Train Station" + ModTrackNames.ANALOG_PREFIX) == -1)
-        //    {
-        //        BuildingInfo vanillaBuilding = null;
-        //        //var transportInfo = prefab.GetComponent<TransportStationAI>().m_transportInfo;
-        //        //if (transportInfo == PrefabCollection<TransportInfo>.FindLoaded("Metro"))
-        //        //{
-        //        //    vanillaBuilding = PrefabCollection<BuildingInfo>.FindLoaded("Metro Entrance");
-        //        //}
-        //        //else if (transportInfo == PrefabCollection<TransportInfo>.FindLoaded("Train"))
-        //            vanillaBuilding = PrefabCollection<BuildingInfo>.FindLoaded(prefab.name.Substring(0, prefab.name.IndexOf(ModTrackNames.ANALOG_PREFIX)));
-        //        prefab.m_Atlas = vanillaBuilding.m_Atlas;
-        //        prefab.m_Thumbnail = vanillaBuilding.m_Thumbnail;
-        //        prefab.m_InfoTooltipAtlas = vanillaBuilding.m_InfoTooltipAtlas;
-        //        prefab.m_InfoTooltipThumbnail = vanillaBuilding.m_InfoTooltipThumbnail;
-        //        prefab.m_isCustomContent = false;
-        //        var locale = LocaleManager.instance.GetLocale();
-        //        var key = new Locale.Key { m_Identifier = "BUILDING_TITLE", m_Key = prefab.name };
-        //        if (!locale.Exists(key))
-        //        {
-        //            locale.AddLocalizedString(key, locale.Get(new Locale.Key { m_Identifier = "BUILDING_TITLE", m_Key = prefab.name.Substring(0, prefab.name.IndexOf(ModTrackNames.ANALOG_PREFIX)) }));
-        //        }
-        //        key = new Locale.Key { m_Identifier = "BUILDING_DESC", m_Key = prefab.name };
-        //        if (!locale.Exists(key))
-        //        {
-        //            locale.AddLocalizedString(key, locale.Get(new Locale.Key { m_Identifier = "BUILDING_DESC", m_Key = prefab.name.Substring(0, prefab.name.IndexOf(ModTrackNames.ANALOG_PREFIX)) }));
-        //        }
-        //        if (!m_TrainTrackAnalogAISet) //&& transportInfo == PrefabCollection<TransportInfo>.FindLoaded("Train"))
-        //        {
-        //            m_TrainTrackAnalogAISet = true;
-        //            var trainStationAnalog = PrefabCollection<BuildingInfo>.FindLoaded(
-        //                "Train Station" + ModTrackNames.ANALOG_PREFIX + TrackVehicleType.Metro.ToString());
-        //            trainStationAnalog.m_Atlas = vanillaBuilding.m_Atlas;
-        //            trainStationAnalog.m_Thumbnail = vanillaBuilding.m_Thumbnail;
-        //            trainStationAnalog.m_InfoTooltipAtlas = vanillaBuilding.m_InfoTooltipAtlas;
-        //            trainStationAnalog.m_InfoTooltipThumbnail = vanillaBuilding.m_InfoTooltipThumbnail;
-        //            trainStationAnalog.m_isCustomContent = false;
-        //            var trainStationAnalogLocale = LocaleManager.instance.GetLocale();
-        //            var trainStationAnalogKey = new Locale.Key { m_Identifier = "BUILDING_TITLE", m_Key = trainStationAnalog.name };
-        //            if (!trainStationAnalogLocale.Exists(trainStationAnalogKey))
-        //            {
-        //                trainStationAnalogLocale.AddLocalizedString(trainStationAnalogKey, trainStationAnalogLocale.Get(new Locale.Key { m_Identifier = "BUILDING_TITLE", m_Key = trainStationAnalog.name.Substring(0, trainStationAnalog.name.IndexOf(ModTrackNames.ANALOG_PREFIX)) }));
-        //            }
-        //            trainStationAnalogKey = new Locale.Key { m_Identifier = "BUILDING_DESC", m_Key = trainStationAnalog.name };
-        //            if (!trainStationAnalogLocale.Exists(trainStationAnalogKey))
-        //            {
-        //                trainStationAnalogLocale.AddLocalizedString(trainStationAnalogKey, trainStationAnalogLocale.Get(new Locale.Key { m_Identifier = "BUILDING_DESC", m_Key = trainStationAnalog.name.Substring(0, trainStationAnalog.name.IndexOf(ModTrackNames.ANALOG_PREFIX)) }));
-        //            }
-        //        }
-        //    }
-        //}
     }
 }

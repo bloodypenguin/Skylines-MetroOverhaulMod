@@ -19,6 +19,7 @@ namespace MetroOverhaul.UI
         public static readonly Texture2D SingleMetroTracks;
         public static readonly Texture2D ModernStyle;
         public static readonly Texture2D ClassicStyle;
+        public static readonly Texture2D VanillaStyle;
         public static readonly Texture2D TwowayDirection;
         public static readonly Texture2D OnewayDirection;
         public static readonly Texture2D Checkbox;
@@ -47,6 +48,7 @@ namespace MetroOverhaul.UI
             SingleMetroTracks = LoadDllResource("Thumbs.Menu.SingleThumbnails.png", 545, 100);
             ModernStyle = LoadDllResource("Thumbs.Button.ModernThumbnails.png", 295, 52);
             ClassicStyle = LoadDllResource("Thumbs.Button.ClassicThumbnails.png", 295, 52);
+            VanillaStyle = LoadDllResource("Thumbs.Button.VanillaThumbnails.png", 295, 52);
             TwowayDirection = LoadDllResource("Thumbs.Button.TwowayThumbnails.png", 180, 33);
             OnewayDirection = LoadDllResource("Thumbs.Button.OnewayThumbnails.png", 180, 33);
             Checkbox = LoadDllResource("Thumbs.CheckboxThumbnails.png", 95, 20);

@@ -4,7 +4,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MetroOverhaul.InitializationSteps {
+namespace MetroOverhaul.InitializationSteps
+{
     public static class SetupMeshUtil
     {
         public static string WidthName = null;
@@ -30,7 +31,7 @@ namespace MetroOverhaul.InitializationSteps {
             DefaultMaterial = ttInfo.m_nodes[0].m_material;
             DefaultLODMaterial = ttInfo.m_nodes[0].m_lodMaterial;
             NodeList = new List<NetInfo.Node>();
-            m_IsOneWay = (info.m_connectGroup & (NetInfo.ConnectGroup.MonorailStation | NetInfo.ConnectGroup.CenterTram)) != NetInfo.ConnectGroup.None;
+            m_IsOneWay = (info.m_connectGroup & (NetInfo.ConnectGroup.MonorailStation | NetInfo.ConnectGroup.SingleMetro)) != NetInfo.ConnectGroup.None;
             var isSteel = info.name.Contains("Steel");
             PopulateMetaData(info);
             CreateBaseLevelCrossing(info, version);
@@ -99,16 +100,16 @@ namespace MetroOverhaul.InitializationSteps {
                         {
                             node3.m_directConnect = true;
                             NodeList.Add(node3);
-                                node0
-                                    .SetMeshes
-                                    ($@"Meshes\{WidthName}\Station_Node_Rail.obj",
-                                    $@"Meshes\{WidthName}\Rail_LOD.obj")
-                                    .SetConsistentUVs();
-                                node3
-                                    .SetMeshes
-                                    ($@"Meshes\{WidthName}\Boosted_Station_Node_Rail.obj",
-                                    $@"Meshes\{WidthName}\Blank.obj")
-                                    .SetConsistentUVs();
+                            node0
+                                .SetMeshes
+                                ($@"Meshes\{WidthName}\Station_Node_Rail.obj",
+                                $@"Meshes\{WidthName}\Rail_LOD.obj")
+                                .SetConsistentUVs();
+                            node3
+                                .SetMeshes
+                                ($@"Meshes\{WidthName}\Boosted_Station_Node_Rail.obj",
+                                $@"Meshes\{WidthName}\Blank.obj")
+                                .SetConsistentUVs();
                         }
                         else
                         {
@@ -131,16 +132,16 @@ namespace MetroOverhaul.InitializationSteps {
                     {
                         node3.m_directConnect = true;
                         NodeList.Add(node3);
-                            node0
-                                .SetMeshes
-                                ($@"Meshes\{WidthName}\{(isStation && WidthName != "6m" ? "Station_Node_" : "")}Rail.obj",
-                                $@"Meshes\{WidthName}\Rail_LOD.obj")
-                                .SetConsistentUVs();
-                            node3
-                                .SetMeshes
-                                ($@"Meshes\{WidthName}\Boosted_{(isStation && WidthName != "6m" ? "Station_Node_" : "")}Rail.obj",
-                                 $@"Meshes\{WidthName}\Blank.obj")
-                                .SetConsistentUVs();
+                        node0
+                            .SetMeshes
+                            ($@"Meshes\{WidthName}\{(isStation && WidthName != "6m" ? "Station_Node_" : "")}Rail.obj",
+                            $@"Meshes\{WidthName}\Rail_LOD.obj")
+                            .SetConsistentUVs();
+                        node3
+                            .SetMeshes
+                            ($@"Meshes\{WidthName}\Boosted_{(isStation && WidthName != "6m" ? "Station_Node_" : "")}Rail.obj",
+                             $@"Meshes\{WidthName}\Blank.obj")
+                            .SetConsistentUVs();
                     }
                 }
 
@@ -184,7 +185,7 @@ namespace MetroOverhaul.InitializationSteps {
                     }
                 }
             }
-            //if ((info.m_connectGroup & ((NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.NarrowTram)) == NetInfo.ConnectGroup.None)
+            //if ((info.m_connectGroup & ((NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.DoubleMetro)) == NetInfo.ConnectGroup.None)
             //{
             if (Variations != null)
             {
@@ -247,34 +248,34 @@ namespace MetroOverhaul.InitializationSteps {
             {
                 case NetInfo.ConnectGroup.SingleMonorail: //Two-Way One Lane
                     Variations = new[] { "_Merge", "_Merge" };
-                    Groups = new[] { NetInfo.ConnectGroup.NarrowTram, NetInfo.ConnectGroup.MonorailStation };
+                    Groups = new[] { NetInfo.ConnectGroup.DoubleMetro, NetInfo.ConnectGroup.MonorailStation };
                     WidthName = "6m";
                     break;
-                case NetInfo.ConnectGroup.CenterTram: //One-Way One Lane
+                case NetInfo.ConnectGroup.SingleMetro: //One-Way One Lane
                     LikenessGroups.Add(NetInfo.ConnectGroup.SingleMonorail);
                     Variations = new[] { "", "_Merge", "_Quad" };
-                    Groups = new[] { NetInfo.ConnectGroup.NarrowTram, NetInfo.ConnectGroup.MonorailStation, NetInfo.ConnectGroup.WideTram };
+                    Groups = new[] { NetInfo.ConnectGroup.DoubleMetro, NetInfo.ConnectGroup.MonorailStation, NetInfo.ConnectGroup.WideTram };
                     WidthName = "6m";
                     break;
                 case NetInfo.ConnectGroup.MonorailStation: //One-Way Two Lane
                     Variations = new[] { "_Merge", "" };
-                    Groups = new[] { NetInfo.ConnectGroup.NarrowTram, NetInfo.ConnectGroup.WideTram };
+                    Groups = new[] { NetInfo.ConnectGroup.DoubleMetro, NetInfo.ConnectGroup.WideTram };
                     WidthName = "10m";
                     break;
-                case NetInfo.ConnectGroup.NarrowTram: //Two-Way Two Lane
+                case NetInfo.ConnectGroup.DoubleMetro: //Two-Way Two Lane
                     WidthName = "10m";
                     break;
 
                 case NetInfo.ConnectGroup.WideTram: //Two-Way Four Lane
                     Variations = new[] { "_Merge", "_Single_Merge" };
-                    Groups = new[] { NetInfo.ConnectGroup.NarrowTram, NetInfo.ConnectGroup.SingleMonorail };
+                    Groups = new[] { NetInfo.ConnectGroup.DoubleMetro, NetInfo.ConnectGroup.SingleMonorail };
                     WidthName = "18m";
                     break;
                 default:
                     if (info.name.Contains("Station"))
                     {
                         Variations = new[] { "_Station_Merge", "_Merge", "_Single_Merge", "_Single_Merge", "_Station_Quad" };
-                        Groups = new[] { NetInfo.ConnectGroup.NarrowTram, NetInfo.ConnectGroup.MonorailStation, NetInfo.ConnectGroup.CenterTram, NetInfo.ConnectGroup.SingleMonorail, NetInfo.ConnectGroup.WideTram };
+                        Groups = new[] { NetInfo.ConnectGroup.DoubleMetro, NetInfo.ConnectGroup.MonorailStation, NetInfo.ConnectGroup.SingleMetro, NetInfo.ConnectGroup.SingleMonorail, NetInfo.ConnectGroup.WideTram };
                         if (info.name.Contains("Large"))
                         {
                             if (info.name.Contains("Dual Island"))
@@ -300,7 +301,7 @@ namespace MetroOverhaul.InitializationSteps {
                             else
                             {
                                 WidthName = "10m";
-                                LikenessGroups.Add(NetInfo.ConnectGroup.NarrowTram);
+                                LikenessGroups.Add(NetInfo.ConnectGroup.DoubleMetro);
                                 LikenessGroups.Add(NetInfo.ConnectGroup.MonorailStation);
                             }
                         }
@@ -353,82 +354,86 @@ namespace MetroOverhaul.InitializationSteps {
                         break;
                     }
                 }
-                var nodes0 = info.m_nodes[pavementIndex].ShallowClone();
-                var nodes1 = info.m_nodes[railIndex].ShallowClone();
-                var nodes2 = info.m_nodes[pavementIndex].ShallowClone();
+                if (pavementIndex > -1 && railIndex > -1)
+                {
+                    var nodes0 = info.m_nodes[pavementIndex].ShallowClone();
+                    var nodes1 = info.m_nodes[railIndex].ShallowClone();
+                    var nodes2 = info.m_nodes[pavementIndex].ShallowClone();
 
-                NodeList.Add(nodes0);
+                    NodeList.Add(nodes0);
 
-                var isSteel = info.name.Contains("Steel");
-                var prefix = "";
-                if (version == NetInfoVersion.Elevated || version == NetInfoVersion.Bridge)
-                {
-                    prefix = "Elevated";
-                }
-                else
-                {
-                    prefix = version.ToString();
-                }
-                nodes0
-                    .SetMeshes
-                    ($@"Meshes\{WidthName}\{prefix}_LevelCrossing_Pavement.obj",
-                    $@"Meshes\{WidthName}\LevelCrossing_Pavement_LOD.obj")
-                    .SetConsistentUVs();
-                if (!isStation || LikenessGroups.Count > 0)
-                {
-                    NodeList.Add(nodes1);
-                    NodeList.Add(nodes2);
-                    if (WidthName != "10m")
+                    var isSteel = info.name.Contains("Steel");
+                    var prefix = "";
+                    if (version == NetInfoVersion.Elevated || version == NetInfoVersion.Bridge)
                     {
-                        nodes1
-                            .SetFlags(NetNode.Flags.LevelCrossing, NetNode.Flags.None)
-                            .SetMeshes
-                            ($@"Meshes\{WidthName}\LevelCrossing_{(isStation && WidthName != "6m" ? "Station_" : "")}Rail.obj",
-                            $@"Meshes\{WidthName}\LevelCrossing_Rail_LOD.obj")
-                            .SetConsistentUVs();
+                        prefix = "Elevated";
                     }
                     else
                     {
-                        nodes1
-                            .SetFlags(NetNode.Flags.LevelCrossing, NetNode.Flags.None)
-                            .SetMeshes
-                            ($@"Meshes\{WidthName}\LevelCrossing_{(isStation && WidthName != "6m" ? "Station_" : "")}Rail.obj")
-                            .SetConsistentUVs();
+                        prefix = version.ToString();
                     }
-
-                    nodes2
+                    nodes0
                         .SetMeshes
-                        ($@"Meshes\{WidthName}\LevelCrossing_{(isStation && WidthName != "6m" ? "Station_" : "")}Rail_Insert.obj", @"Meshes\10m\Blank.obj")
+                        ($@"Meshes\{WidthName}\{prefix}_LevelCrossing_Pavement.obj",
+                        $@"Meshes\{WidthName}\LevelCrossing_Pavement_LOD.obj")
                         .SetConsistentUVs();
-
-                    nodes1.m_directConnect = true;
-                    nodes2.m_directConnect = true;
-
-                    for (var i = 0; i < LikenessGroups.Count; i++)
+                    if (!isStation || LikenessGroups.Count > 0)
                     {
-                        if (i == 0)
+                        NodeList.Add(nodes1);
+                        NodeList.Add(nodes2);
+                        if (WidthName != "10m")
                         {
-                            nodes1.m_connectGroup = LikenessGroups[i];
-                            nodes2.m_connectGroup = LikenessGroups[i];
+                            nodes1
+                                .SetFlags(NetNode.Flags.LevelCrossing, NetNode.Flags.None)
+                                .SetMeshes
+                                ($@"Meshes\{WidthName}\LevelCrossing_{(isStation && WidthName != "6m" ? "Station_" : "")}Rail.obj",
+                                $@"Meshes\{WidthName}\LevelCrossing_Rail_LOD.obj")
+                                .SetConsistentUVs();
                         }
                         else
                         {
-                            nodes1.m_connectGroup |= LikenessGroups[i];
-                            nodes2.m_connectGroup |= LikenessGroups[i];
+                            nodes1
+                                .SetFlags(NetNode.Flags.LevelCrossing, NetNode.Flags.None)
+                                .SetMeshes
+                                ($@"Meshes\{WidthName}\LevelCrossing_{(isStation && WidthName != "6m" ? "Station_" : "")}Rail.obj")
+                                .SetConsistentUVs();
                         }
+
+                        nodes2
+                            .SetMeshes
+                            ($@"Meshes\{WidthName}\LevelCrossing_{(isStation && WidthName != "6m" ? "Station_" : "")}Rail_Insert.obj", @"Meshes\10m\Blank.obj")
+                            .SetConsistentUVs();
+
+                        nodes1.m_directConnect = true;
+                        nodes2.m_directConnect = true;
+
+                        for (var i = 0; i < LikenessGroups.Count; i++)
+                        {
+                            if (i == 0)
+                            {
+                                nodes1.m_connectGroup = LikenessGroups[i];
+                                nodes2.m_connectGroup = LikenessGroups[i];
+                            }
+                            else
+                            {
+                                nodes1.m_connectGroup |= LikenessGroups[i];
+                                nodes2.m_connectGroup |= LikenessGroups[i];
+                            }
+                        }
+                    }
+
+                    if (!isSteel && (version == NetInfoVersion.Elevated || version == NetInfoVersion.Bridge))
+                    {
+                        var nodes3 = info.m_nodes[pavementIndex].ShallowClone();
+                        NodeList.Add(nodes3);
+                        nodes3
+                        .SetMeshes
+                        ($@"Meshes\{WidthName}\{prefix}_Node_Pavement_Short.obj",
+                        $@"Meshes\{WidthName}\LevelCrossing_Pavement_LOD.obj")
+                        .SetConsistentUVs();
                     }
                 }
 
-                if (!isSteel && (version == NetInfoVersion.Elevated || version == NetInfoVersion.Bridge))
-                {
-                    var nodes3 = info.m_nodes[pavementIndex].ShallowClone();
-                    NodeList.Add(nodes3);
-                    nodes3
-                    .SetMeshes
-                    ($@"Meshes\{WidthName}\{prefix}_Node_Pavement_Short.obj",
-                    $@"Meshes\{WidthName}\LevelCrossing_Pavement_LOD.obj")
-                    .SetConsistentUVs();
-                }
             }
         }
         public static void CreateClassicSplitTracks(NetInfo info, NetInfoVersion version, int index)

@@ -7,13 +7,13 @@ using System.Reflection;
 
 namespace MetroOverhaul
 {
-    class Patch
+    class PatchInitializePrefab
     {
         private static Initializer m_Container;
         public static void Apply(HarmonyInstance harmony, ref Initializer initializer)
         {
             m_Container = initializer;
-            var postfix = typeof(Patch).GetMethod("Postfix");
+            var postfix = typeof(PatchInitializePrefab).GetMethod("Postfix");
             harmony.Patch(OriginalMethod, null, new HarmonyMethod(postfix), null);
         }
         public static void Revert(HarmonyInstance harmony)

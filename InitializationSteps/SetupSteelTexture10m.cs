@@ -23,7 +23,7 @@ namespace MetroOverhaul.InitializationSteps
                                     new TextureSet
                                         ($@"Textures\Ground_Segment_Pavement_Steel{large}__MainTex.png",
                                             $@"Textures\Ground_Segment_Pavement{large}__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Pavement_Steel__XYSMap.png"),
+                                            @"Textures\Ground_Segment_Pavement__XYSMap.png"),
                                     new LODTextureSet
                                         ($@"Textures\Ground_Segment_Pavement_Steel{small}__MainTex_LOD.png",
                                             $@"Textures\Ground_Segment_Pavement__AlphaMap_LOD.png",
@@ -106,7 +106,7 @@ namespace MetroOverhaul.InitializationSteps
                                     new TextureSet
                                         ($@"Textures\Ground_Node_Pavement{large}__MainTex.png",
                                             $@"Textures\Ground_Node_Pavement{large}__AlphaMap.png",
-                                            @"Textures\Ground_Segment_Pavement_Steel__XYSMap.png"),
+                                            @"Textures\Ground_Segment_Pavement__XYSMap.png"),
                                     new LODTextureSet
                                         ($@"Textures\Ground_Node_Pavement__MainTex_LOD.png",
                                             $@"Textures\Ground_Node_Pavement__AlphaMap_LOD.png",

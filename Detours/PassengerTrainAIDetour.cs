@@ -30,7 +30,7 @@ namespace MetroOverhaul.Detours
             }
             if (state)
             {
-                Redirector<PassengerTrainAIDetour>.Deploy();
+                //Redirector<PassengerTrainAIDetour>.Deploy();
             }
             else
             {

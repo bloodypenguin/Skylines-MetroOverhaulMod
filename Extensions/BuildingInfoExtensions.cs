@@ -270,7 +270,7 @@ namespace MetroOverhaul.Extensions
                             isTargetVehicleTrackType = info.m_paths[i].m_netInfo.IsTrainTrackAI();
                             break;
                         case TrackVehicleType.Metro:
-                            isTargetVehicleTrackType = info.m_paths[i].m_netInfo.IsTrainTrackAIMetro();
+                            isTargetVehicleTrackType = info.m_paths[i].m_netInfo.IsMetroTrackAI();
                             break;
                     }
                     if (isTargetVehicleTrackType && i != inx)
@@ -311,7 +311,7 @@ namespace MetroOverhaul.Extensions
                                 //groundName = ModTrackNames.TRAIN_TRACK;
                                 break;
                             case TrackVehicleType.Metro:
-                                isTargetVehicleTrackType = info.m_paths[i].m_netInfo.IsTrainTrackAIMetro();
+                                isTargetVehicleTrackType = info.m_paths[i].m_netInfo.IsMetroTrackAI();
                                 //groundName = ModTrackNames.MOM_TRACK_GROUND + " NoBar";
                                 break;
                         }
@@ -423,7 +423,7 @@ namespace MetroOverhaul.Extensions
                 retval.Add(inx);
             }
             inxSoFar.Add(inx);
-            var trackPaths = paths.Where(p => p?.m_netInfo != null && (p.m_netInfo.IsTrainTrackAI() || p.m_netInfo.IsTrainTrackBridgeAI() || p.m_netInfo.IsTrainTrackAIMetro() || p.m_netInfo.IsTrainTrackBridgeAIMetro() || ((p.m_netInfo.IsTrainTrackTunnelAI() || p.m_netInfo.IsTrainTrackTunnelAIMetro()) && (p.m_netInfo.name.Contains("Sunken") || !p.m_netInfo.IsStationTrack()))));
+            var trackPaths = paths.Where(p => p?.m_netInfo != null && (p.m_netInfo.IsTrainTrackAI() || p.m_netInfo.IsTrainTrackBridgeAI() || ((p.m_netInfo.IsTrainTrackTunnelAI() ||p.m_netInfo.IsMetroTrackAI() || p.m_netInfo.IsMetroTrackBridgeAI() ||  p.m_netInfo.IsMetroTrackTunnelAI()) && (p.m_netInfo.name.Contains("Sunken") || !p.m_netInfo.IsStationTrack()))));
             for (int i = 0; i < paths.Count(); i++)
             {
                 if (trackPaths.Contains(paths[i]))

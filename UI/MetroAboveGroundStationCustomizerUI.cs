@@ -193,7 +193,7 @@ namespace MetroOverhaul.UI
             {
                 Name = "btnModernStyle",
                 ToolTip = "Modern Style",
-                ColumnCount = 3,
+                ColumnCount = 4,
                 ParentComponent = tsStyles,
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_ModernStyleAtlas", UIHelper.ModernStyle),
                 Width = 59,
@@ -209,7 +209,7 @@ namespace MetroOverhaul.UI
             {
                 Name = "btnClassicStyle",
                 ToolTip = "Classic Style",
-                ColumnCount = 3,
+                ColumnCount = 4,
                 ParentComponent = tsStyles,
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_ClassicStyleAtlas", UIHelper.ClassicStyle),
                 Width = 59,
@@ -221,10 +221,26 @@ namespace MetroOverhaul.UI
                     SetNetToolPrefab();
                 }
             });
+            btnVanillaStyle = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnVanillaStyle",
+                ToolTip = "Vanilla Style",
+                ColumnCount = 4,
+                ParentComponent = tsStyles,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_VanillaStyleAtlas", UIHelper.VanillaStyle),
+                Width = 59,
+                Height = 52,
+                StackWidths = true,
+                EventClick = (c, v) =>
+                {
+                    trackStyle = TrackStyle.Vanilla;
+                    SetNetToolPrefab();
+                }
+            });
             btnNoStyle = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnNoStyle",
-                ColumnCount = 3,
+                ColumnCount = 4,
                 ParentComponent = tsStyles,
                 Atlas = atlas,
                 Width = 1,
@@ -502,7 +518,6 @@ namespace MetroOverhaul.UI
                     {
                         if (m_currentBuilding.IsMetroStation())
                         {
-                            Debug.Log($"Building {m_currentBuilding} has triggered a tabchange to metro");
                             trackVehicleType = TrackVehicleType.Metro;
                             lblTabTitle.text = METRO_TAB_LABEL;
                             tsStationTypeSelector.selectedIndex = 2;
@@ -510,7 +525,6 @@ namespace MetroOverhaul.UI
                         }
                         else if (m_currentBuilding.IsTrainStation())
                         {
-                            Debug.Log($"Building {m_currentBuilding} has triggered a tabchange to train");
                             trackVehicleType = TrackVehicleType.Train;
                             lblTabTitle.text = TRAIN_TAB_LABEL;
                             tsStationTypeSelector.selectedIndex = 1;
@@ -580,6 +594,7 @@ namespace MetroOverhaul.UI
             {
                 btnClassicStyle.isInteractive = true;
                 btnModernStyle.isInteractive = true;
+                btnVanillaStyle.isInteractive = true;
                 if (trackStyle == TrackStyle.None)
                 {
                     btnModernStyle.SimulateClick();
@@ -591,15 +606,18 @@ namespace MetroOverhaul.UI
                 {
                     btnNoStyle.SimulateClick();
                 }
-
+                
                 btnClassicStyle.state = UIButton.ButtonState.Disabled;
                 btnModernStyle.state = UIButton.ButtonState.Disabled;
+                btnVanillaStyle.state = UIButton.ButtonState.Disabled;
                 btnClassicStyle.isInteractive = false;
                 btnModernStyle.isInteractive = false;
+                btnVanillaStyle.isInteractive = false;
             }
 
             btnClassicStyle.isInteractive = hasMetroTrack;
             btnModernStyle.isInteractive = hasMetroTrack;
+            btnVanillaStyle.isInteractive = hasMetroTrack;
 
             var trainAnalogSuffix = ModTrackNames.ANALOG_PREFIX + TrackVehicleType.Train.ToString();
             var metroAnalogSuffix = ModTrackNames.ANALOG_PREFIX + TrackVehicleType.Metro.ToString();

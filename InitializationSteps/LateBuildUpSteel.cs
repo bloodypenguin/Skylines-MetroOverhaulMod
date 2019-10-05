@@ -25,7 +25,7 @@ namespace MetroOverhaul.InitializationSteps
             {
                 case NetInfoVersion.Elevated:
                     {
-                        var bridgeAI = prefab.GetComponent<TrainTrackBridgeAIMetro>();
+                        var bridgeAI = prefab.GetComponent<MOMMetroTrackBridgeAI>();
                         if (bridgeAI != null)
                         {
                             var narrowInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Classic_Narrow_Low")}.Classic Narrow (Low)_Data");
@@ -98,7 +98,7 @@ namespace MetroOverhaul.InitializationSteps
                         {
                             throw new Exception($"{prefab.name}: MetroBridgePillar not found!");
                         }
-                        var bridgeAI = prefab.GetComponent<TrainTrackBridgeAIMetro>();
+                        var bridgeAI = prefab.GetComponent<MOMMetroTrackBridgeAI>();
                         if (bridgeAI != null)
                         {
                             bridgeAI.pillarType = PillarType.WideMedian;

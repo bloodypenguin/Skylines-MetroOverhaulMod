@@ -1,21 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using ColossalFramework;
 using ColossalFramework.Threading;
 using ColossalFramework.UI;
+using Harmony;
 using MetroOverhaul.Extensions;
+using MetroOverhaul.NEXT;
 using UnityEngine;
 
-namespace MetroOverhaul.UI {
+namespace MetroOverhaul.UI
+{
     public class MetroStationCustomizerUI : MetroCustomizerBaseUI
     {
         private const int DEPTH_STEP = 3;
         private const int LENGTH_STEP = 8;
         private const int ANGLE_STEP = 15;
         private const float BEND_STRENGTH_STEP = 15;
-
+        private bool m_IsRelocate = false;
+        private int m_OrderedTrackIndex = -1;
+        private ReverseEngineerStationCustomizations m_Customizations;
         protected override bool SatisfiesTrackSpecs(PrefabInfo info)
         {
-            return ((BuildingInfo)info).HasUndergroundMetroStationTracks();
+            return ((BuildingInfo)info).HasUndergroundMetroStationTracks() || m_IsRelocate;
         }
 
         protected override ToolBase GetTheTool()
@@ -25,17 +32,67 @@ namespace MetroOverhaul.UI {
 
         protected override PrefabInfo GetToolPrefab()
         {
-            return ((BuildingTool)GetTheTool())?.m_prefab;
+            if (GetTheTool() != null)
+            {
+                if (IsRelocate())
+                {
+                    return m_Customizations.BuildingPrefab;
+                }
+                return ((BuildingTool)GetTheTool())?.m_prefab;
+            }
+            return null;
         }
-
+        private List<BuildingInfo.PathInfo> GetNestedStationPaths(BuildingInfo info)
+        {
+            var trackList = new List<BuildingInfo.PathInfo>();
+            if (info?.m_subBuildings != null)
+            {
+                foreach (var subBuilding in info.m_subBuildings)
+                {
+                    if (subBuilding?.m_buildingInfo != null && subBuilding.m_buildingInfo.HasUndergroundMetroStationTracks())
+                    {
+                        if (subBuilding.m_buildingInfo.m_subBuildings != null)
+                        {
+                            trackList.AddRange(GetNestedStationPaths(subBuilding.m_buildingInfo));
+                        }
+                    }
+                }
+                foreach (var path in info.m_paths)
+                {
+                    if (path.m_netInfo.IsUndergroundMetroStationTrack())
+                    {
+                        trackList.Add(path);
+                    }
+                }
+            }
+            return trackList;
+        }
+        private List<BuildingInfo.PathInfo> OrderedStationTrackList()
+        {
+            if (GetToolPrefab() != null)
+            {
+                var trackList = new List<BuildingInfo.PathInfo>();
+                trackList.AddRange(GetNestedStationPaths((BuildingInfo)GetToolPrefab()));
+                if (((BuildingInfo)GetToolPrefab()).m_subBuildings != null && ((BuildingInfo)GetToolPrefab()).m_subBuildings.Count() > 0)
+                {
+                    foreach (var subBuilding in ((BuildingInfo)GetToolPrefab()).m_subBuildings)
+                    {
+                        if (subBuilding?.m_buildingInfo != null && subBuilding.m_buildingInfo.HasUndergroundMetroStationTracks())
+                            trackList.AddRange(GetNestedStationPaths(subBuilding.m_buildingInfo));
+                    }
+                }
+                return trackList.OrderBy(y => y.m_nodes.First().y).ThenBy(z => z.m_nodes.First().z).ThenBy(x => x.m_nodes.First().x).ToList();
+            }
+            return null;
+        }
         protected override PrefabInfo CurrentInfo { get => m_currentBuilding; set => m_currentBuilding = (BuildingInfo)value; }
 
         protected override void SubStart()
         {
-            SetDict[MetroStationTrackAlterType.Depth] = SetStationCustomizations.DEF_DEPTH;
-            SetDict[MetroStationTrackAlterType.Length] = SetStationCustomizations.DEF_LENGTH;
-            SetDict[MetroStationTrackAlterType.Angle] = SetStationCustomizations.DEF_ANGLE;
-            SetDict[MetroStationTrackAlterType.Bend] = SetStationCustomizations.DEF_BEND_STRENGTH;
+            SetDict[MetroStationTrackAlterType.Depth] = m_IsRelocate ? m_Customizations.Depth : SetStationCustomizations.DEF_DEPTH;
+            SetDict[MetroStationTrackAlterType.Length] = m_IsRelocate ? m_Customizations.Depth : SetStationCustomizations.DEF_LENGTH;
+            SetDict[MetroStationTrackAlterType.Rotation] = m_IsRelocate ? m_Customizations.Angle : SetStationCustomizations.DEF_ANGLE;
+            SetDict[MetroStationTrackAlterType.Bend] = m_IsRelocate ? m_Customizations.Bend : SetStationCustomizations.DEF_BEND_STRENGTH;
         }
 
         protected override void OnToggleKeyDown(UIComponent c, UIKeyEventParameter e)
@@ -100,7 +157,6 @@ namespace MetroOverhaul.UI {
                 Def = SetStationCustomizations.DEF_DEPTH,
                 Max = SetStationCustomizations.MAX_DEPTH,
                 Min = SetStationCustomizations.MIN_DEPTH,
-                SetVal = SetStationCustomizations.DEF_DEPTH,
                 Step = DEPTH_STEP
             });
             SliderDataDict.Add(MetroStationTrackAlterType.Length, new SliderData()
@@ -108,15 +164,13 @@ namespace MetroOverhaul.UI {
                 Def = SetStationCustomizations.DEF_LENGTH,
                 Max = SetStationCustomizations.MAX_LENGTH,
                 Min = SetStationCustomizations.MIN_LENGTH,
-                SetVal = SetStationCustomizations.DEF_LENGTH,
                 Step = LENGTH_STEP
             });
-            SliderDataDict.Add(MetroStationTrackAlterType.Angle, new SliderData()
+            SliderDataDict.Add(MetroStationTrackAlterType.Rotation, new SliderData()
             {
                 Def = SetStationCustomizations.DEF_ANGLE,
                 Max = SetStationCustomizations.MAX_ANGLE,
                 Min = SetStationCustomizations.MIN_ANGLE,
-                SetVal = SetStationCustomizations.DEF_ANGLE,
                 Step = ANGLE_STEP
             });
             SliderDataDict.Add(MetroStationTrackAlterType.Bend, new SliderData()
@@ -124,7 +178,6 @@ namespace MetroOverhaul.UI {
                 Def = SetStationCustomizations.DEF_BEND_STRENGTH,
                 Max = SetStationCustomizations.MAX_BEND_STRENGTH,
                 Min = SetStationCustomizations.MIN_BEND_STRENGTH,
-                SetVal = SetStationCustomizations.DEF_BEND_STRENGTH,
                 Step = BEND_STRENGTH_STEP
             });
             SliderDict = new Dictionary<MetroStationTrackAlterType, UISlider>();
@@ -133,7 +186,7 @@ namespace MetroOverhaul.UI {
             var stationLengthPanel = CreatePanel(new UIPanelParamProps()
             {
                 Name = "stationLengthPanel",
-                Margins = new Vector4(8,0,8,8),
+                Margins = new Vector4(8, 0, 8, 8),
                 ColumnCount = 1
             });
             //var ttpStationLengthSelectorTooltip = CreateToolTipPanel(new UIToolTipPanelParamProps()
@@ -186,7 +239,7 @@ namespace MetroOverhaul.UI {
             {
                 Name = "angleSlider",
                 ParentComponent = stationAnglePanel,
-                TrackAlterType = MetroStationTrackAlterType.Angle,
+                TrackAlterType = MetroStationTrackAlterType.Rotation,
                 //TooltipComponent = ttpStationAngleSelectorTooltip,
                 ColumnCount = 1
             });
@@ -220,7 +273,7 @@ namespace MetroOverhaul.UI {
             var lblStationTrackChooser = CreateLabel(new UILabelParamProps()
             {
                 Name = "lblStationTrackChooser",
-                Text = "Subway Station Track Styles",
+                Text = "Subway Station Track Layout",
                 ParentComponent = pnlStationTrackChooser,
                 ColumnCount = 1
             });
@@ -329,8 +382,6 @@ namespace MetroOverhaul.UI {
                 }
             }
             m_T.Run();
-            
-
         }
         private void SetTunnelInfoByType(BuildingInfo info = null)
         {
@@ -346,27 +397,47 @@ namespace MetroOverhaul.UI {
                     switch (m_TrackType)
                     {
                         case StationTrackType.SidePlatform:
-                            path.AssignNetInfo("Metro Station Track Tunnel");
+                            Debug.Log(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Modern));
+                            path.AssignNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Modern));
                             break;
                         case StationTrackType.IslandPlatform:
-                            path.AssignNetInfo("Metro Station Track Tunnel Island");
+                            path.AssignNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Modern, StationTrackType.IslandPlatform));
                             break;
                         case StationTrackType.SinglePlatform:
-                            path.AssignNetInfo("Metro Station Track Tunnel Small");
+                            path.AssignNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Modern, StationTrackType.SinglePlatform));
                             break;
                         case StationTrackType.ExpressSidePlatform:
-                            path.AssignNetInfo("Metro Station Track Tunnel Large");
+                            path.AssignNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Modern, StationTrackType.ExpressSidePlatform));
                             break;
                         //case StationTrackType.QuadSideIslandPlatform:
                         //    path.AssignNetInfo("Metro Station Track Tunnel Large Side Island");
                         //    break;
                         case StationTrackType.DualIslandPlatform:
-                            path.AssignNetInfo("Metro Station Track Tunnel Large Dual Island");
+                            path.AssignNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Modern, StationTrackType.DualIslandPlatform));
                             break;
                     }
                 }
+                else
+                {
+                    Debug.Log("Not a station track " + path.m_netInfo.name);
+                }
             }
         }
+        private bool IsRelocate()
+        {
+            m_IsRelocate = m_buildingTool.m_relocate > 0;
+            if (m_IsRelocate)
+            {
+                m_Customizations = new ReverseEngineerStationCustomizations(this, m_buildingTool.m_relocate, 0);
+                SliderDict[MetroStationTrackAlterType.Length].value = m_Customizations.Length;
+                SliderDict[MetroStationTrackAlterType.Depth].value = m_Customizations.Depth;
+                SliderDict[MetroStationTrackAlterType.Rotation].value = m_Customizations.Angle;
+                SliderDict[MetroStationTrackAlterType.Bend].value = m_Customizations.Bend;
+                m_TrackType = m_Customizations.StationTrackType;
+            }
+            return m_IsRelocate;
+        }
+
         protected override void Activate(PrefabInfo info)
         {
             base.Activate(info);
@@ -394,7 +465,7 @@ namespace MetroOverhaul.UI {
         {
             if (m_currentBuilding != null)
             {
-                SetStationCustomizations.ModifyStation(m_currentBuilding, SetDict[MetroStationTrackAlterType.Depth], SetDict[MetroStationTrackAlterType.Length], (int)SetDict[MetroStationTrackAlterType.Angle], SetDict[MetroStationTrackAlterType.Bend]);
+                SetStationCustomizations.ModifyStation(m_currentBuilding, SetDict[MetroStationTrackAlterType.Depth], SetDict[MetroStationTrackAlterType.Length], (int)SetDict[MetroStationTrackAlterType.Rotation], SetDict[MetroStationTrackAlterType.Bend]);
             }
 
         }
@@ -412,10 +483,5 @@ namespace MetroOverhaul.UI {
         public float Min { get; set; }
         public float Def { get; set; }
         public float Step { get; set; }
-        public float SetVal { get; set; }
-        public void SetTheVal(float val)
-        {
-            SetVal = val;
-        }
     }
 }

@@ -11,6 +11,7 @@ namespace MetroOverhaul.NEXT
     {
         public static NetInfo SetRoadLanes(this NetInfo rdInfo, NetInfoVersion version, LanesConfiguration config)
         {
+            var template = Prefabs.Find<NetInfo>("Basic Road");
             if (config.VehicleLanesToAdd < 0)
             {
                 var remainingLanes = new List<NetInfo.Lane>();
@@ -26,7 +27,12 @@ namespace MetroOverhaul.NEXT
             }
             else if (config.VehicleLanesToAdd > 0)
             {
-                var sourceLane = rdInfo.m_lanes.First(l => l.m_laneType != NetInfo.LaneType.None && l.m_laneType != NetInfo.LaneType.Parking && l.m_laneType != NetInfo.LaneType.Pedestrian);
+                var sourceLane = rdInfo.m_lanes.FirstOrDefault(l => l.m_laneType != NetInfo.LaneType.None && l.m_laneType != NetInfo.LaneType.Parking && l.m_laneType != NetInfo.LaneType.Pedestrian);
+                if (sourceLane == null)
+                {
+                    sourceLane = template.m_lanes.FirstOrDefault(l => l.m_laneType != NetInfo.LaneType.None && l.m_laneType != NetInfo.LaneType.Parking && l.m_laneType != NetInfo.LaneType.Pedestrian);
+                }
+
                 var tempLanes = rdInfo.m_lanes.ToList();
 
                 for (var i = 0; i < config.VehicleLanesToAdd; i++)
@@ -53,7 +59,12 @@ namespace MetroOverhaul.NEXT
             }
             else if (config.PedestrianLanesToAdd > 0)
             {
-                var sourceLane = rdInfo.m_lanes.First(l => l.m_laneType == NetInfo.LaneType.Pedestrian);
+                var sourceLane = rdInfo.m_lanes.FirstOrDefault(l => l.m_laneType == NetInfo.LaneType.Pedestrian);
+                if (sourceLane == null)
+                {
+                    sourceLane = template.m_lanes.FirstOrDefault(l => l.m_laneType == NetInfo.LaneType.Pedestrian);
+                }
+
                 var tempLanes = rdInfo.m_lanes.ToList();
 
                 for (var i = 0; i < config.PedestrianLanesToAdd; i++)

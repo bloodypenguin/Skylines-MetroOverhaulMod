@@ -70,7 +70,8 @@ namespace MetroOverhaul.UI
             btnModernStyle = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnModernStyle",
-                ColumnCount = 2,
+                ToolTip = "Modern Style",
+                ColumnCount = 3,
                 ParentComponent = tsStyles,
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_ModernStyleAtlas", UIHelper.ModernStyle),
                 Width = 59,
@@ -84,7 +85,8 @@ namespace MetroOverhaul.UI
             btnClassicStyle = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnClassicStyle",
-                ColumnCount = 2,
+                ToolTip = "Classic Style",
+                ColumnCount = 3,
                 ParentComponent = tsStyles,
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_ClassicStyleAtlas", UIHelper.ClassicStyle),
                 Width = 59,
@@ -95,7 +97,21 @@ namespace MetroOverhaul.UI
                     ExecuteUiInstructions();
                 }
             });
-
+            btnVanillaStyle = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnVanillaStyle",
+                ToolTip = "Vanilla Style",
+                ColumnCount = 3,
+                ParentComponent = tsStyles,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_VanillaStyleAtlas", UIHelper.VanillaStyle),
+                Width = 59,
+                Height = 52,
+                EventClick = (c, v) =>
+                {
+                    trackStyle = TrackStyle.Vanilla;
+                    ExecuteUiInstructions();
+                }
+            });
             var lblDirections = CreateLabel(new UILabelParamProps()
             {
                 Name = "lblDirections",
@@ -300,7 +316,7 @@ namespace MetroOverhaul.UI
                 kvp.Value.isVisible = isStation == 1;
             }
 
-            ToggleButtonPairs((int)trackStyle, btnModernStyle, btnClassicStyle);
+            ToggleButtonPairs((int)trackStyle, btnModernStyle, btnClassicStyle, btnVanillaStyle);
             ToggleButtonPairs(isStation, btnTrack, btnStation);
 
             if (isStation == 0)
@@ -339,6 +355,25 @@ namespace MetroOverhaul.UI
             }
             switch (trackStyle)
             {
+                case TrackStyle.Vanilla:
+                    switch (trackSize)
+                    {
+                        case 0:
+                            {
+                            }
+                            break;
+                        case 1:
+                            if (trackDirection == 0)
+                            {
+
+                            }
+                            else
+                            {
+                                prefab = vanillaPrefab;
+                            }
+                            break;
+                    }
+                    break;
                 case TrackStyle.Modern:
                     {
                         switch (isStation)
@@ -484,14 +519,14 @@ namespace MetroOverhaul.UI
                 {
                     var noCollisionPillars = CheckboxDict[OVER_ROAD_FRIENDLY].isChecked;
                     var elevatedPrefab = PrefabCollection<NetInfo>.FindLoaded(prefab.name.Replace("Ground", "Elevated"));
-                    var ttbai = elevatedPrefab?.GetComponent<TrainTrackBridgeAIMetro>();
+                    var ttbai = elevatedPrefab?.GetComponent<MOMMetroTrackBridgeAI>();
                     if (ttbai != null)
                     {
                         ttbai.NoPillarCollision = noCollisionPillars;
                     }
 
                     var bridgePrefab = PrefabCollection<NetInfo>.FindLoaded(prefab.name.Replace("Ground", "Bridge"));
-                    var ttbai2 = bridgePrefab?.GetComponent<TrainTrackBridgeAIMetro>();
+                    var ttbai2 = bridgePrefab?.GetComponent<MOMMetroTrackBridgeAI>();
                     if (ttbai2 != null)
                     {
                         ttbai2.NoPillarCollision = noCollisionPillars;

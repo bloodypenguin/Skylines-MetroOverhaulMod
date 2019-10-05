@@ -25,8 +25,8 @@ namespace MetroOverhaul.InitializationSteps {
                         var segment0 = info.m_segments[0].ShallowClone();
                         var segment1 = info.m_segments[1].ShallowClone();
                         var segment2 = info.m_segments[0].ShallowClone();
-                        var node0 = info.m_nodes[0].ShallowClone();
 
+                        var node0 = info.m_nodes[0].ShallowClone();
                         var node4 = info.m_nodes[0].ShallowClone();
 
                         nodeList.Add(node0);
@@ -234,13 +234,13 @@ namespace MetroOverhaul.InitializationSteps {
                 case NetInfoVersion.Slope:
                     {
                         var segment0 = metroInfo.m_segments[0].ShallowClone();
-                        var segment1 = info.m_segments[3].ShallowClone();
-                        var segment2 = info.m_segments[3].ShallowClone();
+                        var segment1 = info.m_segments[1].ShallowClone();
+                        var segment2 = info.m_segments[1].ShallowClone();
                         var segment3 = info.m_segments[0].ShallowClone();
                         var segment4 = info.m_segments[1].ShallowClone();
                         var node0 = metroInfo.m_nodes[0].ShallowClone();
 
-                        var node2 = info.m_nodes[3].ShallowClone();
+                        var node2 = info.m_nodes[2].ShallowClone();
                         var node5 = info.m_nodes[0].ShallowClone();
                         var node7 = info.m_nodes[0].ShallowClone();
 

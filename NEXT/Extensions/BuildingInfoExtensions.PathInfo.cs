@@ -8,22 +8,27 @@ namespace MetroOverhaul.NEXT.Extensions {
             if (info.m_finalNetInfo.IsAbovegroundMetroStationTrack())
             {
                 var trackName = info.m_finalNetInfo.name;
-                if (style == TrackStyle.Modern)
+                if (style == TrackStyle.Vanilla)
                 {
-                    if (trackName.ToLower().StartsWith("steel"))
+                    trackName = trackName.Substring(trackName.IndexOf("Metro")).Replace(" Ground", " Overground").Replace(" Tunnel","");
+                    info.AssignNetInfo(trackName, false);
+                }
+                else if (style == TrackStyle.Modern)
+                {
+                    trackName = "Concrete " + trackName.Substring(trackName.IndexOf("Metro")).Replace(" Overground", " Ground");
+                    if (trackName.EndsWith("Track"))
                     {
-                        trackName = trackName.Substring(6);
+                        trackName += " Tunnel";
                     }
-
                     info.AssignNetInfo(trackName,false);
                 }
                 else if (style == TrackStyle.Classic)
                 {
-                    if (trackName.ToLower().StartsWith("steel") == false)
+                    trackName = "Steel " + trackName.Substring(trackName.IndexOf("Metro")).Replace(" Overground"," Ground");
+                    if (trackName.EndsWith("Track"))
                     {
-                        trackName = "Steel " + trackName;
+                        trackName += " Tunnel";
                     }
-
                     info.AssignNetInfo(trackName,false);
                 }
             }

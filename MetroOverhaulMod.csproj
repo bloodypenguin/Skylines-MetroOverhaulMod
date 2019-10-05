@@ -43,16 +43,17 @@
   <ItemGroup>
     <Compile Include="AbstractInitializer.cs" />
     <Compile Include="AssetsUpdater.cs" />
+    <Compile Include="Detours\DepotAIDetour.cs" />
+    <Compile Include="Detours\MetroTrainAIDetour.cs" />
     <Compile Include="Detours\PassengerTrainAIDetour.cs" />
     <Compile Include="Detours\RoadsGroupPanelDetour.cs" />
     <Compile Include="Extensions\ActionExtensions.cs" />
-    <Compile Include="Detours\DepotAIDetour.cs" />
-    <Compile Include="Detours\MetroTrainAIDetour.cs" />
     <Compile Include="Extensions\BuildingInfoExtensions.PathInfo.cs" />
     <Compile Include="Extensions\EffectInfoExtensions.cs" />
     <Compile Include="Extensions\NetInfoExtensions.cs" />
     <Compile Include="Extensions\NetToolExtensions.cs" />
     <Compile Include="Extensions\PropInfoExtensions.cs" />
+    <Compile Include="InitializationSteps\LateBuildUpVanilla.cs" />
     <Compile Include="InitializationSteps\SetupMeshUtil.cs" />
     <Compile Include="InitializationSteps\SetupSteelMesh19m.cs" />
     <Compile Include="InitializationSteps\SetupMesh19m.cs" />
@@ -73,24 +74,27 @@
     <Compile Include="OptionsFramework\Attibutes\TextFieldAttribute.cs" />
     <Compile Include="OptionsFramework\Extensions\CommonExtensions.cs" />
     <Compile Include="OptionsFramework\Extensions\UIHelperBaseExtensions.cs" />
-    <Compile Include="Patch.cs" />
+    <Compile Include="ParentStationMetaData.cs" />
+    <Compile Include="PatchCreateBuilding.cs" />
+    <Compile Include="PatchInitializePrefab.cs" />
     <Compile Include="Redirection\AssemblyRedirector.cs" />
     <Compile Include="Redirection\Attributes\RedirectAttribute.cs" />
     <Compile Include="Redirection\Attributes\RedirectMethodAttribute.cs" />
     <Compile Include="Redirection\Attributes\RedirectReverseAttribute.cs" />
     <Compile Include="Redirection\Attributes\TargetTypeAttribute.cs" />
     <Compile Include="Redirection\Extensions\TypeExtension.cs" />
+    <Compile Include="ReverseEngineerStationCustomizations.cs" />
     <Compile Include="SetUpdateStationCustomizations.cs" />
     <Compile Include="ModTrackNames.cs" />
-    <Compile Include="TrainTrackAIMetro.cs" />
-    <Compile Include="TrainTrackBridgeAIMetro.cs" />
     <Compile Include="MetroTrackAIMetro.cs" />
+    <Compile Include="MOMMetroTrackAI.cs" />
+    <Compile Include="MOMMetroTrackBridgeAI.cs" />
+    <Compile Include="MOMMetroTrackTunnelAI.cs" />
     <Compile Include="UI\StationTypeSelectorTooltip.cs" />
     <Compile Include="UI\MetroAboveGroundStationCustomizerUI.cs" />
     <Compile Include="UI\MetroCustomizerBaseUI.cs" />
     <Compile Include="UI\MetroTrackAssetCustomizerUI.cs" />
     <Compile Include="UI\MetroTrackCustomizerUI.cs" />
-    <Compile Include="TrainTrackTunnelAIMetro.cs" />
     <Compile Include="InitializationSteps\LateBuildUpSteel.cs" />
     <Compile Include="InitializationSteps\LateBuildUp.cs" />
     <Compile Include="InitializationSteps\CommonSteps.cs" />
@@ -485,6 +489,9 @@
     <None Include="Resources\Meshes\10m\Elevated_Node_Pavement_Trans.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Meshes\10m\Elevated_Node_Pavement_Vanilla.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\10m\Elevated_Pavement.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -549,6 +556,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\10m\Elevated_Trans_Pavement_Steel.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Meshes\10m\Elevated_Trans_Pavement_Vanilla.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Meshes\10m\Ground_Fence.obj">
@@ -3265,6 +3275,7 @@
     <Content Include="Resources\Textures\Tunnel_Station_Segment_Pavement__XYSMap_LOD.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\VanillaThumbnails.png" />
     <EmbeddedResource Include="Resources\UI\Thumbs\Button\DualIslandThumbnails.png" />
     <EmbeddedResource Include="Resources\UI\Thumbs\Button\ExpressSideThumbnails.png" />
     <EmbeddedResource Include="Resources\UI\Thumbs\Button\IslandThumbnails.png" />

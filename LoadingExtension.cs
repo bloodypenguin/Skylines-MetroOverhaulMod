@@ -48,7 +48,7 @@ namespace MetroOverhaul
             if (OptionsWrapper<Options>.Options.ingameTrainMetroConverter)
             {
                 _harmony = HarmonyInstance.Create("andreharv.Skylines-MetroOverhaulMod");
-                Patch.Apply(_harmony, ref Container);
+                PatchInitializePrefab.Apply(_harmony, ref Container);
             }
 
             if (loading.currentMode == AppMode.AssetEditor)
@@ -128,18 +128,24 @@ namespace MetroOverhaul
             AssetsUpdater.UpdateBuildingsMetroPaths(mode, isVanilla);
             if (!isVanilla)
             {
-                if (OptionsWrapper<Options>.Options.metroUi)
-                {
-                    UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizerUI));
-                    UIView.GetAView().AddUIComponent(typeof(MetroTrackCustomizerUI));
-                    UIView.GetAView().AddUIComponent(typeof(MetroAboveGroundStationCustomizerUI));
-                }
-
                 if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame || mode == LoadMode.NewGameFromScenario)
                 {
                     SimulationManager.instance.AddAction(DespawnVanillaMetro);
                     var gameObject = new GameObject("MetroOverhaulUISetup");
                     gameObject.AddComponent<UpgradeSetup>();
+                    //#if DEBUG
+                    //                gameObject.AddComponent<StyleSelectionStationUI>();
+                    //#else
+                    //                gameObject.AddComponent<StyleSelectionUI>();
+                    //#endif
+
+                    if (OptionsWrapper<Options>.Options.metroUi)
+                    {
+                        var metroStationCustomizerUI = (MetroStationCustomizerUI)UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizerUI));
+                        UIView.GetAView().AddUIComponent(typeof(MetroTrackCustomizerUI));
+                        UIView.GetAView().AddUIComponent(typeof(MetroAboveGroundStationCustomizerUI));
+                        PatchCreateBuilding.Apply(_harmony, ref metroStationCustomizerUI);
+                    }
 
                     var transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Metro");
                     transportInfo.m_netLayer = ItemClass.Layer.Default | ItemClass.Layer.MetroTunnels;
@@ -148,6 +154,17 @@ namespace MetroOverhaul
                     transportInfo.m_secondaryLineMaterial = transportInfo.m_lineMaterial;
                     transportInfo.m_secondaryLineMaterial2 = transportInfo.m_lineMaterial2;
                 }
+                else
+                {
+                    var gameObject = new GameObject("MetroOverhaulUISetup");
+                    //gameObject.AddComponent<StyleSelectionStationUI>();
+#if DEBUG
+                    UIView.GetAView().AddUIComponent(typeof(MetroStationCustomizerUI));
+                    UIView.GetAView().AddUIComponent(typeof(MetroTrackAssetCustomizerUI));
+                    UIView.GetAView().AddUIComponent(typeof(MetroAboveGroundStationCustomizerUI));
+#endif
+                }
+                //Container.DoSomething();
             }
 
         }
@@ -176,8 +193,8 @@ namespace MetroOverhaul
         {
             base.OnReleased();
             if (OptionsWrapper<Options>.Options.ingameTrainMetroConverter)
-                Patch.Revert(_harmony);
-
+                PatchInitializePrefab.Revert(_harmony);
+            PatchCreateBuilding.Revert(_harmony);
             if (!OptionsWrapper<Options>.Options.ghostMode)
             {
                 _updater = null;
@@ -189,7 +206,7 @@ namespace MetroOverhaul
                 Container = null;
                 Redirector<RoadsGroupPanelDetour>.Revert();
                 Redirector<DepotAIDetour>.Revert();
-                Redirector<MetroTrainAI>.Revert();
+                Redirector<MetroTrainAIDetour>.Revert();
                 Redirector<PassengerTrainAIDetour>.Revert();
             }
         }

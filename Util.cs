@@ -10,9 +10,13 @@ using Object = UnityEngine.Object;
 using static ColossalFramework.Plugins.PluginManager;
 using ColossalFramework.PlatformServices;
 using System.IO;
+using ColossalFramework.UI;
+using MetroOverhaul.UI;
+using MetroOverhaul.NEXT;
 
 namespace MetroOverhaul {
     public static class Util {
+        private static int count = 0;
         public static IEnumerable<FieldInfo> GetAllFieldsFromType(this Type type)
         {
             if (type == null)
@@ -39,6 +43,25 @@ namespace MetroOverhaul {
                 return assetName;
             }
             return publishedFileID;
+        }
+        public static bool IsMetroTrackCustomizerUIVisible()
+        {
+            var ui = UIView.GetAView().FindUIComponent(typeof(MetroTrackCustomizerUI).ToString());
+
+            if (ui != null)
+            {
+                Debug.Log("The UI is not null!");
+                Debug.Log("The UI is visible? " + ((MetroTrackCustomizerUI)ui).isVisible + ". Count: " + count++);
+                //Debug.Log("The UI is active? " + ((MetroTrackCustomizerUI)ui).IsActivated());
+                //Debug.Log("The UI is active & enabled? " + ((MetroTrackCustomizerUI)ui).isActiveAndEnabled);
+                return ((MetroTrackCustomizerUI)ui).isVisible;
+            }
+            else
+            {
+                Debug.Log("The UI is null!");
+            }
+                
+            return false;
         }
         public static T ClonePrefab<T>(T originalPrefab, string newName, Transform parentTransform) where T : PrefabInfo
         {
@@ -107,7 +130,80 @@ namespace MetroOverhaul {
 
             }
         }
+        public static string GetMetroTrackName(NetInfoVersion version, TrackStyle style, TrackType type = TrackType.TwowayTwoLane, bool isNoBar = false)
+        {
+            var trackName = "Metro Track";
+            if (version == NetInfoVersion.Ground)
+            {
+                switch (style)
+                {
+                    case TrackStyle.Vanilla:
+                        trackName += " Overground";
+                        break;
+                    case TrackStyle.Modern:
+                        trackName = string.Format("Concrete {0} Ground", trackName);
+                        break;
+                    case TrackStyle.Classic:
+                        trackName = string.Format("Steel {0} Ground", trackName);
+                        break;
+                }
+            }
+            else if (version != NetInfoVersion.Tunnel || style != TrackStyle.Vanilla)
+            {
+                switch (style)
+                {
+                    case TrackStyle.Modern:
+                        trackName = "Concrete " + trackName;
+                        break;
+                    case TrackStyle.Classic:
+                        trackName = "Steel " + trackName;
+                        break;
+                }
+                trackName += " " + version.ToString();
+            }
+            switch (type)
+            {
+                case TrackType.TwowayOneLane:
+                    trackName += " Small Two-Way";
+                    break;
+                case TrackType.OnewayTwoLane:
+                    trackName += " Two-Lane One-Way";
+                    break;
+                case TrackType.OnewayOneLane:
+                    trackName += " Small";
+                    break;
+                case TrackType.Quad:
+                    trackName += " Large";
+                    break;
+            }
+            if (style != TrackStyle.Vanilla)
+            {
+                if (isNoBar)
+                {
+                    return trackName + " NoBar";
+                }
+            }
+            return trackName;
+        }
 
+        public static string GetMetroStationTrackName(NetInfoVersion version, TrackStyle style, StationTrackType stationType = StationTrackType.SidePlatform)
+        {
+            string trackName = GetMetroTrackName(version, style).Replace("Metro Track", "Metro Station Track");
+            switch (stationType)
+            {
+                case StationTrackType.SidePlatform:
+                    return trackName;
+                case StationTrackType.SinglePlatform:
+                    return trackName + " Small";
+                case StationTrackType.IslandPlatform:
+                    return trackName + " Island";
+                case StationTrackType.ExpressSidePlatform:
+                    return trackName + " Large";
+                case StationTrackType.DualIslandPlatform:
+                    return trackName + " Large Dual Island";
+            }
+            return trackName;
+        }
         public static bool IsModActive(string modName)
         {
             var plugins = PluginManager.instance.GetPluginsInfo();

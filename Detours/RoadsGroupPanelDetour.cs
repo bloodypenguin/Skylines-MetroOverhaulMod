@@ -8,13 +8,13 @@ namespace MetroOverhaul.Detours {
         [RedirectMethod]
         protected override bool IsServiceValid(PrefabInfo info)
         {
-            if (this.isMapEditor)
+            if (isMapEditor)
             {
                 if (info.GetService() != this.service)
                     return info.GetService() == ItemClass.Service.PublicTransport;
                 return true;
             }
-            if (this.isAssetEditor)
+            if (isAssetEditor)
             {
                 BuildingInfo buildingInfo = info as BuildingInfo;
                 if (info.GetService() == this.service && ((Object)buildingInfo == (Object)null || buildingInfo.m_buildingAI.WorksAsNet()) || info.GetService() == ItemClass.Service.PublicTransport && (info.GetSubService() == ItemClass.SubService.PublicTransportTrain || info.GetSubService() == ItemClass.SubService.PublicTransportMetro || info.GetSubService() == ItemClass.SubService.PublicTransportMonorail || info.GetSubService() == ItemClass.SubService.PublicTransportCableCar))

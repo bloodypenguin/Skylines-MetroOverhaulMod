@@ -5,11 +5,13 @@ using ColossalFramework;
 using ColossalFramework.Math;
 using ICities;
 using MetroOverhaul.Extensions;
+using MetroOverhaul.NEXT;
 using MetroOverhaul.NEXT.Extensions;
 using MetroOverhaul.OptionsFramework;
 using UnityEngine;
 
-namespace MetroOverhaul {
+namespace MetroOverhaul
+{
     public class AssetsUpdater
     {
         private static NetManager ninstance = Singleton<NetManager>.instance;
@@ -95,7 +97,7 @@ namespace MetroOverhaul {
                     {
                         continue;
                     }
-                    if (m_NeedsConvert && (info.IsUndergroundMetroTrack() || info.name == "Metro Track"))
+                    if (m_NeedsConvert && (info.IsUndergroundMetroTrack() || info.name == Util.GetMetroTrackName(NEXT.NetInfoVersion.Tunnel, TrackStyle.Vanilla)))
                     {
                         m_NeedsConvert = true;
                         DipPath(i, n, toVanilla);
@@ -142,12 +144,12 @@ namespace MetroOverhaul {
                             NetNode node = NodeFrom(i);
                             if (node.Info.IsMetroTrack())
                             {
-                                ninstance.m_nodes.m_buffer[i].Info = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+                                ninstance.m_nodes.m_buffer[i].Info = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Tunnel, TrackStyle.Vanilla));
                                 ninstance.UpdateNode(i);
                             }
                             else if (node.Info.IsMetroStationTrack())
                             {
-                                ninstance.m_nodes.m_buffer[i].Info = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track");
+                                ninstance.m_nodes.m_buffer[i].Info = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Vanilla));
                                 ninstance.UpdateNode(i);
                             }
                         }
@@ -156,12 +158,12 @@ namespace MetroOverhaul {
                             NetSegment segment = SegmentFrom(i);
                             if (segment.Info.IsMetroTrack())
                             {
-                                ninstance.m_segments.m_buffer[i].Info = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+                                ninstance.m_segments.m_buffer[i].Info = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Vanilla));
                                 ninstance.UpdateSegment(i);
                             }
                             else if (segment.Info.IsMetroStationTrack())
                             {
-                                ninstance.m_segments.m_buffer[i].Info = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track");
+                                ninstance.m_segments.m_buffer[i].Info = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Vanilla));
                                 ninstance.UpdateSegment(i);
                             }
                         }
@@ -434,7 +436,7 @@ namespace MetroOverhaul {
                 NetNode node = NodeFrom(nodeID);
                 if (node.Info != null)
                 {
-                    if (node.Info.IsUndergroundMetroStationTrack() || node.Info.name == "Metro Station Track" || node.Info.IsUndergroundMetroTrack() || node.Info.name == "Metro Track")
+                    if (node.Info.IsUndergroundMetroStationTrack() || node.Info.name == Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Vanilla) || node.Info.IsUndergroundMetroTrack() || node.Info.name == Util.GetMetroTrackName(NetInfoVersion.Tunnel, TrackStyle.Vanilla))
                     {
                         if (stationNodeIDs == null)
                         {
@@ -454,7 +456,7 @@ namespace MetroOverhaul {
             while (nodeID > 0)
             {
                 NetNode node = NodeFrom(nodeID);
-                if (node.Info != null && (node.Info.IsUndergroundMetroStationTrack() || node.Info.name == "Metro Station Track"))
+                if (node.Info != null && (node.Info.IsUndergroundMetroStationTrack() || node.Info.name == Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Vanilla)))
                 {
                     if (stationNodeIDs == null)
                     {
@@ -561,7 +563,7 @@ namespace MetroOverhaul {
             NetManager instance = Singleton<NetManager>.instance;
             Vector3 position = instance.m_nodes.m_buffer[(int)startNode].m_position;
             Vector3 startDirection = VectorUtils.NormalizeXZ(instance.m_nodes.m_buffer[(int)endNode].m_position - position);
-            if (instance.CreateSegment(out segment, ref Singleton<SimulationManager>.instance.m_randomizer, PrefabCollection<NetInfo>.FindLoaded("Metro Track Tunnel"), startNode, endNode, startDirection, -startDirection, Singleton<SimulationManager>.instance.m_currentBuildIndex, Singleton<SimulationManager>.instance.m_currentBuildIndex, false))
+            if (instance.CreateSegment(out segment, ref Singleton<SimulationManager>.instance.m_randomizer, PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NEXT.NetInfoVersion.Tunnel, TrackStyle.Modern)), startNode, endNode, startDirection, -startDirection, Singleton<SimulationManager>.instance.m_currentBuildIndex, Singleton<SimulationManager>.instance.m_currentBuildIndex, false))
             {
                 instance.UpdateSegment(segment);
                 Singleton<SimulationManager>.instance.m_currentBuildIndex += 2U;
@@ -602,11 +604,11 @@ namespace MetroOverhaul {
 
                 if (path.m_netInfo.IsMetroStationTrack())
                 {
-                    path.AssignNetInfo("Metro Station Track");
+                    path.AssignNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Vanilla));
                 }
                 else if (path.m_netInfo.IsMetroTrack())
                 {
-                    path.AssignNetInfo("Metro Track");
+                    path.AssignNetInfo(Util.GetMetroTrackName(NetInfoVersion.Tunnel, TrackStyle.Vanilla));
                 }
             }
         }
@@ -665,13 +667,13 @@ namespace MetroOverhaul {
             NetInfo metroStationTrack = null;
             if (OptionsWrapper<Options>.Options.ghostMode)
             {
-                metroTrack = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground");
-                metroStationTrack = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground");
+                metroTrack = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NEXT.NetInfoVersion.Ground, TrackStyle.Modern));
+                metroStationTrack = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroStationTrackName(NEXT.NetInfoVersion.Ground, TrackStyle.Modern));
             }
             else
             {
-                metroTrack = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
-                metroStationTrack = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track");
+                metroTrack = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NEXT.NetInfoVersion.Ground, TrackStyle.Vanilla));
+                metroStationTrack = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroStationTrackName(NEXT.NetInfoVersion.Ground, TrackStyle.Vanilla));
             }
             if (metroTrack != null)
             {
@@ -684,8 +686,8 @@ namespace MetroOverhaul {
         }
         private static void UpdateNoColPillars()
         {
-            var noColBuildingInfos = Resources.FindObjectsOfTypeAll<BuildingInfo>().Where(b=>b.name.IndexOf("NoCol") > -1);
-            foreach(var info in noColBuildingInfos)
+            var noColBuildingInfos = Resources.FindObjectsOfTypeAll<BuildingInfo>().Where(b => b.name.IndexOf("NoCol") > -1);
+            foreach (var info in noColBuildingInfos)
             {
                 info.m_generatedInfo.m_min.y = 32;
             }

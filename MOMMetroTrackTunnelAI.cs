@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MetroOverhaul
 {
-    public class TrainTrackTunnelAIMetro : TrainTrackTunnelAI
+    public class MOMMetroTrackTunnelAI : MetroTrackTunnelAI
     {
         ////taken from MetroAI
         //public override Color GetColor(ushort segmentID, ref NetSegment data, InfoManager.InfoMode infoMode)

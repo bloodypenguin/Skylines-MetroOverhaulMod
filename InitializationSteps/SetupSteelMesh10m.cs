@@ -32,12 +32,13 @@ namespace MetroOverhaul.InitializationSteps
                         var segment0 = info.m_segments[0].ShallowClone();
                         var segment1 = info.m_segments[1].ShallowClone();
                         var segment2 = info.m_segments[0].ShallowClone();
-                        var node0 = info.m_nodes[0].ShallowClone();
 
+                        var node0 = info.m_nodes[0].ShallowClone();
                         var node4 = info.m_nodes[0].ShallowClone();
 
                         nodeList.Add(node0);
                         nodeList.Add(node4);
+
                         segment0
                             .SetFlagsDefault()
                             .SetMeshes
@@ -179,11 +180,11 @@ namespace MetroOverhaul.InitializationSteps
                         var segment0 = info.m_segments[0].ShallowClone();
                         var segment1 = info.m_segments[1].ShallowClone();
                         var segment2 = info.m_segments[0].ShallowClone();
-                        var segment3 = info.m_segments[3].ShallowClone();
-                        var segment4 = info.m_segments[3].ShallowClone();
+                        var segment3 = info.m_segments[1].ShallowClone();
+                        var segment4 = info.m_segments[1].ShallowClone();
                         var node0 = info.m_nodes[0].ShallowClone();
 
-                        var node3 = info.m_nodes[3].ShallowClone();
+                        var node3 = info.m_nodes[2].ShallowClone();
                         var node5 = info.m_nodes[0].ShallowClone();
                         var node6 = info.m_nodes[0].ShallowClone();
 
@@ -240,6 +241,8 @@ namespace MetroOverhaul.InitializationSteps
                             .SetConsistentUVs();
                         segment2.m_material = railMaterial;
                         segment2.m_lodMaterial = railLODMaterial;
+                        node3.m_material = elevatedMaterial;
+                        node3.m_lodMaterial = defaultElLODMaterial;
                         node5.m_material = elevatedMaterial;
                         node5.m_lodMaterial = defaultElLODMaterial;
                         node6.m_material = railMaterial;

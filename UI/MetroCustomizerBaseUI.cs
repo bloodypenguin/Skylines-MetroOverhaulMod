@@ -1,6 +1,7 @@
 ﻿using ColossalFramework.Threading;
 using ColossalFramework.UI;
 using MetroOverhaul.Extensions;
+using MetroOverhaul.NEXT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,8 @@ namespace MetroOverhaul.UI
 
         protected NetInfo trainTrackPrefab;
         protected NetInfo trainStationTrackPrefab;
+
+        protected NetInfo vanillaPrefab;
 
         protected NetInfo concretePrefab;
         protected NetInfo concretePrefabNoBar;
@@ -65,6 +68,7 @@ namespace MetroOverhaul.UI
         protected UIButton btnDefault;
         protected UIButton btnModernStyle;
         protected UIButton btnClassicStyle;
+        protected UIButton btnVanillaStyle;
         protected UIButton btnNoStyle;
         protected UIButton btnSingleTrack;
         protected UIButton btnDoubleTrack;
@@ -88,22 +92,22 @@ namespace MetroOverhaul.UI
         protected UILabel lblTabTitle;
         protected UITextField tfStationLengthPanelTooltip;
         protected UITextField tfStationDepthPanelTooltip;
-        protected UITextField tfStationAnglePanelTooltip;
+        protected UITextField tfStationRotationPanelTooltip;
         protected UITextField tfStationBendPanelTooltipTooltip;
         protected Task m_T = null;
 
         protected bool m_valueChanged = false;
         protected MetroStationTrackAlterType m_Toggle = MetroStationTrackAlterType.None;
-        protected static Dictionary<MetroStationTrackAlterType, SliderData> SliderDataDict { get; set; }
+        public Dictionary<MetroStationTrackAlterType, SliderData> SliderDataDict { get; set; }
         protected static Dictionary<MetroStationTrackAlterType, UISlider> SliderDict { get; set; }
         protected static Dictionary<MetroStationTrackAlterType, UIPanel> PanelDict { get; set; }
         protected static Dictionary<StationTrackType, UICheckBox> CheckboxStationDict { get; set; }
         protected static Dictionary<StationTrackType, UIButton> buttonStationDict { get; set; }
         protected static Dictionary<string, UICheckBox> CheckboxDict { get; set; }
         protected Dictionary<MetroStationTrackAlterType, UIButton> toggleBtnDict = new Dictionary<MetroStationTrackAlterType, UIButton>();
-        protected Dictionary<MetroStationTrackAlterType, float> SetDict = new Dictionary<MetroStationTrackAlterType, float>();
+        public Dictionary<MetroStationTrackAlterType, float> SetDict = new Dictionary<MetroStationTrackAlterType, float>();
 
-        protected StationTrackType m_TrackType = StationTrackType.None;
+        public StationTrackType m_TrackType = StationTrackType.None;
 
         public int isStation = 1;
         public StationTrackType stationType;
@@ -132,13 +136,17 @@ namespace MetroOverhaul.UI
         protected const string STATION_TYPE_SELECTOR_INFO = "Convert your station from Default, to Train or to Metro.\n Default tab leaves the station as normal, Train tab converts all tracks to accept train vehicles and allows intercity trains.\n Metro tab converts all tracks to accept metro vehicles. After selecting a station type you can further customize individual track types below.";
         protected string Station_Length_Info { get { return $"Adjusts the length of your station track. It is recommended to set this to about the length of your Metro Trains. Default is {SetStationCustomizations.DEF_LENGTH}m with a maximum length of {SetStationCustomizations.MAX_LENGTH}m and a minimum length of {SetStationCustomizations.MIN_LENGTH}m."; } }
         protected string Station_Depth_Info { get { return $"Adjusts the depth of your station track. It is recommended you set your tracks deeper on uneven terrain. Default depth is {SetStationCustomizations.DEF_DEPTH}m with a maximum depth of {SetStationCustomizations.MAX_DEPTH}m and a minimum depth of {SetStationCustomizations.MIN_DEPTH}m."; } }
-        protected string Station_Angle_Info { get { return $"Adjusts the angle of your station track. This allows you to spin your tracks to align to your metro layout. Default angle is {SetStationCustomizations.DEF_ANGLE}° with a maximum angle of {SetStationCustomizations.MAX_ANGLE}° and a minimum angle of {SetStationCustomizations.MIN_ANGLE}°."; } }
+        protected string Station_Rotation_Info { get { return $"Adjusts the angle of your station track. This allows you to spin your tracks to align to your metro layout. Default angle is {SetStationCustomizations.DEF_ANGLE}° with a maximum angle of {SetStationCustomizations.MAX_ANGLE}° and a minimum angle of {SetStationCustomizations.MIN_ANGLE}°."; } }
         protected string Station_Bend_Info { get { return $"Adjusts the bend in the station track. This is useful for situations where your station connects tracks arriving from different angles. Default bend is { SetStationCustomizations.DEF_BEND_STRENGTH }° (no bend) with a maximum bend of { SetStationCustomizations.MAX_BEND_STRENGTH}° and a minimum bend of { SetStationCustomizations.MIN_BEND_STRENGTH}°."; } }
         protected Color32 DefaultColor = new Color32(90, 115, 217, 255);
         protected Color32 TrainColor = new Color32(233, 85, 38, 255);
         protected Color32 MetroColor = new Color32(6, 213, 73, 255);
         protected ItemClass m_TheIntersectClass = null;
 
+        public bool IsActivated()
+        {
+            return m_activated;
+        }
         protected virtual bool SatisfiesTrackSpecs(PrefabInfo info)
         {
             return false;
@@ -241,6 +249,7 @@ namespace MetroOverhaul.UI
             width = m_SetWidth;
             height = 0;
             opacity = 90;
+            name = GetType().ToString();
             position = Vector2.zero;
             isVisible = false;
             isInteractive = true;
@@ -253,47 +262,49 @@ namespace MetroOverhaul.UI
             trainTrackPrefab = PrefabCollection<NetInfo>.FindLoaded("Train Track");
             trainStationTrackPrefab = PrefabCollection<NetInfo>.FindLoaded("Train Station Track");
 
-            concretePrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground");
-            concretePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground NoBar");
+            vanillaPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Modern));
 
-            concreteTwoLaneOneWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Two-Lane One-Way");
-            concreteTwoLaneOneWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Two-Lane One-Way NoBar");
+            concretePrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Modern));
+            concretePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Modern, TrackType.TwowayTwoLane, true));
 
-            concreteLargePrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Large");
-            concreteLargePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Large NoBar");
+            concreteTwoLaneOneWayPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Modern, TrackType.TwowayOneLane));
+            concreteTwoLaneOneWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Modern, TrackType.TwowayOneLane, true));
 
-            concreteSmallPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small");
-            concreteSmallPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small NoBar");
+            concreteLargePrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Modern, TrackType.Quad));
+            concreteLargePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Modern, TrackType.Quad, true));
 
-            concreteSmallTwoWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small Two-Way");
-            concreteSmallTwoWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Metro Track Ground Small Two-Way NoBar");
+            concreteSmallPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Modern, TrackType.OnewayOneLane));
+            concreteSmallPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Modern, TrackType.OnewayOneLane, true));
 
-            concreteSideStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground");
-            concreteIslandStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Island");
-            concreteSingleStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Small");
-            concreteQuadSideStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Large");
-            concreteQuadDualIslandStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Metro Station Track Ground Large Dual Island");
+            concreteSmallTwoWayPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Modern, TrackType.OnewayTwoLane));
+            concreteSmallTwoWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Modern, TrackType.OnewayTwoLane, true));
 
-            steelPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground");
-            steelPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground NoBar");
+            concreteSideStationPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroStationTrackName(NetInfoVersion.Ground, TrackStyle.Modern));
+            concreteIslandStationPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroStationTrackName(NetInfoVersion.Ground, TrackStyle.Modern, StationTrackType.IslandPlatform));
+            concreteSingleStationPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroStationTrackName(NetInfoVersion.Ground, TrackStyle.Modern, StationTrackType.SinglePlatform));
+            concreteQuadSideStationPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroStationTrackName(NetInfoVersion.Ground, TrackStyle.Modern, StationTrackType.ExpressSidePlatform));
+            concreteQuadDualIslandStationPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroStationTrackName(NetInfoVersion.Ground, TrackStyle.Modern, StationTrackType.DualIslandPlatform));
 
-            steelTwoLaneOneWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Two-Lane One-Way");
-            steelTwoLaneOneWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Two-Lane One-Way NoBar");
+            steelPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Classic));
+            steelPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Classic, TrackType.TwowayTwoLane, true));
 
-            steelSmallPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small");
-            steelSmallPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small NoBar");
+            steelTwoLaneOneWayPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Classic, TrackType.OnewayTwoLane));
+            steelTwoLaneOneWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Classic, TrackType.OnewayTwoLane, true));
 
-            steelSmallTwoWayPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small Two-Way");
-            steelSmallTwoWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Small Two-Way NoBar");
+            steelSmallPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Classic, TrackType.OnewayOneLane));
+            steelSmallPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Classic, TrackType.OnewayOneLane, true));
 
-            steelLargePrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Large");
-            steelLargePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Track Ground Large NoBar");
+            steelSmallTwoWayPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Classic, TrackType.OnewayTwoLane));
+            steelSmallTwoWayPrefabNoBar = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Classic, TrackType.OnewayTwoLane, true));
 
-            steelSideStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground");
-            steelIslandStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Island");
-            steelSingleStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Small");
-            steelQuadSideStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Large");
-            steelQuadDualIslandStationPrefab = PrefabCollection<NetInfo>.FindLoaded("Steel Metro Station Track Ground Large Dual Island");
+            steelLargePrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Classic, TrackType.Quad));
+            steelLargePrefabNoBar = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Classic, TrackType.Quad, true));
+
+            steelSideStationPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroStationTrackName(NetInfoVersion.Ground, TrackStyle.Classic));
+            steelIslandStationPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroStationTrackName(NetInfoVersion.Ground, TrackStyle.Classic, StationTrackType.IslandPlatform));
+            steelSingleStationPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroStationTrackName(NetInfoVersion.Ground, TrackStyle.Classic, StationTrackType.SinglePlatform));
+            steelQuadSideStationPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroStationTrackName(NetInfoVersion.Ground, TrackStyle.Classic, StationTrackType.ExpressSidePlatform));
+            steelQuadDualIslandStationPrefab = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroStationTrackName(NetInfoVersion.Ground, TrackStyle.Classic, StationTrackType.DualIslandPlatform));
         }
 
 

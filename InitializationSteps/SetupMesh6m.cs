@@ -237,7 +237,7 @@ namespace MetroOverhaul.InitializationSteps {
                         var segments4 = info.m_segments[1].ShallowClone();
                         var nodes0 = info.m_nodes[0].ShallowClone();
                         //var nodes2 wires
-                        var nodes3 = info.m_nodes[3].ShallowClone();
+                        var nodes3 = info.m_nodes[2].ShallowClone();
                         var nodes9 = info.m_nodes[0].ShallowClone();
 
                         //var nodes10 = info.m_nodes[1].ShallowClone();
@@ -295,6 +295,8 @@ namespace MetroOverhaul.InitializationSteps {
                         segments3.m_lodMaterial = defaultLODMaterial;
                         segments4.m_material = railMaterial;
                         segments4.m_lodMaterial = railLODMaterial;
+                        nodes3.m_material = defaultMaterial;
+                        nodes3.m_lodMaterial = defaultLODMaterial;
                         nodes9.m_material = defaultMaterial;
                         nodes9.m_lodMaterial = defaultLODMaterial;
 
@@ -377,7 +379,7 @@ namespace MetroOverhaul.InitializationSteps {
         {
             var elevatedInfo = Prefabs.Find<NetInfo>("Train Track Elevated");
             var elevatedRInfo = Prefabs.Find<NetInfo>("Basic Road Elevated");
-            var metroInfo = Prefabs.Find<NetInfo>("Metro Track");
+            var metroInfo = Prefabs.Find<NetInfo>(Util.GetMetroTrackName(NetInfoVersion.Tunnel, TrackStyle.Modern));
             var elevatedRMaterial = elevatedRInfo.m_nodes[0].m_material;
             var elevatedRLODMaterial = elevatedRInfo.m_nodes[0].m_lodMaterial;
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;

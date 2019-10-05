@@ -40,19 +40,19 @@ namespace MetroOverhaul.UI
             Next.Debug.Log("MOM TRACK GUI Created");
 #endif
             base.CreateUI();
-            width = 250;
+            width = 310;
             CreateDragHandle("Track Options");
             var pnlStyles = CreatePanel(new UIPanelParamProps()
             {
                 Name = "pnlStyles",
-                ColShare = 6,
+                ColShare = 8,
                 Margins = new Vector2(10, 0)
             });
             var pnlDirections = CreatePanel(new UIPanelParamProps()
             {
                 Name = "pnlDirections",
-                ColShare = 5,
-                ColOffset = 1,
+                ColShare = 4,
+                //ColOffset = 1,
             });
             var lblStyles = CreateLabel(new UILabelParamProps()
             {
@@ -72,7 +72,7 @@ namespace MetroOverhaul.UI
             {
                 Name = "btnModernStyle",
                 ToolTip = "Modern Style",
-                ColumnCount = 2,
+                ColumnCount = 3,
                 ParentComponent = tsStyles,
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_ModernStyleAtlas", UIHelper.ModernStyle),
                 Width = 59,
@@ -87,7 +87,7 @@ namespace MetroOverhaul.UI
             {
                 Name = "btnClassicStyle",
                 ToolTip = "Classic Style",
-                ColumnCount = 2,
+                ColumnCount = 3,
                 ParentComponent = tsStyles,
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_ClassicStyleAtlas", UIHelper.ClassicStyle),
                 Width = 59,
@@ -98,7 +98,21 @@ namespace MetroOverhaul.UI
                     ExecuteUiInstructions();
                 }
             });
-
+            btnVanillaStyle = CreateButton(new UIButtonParamProps()
+            {
+                Name = "btnVanillaStyle",
+                ToolTip = "Vanilla Style",
+                ColumnCount = 3,
+                ParentComponent = tsStyles,
+                Atlas = UIHelper.GenerateLinearAtlas("MOM_VanillaStyleAtlas", UIHelper.VanillaStyle),
+                Width = 59,
+                Height = 52,
+                EventClick = (c, v) =>
+                {
+                    trackStyle = TrackStyle.Vanilla;
+                    ExecuteUiInstructions();
+                }
+            });
             var lblDirections = CreateLabel(new UILabelParamProps()
             {
                 Name = "lblDirections",
@@ -286,6 +300,25 @@ namespace MetroOverhaul.UI
 
             switch (trackStyle)
             {
+                case TrackStyle.Vanilla:
+                    switch (trackSize)
+                    {
+                        case 0:
+                            {
+                            }
+                            break;
+                        case 1:
+                            if (trackDirection == 0)
+                            {
+
+                            }
+                            else
+                            {
+                                prefab = vanillaPrefab;
+                            }
+                            break;
+                    }
+                    break;
                 case TrackStyle.Modern:
                     switch (trackSize)
                     {
@@ -384,7 +417,7 @@ namespace MetroOverhaul.UI
                 {
                     var noCollisionPillars = CheckboxDict[OVER_ROAD_FRIENDLY].isChecked;
                     var elevatedPrefab = PrefabCollection<NetInfo>.FindLoaded(prefab.name.Replace("Ground", "Elevated"));
-                    var ttbai = elevatedPrefab?.GetComponent<TrainTrackBridgeAIMetro>();
+                    var ttbai = elevatedPrefab?.GetComponent<MOMMetroTrackBridgeAI>();
                     if (ttbai != null)
                     {
                         ttbai.NoPillarCollision = noCollisionPillars;
@@ -392,7 +425,7 @@ namespace MetroOverhaul.UI
                     }
 
                     var bridgePrefab = PrefabCollection<NetInfo>.FindLoaded(prefab.name.Replace("Ground", "Bridge"));
-                    var ttbai2 = bridgePrefab?.GetComponent<TrainTrackBridgeAIMetro>();
+                    var ttbai2 = bridgePrefab?.GetComponent<MOMMetroTrackBridgeAI>();
                     if (ttbai2 != null)
                     {
                         ttbai2.NoPillarCollision = noCollisionPillars;

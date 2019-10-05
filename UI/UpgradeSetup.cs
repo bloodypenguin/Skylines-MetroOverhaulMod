@@ -12,7 +12,7 @@ namespace MetroOverhaul.UI
             {
                 return;
             }
-            var toolModeGo = panel.transform.FindChild("ToolMode");
+            var toolModeGo = panel.transform.Find("ToolMode");
             var tabstrip = toolModeGo.GetComponent<UITabstrip>();
             if (tabstrip.tabCount > 3)
             {

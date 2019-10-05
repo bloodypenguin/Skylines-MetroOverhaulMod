@@ -15,7 +15,6 @@ namespace MetroOverhaul.InitializationSteps {
             var brElInfo = Prefabs.Find<NetInfo>("Basic Road Elevated");
             var defaultElMaterial = brElInfo.m_segments[0].m_material;
             var defaultElLODMaterial = brElInfo.m_segments[0].m_lodMaterial;
-            var isTwoWay = info.name.Contains("Two-Way");
             var nodeList = new List<NetInfo.Node>();
             switch (version)
             {
@@ -184,12 +183,12 @@ namespace MetroOverhaul.InitializationSteps {
                         var segment0 = info.m_segments[0].ShallowClone();
                         var segment1 = info.m_segments[1].ShallowClone();
                         var segment2 = info.m_segments[0].ShallowClone();
-                        var segment3 = info.m_segments[3].ShallowClone();
-                        var segment4 = info.m_segments[3].ShallowClone();
+                        var segment3 = info.m_segments[1].ShallowClone();
+                        var segment4 = info.m_segments[1].ShallowClone();
                         var node0 = info.m_nodes[0].ShallowClone();
 
                         var node2 = info.m_nodes[1].ShallowClone();
-                        var node3 = info.m_nodes[3].ShallowClone();
+                        var node3 = info.m_nodes[2].ShallowClone();
                         var node5 = info.m_nodes[0].ShallowClone();
 
 
@@ -259,7 +258,7 @@ namespace MetroOverhaul.InitializationSteps {
 
                 case NetInfoVersion.Tunnel:
                     {
-                        var metroInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Track");
+                        var metroInfo = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Tunnel, TrackStyle.Vanilla));
                         var segment0 = metroInfo.m_segments[0].ShallowClone();
                         var segment1 = info.m_segments[0].ShallowClone();
                         var segment2 = info.m_segments[0].ShallowClone();

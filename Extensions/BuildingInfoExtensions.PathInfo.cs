@@ -7,6 +7,7 @@ namespace MetroOverhaul.Extensions
         public static void AssignNetInfo(this BuildingInfo.PathInfo path, string netInfoName, bool includeNetInfo = true)
         {
             NetInfo netInfo = PrefabCollection<NetInfo>.FindLoaded(netInfoName);
+
             if (netInfo == null)
             {
                 UnityEngine.Debug.Log("Cannot find NetInfo " + netInfoName);

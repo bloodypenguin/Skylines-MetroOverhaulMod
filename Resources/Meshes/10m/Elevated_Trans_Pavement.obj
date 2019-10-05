@@ -1,8 +1,8 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 09.01.2018 17:39:49
+# File Created: 21.09.2019 14:30:01
 
 #
-# object Elevated_Node_Pavement
+# object Elevated_Node_Pavement001
 #
 
 v  5.0000 0.0000 -0.0000
@@ -646,7 +646,7 @@ vt 0.9839 0.9000 0.0000
 vt 0.9815 0.8923 0.0000
 # 247 texture coords
 
-g Elevated_Node_Pavement
+g Elevated_Node_Pavement001
 s 1
 f 1/1/1 2/2/2 3/3/2 
 f 3/3/2 4/4/1 1/1/1 

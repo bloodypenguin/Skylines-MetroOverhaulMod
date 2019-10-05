@@ -73,7 +73,7 @@ namespace MetroOverhaul {
             Loading.QueueLoadingAction(() =>
             {
                 InitializeNetInfoImpl();
-                PrefabCollection<NetInfo>.InitializePrefabs("Metro Extensions", _customNetInfos.Values.ToArray(), !OptionsWrapper<Options>.Options.ghostMode ? _netReplacements.ToArray() : null);
+                PrefabCollection<NetInfo>.InitializePrefabs("Metro Extensions", _customNetInfos.Values.ToArray(), null);
                 //PrefabCollection<BuildingInfo>.InitializePrefabs("Metro Building Extensions", _customBuildingInfos.Values.ToArray(), null);
                 //PrefabCollection<BuildingInfo>.BindPrefabs();
             });

@@ -23,8 +23,8 @@ namespace MetroOverhaul.Detours
                             int num = (productionRate * this.m_maxVehicleCount + 99) / 100;
                             text += LocaleFormatter.FormatGeneric("AIINFO_BUSDEPOT_BUSCOUNT", new object[]
                             {
-                    vehicleCount,
-                    num
+                                vehicleCount,
+                                num
                             });
                             break;
                         }
@@ -37,8 +37,8 @@ namespace MetroOverhaul.Detours
                             int num2 = (productionRate2 * this.m_maxVehicleCount + 99) / 100;
                             text += LocaleFormatter.FormatGeneric("AIINFO_FERRYDEPOT_FERRYCOUNT", new object[]
                             {
-                        vehicleCount2,
-                        num2
+                                vehicleCount2,
+                                num2
                             });
                         }
                         break;
@@ -51,8 +51,8 @@ namespace MetroOverhaul.Detours
                             int num3 = (productionRate3 * this.m_maxVehicleCount + 99) / 100;
                             text += LocaleFormatter.FormatGeneric("AIINFO_BLIMPDEPOT_BLIMPCOUNT", new object[]
                             {
-                        vehicleCount3,
-                        num3
+                                vehicleCount3,
+                                num3
                             });
                         }
                         break;
@@ -64,8 +64,8 @@ namespace MetroOverhaul.Detours
                             int num4 = (productionRate4 * this.m_maxVehicleCount + 99) / 100;
                             text += LocaleFormatter.FormatGeneric("AIINFO_TAXIDEPOT_VEHICLES", new object[]
                             {
-                    vehicleCount4,
-                    num4
+                                vehicleCount4,
+                                num4
                             });
                             break;
                         }
@@ -77,8 +77,8 @@ namespace MetroOverhaul.Detours
                             int num5 = (productionRate5 * this.m_maxVehicleCount + 99) / 100;
                             text += LocaleFormatter.FormatGeneric("AIINFO_TRAMDEPOT_TRAMCOUNT", new object[]
                             {
-                    vehicleCount5,
-                    num5
+                                vehicleCount5,
+                                num5
                             });
                             break;
                         }
