@@ -1097,28 +1097,10 @@ namespace MetroOverhaul {
                     );
             }
         }
-
-        protected void LinkToNonGroundVersions(NetInfo p, Action<NetInfo, NetInfoVersion> customizationStep,
-            Func<string, string> nameModifier = null, NetInfoVersion versions = NetInfoVersion.Slope | NetInfoVersion.Tunnel | NetInfoVersion.Elevated | NetInfoVersion.Bridge)
-        {
-            if (nameModifier == null)
-            {
-                nameModifier = s => s;
-            }
-            foreach (var version in new[] { NetInfoVersion.Bridge, NetInfoVersion.Tunnel, NetInfoVersion.Elevated, NetInfoVersion.Slope, })
-            {
-                if ((versions & version) == 0)
-                {
-                    continue;
-                }
-                CommonSteps.SetVersion(FindCustomNetInfo(nameModifier.Invoke(Util.GetMetroTrackName(version, TrackStyle.Vanilla))), p, version);
-            }
-        }
-
         private void CreateFullStationPrefab(Action<NetInfo, NetInfoVersion> customizationStep,
-            NetInfoVersion versions,
-            Action<NetInfo, Action<NetInfo, NetInfoVersion>> setupOtherVersionsStep,
-            Func<string, string> nameModifier = null, Dictionary<NetInfoVersion, string> replacements = null)
+    NetInfoVersion versions,
+    Action<NetInfo, Action<NetInfo, NetInfoVersion>> setupOtherVersionsStep,
+    Func<string, string> nameModifier = null, Dictionary<NetInfoVersion, string> replacements = null)
         {
             NetInfo groundVersion = null;
             if ((versions & NetInfoVersion.Ground) != 0)
@@ -1165,6 +1147,22 @@ namespace MetroOverhaul {
                     Chain(SetupSunkenStationTrack).
                     Chain(SetupTrackModel, customizationStep)
             );
+        }
+        protected void LinkToNonGroundVersions(NetInfo p, Action<NetInfo, NetInfoVersion> customizationStep,
+            Func<string, string> nameModifier = null, NetInfoVersion versions = NetInfoVersion.Slope | NetInfoVersion.Tunnel | NetInfoVersion.Elevated | NetInfoVersion.Bridge)
+        {
+            if (nameModifier == null)
+            {
+                nameModifier = s => s;
+            }
+            foreach (var version in new[] { NetInfoVersion.Bridge, NetInfoVersion.Tunnel, NetInfoVersion.Elevated, NetInfoVersion.Slope, })
+            {
+                if ((versions & version) == 0)
+                {
+                    continue;
+                }
+                CommonSteps.SetVersion(FindCustomNetInfo(nameModifier.Invoke(Util.GetMetroTrackName(version, TrackStyle.Vanilla))), p, version);
+            }
         }
 
         private static bool m_TrainTrackAnalogAISet = false;
