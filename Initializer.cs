@@ -55,7 +55,7 @@ namespace MetroOverhaul {
                             {
                                 LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
                             }),
-                    NetInfoVersion.All, null, prefabName => "Concrete " + prefabName, replacements
+                    NetInfoVersion.All, null, prefabName => prefabName, replacements
                     );
             }
             catch (Exception e)
@@ -83,7 +83,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null, NetInfoVersion.None)
-                    , prefabName => "Concrete " + prefabName + " NoBar"
+                    , prefabName => prefabName + " NoBar"
                     );
             }
             catch (Exception e)
@@ -112,7 +112,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null, NetInfoVersion.None)
-                    , prefabName => "Concrete " + prefabName + " Two-Lane One-Way"
+                    , prefabName => prefabName + " Two-Lane One-Way"
                     );
             }
             catch (Exception e)
@@ -140,7 +140,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null, NetInfoVersion.None)
-                    , prefabName => "Concrete " + prefabName + " Two-Lane One-Way NoBar"
+                    , prefabName => prefabName + " Two-Lane One-Way NoBar"
                     );
             }
             catch (Exception e)
@@ -169,7 +169,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null, NetInfoVersion.None)
-                    , prefabName => "Concrete " + prefabName + " Large"
+                    , prefabName => prefabName + " Large"
                     );
             }
             catch (Exception e)
@@ -197,7 +197,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null, NetInfoVersion.None)
-                    , prefabName => "Concrete " + prefabName + " Large NoBar"
+                    , prefabName => prefabName + " Large NoBar"
                     );
             }
             catch (Exception e)
@@ -226,7 +226,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null, NetInfoVersion.None)
-                    , prefabName => "Concrete " + prefabName + " Small"
+                    , prefabName => prefabName + " Small"
                     );
             }
             catch (Exception e)
@@ -254,7 +254,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null, NetInfoVersion.None)
-                    , prefabName => "Concrete " + prefabName + " Small NoBar"
+                    , prefabName => prefabName + " Small NoBar"
                     );
             }
             catch (Exception e)
@@ -283,7 +283,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null, NetInfoVersion.None)
-                    , prefabName => "Concrete " + prefabName + " Small Two-Way"
+                    , prefabName => prefabName + " Small Two-Way"
                     );
             }
             catch (Exception e)
@@ -311,7 +311,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null, NetInfoVersion.None)
-                    , prefabName => "Concrete " + prefabName + " Small Two-Way NoBar"
+                    , prefabName => prefabName + " Small Two-Way NoBar"
                     );
             }
             catch (Exception e)
@@ -340,7 +340,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null, NetInfoVersion.None)
-                    , prefabName => "Concrete " + prefabName, replacements
+                    , prefabName => prefabName, replacements
                     );
             }
             catch (Exception e)
@@ -395,7 +395,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null, NetInfoVersion.None)
-                    , prefabName => "Concrete " + prefabName + " Island"
+                    , prefabName => prefabName + " Island"
                     );
             }
             catch (Exception e)
@@ -450,7 +450,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null, NetInfoVersion.None)
-                    , prefabName => "Concrete " + prefabName + " Large Dual Island"
+                    , prefabName => prefabName + " Large Dual Island"
                     );
             }
             catch (Exception e)
@@ -477,7 +477,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null, NetInfoVersion.None)
-                    , prefabName => "Concrete " + prefabName + " Small"
+                    , prefabName => prefabName + " Small"
                     );
             }
             catch (Exception e)
@@ -505,7 +505,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions, null, NetInfoVersion.None)
-                    , prefabName => "Concrete " + prefabName + " Large"
+                    , prefabName => prefabName + " Large"
                     );
             }
             catch (Exception e)
@@ -1024,6 +1024,7 @@ namespace MetroOverhaul {
             {
                 var info = Prefabs.Find<NetInfo>(Util.GetMetroTrackName(version, TrackStyle.Vanilla));
                 ReplaceAI(info, version);
+                SetupMetroTrackMeta(info, version);
                 if (version != NetInfoVersion.Ground)
                     CommonSteps.SetVersion(info, groundVersion, version);
                 CustomizationSteps.CommonVanillaCustomization(info, version);
@@ -1122,7 +1123,7 @@ namespace MetroOverhaul {
             NetInfo groundVersion = null;
             if ((versions & NetInfoVersion.Ground) != 0)
             {
-                Debug.Log("Looking at version overground");
+                Debug.Log("Looking at version Ground 01");
                 groundVersion = CreateNetInfo(nameModifier.Invoke("Metro Station Track Ground"), Util.GetMetroStationTrackName(NetInfoVersion.Ground, TrackStyle.Vanilla),
                     ActionExtensions.BeginChain<NetInfo>().
                         Chain(ReplaceAI, NetInfoVersion.Ground).
@@ -1156,7 +1157,7 @@ namespace MetroOverhaul {
                         Chain(SetupTrackModel, customizationStep.Chain(SetCosts)), replaces
                     );
             }
-            CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Metro Station Track Overground", //TODO(earalov): test. check if AI to be replaced with MetroTrackAI
+            CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Metro Station Track Ground 01", //TODO(earalov): test. check if AI to be replaced with MetroTrackAI
                 ActionExtensions.BeginChain<NetInfo>().
                     Chain(ReplaceAI, NetInfoVersion.Tunnel).
                     Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
@@ -1375,11 +1376,15 @@ namespace MetroOverhaul {
         }
         private static void SetupMetroTrackMeta(NetInfo prefab, NetInfoVersion version)
         {
-            var vanillaMetroTrack = FindOriginalNetInfo(Util.GetMetroTrackName(NetInfoVersion.Tunnel, TrackStyle.Vanilla));
-            var vanillaTrainTrack = FindOriginalNetInfo("Train Track");
+            var vanillaName = Util.GetMetroTrackName(version, TrackStyle.Vanilla);
+            NetInfo modelTrack = null;
+            if (prefab.name == vanillaName)
+                modelTrack = FindOriginalNetInfo(Util.GetMetroTrackName(version, TrackStyle.Modern));
+            else
+                modelTrack = FindOriginalNetInfo(Util.GetMetroTrackName(version, TrackStyle.Vanilla));
             if (!prefab.name.Contains("Station"))
             {
-                var milestone = vanillaMetroTrack.GetComponent<PlayerNetAI>().m_createPassMilestone;
+                var milestone = modelTrack.GetComponent<PlayerNetAI>().m_createPassMilestone;
                 prefab.GetComponent<PlayerNetAI>().m_createPassMilestone = milestone;
                 prefab.m_minCornerOffset = 18;
             }
@@ -1390,7 +1395,7 @@ namespace MetroOverhaul {
             //prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
             prefab.m_class.m_service = ItemClass.Service.PublicTransport;
             //prefab.m_class.m_level = ItemClass.Level.Level1;
-            prefab.m_UIPriority = vanillaMetroTrack.m_UIPriority;
+            prefab.m_UIPriority = modelTrack.m_UIPriority;
             prefab.SetUICategory("PublicTransportMetro");
 
             if (version == NetInfoVersion.Tunnel)
@@ -1409,15 +1414,15 @@ namespace MetroOverhaul {
             prefab.m_class.hideFlags = HideFlags.None;
             prefab.m_class.name = prefab.name;
             prefab.m_maxBuildAngle = 60;
-            prefab.m_maxTurnAngleCos = Mathf.Cos(prefab.m_maxBuildAngle);
+            prefab.m_maxTurnAngleCos = 0.5f;
             prefab.m_maxTurnAngle = 60;
-            prefab.m_maxTurnAngleCos = Mathf.Cos(prefab.m_maxTurnAngle);
-            prefab.m_averageVehicleLaneSpeed = vanillaMetroTrack.m_averageVehicleLaneSpeed;
-            prefab.m_UnlockMilestone = vanillaMetroTrack.m_UnlockMilestone;
+            prefab.m_maxTurnAngleCos = 0.5f;
+            prefab.m_averageVehicleLaneSpeed = modelTrack.m_averageVehicleLaneSpeed;
+            prefab.m_UnlockMilestone = modelTrack.m_UnlockMilestone;
             prefab.m_createPavement = false;
             prefab.m_isCustomContent = true; //this line is responsible for moving tracks to the end of the list and that's not what we're interested in  
 
-            var speedLimit = vanillaMetroTrack.m_lanes.First(l => l.m_vehicleType != VehicleInfo.VehicleType.None).m_speedLimit;
+            var speedLimit = modelTrack.m_lanes.First(l => l.m_vehicleType != VehicleInfo.VehicleType.None).m_speedLimit;
 
             foreach (var lane in prefab.m_lanes)
             {

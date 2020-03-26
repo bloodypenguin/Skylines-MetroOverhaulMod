@@ -53,6 +53,7 @@
     <Compile Include="Extensions\NetInfoExtensions.cs" />
     <Compile Include="Extensions\NetToolExtensions.cs" />
     <Compile Include="Extensions\PropInfoExtensions.cs" />
+    <Compile Include="FastDeepCloner.cs" />
     <Compile Include="InitializationSteps\LateBuildUpVanilla.cs" />
     <Compile Include="InitializationSteps\SetupMeshUtil.cs" />
     <Compile Include="InitializationSteps\SetupSteelMesh19m.cs" />
@@ -90,6 +91,8 @@
     <Compile Include="MOMMetroTrackAI.cs" />
     <Compile Include="MOMMetroTrackBridgeAI.cs" />
     <Compile Include="MOMMetroTrackTunnelAI.cs" />
+    <Compile Include="StationBuildingCustomization.cs" />
+    <Compile Include="StationTrackCustomization.cs" />
     <Compile Include="UI\StationTypeSelectorTooltip.cs" />
     <Compile Include="UI\MetroAboveGroundStationCustomizerUI.cs" />
     <Compile Include="UI\MetroCustomizerBaseUI.cs" />
@@ -172,20 +175,17 @@
       <HintPath>.\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>D:\Program Files\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="ColossalManaged">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ColossalManaged.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>D:\Program Files\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\ColossalManaged.dll</HintPath>
     </Reference>
     <Reference Include="ICities">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>D:\Program Files\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
     </Reference>
     <Reference Include="ObjUnity3D, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\NetworkExtensions2\ObjUnity3D\bin\Release\ObjUnity3D.dll</HintPath>
+      <HintPath>D:\Program Files\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\ObjUnity3D.dll</HintPath>
     </Reference>
     <Reference Include="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\System.dll</HintPath>
@@ -196,8 +196,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>D:\Program Files\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -3275,6 +3274,11 @@
     <Content Include="Resources\Textures\Tunnel_Station_Segment_Pavement__XYSMap_LOD.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\RevertAllTracksThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\RemoveTrackThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\SelectAllTracksThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\AddTrackThumbnails.png" />
+    <EmbeddedResource Include="Resources\UI\Thumbs\Button\VanillaThumbnailsOld.png" />
     <EmbeddedResource Include="Resources\UI\Thumbs\Button\VanillaThumbnails.png" />
     <EmbeddedResource Include="Resources\UI\Thumbs\Button\DualIslandThumbnails.png" />
     <EmbeddedResource Include="Resources\UI\Thumbs\Button\ExpressSideThumbnails.png" />

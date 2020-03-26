@@ -1,4 +1,6 @@
-﻿namespace MetroOverhaul.UI
+﻿using static MetroOverhaul.StationTrackCustomizations;
+
+namespace MetroOverhaul.UI
 {
     public class UISliderParamProps : UIParamPropsBase
     {

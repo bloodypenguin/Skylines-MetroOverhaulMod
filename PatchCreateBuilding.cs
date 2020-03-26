@@ -6,6 +6,7 @@ using MetroOverhaul.UI;
 using System;
 using System.Linq;
 using System.Reflection;
+using static MetroOverhaul.StationTrackCustomizations;
 
 namespace MetroOverhaul
 {
@@ -36,10 +37,12 @@ namespace MetroOverhaul
                     {
                         if (m_Container2 != null)
                         {
+                            Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].m_happiness = StoreCustomization(MetroStationTrackAlterType.Length);
+                            Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].m_health = StoreCustomization(MetroStationTrackAlterType.Depth);
                             Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].m_children = StoreCustomization(MetroStationTrackAlterType.Length);
                             Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].m_childHealth = StoreCustomization(MetroStationTrackAlterType.Depth);
                             Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].m_seniors = StoreCustomization(MetroStationTrackAlterType.Rotation);
-                            Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].m_seniorHealth = StoreCustomization(MetroStationTrackAlterType.Bend);
+                            Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].m_seniorHealth = StoreCustomization(MetroStationTrackAlterType.Curve);
                             Singleton<BuildingManager>.instance.m_buildings.m_buffer[building].m_teens = (byte)m_Container2.m_TrackType;
                         }
                     }

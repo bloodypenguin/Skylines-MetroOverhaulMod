@@ -11,7 +11,8 @@
         public const string TRAIN_STATION_TRACK_GROUND_C = "Train Station Track (C)";
         public const string TRAIN_STATION_TRACK_GROUND_NP = "Train Station Track (NP)";
         public const string TRAIN_STATION_TRACK_GROUND_CNP = "Train Station Track (CNP)";
-        public const string TRAIN_STATION_TRACK_GROUND_SMALL = "1731659180.GroundSingleTrackStationTrack_Data";
+        public const string TRAIN_STATION_TRACK_GROUND_SMALL1 = "1731659180.GroundSingleTrackStationTrack_Data";
+        public const string TRAIN_STATION_TRACK_GROUND_SMALL2 = "Rail1LStation";
         public const string TRAIN_STATION_TRACK_GROUND_ISLAND = "1194290640.Wide Train Station Track_Data";
         public const string TRAIN_STATION_TRACK_GROUND_LARGE = "1577947171.Bypass Station Track_Ground_Data";
         public const string TRAIN_STATION_TRACK_GROUND_LARGE_DUALISLAND = "1698282173.DualIslandStationTrack_Ground_Data";
@@ -31,34 +32,34 @@
         public const string TRAIN_STATION_TRACK_SUNKEN = "Station Track Sunken";
 
         public const string MOM_TRACK = "Metro Track";
-        public const string MOM_TRACK_GROUND = "Concrete Metro Track Ground";
-        public const string MOM_TRACK_NOBAR = "Concrete Metro Track Ground NoBar";
+        public const string MOM_TRACK_GROUND = "Metro Track Ground";
+        public const string MOM_TRACK_NOBAR = "Metro Track Ground NoBar";
 
-        public const string MOM_TRACK_TWOLANE_ONEWAY = "Concrete Metro Track Ground Two-Lane One-Way";
-        public const string MOM_TRACK_TWOLANE_ONEWAY_NOBAR = "Concrete Metro Track Ground Two-Lane One-Way NoBar";
+        public const string MOM_TRACK_TWOLANE_ONEWAY = "Metro Track Ground Two-Lane One-Way";
+        public const string MOM_TRACK_TWOLANE_ONEWAY_NOBAR = "Metro Track Ground Two-Lane One-Way NoBar";
 
-        public const string MOM_TRACK_LARGE = "Concrete Metro Track Ground Large";
-        public const string MOM_TRACK_LARGE_NOBAR = "Concrete Metro Track Ground Large NoBar";
+        public const string MOM_TRACK_LARGE = "Metro Track Ground Large";
+        public const string MOM_TRACK_LARGE_NOBAR = "Metro Track Ground Large NoBar";
 
-        public const string MOM_TRACK_SMALL = "Concrete Metro Track Ground Small";
-        public const string MOM_TRACK_SMALL_NOBAR = "Concrete Metro Track Ground Small NoBar";
+        public const string MOM_TRACK_SMALL = "Metro Track Ground Small";
+        public const string MOM_TRACK_SMALL_NOBAR = "Metro Track Ground Small NoBar";
 
-        public const string MOM_TRACK_SMALL_TWOWAY = "Concrete Metro Track Ground Small Two-Way";
-        public const string MOM_TRACK_SMALL_TWOWAY_NOBAR = "Concrete Metro Track Ground Small Two-Way NoBar";
+        public const string MOM_TRACK_SMALL_TWOWAY = "Metro Track Ground Small Two-Way";
+        public const string MOM_TRACK_SMALL_TWOWAY_NOBAR = "Metro Track Ground Small Two-Way NoBar";
 
-        public const string MOM_STATION_TRACK_GROUND = "Concrete Metro Station Track Ground";
-        public const string MOM_STATION_TRACK_GROUND_ISLAND = "Concrete Metro Station Track Ground Island";
-        public const string MOM_STATION_TRACK_GROUND_SMALL = "Concrete Metro Station Track Ground Small";
-        public const string MOM_STATION_TRACK_GROUND_LARGE = "Concrete Metro Station Track Ground Large";
+        public const string MOM_STATION_TRACK_GROUND = "Metro Station Track Ground";
+        public const string MOM_STATION_TRACK_GROUND_ISLAND = "Metro Station Track Ground Island";
+        public const string MOM_STATION_TRACK_GROUND_SMALL = "Metro Station Track Ground Small";
+        public const string MOM_STATION_TRACK_GROUND_LARGE = "Metro Station Track Ground Large";
         public const string MOM_STATION_TRACK_GROUND_LARGE_DUALISLAND = "Metro Station Track Ground Large Dual Island";
 
-        public const string MOM_STATION_TRACK_ELEVATED = "Concrete Metro Station Track Elevated";
-        public const string MOM_STATION_TRACK_ELEVATED_ISLAND = "Concrete Metro Station Track Elevated Island";
-        public const string MOM_STATION_TRACK_ELEVATED_SMALL = "Concrete Metro Station Track Elevated Small";
-        public const string MOM_STATION_TRACK_ELEVATED_LARGE = "Concrete Metro Station Track Elevated Large";
-        public const string MOM_STATION_TRACK_ELEVATED_LARGE_DUALISLAND = "Concrete Metro Station Track Elevated Large Dual Island";
+        public const string MOM_STATION_TRACK_ELEVATED = "Metro Station Track Elevated";
+        public const string MOM_STATION_TRACK_ELEVATED_ISLAND = "Metro Station Track Elevated Island";
+        public const string MOM_STATION_TRACK_ELEVATED_SMALL = "Metro Station Track Elevated Small";
+        public const string MOM_STATION_TRACK_ELEVATED_LARGE = "Metro Station Track Elevated Large";
+        public const string MOM_STATION_TRACK_ELEVATED_LARGE_DUALISLAND = "Metro Station Track Elevated Large Dual Island";
 
-        public const string MOM_STATION_TRACK_SUNKEN = "Concrete Metro Station Track Sunken";
+        public const string MOM_STATION_TRACK_SUNKEN = "Metro Station Track Sunken";
 
         public const string MOM_TRACK_STEEL = "Steel Metro Track Ground";
         public const string MOM_TRACK_NOBAR_STEEL = "Steel Metro Track Ground NoBar";
@@ -186,13 +187,5 @@
         Wide,
         NarrowMedian,
         Narrow
-    }
-    public enum MetroStationTrackAlterType
-    {
-        None,
-        Length,
-        Depth,
-        Rotation,
-        Bend
     }
 }

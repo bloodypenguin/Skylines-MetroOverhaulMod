@@ -18,9 +18,9 @@ namespace MetroOverhaul {
         public const int MAX_LENGTH = 192;
         public const int MIN_LENGTH = 88;
         public const int DEF_LENGTH = 144;
-        public const int MAX_BEND_STRENGTH = 90;
-        public const int MIN_BEND_STRENGTH = -90;
-        public const int DEF_BEND_STRENGTH = 0;
+        public const int MAX_CURVE_STRENGTH = 90;
+        public const int MIN_CURVE_STRENGTH = -90;
+        public const int DEF_CURVE_STRENGTH = 0;
         private static float StairCoeff { get { return (11f / 64f); } }
         private static float AntiStairCoeff { get { return 1 - StairCoeff; } }
         private static float GENERATED_PATH_MARKER = 0.09999f; //regular paths have snapping distance of 0.1f. This way we differentiate
@@ -28,7 +28,7 @@ namespace MetroOverhaul {
         private static NetManager ninstance = Singleton<NetManager>.instance;
         private static BuildingManager binstance = Singleton<BuildingManager>.instance;
         private static List<ushort> m_Nodes;
-        public static void ModifyStation(ushort buildingID, float targetDepth, float targetStationTrackLength, double angle, float bendStrength, BuildingInfo superInfo = null)
+        public static void ModifyStation(ushort buildingID, float targetDepth, float targetStationTrackLength, double angle, float curveStrength, BuildingInfo superInfo = null)
         {
             m_Nodes = new List<ushort>();
             Building building = BuildingFrom(buildingID);
@@ -57,7 +57,7 @@ namespace MetroOverhaul {
             return ninstance.m_nodes.m_buffer[NodeID];
         }
 
-        public static void ModifyStation(BuildingInfo info, float targetDepth, float targetStationTrackLength, double angle, float bendStrength, BuildingInfo superInfo = null)
+        public static void ModifyStation(BuildingInfo info, float targetDepth, float targetStationTrackLength, double angle, float curveStrength, BuildingInfo superInfo = null)
         {
             if (!info.HasUndergroundMetroStationTracks() || info.m_paths == null || info.m_paths.Length < 1)
             {
@@ -93,17 +93,17 @@ namespace MetroOverhaul {
                     }
                 }
             }
-            ReconfigureStationAccess(info, connectPoints, bendStrength);
+            ReconfigureStationAccess(info, connectPoints, curveStrength);
             //}
             //else
             //{
-            //BendStationTracks(info, targetDepth); //works for European Main Station!
+            //CurveStationTracks(info, targetDepth); //works for European Main Station!
             //}
-            BendStationTrack(info, bendStrength);
-            RecalculateSpawnPoints(info, bendStrength);
+            CurveStationTrack(info, curveStrength);
+            RecalculateSpawnPoints(info, curveStrength);
         }
 
-        private static void BendStationTracks(BuildingInfo info, float targetDepth)
+        private static void CurveStationTracks(BuildingInfo info, float targetDepth)
         {
             var processedConnectedPaths = new List<int>();
             for (var index = 0; index < info.m_paths.Length; index++)
@@ -113,14 +113,14 @@ namespace MetroOverhaul {
                 {
                     continue;
                 }
-                //BendStationTrack(info.m_paths, index, targetDepth, processedConnectedPaths);
+                //CurveStationTrack(info.m_paths, index, targetDepth, processedConnectedPaths);
             }
         }
         private static void CheckBreaks(BuildingInfo info)
         {
 
         }
-        private static void ReconfigureStationAccess(BuildingInfo info, List<Vector3> connectPoints, float bendStrength)
+        private static void ReconfigureStationAccess(BuildingInfo info, List<Vector3> connectPoints, float curveStrength)
         {
 
             var pathList = new List<BuildingInfo.PathInfo>();
@@ -204,8 +204,8 @@ namespace MetroOverhaul {
                         var xCoeff = -(trackPath.m_nodes.First().x - trackPath.m_nodes.Last().x) / Vector3.Distance(trackPath.m_nodes.First(), trackPath.m_nodes.Last());
                         var zCoeff = (trackPath.m_nodes.First().z - trackPath.m_nodes.Last().z) / Vector3.Distance(trackPath.m_nodes.First(), trackPath.m_nodes.Last());
                         var stationLength = Vector3.Distance(trackPath.m_nodes.First(), trackPath.m_nodes.Last());
-                        var stairsLengthX = (((0.12f * bendStrength) + 1) * (stationLength * StairCoeff)) * -xCoeff;
-                        var stairsLengthZ = (((0.12f * bendStrength) + 1) * (stationLength * StairCoeff)) * zCoeff;
+                        var stairsLengthX = (((0.12f * curveStrength) + 1) * (stationLength * StairCoeff)) * -xCoeff;
+                        var stairsLengthZ = (((0.12f * curveStrength) + 1) * (stationLength * StairCoeff)) * zCoeff;
                         newPath.m_netInfo.m_maxSlope = 100;
                         newPath.m_netInfo.m_maxTurnAngle = 180;
                         newPath.m_netInfo.m_maxTurnAngleCos = -1;
@@ -228,7 +228,7 @@ namespace MetroOverhaul {
                             newPath.AssignNetInfo(specialNetInfo);
                             MarkPathGenerated(newPath);
 
-                            ChangePathRotation(newPath, newPath.m_nodes.First(), AntiStairCoeff * bendStrength * -Math.PI / 4);
+                            ChangePathRotation(newPath, newPath.m_nodes.First(), AntiStairCoeff * curveStrength * -Math.PI / 4);
                             pathList.Add(newPath);
                             var connectNodes = new Vector3[] { newPath.m_nodes.First() };
                             if (!connectList.Contains(connectNodes))
@@ -253,7 +253,7 @@ namespace MetroOverhaul {
                             newPath.AssignNetInfo(specialNetInfo);
                             MarkPathGenerated(newPath);
 
-                            ChangePathRotation(newPath, newPath.m_nodes.First(), AntiStairCoeff * bendStrength * -Math.PI / 4);
+                            ChangePathRotation(newPath, newPath.m_nodes.First(), AntiStairCoeff * curveStrength * -Math.PI / 4);
                             pathList.Add(newPath);
                             var connectNodes = new Vector3[] { newPath.m_nodes.First() };
                             if (!connectList.Contains(connectNodes))
@@ -301,9 +301,9 @@ namespace MetroOverhaul {
                                 z = trackPath.m_nodes.Last().z
                             }
                             ;
-                            ChangePathRotation(newPath, trackPivot, AntiStairCoeff * bendStrength * -Math.PI / 4);
-                            ChangePathRotation(branchPathConnect, trackPivot, AntiStairCoeff * bendStrength * -Math.PI / 4);
-                            ChangePathRotation(branchPathStair, trackPivot, AntiStairCoeff * bendStrength * -Math.PI / 4);
+                            ChangePathRotation(newPath, trackPivot, AntiStairCoeff * curveStrength * -Math.PI / 4);
+                            ChangePathRotation(branchPathConnect, trackPivot, AntiStairCoeff * curveStrength * -Math.PI / 4);
+                            ChangePathRotation(branchPathStair, trackPivot, AntiStairCoeff * curveStrength * -Math.PI / 4);
                             pathList.Add(newPath);
                             pathList.Add(branchPathConnect);
                             pathList.Add(branchPathStair);
@@ -439,7 +439,7 @@ namespace MetroOverhaul {
             return newPath;
         }
 
-        private static void BendStationTrack(BuildingInfo.PathInfo stationPath, float bendStrength)
+        private static void CurveStationTrack(BuildingInfo.PathInfo stationPath, float curveStrength)
         {
 
             var middle = GetMiddle(stationPath);
@@ -447,20 +447,20 @@ namespace MetroOverhaul {
             var newX = (stationPath.m_nodes.First().z - stationPath.m_nodes.Last().z) / 2;
             var newY = (stationPath.m_nodes.First().y + stationPath.m_nodes.Last().y) / 2;
             var newZ = -(stationPath.m_nodes.First().x - stationPath.m_nodes.Last().x) / 2;
-            var newCurve = middle + (bendStrength * new Vector3(newX, newY, newZ));
+            var newCurve = middle + (curveStrength * new Vector3(newX, newY, newZ));
             stationPath.m_curveTargets[0] = newCurve;
         }
-        private static void BendStationTrack(BuildingInfo info, float bendStrength)
+        private static void CurveStationTrack(BuildingInfo info, float curveStrength)
         {
-            var stationPaths = info.m_paths.Where(p => p != null && p.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack()).ToList();
+            var stationPaths = info.UndergroundStationPaths(false);
             for (var i = 0; i < stationPaths.Count(); i++)
             {
                 var stationPath = stationPaths[i];
-                BendStationTrack(stationPath, bendStrength);
+                CurveStationTrack(stationPath, curveStrength);
                 var stairPaths = info.m_paths.Where(p => p != null && stationPaths.Contains(p) == false && p.m_nodes.Any(n => n.y == stationPath.m_nodes.First().y)).ToList();
                 for (var j = 0; j < stairPaths.Count(); j++)
                 {
-                    BendStationTrack(stairPaths[j], -bendStrength * StairCoeff);
+                    CurveStationTrack(stairPaths[j], -curveStrength * StairCoeff);
                 }
             }
         }
@@ -479,7 +479,7 @@ namespace MetroOverhaul {
             }
         }
 
-        private static void RecalculateSpawnPoints(BuildingInfo info, float bendStrength)
+        private static void RecalculateSpawnPoints(BuildingInfo info, float curveStrength)
         {
             var buildingAI = info?.GetComponent<DepotAI>();
             var paths = info?.m_paths;
@@ -489,7 +489,7 @@ namespace MetroOverhaul {
             }
             var spawnPoints = (from path in paths
                                where IsVehicleStop(path)
-                               select GetMiddle(path, bendStrength)).Distinct().ToArray();
+                               select GetMiddle(path, curveStrength)).Distinct().ToArray();
 
             switch (spawnPoints.Length)
             {
@@ -1027,18 +1027,18 @@ namespace MetroOverhaul {
             return info.m_paths.Where(p => p.m_netInfo.IsUndergroundMetroStationTrack() && p.m_nodes.Any(n => pairs.Contains(n))).ToArray();
         }
 
-        private static Vector3 GetMiddle(BuildingInfo.PathInfo path, float bendStrength = 0)
+        private static Vector3 GetMiddle(BuildingInfo.PathInfo path, float curveStrength = 0)
         {
             var midPoint = (path.m_nodes.First() + path.m_nodes.Last()) / 2;
             var distance = Vector3.Distance(midPoint, path.m_nodes.First());
             var xCoeff = -(path.m_nodes.First().x - path.m_nodes.Last().x) / Vector3.Distance(path.m_nodes.First(), path.m_nodes.Last());
             var zCoeff = (path.m_nodes.First().z - path.m_nodes.Last().z) / Vector3.Distance(path.m_nodes.First(), path.m_nodes.Last());
-            var bendCoeff = bendStrength * (Math.Sqrt(2) - 1);
+            var curveCoeff = curveStrength * (Math.Sqrt(2) - 1);
             var adjMidPoint = new Vector3()
             {
-                x = midPoint.x + (float)(-zCoeff * distance * bendCoeff),
+                x = midPoint.x + (float)(-zCoeff * distance * curveCoeff),
                 y = midPoint.y,
-                z = midPoint.z + (float)(xCoeff * distance * bendCoeff)
+                z = midPoint.z + (float)(xCoeff * distance * curveCoeff)
             };
             return adjMidPoint;
         }

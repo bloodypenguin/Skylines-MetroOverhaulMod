@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MetroOverhaul.NEXT.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -61,13 +62,13 @@ namespace MetroOverhaul.Extensions
             return false;
         }
 
-        public static bool HasUndergroundMetroStationTracks(this BuildingInfo info)
+        public static bool HasUndergroundMetroStationTracks(this BuildingInfo info, bool isDeep = true)
         {
             if (info?.m_paths != null && info.m_paths.Any(p => (p?.m_finalNetInfo != null && p.m_finalNetInfo.IsUndergroundMetroStationTrack()) || (p?.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack())))
             {
                 return true;
             }
-            else if (info.m_subBuildings != null)
+            else if (isDeep && info.m_subBuildings != null)
             {
                 for (int i = 0; i < info.m_subBuildings.Length; i++)
                 {
@@ -103,7 +104,7 @@ namespace MetroOverhaul.Extensions
         }
         public static void SetTrackVehicleType(this BuildingInfo info, int inx, TrackVehicleType vehicleType)
         {
-            var path = info.GetPaths()[inx];
+            var path = info.AbovegroundStationPaths()[inx];
             switch (vehicleType)
             {
                 case TrackVehicleType.Default:
@@ -137,7 +138,7 @@ namespace MetroOverhaul.Extensions
                         else if (path.m_finalNetInfo.IsGroundSinglePlatformMetroStationTrack())
                         {
                             InvertPath(path);
-                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_GROUND_SMALL, false);
+                            path.AssignNetInfo(ModTrackNames.TRAIN_STATION_TRACK_GROUND_SMALL1, false);
                         }
                         else if (path.m_finalNetInfo.IsElevatedIslandPlatformMetroStationTrack())
                         {
@@ -167,7 +168,7 @@ namespace MetroOverhaul.Extensions
                     else if (path.m_finalNetInfo.IsMetroTrack())
                     {
                         if (path.m_finalNetInfo)
-                        path.AssignNetInfo(ModTrackNames.GetTrackAnalogName(path.m_finalNetInfo.name), false);
+                            path.AssignNetInfo(ModTrackNames.GetTrackAnalogName(path.m_finalNetInfo.name), false);
                         //FixSlopes(info, inx, vehicleType);
                     }
                     break;
@@ -239,10 +240,6 @@ namespace MetroOverhaul.Extensions
             var verticalDistance = Math.Abs(path.m_nodes[0].y - path.m_nodes[1].y);
             if (path.m_netInfo.m_maxSlope < Math.Abs(verticalDistance / horizontalDistance))
             {
-                Debug.Log("Triggered on " + info.name);
-                Debug.Log("verticalDistance = " + verticalDistance);
-                Debug.Log("horizontalDistance = " + horizontalDistance);
-                Debug.Log("actual vs maxSlope = " + (float)Math.Abs(verticalDistance / horizontalDistance) + " vs " + path.m_netInfo.m_maxSlope);
                 bool isTargetVehicleTrackType = false;
                 float slopeDist = ((float)Math.Abs(verticalDistance / horizontalDistance)) - path.m_netInfo.m_maxSlope;
 
@@ -250,7 +247,6 @@ namespace MetroOverhaul.Extensions
                 Vector3 targetNode = Vector3.zero;
                 Vector3 otherNode = Vector3.zero;
                 Vector3 adjTargetNode = Vector3.zero;
-                Debug.Log("Finding a mate for inx: " + inx + " called: " + info.m_paths[inx].m_netInfo.name);
                 for (int i = 0; i < info.m_paths.Length; i++)
                 {
                     if (info.m_paths[i]?.m_netInfo?.name == null)
@@ -288,7 +284,6 @@ namespace MetroOverhaul.Extensions
                                 otherNode = path.m_nodes[((targetIndex + 1) % 2)];
                                 targetNode = path.m_nodes[targetIndex];
                                 adjTargetNode = otherNode + ((targetNode - otherNode) * (1 + slopeDist));
-                                Debug.Log("targetNode/otherNode/adjTargetNode = " + targetNode.ToString() + "/" + otherNode.ToString() + "/" + adjTargetNode.ToString());
                                 break;
                             }
                         }
@@ -298,7 +293,6 @@ namespace MetroOverhaul.Extensions
 
                 if (targetNode != Vector3.zero)
                 {
-                    Debug.Log("In the process of setting targetNode: " + targetNode.ToString() + " to adjTargetNode: " + adjTargetNode);
                     Vector3[] nodeArray = null;
                     var findCount = 0; //debug stuff
                     for (int i = 0; i < info.m_paths.Length; i++)
@@ -351,7 +345,6 @@ namespace MetroOverhaul.Extensions
                     if (nodeArray != null)
                     {
                         path.m_nodes = nodeArray;
-                        Debug.Log("path at inx: " + inx + " has " + findCount + " adjoining path(s) linked at " + targetNode.ToString() + " which was moved to " + adjTargetNode.ToString());
                     }
                 }
             }
@@ -367,6 +360,186 @@ namespace MetroOverhaul.Extensions
             return info.m_class.m_subService == ItemClass.SubService.PublicTransportMetro;
         }
 
+        public static List<BuildingInfo.PathInfo> UndergroundStationPaths(this BuildingInfo info, bool isDeep = true)
+        {
+            var trackList = new List<BuildingInfo.PathInfo>();
+            if (isDeep && info?.m_subBuildings != null)
+            {
+                foreach (var subBuilding in info.m_subBuildings)
+                {
+                    if (subBuilding?.m_buildingInfo != null && subBuilding.m_buildingInfo.HasUndergroundMetroStationTracks())
+                    {
+                        if (subBuilding.m_buildingInfo.m_subBuildings != null)
+                        {
+                            trackList.AddRange(UndergroundStationPaths(subBuilding.m_buildingInfo));
+                        }
+                    }
+                }
+            }
+            if (info != null)
+            {
+                foreach (var path in info.m_paths)
+                {
+                    if (path?.m_netInfo != null && path.m_netInfo.IsUndergroundMetroStationTrack())
+                    {
+                        trackList.Add(path);
+                    }
+                }
+            }
+
+            return trackList;
+        }
+
+        public static List<BuildingInfo.PathInfo> AbovegroundStationPaths(this BuildingInfo info, bool isDeep = true)
+        {
+            var trackList = new List<BuildingInfo.PathInfo>();
+            if (isDeep && info?.m_subBuildings != null)
+            {
+                foreach (var subBuilding in info.m_subBuildings)
+                {
+                    if (subBuilding?.m_buildingInfo != null && (subBuilding.m_buildingInfo.HasAbovegroundMetroStationTracks() || subBuilding.m_buildingInfo.HasAbovegroundTrainStationTracks()))
+                    {
+                        if (subBuilding.m_buildingInfo.m_subBuildings != null)
+                        {
+                            trackList.AddRange(AbovegroundStationPaths(subBuilding.m_buildingInfo));
+                        }
+                    }
+                }
+            }
+            if (info != null)
+            {
+                foreach (var path in info.m_paths)
+                {
+                    if (path?.m_netInfo != null && (path.m_netInfo.IsAbovegroundMetroStationTrack() || path.m_netInfo.IsAbovegroundTrainStationTrack()))
+                    {
+                        trackList.Add(path);
+                    }
+                }
+            }
+
+            return trackList;
+        }
+
+        private static int m_Count = 0;
+        public static KeyValuePair<BuildingInfo, BuildingInfo.PathInfo> StationPathAtIndex(this BuildingInfo info, int index, bool isDeep = true)
+        {
+            KeyValuePair<BuildingInfo, BuildingInfo.PathInfo> buildingTrack = default;
+            if (isDeep && info?.m_subBuildings != null)
+            {
+                foreach (var subBuilding in info.m_subBuildings)
+                {
+                    if (subBuilding?.m_buildingInfo != null && subBuilding.m_buildingInfo.HasUndergroundMetroStationTracks())
+                    {
+                        if (subBuilding.m_buildingInfo.m_subBuildings != null)
+                        {
+                            buildingTrack = subBuilding.m_buildingInfo.StationPathAtIndex(index);
+                            if (buildingTrack.Key != null)
+                                break;
+                        }
+                    }
+                }
+            }
+            if (info != null && buildingTrack.Key == null)
+            {
+                foreach (var path in info.m_paths)
+                {
+                    if (path?.m_netInfo != null && path.m_netInfo.IsUndergroundMetroStationTrack())
+                    {
+                        if (index == m_Count)
+                        {
+                            buildingTrack = new KeyValuePair<BuildingInfo, BuildingInfo.PathInfo>(info, path);
+                            m_Count = 0;
+                            break;
+                        }
+                        else
+                            m_Count++;
+                    }
+                }
+            }
+
+            return buildingTrack;
+        }
+
+        private static BuildingInfo.PathInfo m_CachedPath;
+        private static BuildingInfo m_CachedBuilding;
+        private static void GetCachedStuff(this BuildingInfo info, int index)
+        {
+            if (m_CachedPath == null)
+            {
+                if (index > -1 && info.UndergroundStationPaths().Count() > index)
+                {
+                    var buildingPath = info.StationPathAtIndex(index);
+                    if (buildingPath.Key != null)
+                    {
+                        m_CachedBuilding = buildingPath.Key;
+                        m_CachedPath = buildingPath.Value;
+                    }
+
+                }
+            }
+        }
+        public static BuildingInfo.PathInfo RemoveStationPath(this BuildingInfo info, int atIndex)
+        {
+            m_CachedPath = null;
+            info.GetCachedStuff(atIndex);
+            BuildingInfo.PathInfo retval = null;
+            if (HasRemovedStationPath(info, atIndex))
+                retval = m_CachedPath;
+            return retval;
+        }
+        private static bool HasRemovedStationPath(BuildingInfo info, int atIndex)
+        {
+            var retval = false;
+            var pathToRemove = m_CachedPath;
+            var pathList = m_CachedBuilding.m_paths.ToList();
+            if (pathList.Contains(pathToRemove) && info.UndergroundStationPaths().Count > 1)
+            {
+                pathList.Remove(pathToRemove);
+                m_CachedBuilding.m_paths = pathList.ToArray();
+                retval = true;
+            }
+
+            return retval;
+        }
+        public static BuildingInfo.PathInfo AddStationPath(this BuildingInfo info, int atIndex)
+        {
+            m_CachedPath = null;
+            return m_AddStationPath(info, atIndex);
+        }
+        private static BuildingInfo.PathInfo m_AddStationPath(BuildingInfo info, int atIndex)
+        {
+            info.GetCachedStuff(atIndex);
+            if (m_CachedPath == null)
+            {
+                return null;
+            }
+            var pathList = m_CachedBuilding.m_paths.ToList();
+            var clonePath = m_CachedPath.ShallowClone();
+            var verticalOffset = 0;
+            var horizontalOffset = 0;
+            var xOffset = clonePath.m_nodes.Last().x - clonePath.m_nodes.First().x;
+            var zOffset = clonePath.m_nodes.Last().z - clonePath.m_nodes.First().z;
+            if (xOffset > zOffset)
+            {
+                verticalOffset = 40;
+            }
+            else
+            {
+                horizontalOffset = 40;
+            }
+            var nodeList = new List<Vector3>();
+            for (int i = 0; i < clonePath.m_nodes.Count(); i++)
+            {
+                nodeList.Add(new Vector3(clonePath.m_nodes[i].x + horizontalOffset, clonePath.m_nodes[i].y, clonePath.m_nodes[i].z + verticalOffset));
+            }
+            clonePath.m_nodes = nodeList.ToArray();
+            clonePath.SetCurveTargets();
+            pathList.Add(clonePath);
+            m_CachedBuilding.m_paths = pathList.ToArray();
+            if (clonePath == null)
+                Debug.Log("Cloned path came out null");
+            return clonePath;
+        }
         public static List<BuildingInfo.PathInfo> GetPaths(this BuildingInfo prefab, bool compensateSubNodes = false)
         {
             if (prefab != null)
@@ -411,7 +584,7 @@ namespace MetroOverhaul.Extensions
         {
             List<int> retval = new List<int>();
 
-            var paths = info.GetPaths(true);
+            var paths = info.AbovegroundStationPaths();
             var targetPath = paths[inx];
 
             if (inxSoFar == null)
@@ -423,7 +596,7 @@ namespace MetroOverhaul.Extensions
                 retval.Add(inx);
             }
             inxSoFar.Add(inx);
-            var trackPaths = paths.Where(p => p?.m_netInfo != null && (p.m_netInfo.IsTrainTrackAI() || p.m_netInfo.IsTrainTrackBridgeAI() || ((p.m_netInfo.IsTrainTrackTunnelAI() ||p.m_netInfo.IsMetroTrackAI() || p.m_netInfo.IsMetroTrackBridgeAI() ||  p.m_netInfo.IsMetroTrackTunnelAI()) && (p.m_netInfo.name.Contains("Sunken") || !p.m_netInfo.IsStationTrack()))));
+            var trackPaths = paths.Where(p => p?.m_netInfo != null && (p.m_netInfo.IsTrainTrackAI() || p.m_netInfo.IsTrainTrackBridgeAI() || ((p.m_netInfo.IsTrainTrackTunnelAI() || p.m_netInfo.IsMetroTrackAI() || p.m_netInfo.IsMetroTrackBridgeAI() || p.m_netInfo.IsMetroTrackTunnelAI()) && (p.m_netInfo.name.Contains("Sunken") || !p.m_netInfo.IsStationTrack()))));
             for (int i = 0; i < paths.Count(); i++)
             {
                 if (trackPaths.Contains(paths[i]))
@@ -440,6 +613,113 @@ namespace MetroOverhaul.Extensions
                 }
             }
             return retval;
+        }
+
+        public static List<BuildingInfo.PathInfo> LowestHighPaths(this BuildingInfo info)
+        {
+            var retval = new List<BuildingInfo.PathInfo>();
+            retval = info.m_paths.Where(p => p.IsPedestrianPath() && p.m_nodes.Any(n => n.y > -4) && p.m_nodes.Any(nd => nd.y <= -4)).ToList();
+            if (retval.Count == 0)
+            {
+                retval.Add(info.m_paths.Where(p => IsPedestrianPath(p))
+                    .OrderByDescending(p => p.m_nodes[0].y)
+                    .FirstOrDefault());
+            }
+            return retval;
+        }
+
+        public static Vector3 FindAverageNode(this BuildingInfo info, bool isDeep)
+        {
+            var center = Vector3.zero;
+            var nodeList = new List<Vector3>();
+            if (isDeep && info.m_subBuildings != null)
+            {
+                for (int i = 0; i < info.m_subBuildings.Length; i++)
+                {
+                    var subBuilding = info.m_subBuildings[i];
+                    if (subBuilding?.m_buildingInfo != null && subBuilding.m_buildingInfo.HasUndergroundMetroStationTracks())
+                    {
+                        var parentMetaData = new ParentStationMetaData()
+                        {
+                            Angle = subBuilding.m_angle,
+                            Position = subBuilding.m_position
+                        };
+                        var subStationPaths = subBuilding.m_buildingInfo.UndergroundStationPaths();
+                        for (int j = 0; j < subStationPaths.Count(); j++)
+                        {
+                            var path = subStationPaths[j];
+                            if (path?.m_nodes != null)
+                            {
+                                for (int k = 0; k < path.m_nodes.Length; k++)
+                                {
+                                    nodeList.Add(SetStationCustomizations.AdjustNodeForParent(path.m_nodes[k], parentMetaData));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            nodeList.AddRange(info.UndergroundStationPaths(false).SelectMany(p => p.m_nodes).ToArray());
+            for (int i = 0; i < nodeList.Count(); i++)
+            {
+                center += nodeList[i];
+            }
+            Debug.Log("Node list count: " + nodeList.Count());
+            center /= nodeList.Count();
+            return center;
+        }
+        public static void StoreBuildingDefault(this BuildingInfo info)
+        {
+            if (StationBuildingCustomization.StoredStationPaths == null)
+            {
+                StationBuildingCustomization.StoredStationPaths = new Dictionary<string, List<BuildingInfo.PathInfo>>();
+            }
+            if (!StationBuildingCustomization.StoredStationPaths.ContainsKey(info.name))
+            {
+                if (info.m_subBuildings != null)
+                {
+                    for (int i = 0; i < info.m_subBuildings.Count(); i++)
+                    {
+                        var subBuildingInfo = info.m_subBuildings[i].m_buildingInfo;
+                        if (subBuildingInfo != null && subBuildingInfo.HasUndergroundMetroStationTracks())
+                        {
+                            StoreBuildingDefault(subBuildingInfo);
+                        }
+                    }
+                }
+                if (info.HasUndergroundMetroStationTracks(false))
+                {
+                    List<BuildingInfo.PathInfo> pathList = new List<BuildingInfo.PathInfo>();
+                    foreach (var path in info.m_paths)
+                        pathList.Add(path.Clone());
+                    StationBuildingCustomization.StoredStationPaths.Add(info.name, pathList);
+
+                }
+            }
+        }
+
+        public static void RestoreBuildingDefault(this BuildingInfo info)
+        {
+            if (info.m_subBuildings != null)
+            {
+                for (int i = 0; i < info.m_subBuildings.Count(); i++)
+                {
+                    var subBuildingInfo = info.m_subBuildings[i].m_buildingInfo;
+                    if (subBuildingInfo != null && subBuildingInfo.HasUndergroundMetroStationTracks())
+                    {
+                        RestoreBuildingDefault(subBuildingInfo);
+                    }
+                }
+            }
+            if (info.HasUndergroundMetroStationTracks(false) && StationBuildingCustomization.StoredStationPaths.ContainsKey(info.name))
+            {
+                List<BuildingInfo.PathInfo> pathList = new List<BuildingInfo.PathInfo>();
+                foreach (var path in StationBuildingCustomization.StoredStationPaths[info.name])
+                    pathList.Add(path.Clone());
+                info.m_paths = pathList.ToArray();
+                var chosenPath = info.m_paths.FirstOrDefault(p => p?.m_netInfo != null && p.m_netInfo.IsUndergroundMetroStationTrack());
+                Debug.Log("Building " + info.name + " recalled. First path has coordinates " + chosenPath.m_nodes.First().ToString() + " / " + chosenPath.m_nodes.Last().ToString());
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using ColossalFramework;
+using System.Linq;
 
 namespace MetroOverhaul.UI
 {
@@ -42,15 +43,15 @@ namespace MetroOverhaul.UI
             base.CreateUI();
             width = 310;
             CreateDragHandle("Track Options");
-            var pnlStyles = CreatePanel(new UIPanelParamProps()
+            var pnlStylesWrapper = CreatePanel(new UIPanelParamProps()
             {
-                Name = "pnlStyles",
+                Name = "pnlStylesWrapper",
                 ColShare = 8,
                 Margins = new Vector2(10, 0)
             });
-            var pnlDirections = CreatePanel(new UIPanelParamProps()
+            var pnlDirectionsWrapper = CreatePanel(new UIPanelParamProps()
             {
-                Name = "pnlDirections",
+                Name = "pnlDirectionsWrapper",
                 ColShare = 4,
                 //ColOffset = 1,
             });
@@ -58,13 +59,13 @@ namespace MetroOverhaul.UI
             {
                 Name = "lblStyles",
                 Text = "Style Selector",
-                ParentComponent = pnlStyles,
+                ParentComponent = pnlStylesWrapper,
                 ColumnCount = 1
             });
-            var tsStyles = CreateTabStrip(new UITabstripParamProps()
+            var pnlStyles = CreateTabStrip(new UITabstripParamProps()
             {
-                Name = "tsStyles",
-                ParentComponent = pnlStyles,
+                Name =  "pnlStyles",
+                ParentComponent = pnlStylesWrapper,
                 Margins = new Vector2(9, 0),
                 ColumnCount = 1
             });
@@ -73,7 +74,7 @@ namespace MetroOverhaul.UI
                 Name = "btnModernStyle",
                 ToolTip = "Modern Style",
                 ColumnCount = 3,
-                ParentComponent = tsStyles,
+                ParentComponent = pnlStyles,
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_ModernStyleAtlas", UIHelper.ModernStyle),
                 Width = 59,
                 Height = 52,
@@ -88,7 +89,7 @@ namespace MetroOverhaul.UI
                 Name = "btnClassicStyle",
                 ToolTip = "Classic Style",
                 ColumnCount = 3,
-                ParentComponent = tsStyles,
+                ParentComponent = pnlStyles,
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_ClassicStyleAtlas", UIHelper.ClassicStyle),
                 Width = 59,
                 Height = 52,
@@ -103,7 +104,7 @@ namespace MetroOverhaul.UI
                 Name = "btnVanillaStyle",
                 ToolTip = "Vanilla Style",
                 ColumnCount = 3,
-                ParentComponent = tsStyles,
+                ParentComponent = pnlStyles,
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_VanillaStyleAtlas", UIHelper.VanillaStyle),
                 Width = 59,
                 Height = 52,
@@ -117,14 +118,14 @@ namespace MetroOverhaul.UI
             {
                 Name = "lblDirections",
                 Text = "Direction",
-                ParentComponent = pnlDirections,
+                ParentComponent = pnlDirectionsWrapper,
                 Margins = new Vector2(8, 16),
                 ColumnCount = 1
             });
-            var tsDirections = CreateTabStrip(new UITabstripParamProps()
+            var pnlDirections = CreateTabStrip(new UITabstripParamProps()
             {
-                Name = "tsStyles",
-                ParentComponent = pnlDirections,
+                Name =  "pnlStyles",
+                ParentComponent = pnlDirectionsWrapper,
                 Margins = new Vector2(9, 0),
                 StartSelectedIndex = 1,
                 ColumnCount = 1
@@ -134,7 +135,7 @@ namespace MetroOverhaul.UI
                 Name = "btnOneWay",
                 ToolTip = "One Way",
                 ColumnCount = 2,
-                ParentComponent = tsDirections,
+                ParentComponent = pnlDirections,
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_OnewayDirectionAtlas", UIHelper.OnewayDirection),
                 Width = 36,
                 Height = 33,
@@ -150,7 +151,7 @@ namespace MetroOverhaul.UI
                 Name = "btnTwoWay",
                 ToolTip = "Two Way",
                 ColumnCount = 2,
-                ParentComponent = tsDirections,
+                ParentComponent = pnlDirections,
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_TwowayDirectionAtlas", UIHelper.TwowayDirection),
                 Width = 36,
                 Height = 33,
@@ -161,9 +162,9 @@ namespace MetroOverhaul.UI
                     ExecuteUiInstructions();
                 }
             });
-            var pnlPillarChooser = CreatePanel(new UIPanelParamProps()
+            var pnlPillarChooserWrapper = CreatePanel(new UIPanelParamProps()
             {
-                Name = "pnlPillarChooser",
+                Name = "pnlPillarChooserWrapper",
                 ColShare = 11,
                 ColOffset = 1,
                 Margins = new Vector2(0, 20)
@@ -172,20 +173,20 @@ namespace MetroOverhaul.UI
             {
                 Name = "lblPillarChooser",
                 Text = "Pillar Selector",
-                ParentComponent = pnlPillarChooser,
+                ParentComponent = pnlPillarChooserWrapper,
                 ColumnCount = 1
             });
-            tsPillarChooser = CreateTabStrip(new UITabstripParamProps()
+            pnlPillarChooser = CreatePanel(new UIPanelParamProps()
             {
-                Name = "tsPillarChooser",
+                Name =  "pnlPillarChooser",
                 ColumnCount = 1,
-                ParentComponent = pnlPillarChooser
+                ParentComponent = pnlPillarChooserWrapper
             });
             btnWideMedianPillar = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnWideMedianPillar",
                 ToolTip = "Wide Median Pillar",
-                ParentComponent = tsPillarChooser,
+                ParentComponent = pnlPillarChooser,
                 ColumnCount = 4,
                 Width = 50,
                 Height = 50,
@@ -200,7 +201,7 @@ namespace MetroOverhaul.UI
             {
                 Name = "btnWidePillar",
                 ToolTip = "Wide Pillar",
-                ParentComponent = tsPillarChooser,
+                ParentComponent = pnlPillarChooser,
                 ColumnCount = 4,
                 Width = 50,
                 Height = 50,
@@ -215,7 +216,7 @@ namespace MetroOverhaul.UI
             {
                 Name = "btnNarrowPillar",
                 ToolTip = "Narrow Pillar",
-                ParentComponent = tsPillarChooser,
+                ParentComponent = pnlPillarChooser,
                 ColumnCount = 4,
                 Width = 50,
                 Height = 50,
@@ -230,7 +231,7 @@ namespace MetroOverhaul.UI
             {
                 Name = "btnNarrowMedianPillar",
                 ToolTip = "Narrow Median Pillar",
-                ParentComponent = tsPillarChooser,
+                ParentComponent = pnlPillarChooser,
                 ColumnCount = 4,
                 Width = 50,
                 Height = 50,
@@ -440,23 +441,27 @@ namespace MetroOverhaul.UI
         protected override void Activate(PrefabInfo info)
         {
             base.Activate(info);
+            var tsPillarChooser = FindUITabStripInPanel(pnlPillarChooser, 0);
             if (info.name.Contains("Large"))
             {
                 trackSize = 2;
                 pillarType = PillarType.Wide;
-                tsPillarChooser.selectedIndex = 1;
+                if (tsPillarChooser != null)
+                    tsPillarChooser.selectedIndex = 1;
             }
             else if (info.name.Contains("Small"))
             {
                 trackSize = 0;
                 pillarType = PillarType.NarrowMedian;
-                tsPillarChooser.selectedIndex = 3;
+                if (tsPillarChooser != null)
+                    tsPillarChooser.selectedIndex = 3;
             }
             else
             {
                 trackSize = 1;
                 pillarType = PillarType.Narrow;
-                tsPillarChooser.selectedIndex = 2;
+                if (tsPillarChooser != null)
+                    tsPillarChooser.selectedIndex = 2;
             }
             CheckboxDict[OVER_ROAD_FRIENDLY].isChecked = false;
             ExecuteUiInstructions();

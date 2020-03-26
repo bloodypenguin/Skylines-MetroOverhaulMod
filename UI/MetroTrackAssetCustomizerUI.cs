@@ -172,9 +172,9 @@ namespace MetroOverhaul.UI
                 ParentComponent = pnlTrackVsStation,
                 ColumnCount = 1
             });
-            tsTrackVsStation = CreateTabStrip(new UITabstripParamProps()
+            pnlTrackVsStation = CreatePanel(new UIPanelParamProps()
             {
-                Name = "tsTrackVsStation",
+                Name = "pnlTrackVsStation",
                 ColumnCount = 1,
                 ParentComponent = pnlTrackVsStation
             });
@@ -198,9 +198,9 @@ namespace MetroOverhaul.UI
                     ExecuteUiInstructions();
                 }
             });
-            var pnlPillarChooser = CreatePanel(new UIPanelParamProps()
+            var pnlPillarChooserWrapper = CreatePanel(new UIPanelParamProps()
             {
-                Name = "pnlPillarChooser",
+                Name = "pnlPillarChooserWrapper",
                 ColShare = 11,
                 ColOffset = 1,
                 Margins = new Vector2(0, 20)
@@ -209,19 +209,19 @@ namespace MetroOverhaul.UI
             {
                 Name = "lblPillarChooser",
                 Text = "Pillar Selector",
-                ParentComponent = pnlPillarChooser,
+                ParentComponent = pnlPillarChooserWrapper,
                 ColumnCount = 1
             });
-            tsPillarChooser = CreateTabStrip(new UITabstripParamProps()
+            pnlPillarChooser = CreatePanel(new UIPanelParamProps()
             {
-                Name = "tsPillarChooser",
+                Name = "pnlPillarChooser",
                 ColumnCount = 1,
-                ParentComponent = pnlPillarChooser
+                ParentComponent = pnlPillarChooserWrapper
             });
             btnWideMedianPillar = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnWideMedianPillar",
-                ParentComponent = tsPillarChooser,
+                ParentComponent = pnlPillarChooser,
                 ColumnCount = 4,
                 Width = 50,
                 Height = 50,
@@ -235,7 +235,7 @@ namespace MetroOverhaul.UI
             btnWidePillar = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnWidePillar",
-                ParentComponent = tsPillarChooser,
+                ParentComponent = pnlPillarChooser,
                 ColumnCount = 4,
                 Width = 50,
                 Height = 50,
@@ -249,7 +249,7 @@ namespace MetroOverhaul.UI
             btnNarrowPillar = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnNarrowPillar",
-                ParentComponent = tsPillarChooser,
+                ParentComponent = pnlPillarChooser,
                 ColumnCount = 4,
                 Width = 50,
                 Height = 50,
@@ -263,7 +263,7 @@ namespace MetroOverhaul.UI
             btnNarrowMedianPillar = CreateButton(new UIButtonParamProps()
             {
                 Name = "btnNarrowMedianPillar",
-                ParentComponent = tsPillarChooser,
+                ParentComponent = pnlPillarChooser,
                 ColumnCount = 4,
                 Width = 50,
                 Height = 50,

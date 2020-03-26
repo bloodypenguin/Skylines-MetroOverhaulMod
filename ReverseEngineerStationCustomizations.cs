@@ -6,17 +6,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using static MetroOverhaul.StationTrackCustomizations;
 
 namespace MetroOverhaul
 {
     public class ReverseEngineerStationCustomizations
     {
         public MetroStationCustomizerUI m_UI { get; set; }
-        public int Length { get; set; }
-        public int Depth { get; set; }
-        public int Angle { get; set; }
-        public int Bend { get; set; }
-        public StationTrackType StationTrackType { get; set; }
+        public StationTrackCustomizations TrackCustomization { get; }
         public BuildingInfo BuildingPrefab { get; set; }
         public bool AllTracks { get; set; }
         private readonly ushort m_BuildingID;
@@ -34,17 +31,18 @@ namespace MetroOverhaul
             if (m_SegmentID > 0)
                 m_Segment = Singleton<NetManager>.instance.m_segments.m_buffer[m_SegmentID];
             AllTracks = segmentID == 0;
-            Init();
+            TrackCustomization = new StationTrackCustomizations()
+            {
+                Horizontal = RestoreCustomizations(MetroStationTrackAlterType.Horizontal, m_Building.m_happiness),
+                Vertical = RestoreCustomizations(MetroStationTrackAlterType.Vertical, m_Building.m_health),
+                Length = RestoreCustomizations(MetroStationTrackAlterType.Length, m_Building.m_children),
+                Depth = RestoreCustomizations(MetroStationTrackAlterType.Depth, m_Building.m_childHealth),
+                Rotation = RestoreCustomizations(MetroStationTrackAlterType.Rotation, m_Building.m_seniors),
+                Curve = RestoreCustomizations(MetroStationTrackAlterType.Curve, m_Building.m_seniorHealth),
+                TrackType = (StationTrackType)(m_Building.m_teens)
+            };
         }
 
-        public void Init()
-        {
-            Length = RestoreCustomizations(MetroStationTrackAlterType.Length, m_Building.m_children);
-            Depth = RestoreCustomizations(MetroStationTrackAlterType.Depth, m_Building.m_childHealth);
-            Angle = RestoreCustomizations(MetroStationTrackAlterType.Rotation, m_Building.m_seniors);
-            Bend = RestoreCustomizations(MetroStationTrackAlterType.Bend, m_Building.m_seniorHealth);
-            StationTrackType = (StationTrackType)(m_Building.m_teens);
-        }
         private int RestoreCustomizations(MetroStationTrackAlterType trackAlterType, byte cachedValue)
         {
             return (int)(m_UI.SliderDataDict[trackAlterType].Min + (cachedValue * m_UI.SliderDataDict[trackAlterType].Step));

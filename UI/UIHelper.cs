@@ -37,6 +37,10 @@ namespace MetroOverhaul.UI
         public static readonly Texture2D SinglePlatformStationTrack;
         public static readonly Texture2D ExpressSidePlatformStationTrack;
         public static readonly Texture2D DualIslandPlatformStationTrack;
+        public static readonly Texture2D CloneSelected;
+        public static readonly Texture2D RemoveSelected;
+        public static readonly Texture2D SelectAll;
+        public static readonly Texture2D RevertAll;
 
         static UIHelper()
         {
@@ -66,6 +70,10 @@ namespace MetroOverhaul.UI
             SinglePlatformStationTrack = LoadDllResource("Thumbs.Button.SinglePlatformThumbnails.png", 395, 69);
             ExpressSidePlatformStationTrack = LoadDllResource("Thumbs.Button.ExpressSideThumbnails.png", 395, 69);
             DualIslandPlatformStationTrack = LoadDllResource("Thumbs.Button.DualIslandThumbnails.png", 395, 69);
+            CloneSelected = LoadDllResource("Thumbs.Button.AddTrackThumbnails.png", 395, 52);
+            RemoveSelected = LoadDllResource("Thumbs.Button.RemoveTrackThumbnails.png", 395, 52);
+            SelectAll = LoadDllResource("Thumbs.Button.SelectAllTracksThumbnails.png", 395, 52);
+            RevertAll = LoadDllResource("Thumbs.Button.RevertAllTracksThumbnails.png", 395, 52);
         }
 
         private static Texture2D LoadDllResource(string resourceName, int width, int height)

@@ -13,6 +13,9 @@ using System.IO;
 using ColossalFramework.UI;
 using MetroOverhaul.UI;
 using MetroOverhaul.NEXT;
+using static ToolBase;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MetroOverhaul {
     public static class Util {
@@ -138,10 +141,10 @@ namespace MetroOverhaul {
                 switch (style)
                 {
                     case TrackStyle.Vanilla:
-                        trackName += " Overground";
+                        trackName += " Ground 01";
                         break;
                     case TrackStyle.Modern:
-                        trackName = string.Format("Concrete {0} Ground", trackName);
+                        trackName = string.Format("{0} Ground", trackName);
                         break;
                     case TrackStyle.Classic:
                         trackName = string.Format("Steel {0} Ground", trackName);
@@ -152,14 +155,16 @@ namespace MetroOverhaul {
             {
                 switch (style)
                 {
+                    case TrackStyle.Vanilla:
+                        trackName = string.Format("{0} {1} 01", trackName, version.ToString());
+                        break;
                     case TrackStyle.Modern:
-                        trackName = "Concrete " + trackName;
+                        trackName = string.Format("{0} {1}",trackName, version.ToString());
                         break;
                     case TrackStyle.Classic:
-                        trackName = "Steel " + trackName;
+                        trackName = string.Format("Steel {0} {1}", trackName, version.ToString());
                         break;
                 }
-                trackName += " " + version.ToString();
             }
             switch (type)
             {

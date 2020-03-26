@@ -9,10 +9,14 @@ namespace MetroOverhaul.UI
     public class UIButtonParamProps : UIParamPropsBase
     {
         public bool AddUIComponent;
+        public bool DisableState;
+        public bool SelectOnCreate;
         public UIButtonParamProps()
         {
-            Margins = new Vector4(8, 20);
+            DisableState = false;
+            Margins = new Vector4(8, 8);
             AddUIComponent = true;
+            SelectOnCreate = false;
             Height = 30;
         }
     }

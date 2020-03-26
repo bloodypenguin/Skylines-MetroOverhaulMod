@@ -78,7 +78,7 @@ namespace MetroOverhaul.Extensions
             {
                 return false;
             }
-            return info.name == ModTrackNames.TRAIN_STATION_TRACK_GROUND_SMALL ||
+            return info.name == ModTrackNames.TRAIN_STATION_TRACK_GROUND_SMALL1 || info.name == ModTrackNames.TRAIN_STATION_TRACK_GROUND_SMALL2 ||
                    (info.IsTrainTrackAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.SinglePlatform);
         }
         public static bool IsElevatedSinglePlatformTrainStationTrack(this NetInfo info)
@@ -178,7 +178,7 @@ namespace MetroOverhaul.Extensions
             {
                 return false;
             }
-            return Regex.IsMatch(info.name, "((Steel )|(Concrete ))?" + ModTrackNames.MOM_STATION_TRACK_GROUND + "\b") ||
+            return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_GROUND + "( 01)?\b") ||
                    (info.IsMetroTrackAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.SidePlatform);
         }
 
@@ -188,7 +188,7 @@ namespace MetroOverhaul.Extensions
             {
                 return false;
             }
-            return Regex.IsMatch(info.name, "((Steel )|(Concrete ))?" + ModTrackNames.MOM_STATION_TRACK_ELEVATED + "\b") ||
+            return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_ELEVATED + "( 01)?\b") ||
                    (info.IsMetroTrackBridgeAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.SidePlatform);
         }
 
@@ -198,7 +198,7 @@ namespace MetroOverhaul.Extensions
             {
                 return false;
             }
-            return Regex.IsMatch(info.name, "((Steel )|(Concrete ))?" + ModTrackNames.MOM_STATION_TRACK_SUNKEN + "\b") ||
+            return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_SUNKEN + "\b") ||
                 (info.IsMetroTrackTunnelAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.SidePlatform && info.name.Contains("Sunken"));
         }
 
@@ -208,7 +208,7 @@ namespace MetroOverhaul.Extensions
             {
                 return false;
             }
-            return Regex.IsMatch(info.name, "((Steel )|(Concrete ))?" + ModTrackNames.MOM_STATION_TRACK_GROUND_SMALL + "\b") ||
+            return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_GROUND_SMALL + "\b") ||
                    (info.IsMetroTrackAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.SinglePlatform);
         }
 
@@ -218,7 +218,7 @@ namespace MetroOverhaul.Extensions
             {
                 return false;
             }
-            return Regex.IsMatch(info.name, "((Steel )|(Concrete ))?" + ModTrackNames.MOM_STATION_TRACK_ELEVATED_SMALL + "\b") ||
+            return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_ELEVATED_SMALL + "\b") ||
                    (info.IsMetroTrackBridgeAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.SinglePlatform);
         }
 
@@ -228,7 +228,7 @@ namespace MetroOverhaul.Extensions
             {
                 return false;
             }
-            return Regex.IsMatch(info.name, "((Steel )|(Concrete ))?" + ModTrackNames.MOM_STATION_TRACK_GROUND_ISLAND + "\b") ||
+            return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_GROUND_ISLAND + "\b") ||
                    (info.IsMetroTrackAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.IslandPlatform);
         }
         public static bool IsElevatedIslandPlatformMetroStationTrack(this NetInfo info)
@@ -237,7 +237,7 @@ namespace MetroOverhaul.Extensions
             {
                 return false;
             }
-            return Regex.IsMatch(info.name, "((Steel )|(Concrete ))?" + ModTrackNames.MOM_STATION_TRACK_ELEVATED_ISLAND + "\b") ||
+            return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_ELEVATED_ISLAND + "\b") ||
                    (info.IsMetroTrackBridgeAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.IslandPlatform);
         }
 
@@ -247,7 +247,7 @@ namespace MetroOverhaul.Extensions
             {
                 return false;
             }
-            return Regex.IsMatch(info.name, "((Steel )|(Concrete ))?" + ModTrackNames.MOM_STATION_TRACK_GROUND_LARGE + "\b") ||
+            return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_GROUND_LARGE + "\b") ||
                    (info.IsMetroTrackAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.ExpressSidePlatform);
         }
         public static bool IsElevatedLargeSidePlatformMetroStationTrack(this NetInfo info)
@@ -256,7 +256,7 @@ namespace MetroOverhaul.Extensions
             {
                 return false;
             }
-            return Regex.IsMatch(info.name, "((Steel )|(Concrete ))?" + ModTrackNames.MOM_STATION_TRACK_ELEVATED_LARGE + "\b") ||
+            return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_ELEVATED_LARGE + "\b") ||
                    (info.IsMetroTrackBridgeAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.ExpressSidePlatform);
         }
 
@@ -266,7 +266,7 @@ namespace MetroOverhaul.Extensions
             {
                 return false;
             }
-            return Regex.IsMatch(info.name, "((Steel )|(Concrete ))?" + ModTrackNames.MOM_STATION_TRACK_GROUND_LARGE_DUALISLAND + "\b") ||
+            return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_GROUND_LARGE_DUALISLAND + "\b") ||
                    (info.IsMetroTrackAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.DualIslandPlatform);
         }
         public static bool IsElevatedDualIslandPlatformMetroStationTrack(this NetInfo info)
@@ -275,7 +275,7 @@ namespace MetroOverhaul.Extensions
             {
                 return false;
             }
-            return Regex.IsMatch(info.name, "((Steel )|(Concrete ))?" + ModTrackNames.MOM_STATION_TRACK_ELEVATED_LARGE_DUALISLAND + "\b") ||
+            return Regex.IsMatch(info.name, "(Steel )?" + ModTrackNames.MOM_STATION_TRACK_ELEVATED_LARGE_DUALISLAND + "\b") ||
                    (info.IsMetroTrackBridgeAI() && info.IsStationTrack() && info.DeduceTrackType() == StationTrackType.DualIslandPlatform);
         }
         
@@ -298,11 +298,11 @@ namespace MetroOverhaul.Extensions
         }
         public static bool IsUndergroundPlatformLargeMetroStationTrack(this NetInfo netInfo)
         {
-            return netInfo?.name != null && netInfo.name.Contains("Concrete Metro Station Track Tunnel Large") && !netInfo.name.Contains("Island");
+            return netInfo?.name != null && netInfo.name.Contains("Metro Station Track Tunnel Large") && !netInfo.name.Contains("Island");
         }
         public static bool IsUndergroundDualIslandPlatformMetroStationTrack(this NetInfo netInfo)
         {
-            return netInfo?.name != null && netInfo.name.Contains("Concrete Metro Station Track Tunnel Large Dual Island");
+            return netInfo?.name != null && netInfo.name.Contains("Metro Station Track Tunnel Large Dual Island");
         }
         //public static bool IsUndergroundSideIslandPlatformMetroStationTrack(this NetInfo netInfo)
         //{
@@ -315,7 +315,7 @@ namespace MetroOverhaul.Extensions
             {
                 return false;
             }
-            return netinfo.name.Contains("Concrete Metro Station Track Tunnel Island");
+            return netinfo.name.Contains("Metro Station Track Tunnel Island");
         }
 
         public static bool IsUndergroundSmallStationTrack(this NetInfo netinfo)
@@ -324,7 +324,7 @@ namespace MetroOverhaul.Extensions
             {
                 return false;
             }
-            return netinfo.name.Contains("Concrete Metro Station Track Tunnel Small");
+            return netinfo.name.Contains("Metro Station Track Tunnel Small");
         }
 
         public static bool IsUndergroundMetroTrack(this NetInfo netInfo)
