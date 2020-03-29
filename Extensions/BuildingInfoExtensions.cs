@@ -10,13 +10,31 @@ namespace MetroOverhaul.Extensions
     {
         public static bool IsMetroDepot(this BuildingInfo info)
         {
-            return info?.m_class != null && info.m_buildingAI is DepotAI && info.m_class.m_service == ItemClass.Service.PublicTransport && info.m_class.m_subService == ItemClass.SubService.PublicTransportMetro;
+            if (info.m_buildingAI == null && info.m_class == null)
+            {
+                return false;
+            }
+            return info.m_buildingAI.GetType() == typeof(DepotAI) && info.m_class.m_service == ItemClass.Service.PublicTransport && info.m_class.m_subService == ItemClass.SubService.PublicTransportMetro;
+        }
+        
+        public static bool IsTrainStation(this BuildingInfo info)
+        {
+            if (info.m_buildingAI == null && info.m_class == null)
+            {
+                return false;
+            }
+            return info.m_buildingAI is TransportStationAI && info.m_class.m_subService == ItemClass.SubService.PublicTransportTrain;
         }
 
-        public static bool IsAbovegroundMetroStation(this BuildingInfo info)
+        public static bool IsMetroStation(this BuildingInfo info)
         {
-            return IsMetroDepot(info) && info.m_buildingAI is TransportStationAI && HasAbovegroundMetroStationTracks(info);
+            if (info.m_buildingAI == null && info.m_class == null)
+            {
+                return false;
+            }
+            return info.m_buildingAI is TransportStationAI && info.m_class.m_subService == ItemClass.SubService.PublicTransportMetro;
         }
+
         public static bool HasAbovegroundTrainStationTracks(this BuildingInfo info)
         {
             if (info?.m_paths != null && info.m_paths.Any(p => (p?.m_finalNetInfo != null && p.m_finalNetInfo.IsAbovegroundTrainStationTrack()) || (p?.m_netInfo != null && p.m_netInfo.IsAbovegroundTrainStationTrack())))
@@ -92,10 +110,11 @@ namespace MetroOverhaul.Extensions
                 {
                     return info.name + ModTrackNames.ANALOG_PREFIX + TrackVehicleType.Metro.ToString();
                 }
-                else
+                if (info.IsMetroStation())
                 {
                     return info.name + ModTrackNames.ANALOG_PREFIX + TrackVehicleType.Train.ToString();
                 }
+                throw new Exception($"Getting analog name for unsupported building type. Asset: {info?.name}");
             }
             else
             {
@@ -234,14 +253,17 @@ namespace MetroOverhaul.Extensions
         private static void FixSlopes(BuildingInfo info, int inx, TrackVehicleType vehicletype)
         {
             var path = info.m_paths[inx];
-            var horizontalDistance = Vector3.Distance(new Vector3(path.m_nodes[0].x, path.m_nodes[0].y, path.m_nodes[0].z),
-                                                     new Vector3(path.m_nodes[1].x, path.m_nodes[0].y, path.m_nodes[1].z)); //Math.Pow(Math.Pow(path.m_nodes[0].x - path.m_nodes[1].x, 2) + Math.Pow(path.m_nodes[0].x - path.m_nodes[1].x, 2), 0.5f);
+            var horizontalDistance = Vector3.Distance(
+                new Vector3(path.m_nodes[0].x, path.m_nodes[0].y, path.m_nodes[0].z),
+                new Vector3(path.m_nodes[1].x, path.m_nodes[0].y,
+                    path.m_nodes[1]
+                        .z)); //Math.Pow(Math.Pow(path.m_nodes[0].x - path.m_nodes[1].x, 2) + Math.Pow(path.m_nodes[0].x - path.m_nodes[1].x, 2), 0.5f);
 
             var verticalDistance = Math.Abs(path.m_nodes[0].y - path.m_nodes[1].y);
             if (path.m_netInfo.m_maxSlope < Math.Abs(verticalDistance / horizontalDistance))
             {
                 bool isTargetVehicleTrackType = false;
-                float slopeDist = ((float)Math.Abs(verticalDistance / horizontalDistance)) - path.m_netInfo.m_maxSlope;
+                float slopeDist = ((float) Math.Abs(verticalDistance / horizontalDistance)) - path.m_netInfo.m_maxSlope;
 
                 var pathList = new List<BuildingInfo.PathInfo>();
                 Vector3 targetNode = Vector3.zero;
@@ -269,6 +291,7 @@ namespace MetroOverhaul.Extensions
                             isTargetVehicleTrackType = info.m_paths[i].m_netInfo.IsMetroTrackAI();
                             break;
                     }
+
                     if (isTargetVehicleTrackType && i != inx)
                     {
                         Debug.Log("info to compare is " + info.m_paths[i].m_netInfo.name);
@@ -287,6 +310,7 @@ namespace MetroOverhaul.Extensions
                                 break;
                             }
                         }
+
                         //}
                     }
                 }
@@ -349,15 +373,6 @@ namespace MetroOverhaul.Extensions
                 }
             }
 
-        }
-        public static bool IsTrainStation(this BuildingInfo info)
-        {
-            return info.m_class.m_subService == ItemClass.SubService.PublicTransportTrain;
-        }
-
-        public static bool IsMetroStation(this BuildingInfo info)
-        {
-            return info.m_class.m_subService == ItemClass.SubService.PublicTransportMetro;
         }
 
         public static List<BuildingInfo.PathInfo> UndergroundStationPaths(this BuildingInfo info, bool isDeep = true)
