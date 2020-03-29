@@ -211,7 +211,7 @@ namespace MetroOverhaul.UI
         }
         public override void Start()
         {
-            m_netTool = FindObjectOfType<NetTool>();
+            m_netTool = GetExactTool<NetTool>();
             if (m_netTool == null)
             {
 #if DEBUG
@@ -220,7 +220,7 @@ namespace MetroOverhaul.UI
                 enabled = false;
                 return;
             }
-            m_buildingTool = FindObjectOfType<BuildingTool>();
+            m_buildingTool = GetExactTool<BuildingTool>();
             if (m_buildingTool == null)
             {
 #if DEBUG
@@ -229,8 +229,8 @@ namespace MetroOverhaul.UI
                 enabled = false;
                 return;
             }
-            m_buildingTool = FindObjectOfType<BuildingTool>();
-            if (m_buildingTool == null)
+            m_bulldozeTool = GetExactTool<BulldozeTool>();
+            if (m_bulldozeTool == null)
             {
 #if DEBUG
                 Next.Debug.Log("BuildingTool Not Found");
@@ -251,6 +251,8 @@ namespace MetroOverhaul.UI
             CreateUI();
             SubStart();
         }
+
+        private T GetExactTool<T>() where T : UnityEngine.Object => FindObjectsOfType<T>().Where(x => x.GetType() == typeof(T)).FirstOrDefault();
 
         private float m_SetWidth = 250;
         protected virtual void CreateUI()
