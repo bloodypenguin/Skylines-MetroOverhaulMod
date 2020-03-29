@@ -64,7 +64,7 @@ namespace MetroOverhaul.UI
             });
             var pnlStyles = CreateTabStrip(new UITabstripParamProps()
             {
-                Name =  "pnlStyles",
+                Name = "pnlStyles",
                 ParentComponent = pnlStylesWrapper,
                 Margins = new Vector2(9, 0),
                 ColumnCount = 1
@@ -124,7 +124,7 @@ namespace MetroOverhaul.UI
             });
             var pnlDirections = CreateTabStrip(new UITabstripParamProps()
             {
-                Name =  "pnlStyles",
+                Name = "pnlStyles",
                 ParentComponent = pnlDirectionsWrapper,
                 Margins = new Vector2(9, 0),
                 StartSelectedIndex = 1,
@@ -178,7 +178,7 @@ namespace MetroOverhaul.UI
             });
             pnlPillarChooser = CreatePanel(new UIPanelParamProps()
             {
-                Name =  "pnlPillarChooser",
+                Name = "pnlPillarChooser",
                 ColumnCount = 1,
                 ParentComponent = pnlPillarChooserWrapper
             });
@@ -269,23 +269,27 @@ namespace MetroOverhaul.UI
 
         protected override void ExecuteUiInstructions()
         {
-            //ToggleCustomAtlasButtonPairs((int)trackStyle, btnModernStyle, btnClassicStyle);
-            //ToggleCustomAtlasButtonPairs(trackDirection, btnOneWay, btnTwoWay);
-
+            UIButton.ButtonState vanillaState;
             NetInfo prefab = null;
             var fence = CheckboxDict[ALT_BARRIER].isChecked;
-            if (!btnOneWay.isInteractive)
+            btnOneWay.isInteractive = true;
+            btnVanillaStyle.isInteractive = trackDirection != 0 && trackSize == 1;
+            if (trackDirection == 0)
             {
-                btnOneWay.isInteractive = true;
-                if (trackDirection == 0)
-                {
-                    btnOneWay.state = UIButton.ButtonState.Focused;
-                }
+                vanillaState = UIButton.ButtonState.Disabled;
+                btnOneWay.state = UIButton.ButtonState.Focused;
+            }
+            else
+            {
+                if (trackSize != 1)
+                    vanillaState = UIButton.ButtonState.Disabled;
                 else
                 {
+                    vanillaState = trackStyle == TrackStyle.Vanilla ? UIButton.ButtonState.Focused : UIButton.ButtonState.Normal;
                     btnOneWay.state = UIButton.ButtonState.Normal;
                 }
             }
+
             if (!btnNarrowMedianPillar.isInteractive)
             {
                 btnNarrowMedianPillar.isInteractive = true;
@@ -298,14 +302,16 @@ namespace MetroOverhaul.UI
                     btnNarrowMedianPillar.state = UIButton.ButtonState.Normal;
                 }
             }
-
+            CheckboxDict[ALT_BARRIER].Enable();
             switch (trackStyle)
             {
                 case TrackStyle.Vanilla:
+                    CheckboxDict[ALT_BARRIER].Disable();
                     switch (trackSize)
                     {
                         case 0:
                             {
+                                btnModernStyle.SimulateClick();
                             }
                             break;
                         case 1:
@@ -316,7 +322,12 @@ namespace MetroOverhaul.UI
                             else
                             {
                                 prefab = vanillaPrefab;
+                                btnOneWay.state = UIButton.ButtonState.Disabled;
+                                btnOneWay.isInteractive = false;
                             }
+                            break;
+                        case 2:
+                            btnModernStyle.SimulateClick();
                             break;
                     }
                     break;
@@ -361,6 +372,8 @@ namespace MetroOverhaul.UI
                                 prefab = fence ? concreteLargePrefab : concreteLargePrefabNoBar;
                                 btnOneWay.state = UIButton.ButtonState.Disabled;
                                 btnOneWay.isInteractive = false;
+                                vanillaState = UIButton.ButtonState.Disabled;
+                                btnVanillaStyle.isInteractive = false;
                                 btnNarrowMedianPillar.state = UIButton.ButtonState.Disabled;
                                 btnNarrowMedianPillar.isInteractive = false;
                             }
@@ -405,6 +418,8 @@ namespace MetroOverhaul.UI
                                 prefab = fence ? steelLargePrefab : steelLargePrefabNoBar;
                                 btnOneWay.state = UIButton.ButtonState.Disabled;
                                 btnOneWay.isInteractive = false;
+                                vanillaState = UIButton.ButtonState.Disabled;
+                                btnVanillaStyle.isInteractive = false;
                                 btnNarrowMedianPillar.state = UIButton.ButtonState.Disabled;
                                 btnNarrowMedianPillar.isInteractive = false;
                             }
@@ -412,6 +427,7 @@ namespace MetroOverhaul.UI
                     }
                     break;
             }
+            btnVanillaStyle.state = vanillaState;
             if (prefab != null)
             {
                 if (CheckboxDict.ContainsKey(OVER_ROAD_FRIENDLY))

@@ -31,20 +31,20 @@ namespace MetroOverhaul.InitializationSteps
                         var bridgeAI = prefab.GetComponent<MOMMetroTrackBridgeAI>();
                         if (bridgeAI != null)
                         {
-                            var narrowInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Vanilla_Narrow")}.Vanilla Narrow_Data");
+                            var narrowInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Vanilla_Narrow")}.Vanilla_Narrow_Data");
                             bridgeAI.m_bridgePillarInfo = narrowInfo;
                             bridgeAI.m_bridgePillarOffset = -0.75f;
                             bridgeAI.pillarList = new List<BridgePillarItem>();
                             bridgeAI.pillarList.Add(new BridgePillarItem()
                             {
                                 NarrowInfo = narrowInfo,
-                                WideMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Wide Median")}.Modern Wide Median_Data"),
-                                WideInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Wide")}.Modern Wide_Data"),
+                                WideMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Vanilla_Wide_Median")}.Vanilla_Wide_Median_Data"),
+                                WideInfo = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Vanilla_Wide")}.Vanilla_Wide_Data"),
                                 NarrowMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"Overground Metro Elevated Pillar 01"),
-                                WideMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Wide Median_NoCol")}.Modern Wide Median NoCol_Data"),
-                                WideInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Wide_NoCol")}.Modern Wide NoCol_Data"),
-                                NarrowMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Modern_Median_NoCol")}.Modern Median NoCol_Data"),
-                                NarrowInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Vanilla_Narrow_NoCol")}.Vanilla Narrow NoCol_Data"),
+                                WideMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Vanilla_Wide_Median_NoCol")}.Vanilla_Wide_Median_NoCol_Data"),
+                                WideInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Vanilla_Wide_NoCol")}.Vanilla_Wide_NoCol_Data"),
+                                NarrowMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"Overground Metro Elevated Pillar 01"),
+                                NarrowInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Vanilla_Narrow_NoCol")}.Vanilla_Narrow_NoCol_Data"),
                                 HeightLimit = 0,
                                 HeightOffset = 0
                             });

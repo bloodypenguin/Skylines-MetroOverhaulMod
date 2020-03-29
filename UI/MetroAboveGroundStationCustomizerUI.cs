@@ -559,15 +559,42 @@ namespace MetroOverhaul.UI
         {
             btnTrain.isEnabled = OptionsWrapper<Options>.Options.ingameTrainMetroConverter;
             var hasMetroTrack = TrackVehicleTypeArray.Any(t => t == TrackVehicleType.Metro);
+            var vanillaApplicable = m_currentBuilding.AbovegroundStationPaths().Any(p => p.m_netInfo.IsGroundSidePlatformMetroStationTrack() || p.m_netInfo.IsElevatedSidePlatformMetroStationTrack() || p.m_netInfo.IsGroundSidePlatformTrainStationTrack() || p.m_netInfo.IsElevatedSidePlatformTrainStationTrack());
+            UIButton.ButtonState vanillaState;
+            UIButton.ButtonState modernState;
+            UIButton.ButtonState classicState;
             if (hasMetroTrack)
             {
+                classicState = UIButton.ButtonState.Normal;
+                modernState = UIButton.ButtonState.Normal;
+
+                if (vanillaApplicable)
+                    vanillaState = UIButton.ButtonState.Normal;
+                else
+                    vanillaState = UIButton.ButtonState.Disabled;
+
+                switch (trackStyle)
+                {
+                    case TrackStyle.None:
+                    case TrackStyle.Modern:
+                        modernState = UIButton.ButtonState.Focused;
+                        break;
+                    case TrackStyle.Classic:
+                        classicState = UIButton.ButtonState.Focused;
+                        break;
+                    case TrackStyle.Vanilla:
+                        if (vanillaApplicable)
+                            vanillaState = UIButton.ButtonState.Focused;
+                        break;
+                }
+                if (trackStyle != TrackStyle.None)
+                {
+                    btnModernStyle.parent.GetComponentsInChildren<UIButton>().FirstOrDefault(b => b.name.StartsWith(TS_STARTER)).SimulateClick();
+                }
+
                 btnClassicStyle.isInteractive = true;
                 btnModernStyle.isInteractive = true;
-                btnVanillaStyle.isInteractive = true;
-                if (trackStyle == TrackStyle.None)
-                {
-                    btnModernStyle.SimulateClick();
-                }
+                btnVanillaStyle.isInteractive = vanillaApplicable;
             }
             else
             {
@@ -576,17 +603,13 @@ namespace MetroOverhaul.UI
                     btnModernStyle.parent.GetComponentsInChildren<UIButton>().FirstOrDefault(b => b.name.StartsWith(TS_STARTER)).SimulateClick();
                 }
 
-                btnClassicStyle.state = UIButton.ButtonState.Disabled;
-                btnModernStyle.state = UIButton.ButtonState.Disabled;
-                btnVanillaStyle.state = UIButton.ButtonState.Disabled;
+                classicState = UIButton.ButtonState.Disabled;
+                modernState = UIButton.ButtonState.Disabled;
+                vanillaState = UIButton.ButtonState.Disabled;
                 btnClassicStyle.isInteractive = false;
                 btnModernStyle.isInteractive = false;
                 btnVanillaStyle.isInteractive = false;
             }
-
-            btnClassicStyle.isInteractive = hasMetroTrack;
-            btnModernStyle.isInteractive = hasMetroTrack;
-            btnVanillaStyle.isInteractive = hasMetroTrack;
 
             var trainAnalogSuffix = ModTrackNames.ANALOG_PREFIX + TrackVehicleType.Train.ToString();
             var metroAnalogSuffix = ModTrackNames.ANALOG_PREFIX + TrackVehicleType.Metro.ToString();
@@ -656,6 +679,9 @@ namespace MetroOverhaul.UI
                         break;
                     }
             }
+            btnVanillaStyle.state = vanillaState;
+            btnModernStyle.state = modernState;
+            btnClassicStyle.state = classicState;
         }
         private void SetVehicleTypesAndStyles(bool isDefault = false)
         {
@@ -669,8 +695,8 @@ namespace MetroOverhaul.UI
                 }
                 if (path.m_finalNetInfo.IsAbovegroundMetroStationTrack() || path.m_netInfo.IsMetroTrack())
                 {
-                    if (trackStyle == TrackStyle.None)
-                        btnModernStyle.SimulateClick();
+                    //if (trackStyle == TrackStyle.None)
+                    //    btnModernStyle.SimulateClick();
                     path.SetMetroStyle(trackStyle);
                 }
             }

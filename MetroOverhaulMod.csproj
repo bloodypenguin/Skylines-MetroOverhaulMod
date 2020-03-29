@@ -311,6 +311,20 @@
     <None Include="Assets\Modern_Wide_NoCol.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Assets\Vanilla_Narrow.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\Vanilla_Narrow_NoCol.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\Vanilla_Wide.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\Vanilla_Wide_Median.crp" />
+    <None Include="Assets\Vanilla_Wide_Median_NoCol.crp" />
+    <None Include="Assets\Vanilla_Wide_NoCol.crp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Meshes\10m\Blank.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
