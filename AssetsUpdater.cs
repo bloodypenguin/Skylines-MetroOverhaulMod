@@ -27,7 +27,7 @@ namespace MetroOverhaul
             }
             try
             {
-                UpdateMetroStationsMeta();
+                UpdateMetroBuildingsMeta();
             }
             catch (Exception e)
             {
@@ -613,7 +613,7 @@ namespace MetroOverhaul
             }
         }
 
-        private static void UpdateMetroStationsMeta()
+        private static void UpdateMetroBuildingsMeta()
         {
             var vanillaMetroStation = PrefabCollection<BuildingInfo>.FindLoaded("Metro Entrance");
 
@@ -626,16 +626,21 @@ namespace MetroOverhaul
             {
                 try
                 {
-                    if (info == null || info.m_buildingAI == null || !info.IsMetroDepot())
+                    if (info == null || !info.IsMetroDepot() && !info.IsMetroStation())
                     {
                         continue;
                     }
 
-                    var ai = info.m_buildingAI as TransportStationAI;
-                    if (!OptionsWrapper<Options>.Options.depotsNotRequiredMode && ai != null)
+                    if (info.IsMetroStation())
                     {
-                        ai.m_maxVehicleCount = 0;
+                        var ai = info.m_buildingAI as TransportStationAI;
+                        if (!OptionsWrapper<Options>.Options.depotsNotRequiredMode && ai != null)
+                        {
+                            UnityEngine.Debug.Log($"MOM: Updating meta of {info?.name} with 0 max vehicle count");
+                            ai.m_maxVehicleCount = 0;
+                        }                        
                     }
+
                     info.m_UnlockMilestone = vanillaMetroStation.m_UnlockMilestone;
                     ((DepotAI)info.m_buildingAI).m_createPassMilestone = ((DepotAI)vanillaMetroStation.m_buildingAI).m_createPassMilestone;
                     ((DepotAI)info.m_buildingAI).m_createPassMilestone2 = ((DepotAI)vanillaMetroStation.m_buildingAI).m_createPassMilestone2;
