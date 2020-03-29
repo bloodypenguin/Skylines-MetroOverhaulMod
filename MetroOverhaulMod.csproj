@@ -311,6 +311,7 @@
     <None Include="Assets\Modern_Wide_NoCol.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Assets\Vanilla_Median_NoCol.crp" />
     <None Include="Assets\Vanilla_Narrow.crp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

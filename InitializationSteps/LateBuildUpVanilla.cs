@@ -43,7 +43,7 @@ namespace MetroOverhaul.InitializationSteps
                                 NarrowMedianInfo = PrefabCollection<BuildingInfo>.FindLoaded($"Overground Metro Elevated Pillar 01"),
                                 WideMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Vanilla_Wide_Median_NoCol")}.Vanilla_Wide_Median_NoCol_Data"),
                                 WideInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Vanilla_Wide_NoCol")}.Vanilla_Wide_NoCol_Data"),
-                                NarrowMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"Overground Metro Elevated Pillar 01"),
+                                NarrowMedianInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Vanilla_Median_NoCol")}.Vanilla_Median_NoCol_Data"),
                                 NarrowInfoNoCol = PrefabCollection<BuildingInfo>.FindLoaded($"{Util.PackageName("Vanilla_Narrow_NoCol")}.Vanilla_Narrow_NoCol_Data"),
                                 HeightLimit = 0,
                                 HeightOffset = 0
