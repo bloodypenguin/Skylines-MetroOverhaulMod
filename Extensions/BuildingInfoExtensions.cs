@@ -10,7 +10,7 @@ namespace MetroOverhaul.Extensions
     {
         public static bool IsMetroDepot(this BuildingInfo info)
         {
-            if (info.m_buildingAI == null && info.m_class == null)
+            if (info.m_buildingAI == null || info.m_class == null)
             {
                 return false;
             }
@@ -19,7 +19,7 @@ namespace MetroOverhaul.Extensions
         
         public static bool IsTrainStation(this BuildingInfo info)
         {
-            if (info.m_buildingAI == null && info.m_class == null)
+            if (info.m_buildingAI == null || info.m_class == null)
             {
                 return false;
             }
@@ -28,7 +28,7 @@ namespace MetroOverhaul.Extensions
 
         public static bool IsMetroStation(this BuildingInfo info)
         {
-            if (info.m_buildingAI == null && info.m_class == null)
+            if (info.m_buildingAI == null || info.m_class == null)
             {
                 return false;
             }
