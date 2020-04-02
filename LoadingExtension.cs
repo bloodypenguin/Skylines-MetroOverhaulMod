@@ -130,7 +130,6 @@ namespace MetroOverhaul
             {
                 if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame || mode == LoadMode.NewGameFromScenario)
                 {
-                    SimulationManager.instance.AddAction(DespawnVanillaMetro);
                     var gameObject = new GameObject("MetroOverhaulUISetup");
                     gameObject.AddComponent<UpgradeSetup>();
                     //#if DEBUG
@@ -201,22 +200,6 @@ namespace MetroOverhaul
                 Redirector<DepotAIDetour>.Revert();
                 Redirector<MetroTrainAIDetour>.Revert();
                 Redirector<PassengerTrainAIDetour>.Revert();
-            }
-        }
-        private static void DespawnVanillaMetro()
-        {
-            var vehicles = Singleton<VehicleManager>.instance.m_vehicles;
-            for (ushort i = 0; i < vehicles.m_size; i++)
-            {
-                var vehicle = vehicles.m_buffer[i];
-                if (vehicle.m_flags == (Vehicle.Flags)0 || vehicle.Info == null)
-                {
-                    continue;
-                }
-                if (vehicle.Info.name == "Metro")
-                {
-                    Singleton<VehicleManager>.instance.ReleaseVehicle(i);
-                }
             }
         }
     }
