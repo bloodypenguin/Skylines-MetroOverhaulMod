@@ -55,7 +55,7 @@ namespace MetroOverhaul.UI
         }
         protected override bool SatisfiesTrackSpecs(PrefabInfo info)
         {
-            return ((BuildingInfo)info).HasUndergroundMetroStationTracks() || m_IsRelocate;
+            return ((BuildingInfo)info).HasUndergroundMetroStationTracks();
         }
 
         protected override ToolBase GetTheTool()
