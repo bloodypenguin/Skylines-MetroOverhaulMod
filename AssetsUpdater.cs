@@ -655,17 +655,6 @@ namespace MetroOverhaul
         }
 
         //this method is supposed to be called before level loading
-        public static void PreventVanillaMetroTrainSpawning()
-        {
-            var metro = PrefabCollection<VehicleInfo>.FindLoaded("Metro");
-            if (metro == null)
-            {
-                return;
-            }
-            metro.m_class = ScriptableObject.CreateInstance<ItemClass>();
-        }
-
-        //this method is supposed to be called before level loading
         public static void UpdateVanillaMetroTracks()
         {
             NetInfo metroTrack = null;
