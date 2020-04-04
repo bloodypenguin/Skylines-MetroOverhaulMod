@@ -174,12 +174,10 @@ namespace MetroOverhaul
                 {
                     GameObject.Destroy(go);
                 }
-
-                var transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Metro");
-                transportInfo.m_netLayer = ItemClass.Layer.MetroTunnels;
-                transportInfo.m_stationLayer = ItemClass.Layer.MetroTunnels;
             }
-
+            GameObject.Destroy(UIView.GetAView().FindUIComponent<MetroStationCustomizerUI>("MetroStationCustomizerUI"));
+            GameObject.Destroy(UIView.GetAView().FindUIComponent<MetroTrackCustomizerUI>("MetroTrackCustomizerUI"));
+            GameObject.Destroy(UIView.GetAView().FindUIComponent<MetroAboveGroundStationCustomizerUI>("MetroAboveGroundStationCustomizerUI"));
         }
 
         public override void OnReleased()
