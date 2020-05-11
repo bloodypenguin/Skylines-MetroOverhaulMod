@@ -88,8 +88,8 @@ namespace MetroOverhaul.InitializationSteps
             theProp.m_prop = thePropInfo;
             theProp.m_finalProp = thePropInfo;
             theProp.m_position = position;
-            theProp.m_repeatDistance = repeatDistance;
             theProp.m_angle = angle;
+            theProp.m_repeatDistance = repeatDistance;
             propList.Add(theProp);
         }
         public static void CommonVanillaCustomization(NetInfo prefab, NetInfoVersion version)
@@ -193,6 +193,10 @@ namespace MetroOverhaul.InitializationSteps
                 if (lane.m_laneType == NetInfo.LaneType.Vehicle)
                 {
                     lane.m_verticalOffset = 0.35f;
+                }
+                else if(lane.m_laneType == NetInfo.LaneType.Pedestrian)
+                {
+                    lane.m_verticalOffset = 1;
                 }
             }
         }
