@@ -369,7 +369,7 @@ namespace MetroOverhaul.Extensions
         }
         public static bool IsPedestrianNetwork(this NetInfo info)
         {
-            return info != null && (info.name == "Pedestrian Connection Surface" || info.name == "Pedestrian Connection Inside" || info.name == "Pedestrian Connection Underground");
+            return info != null && info.name.StartsWith("Pedestrian Connection");
         }
         public static bool IsTrainTrackAI(this NetInfo info)
         {

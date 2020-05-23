@@ -630,19 +630,6 @@ namespace MetroOverhaul.Extensions
             return retval;
         }
 
-        public static List<BuildingInfo.PathInfo> LowestHighPaths(this BuildingInfo info)
-        {
-            var retval = new List<BuildingInfo.PathInfo>();
-            retval = info.m_paths.Where(p => p.IsPedestrianPath() && p.m_nodes.Any(n => n.y > -4) && p.m_nodes.Any(nd => nd.y <= -4)).ToList();
-            if (retval.Count == 0)
-            {
-                retval.Add(info.m_paths.Where(p => IsPedestrianPath(p))
-                    .OrderByDescending(p => p.m_nodes[0].y)
-                    .FirstOrDefault());
-            }
-            return retval;
-        }
-
         public static Vector3 FindAverageNode(this BuildingInfo info, bool isDeep)
         {
             var center = Vector3.zero;
@@ -667,7 +654,7 @@ namespace MetroOverhaul.Extensions
                             {
                                 for (int k = 0; k < path.m_nodes.Length; k++)
                                 {
-                                    nodeList.Add(SetStationCustomizations.AdjustNodeForParent(path.m_nodes[k], parentMetaData));
+                                    nodeList.Add(SetStationCustomizations.AdjustNodeFromParentToChild(path.m_nodes[k], parentMetaData));
                                 }
                             }
                         }
@@ -683,6 +670,7 @@ namespace MetroOverhaul.Extensions
             center /= nodeList.Count();
             return center;
         }
+        
         public static void StoreBuildingDefault(this BuildingInfo info)
         {
             if (StationBuildingCustomization.StoredStationPaths == null)
