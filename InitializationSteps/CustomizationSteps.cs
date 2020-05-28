@@ -88,8 +88,8 @@ namespace MetroOverhaul.InitializationSteps
             theProp.m_prop = thePropInfo;
             theProp.m_finalProp = thePropInfo;
             theProp.m_position = position;
-            theProp.m_repeatDistance = repeatDistance;
             theProp.m_angle = angle;
+            theProp.m_repeatDistance = repeatDistance;
             propList.Add(theProp);
         }
         public static void CommonVanillaCustomization(NetInfo prefab, NetInfoVersion version)
@@ -187,48 +187,32 @@ namespace MetroOverhaul.InitializationSteps
 
         public static void CommonCustomization(NetInfo prefab, NetInfoVersion version)
         {
-            if (prefab.name.Contains("Station"))
-            {
-                prefab.m_connectGroup = NetInfo.ConnectGroup.MetroStation;
-                //prefab.m_nodeConnectGroups = (NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.MonorailStation | NetInfo.ConnectGroup.DoubleMetro;
-                //if (version != NetInfoVersion.Tunnel)
-                //{
-                //    prefab.m_nodes[1].m_connectGroup = (NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.MonorailStation;
-                //}
-            }
-            else
-            {
-                prefab.m_connectGroup = NetInfo.ConnectGroup.DoubleMetro;
-                //prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.DoubleMetro;
-                //if (version != NetInfoVersion.Tunnel)
-                //{
-                //    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.DoubleMetro;
-                //}
-            }
             foreach (var lane in prefab.m_lanes)
             {
                 if (lane.m_laneType == NetInfo.LaneType.Vehicle)
                 {
                     lane.m_verticalOffset = 0.35f;
                 }
+                else if(lane.m_laneType == NetInfo.LaneType.Pedestrian)
+                {
+                    lane.m_verticalOffset = 1;
+                }
             }
+        }
+
+        public static void CommonCustomizationTwoLaneTwoWay(NetInfo prefab, NetInfoVersion version)
+        {
+            prefab.m_connectGroup = prefab.name.Contains("Station") ? NetInfo.ConnectGroup.MetroStation : NetInfo.ConnectGroup.DoubleMetro;
         }
 
         public static void CommonCustomizationTwoLaneOneWay(NetInfo prefab, NetInfoVersion version)
         {
             prefab.m_connectGroup = NetInfo.ConnectGroup.MonorailStation;
-            //prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.MonorailStation | (NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.DoubleMetro | NetInfo.ConnectGroup.WideTram;
-
-            //if (version != NetInfoVersion.Tunnel)
-            //{
-            //    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.MonorailStation;
-            //}
 
             foreach (var lane in prefab.m_lanes)
             {
                 if (lane.m_laneType == NetInfo.LaneType.Vehicle)
                 {
-                    lane.m_verticalOffset = 0.35f;
                     if (lane.m_direction == NetInfo.Direction.Backward)
                     {
                         lane.m_direction = NetInfo.Direction.Forward;
@@ -240,25 +224,7 @@ namespace MetroOverhaul.InitializationSteps
         public static void CommonCustomizationSmall(NetInfo prefab, NetInfoVersion version)
         {
             var isTwoWay = prefab.name.Contains("Two-Way") || prefab.name.Contains("Station");
-            if (isTwoWay)
-            {
-                prefab.m_connectGroup = NetInfo.ConnectGroup.SingleMonorail;
-                //prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.SingleMonorail | NetInfo.ConnectGroup.MonorailStation | (NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.DoubleMetro | NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.SingleMetro;
-                //if (version != NetInfoVersion.Tunnel)
-                //{
-                //    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.SingleMonorail;
-                //}
-            }
-            else
-            {
-                prefab.m_connectGroup = NetInfo.ConnectGroup.SingleMetro;
-                //prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.DoubleMetro | NetInfo.ConnectGroup.SingleMetro | (NetInfo.ConnectGroup)2048 | NetInfo.ConnectGroup.WideTram;
-                //if (version != NetInfoVersion.Tunnel)
-                //{
-                //    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.SingleMetro | NetInfo.ConnectGroup.Oneway;
-                //}
-            }
-
+            prefab.m_connectGroup = (isTwoWay) ? NetInfo.ConnectGroup.SingleMonorail : NetInfo.ConnectGroup.SingleMetro;
             prefab.SetRoadLanes(version, new LanesConfiguration()
             {
                 IsTwoWay = isTwoWay,
@@ -321,7 +287,6 @@ namespace MetroOverhaul.InitializationSteps
                             theLanes[i].m_direction = NetInfo.Direction.AvoidBackward;
                         }
                     }
-                    theLanes[i].m_verticalOffset = 0.35f;
                 }
             }
             prefab.m_lanes = theLanes.Except(removedLanes).ToArray();
@@ -330,11 +295,6 @@ namespace MetroOverhaul.InitializationSteps
         public static void CommonIslandCustomization(NetInfo prefab, NetInfoVersion version)
         {
             prefab.m_connectGroup = NetInfo.ConnectGroup.None;
-            //prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.DoubleMetro;
-            //if (version != NetInfoVersion.Tunnel)
-            //{
-            //    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.DoubleMetro | NetInfo.ConnectGroup.MonorailStation;
-            //}
 
             var theLanes = prefab.m_lanes.ToList();
             for (var i = 0; i < theLanes.Count; i++)
@@ -361,7 +321,6 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         theLanes[i].m_position += -4.5f;
                     }
-                    theLanes[i].m_verticalOffset = 0.35f;
                 }
             }
             prefab.m_lanes = theLanes.ToArray();
@@ -377,10 +336,6 @@ namespace MetroOverhaul.InitializationSteps
             {
                 prefab.m_connectGroup = NetInfo.ConnectGroup.WideTram;
                 prefab.m_nodeConnectGroups = NetInfo.ConnectGroup.WideTram | NetInfo.ConnectGroup.DoubleMetro | NetInfo.ConnectGroup.SingleMonorail;
-                //if (version != NetInfoVersion.Tunnel)
-                //{
-                //    prefab.m_nodes[1].m_connectGroup = NetInfo.ConnectGroup.WideTram;
-                //}
             }
 
             prefab.SetRoadLanes(version, new LanesConfiguration()
@@ -421,7 +376,6 @@ namespace MetroOverhaul.InitializationSteps
                             break;
                     }
                     count++;
-                    theLanes[i].m_verticalOffset = 0.35f;
                 }
                 else if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
                 {
@@ -498,7 +452,6 @@ namespace MetroOverhaul.InitializationSteps
                             break;
                     }
                     vehicleCount++;
-                    theLane.m_verticalOffset = 0.35f;
                 }
             }
             prefab.m_lanes = theLanes.ToArray();
@@ -569,7 +522,6 @@ namespace MetroOverhaul.InitializationSteps
                             break;
                     }
                     vehicleLaneCount++;
-                    theLanes[i].m_verticalOffset = 0.35f;
                 }
             }
             prefab.m_lanes = theLanes.ToArray();

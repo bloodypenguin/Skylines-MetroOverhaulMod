@@ -10,8 +10,10 @@ using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 using MetroOverhaul.Extensions;
 
-namespace MetroOverhaul {
-    public class Initializer: AbstractInitializer {
+namespace MetroOverhaul
+{
+    public class Initializer : AbstractInitializer
+    {
         public AppMode AppMode { get; set; }
 
         protected override void InitializeNetInfoImpl()
@@ -41,9 +43,9 @@ namespace MetroOverhaul {
                 var replacements = new Dictionary<NetInfoVersion, string> { { NetInfoVersion.Tunnel, Util.GetMetroTrackName(NetInfoVersion.Tunnel, TrackStyle.Modern) } };
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
                         Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomizationTwoLaneTwoWay).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.ReplaceTrackIcon).
                         Chain(SetupMesh.Setup10mMesh, elevatedInfo, metroInfo).
@@ -67,8 +69,8 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomizationTwoLaneTwoWay).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
                         Chain(SetupMesh.Setup10mMesh, elevatedInfo, metroInfo).
@@ -95,7 +97,7 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
+                     Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationTwoLaneOneWay).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
@@ -124,7 +126,7 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationTwoLaneOneWay).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
@@ -151,7 +153,7 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationLarge).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.ReplaceTrackIcon).
@@ -181,7 +183,7 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationLarge).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.SetLargeTrackWidths).
@@ -208,7 +210,7 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.ReplaceTrackIcon).
@@ -238,7 +240,7 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.SetSmallTrackWidths).
@@ -266,7 +268,7 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.SetSmallTrackWidths).
@@ -295,7 +297,7 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.SetSmallTrackWidths).
@@ -324,8 +326,8 @@ namespace MetroOverhaul {
                 var replacements = new Dictionary<NetInfoVersion, string> { { NetInfoVersion.Tunnel, "Metro Station Track" } };
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                        //Chain(CustomizationSteps.SetupStationProps).
-                        Chain(CustomizationSteps.CommonCustomization).
+						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomizationTwoLaneTwoWay).
                         Chain(CustomizationSteps.SetStandardStationTrackWidths).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(SetupMesh.Setup10mStationMesh, elevatedInfo, metroStationInfo).
@@ -351,8 +353,8 @@ namespace MetroOverhaul {
             {
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                        //Chain(CustomizationSteps.SetupStationProps).
                         Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomizationTwoLaneTwoWay).
                         Chain(CustomizationSteps.SetStandardStationTrackWidths).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(SetupMesh.Setup10mStationMesh, elevatedInfo, metroStationInfo).
@@ -379,7 +381,7 @@ namespace MetroOverhaul {
             {
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                        //Chain(CustomizationSteps.SetupStationProps).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonIslandCustomization).
                         Chain(CustomizationSteps.SetIslandTrackWidths).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
@@ -434,7 +436,7 @@ namespace MetroOverhaul {
             {
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                        //Chain(CustomizationSteps.SetupStationProps).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonLargeDualIslandCustomization).
                         Chain(CustomizationSteps.SetLargeIslandTrackWidths).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
@@ -461,7 +463,7 @@ namespace MetroOverhaul {
             {
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                        //Chain(CustomizationSteps.SetupStationProps).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.SetSmallStationTrackWidths).
@@ -489,7 +491,7 @@ namespace MetroOverhaul {
             {
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                        //Chain(CustomizationSteps.SetupStationProps).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationLarge).
                         Chain(CustomizationSteps.SetLargeStationTrackWidths).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
@@ -527,9 +529,10 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
+                        //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
                         Chain(CustomizationSteps.CommonCustomization).
+						Chain(CustomizationSteps.CommonCustomizationTwoLaneTwoWay).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo).
                         Chain(SetupSteelMesh.Setup10mSteelBarMesh, elevatedInfo).
@@ -558,8 +561,9 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
+                        //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationLarge).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetLargeTrackWidths).
                         Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo).
@@ -589,8 +593,9 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
+                        //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationLarge).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetLargeTrackWidths).
                         Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo).
@@ -621,8 +626,9 @@ namespace MetroOverhaul {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.CommonCustomization).
+						Chain(CustomizationSteps.CommonCustomizationTwoLaneTwoWay).
                         Chain(CustomizationSteps.CommonSteelCustomization).
-//                        Chain(CustomizationSteps.SetupTrackProps).
+                        //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
                         Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo).
                         Chain(SetupSteelMesh.Setup10mSteelNoBarMesh, elevatedInfo, metroInfo).
@@ -652,8 +658,9 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
+                        //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationTwoLaneOneWay).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
                         Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo).
@@ -684,8 +691,9 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
+                        //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationTwoLaneOneWay).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
                         Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo).
@@ -716,8 +724,9 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
+                        //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetSmallTrackWidths).
                         Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo).
@@ -748,8 +757,9 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
+                        //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetSmallTrackWidths).
                         Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo).
@@ -779,8 +789,9 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
+                        //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetSmallTrackWidths).
                         Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo).
@@ -811,8 +822,9 @@ namespace MetroOverhaul {
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//                        Chain(CustomizationSteps.SetupTrackProps).
+                        //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetSmallTrackWidths).
                         Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo).
@@ -846,6 +858,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         //Chain(CustomizationSteps.SetupStationProps).
                         Chain(CustomizationSteps.CommonCustomization).
+						Chain(CustomizationSteps.CommonCustomizationTwoLaneTwoWay).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo).
                         Chain(SetupSteelTexture.Setup10mSteelTexture)
@@ -895,6 +908,7 @@ namespace MetroOverhaul {
                         //Chain(CustomizationSteps.SetupStationProps).
                         Chain(CustomizationSteps.CommonLargeDualIslandCustomization).
                         Chain(CustomizationSteps.SetLargeIslandTrackWidths).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(SetupSteelMesh.Setup19mSteelStationMesh, elevatedInfo, metroStationInfo).
                         Chain(SetupSteelTexture.Setup19mSteelTexture).
@@ -921,6 +935,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         //Chain(CustomizationSteps.SetupStationProps).
                         Chain(CustomizationSteps.CommonIslandCustomization).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetIslandTrackWidths).
                         Chain(SetupSteelMesh.Setup19mSteelStationMesh, elevatedInfo, metroStationInfo).
@@ -944,6 +959,7 @@ namespace MetroOverhaul {
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         //Chain(CustomizationSteps.SetupStationProps).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetSmallTrackWidths).
                         Chain(SetupSteelMesh.Setup6mStationSteelMesh, elevatedInfo, metroStationInfo).
@@ -965,7 +981,8 @@ namespace MetroOverhaul {
             {
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-                        //Chain(CustomizationSteps.SetupStationProps).
+//Chain(CustomizationSteps.SetupStationProps).
+						Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.CommonCustomizationLarge).
                         Chain(CustomizationSteps.SetLargeStationTrackWidths).
@@ -1002,7 +1019,7 @@ namespace MetroOverhaul {
                 sw.Start();
                 CreateFullStationClone(info, ActionExtensions.BeginChain<BuildingInfo>().
                     Chain(CustomizationSteps.CommonClonedStationCustomization));
-                    //Chain(CustomizationSteps.ReplaceBuildingIcon));
+                //Chain(CustomizationSteps.ReplaceBuildingIcon));
                 sw.Stop();
                 UnityEngine.Debug.Log("Items took " + sw.ElapsedMilliseconds + "ms");
             }
@@ -1019,7 +1036,7 @@ namespace MetroOverhaul {
         private void ModifyVanillaTrackPrefabs()
         {
             var groundVersion = Prefabs.Find<NetInfo>(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Vanilla));
-            foreach (var version in new[] { NetInfoVersion.Ground, NetInfoVersion.Elevated, NetInfoVersion.Bridge, NetInfoVersion.Slope, NetInfoVersion.Tunnel  })
+            foreach (var version in new[] { NetInfoVersion.Ground, NetInfoVersion.Elevated, NetInfoVersion.Bridge, NetInfoVersion.Slope, NetInfoVersion.Tunnel })
             {
                 var info = Prefabs.Find<NetInfo>(Util.GetMetroTrackName(version, TrackStyle.Vanilla));
                 ReplaceAI(info, version);
@@ -1212,8 +1229,8 @@ namespace MetroOverhaul {
                                 {
                                     var clonedTtsaAi = ttsaAI.CloneBuildingAI(ttsaAI.name);
                                     var metroEntrance = PrefabCollection<BuildingInfo>.FindLoaded("Metro Entrance");
-                                    clonedTtsaAi.m_transportLineInfo =PrefabCollection<NetInfo>.FindLoaded("Metro Line");
-                                    clonedTtsaAi.m_transportInfo =PrefabCollection<TransportInfo>.FindLoaded("Metro");
+                                    clonedTtsaAi.m_transportLineInfo = PrefabCollection<NetInfo>.FindLoaded("Metro Line");
+                                    clonedTtsaAi.m_transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Metro");
                                     clonedTtsaAi.m_maxVehicleCount = 0;
                                     //clonedTtsaAi.m_createPassMilestone = metroEntrance.GetComponent<PlayerBuildingAI>().m_createPassMilestone;
                                     clonedTtsaAi.m_info = trainStationAnalog;
@@ -1449,7 +1466,7 @@ namespace MetroOverhaul {
                 {
                     metroTrackInfo = FindOriginalNetInfo(Util.GetMetroTrackName(version, TrackStyle.Vanilla));
                 }
-                
+
                 var baseConstructionCost = metroTrackInfo.GetComponent<PlayerNetAI>().m_constructionCost;
                 var baseMaintenanceCost = metroTrackInfo.GetComponent<PlayerNetAI>().m_maintenanceCost;
                 var newAi = newPrefab.GetComponent<PlayerNetAI>();
