@@ -132,27 +132,25 @@ namespace MetroOverhaul
                     else
                     {
                         Debug.Log("Building " + m_Info.name + " is being checked for AnchorPoints");
-                        var anchorPaths = m_Info.m_paths.Where(p => p.IsPedestrianPath() && p.m_nodes.Any(n => n.y == 0)).ToList();
-                        if (anchorPaths != null)
+                        var pedPaths = m_Info.m_paths.Where(p => p.IsPedestrianPath());
+                        var anchorPaths = pedPaths.Where(p => p.m_nodes.Any(n => n.y < 0) && p.m_nodes.Any(n => n.y >= 0)).ToList();
+                        if (anchorPaths == null || anchorPaths.Count() == 0)
                         {
-                            for (int i = 0; i < anchorPaths.Count(); i++)
-                            {
-                                var anchorNode = anchorPaths[i].m_nodes.OrderBy(p => p.y).FirstOrDefault();
-                                m_AnchorPoints.Add(anchorNode);
-                                if (anchorNode == default)
-                                {
-                                    Debug.Log("No suitable anchorNodes found on building.");
-                                    foreach (var node in anchorPaths[i].m_nodes)
-                                    {
-                                        Debug.Log(node.ToString() + ", parent: " + AdjustNodeFromChildToParent(node).ToString());
-                                    }
-                                }
-                                Debug.Log("Anchorpoint " + anchorNode.ToString() + " found on building" + m_Info.name);
-                            }
+                            anchorPaths = pedPaths.OrderBy(p => p.m_nodes.Min(n => n.z)).ToList();
                         }
-                        else
+                        for (int i = 0; i < anchorPaths.Count(); i++)
                         {
-                            Debug.Log("No nodes in Building " + m_Info.name + " that satisfies the outline criteria.");
+                            var anchorNode = anchorPaths[i].m_nodes.OrderBy(p => p.y).FirstOrDefault();
+                            m_AnchorPoints.Add(anchorNode);
+                            if (anchorNode == default)
+                            {
+                                Debug.Log("No suitable anchorNodes found on building.");
+                                foreach (var node in anchorPaths[i].m_nodes)
+                                {
+                                    Debug.Log(node.ToString() + ", parent: " + AdjustNodeFromChildToParent(node).ToString());
+                                }
+                            }
+                            Debug.Log("Anchorpoint " + anchorNode.ToString() + " found on building" + m_Info.name);
                         }
                     }
                 }
@@ -418,7 +416,7 @@ namespace MetroOverhaul
                         var stationLength = Vector3.Distance(TrackPath.m_nodes[0], TrackPath.m_nodes.Last());
                         StairsLengthX = ((0.12f * curve) + 1) * (stationLength * StairCoeff) * -xCoeff;
                         StairsLengthZ = ((0.12f * curve) + 1) * (stationLength * StairCoeff) * zCoeff;
-                        var interpolant = 0.6f;
+                        var interpolant = 1;
                         Crossing = Vector3.Lerp(TrackPath.m_nodes.First(), TrackPath.m_nodes.Last(), interpolant);
                         if (TrackPath.m_netInfo.IsUndergroundIslandPlatformStationTrack())
                         {
@@ -542,7 +540,7 @@ namespace MetroOverhaul
                         forbidLaneConnectionList.Add(false);
                         connectorPath.m_forbidLaneConnection = forbidLaneConnectionList.ToArray();
                         connectorPath.MarkPathGenerated();
-                        //connectorPath.SetCurveTargets();
+                        connectorPath.m_curveTargets = null;
                         pathList.Add(connectorPath);
                         pathNodeList.Clear();
                         connectorPath = connectorPath.ShallowClone();
@@ -632,14 +630,17 @@ namespace MetroOverhaul
             for (int i = 0; i < pathList.Count(); i++)
             {
                 var path = pathList[i];
-                for (int j = 0; j < path.m_nodes.Count() - 1; j++)
+                if (path.IsPathGenerated())
                 {
-                    var node = path.m_nodes[j];
-                    var nextNode = path.m_nodes[j + 1];
-                    if (!MergePathDict.ContainsKey(node) && Vector3.Distance(node, nextNode) <= 4)
+                    for (int j = 0; j < path.m_nodes.Count() - 1; j++)
                     {
-                        var average = AverageNode(node, nextNode);
-                        MergePathDict.Add(node, average);
+                        var node = path.m_nodes[j];
+                        var nextNode = path.m_nodes[j + 1];
+                        if (!MergePathDict.ContainsKey(node) && Vector3.Distance(node, nextNode) <= 4)
+                        {
+                            var average = AverageNode(node, nextNode);
+                            MergePathDict.Add(node, average);
+                        }
                     }
                 }
             }
@@ -768,10 +769,20 @@ namespace MetroOverhaul
 
         private static void CleanUpPaths()
         {
-            if (m_ParentMetaData != null)
-                m_Info.m_paths = m_Info.m_paths.Where(p => !p.IsPedestrianPath() || p.m_nodes.Any(n => n.y == 0)).ToArray();
-            else
+            if (m_ParentMetaData == null && m_Info.m_paths.SelectMany(p => p.m_nodes).All(n => n.y < 0))
+            {
                 m_Info.m_paths = m_Info.m_paths.Where(p => !p.IsPathGenerated()).ToArray();
+            }
+            else
+            {
+                var pathsToKeep = m_Info.m_paths.Where(p => !p.IsPathGenerated() && (!p.IsPedestrianPath() || p.m_nodes.Any(n => n.y >= 0)));
+                if (pathsToKeep == null || pathsToKeep.Count() == 0)
+                    pathsToKeep = m_Info.m_paths.OrderBy(p => p.m_nodes.Min(n => n.z)).Take(1);
+                m_Info.m_paths = pathsToKeep.ToArray();
+            }
+
+            //else
+            //m_Info.m_paths = m_Info.m_paths.Where(p => !p.IsPathGenerated()).ToArray();
         }
 
         private static void RecalculateSpawnPoints()

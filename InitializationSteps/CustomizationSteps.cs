@@ -187,7 +187,6 @@ namespace MetroOverhaul.InitializationSteps
 
         public static void CommonCustomization(NetInfo prefab, NetInfoVersion version)
         {
-            prefab.m_connectGroup = prefab.name.Contains("Station") ? NetInfo.ConnectGroup.MetroStation : NetInfo.ConnectGroup.DoubleMetro;
             foreach (var lane in prefab.m_lanes)
             {
                 if (lane.m_laneType == NetInfo.LaneType.Vehicle)
@@ -201,6 +200,11 @@ namespace MetroOverhaul.InitializationSteps
             }
         }
 
+        public static void CommonCustomizationTwoLaneTwoWay(NetInfo prefab, NetInfoVersion version)
+        {
+            prefab.m_connectGroup = prefab.name.Contains("Station") ? NetInfo.ConnectGroup.MetroStation : NetInfo.ConnectGroup.DoubleMetro;
+        }
+
         public static void CommonCustomizationTwoLaneOneWay(NetInfo prefab, NetInfoVersion version)
         {
             prefab.m_connectGroup = NetInfo.ConnectGroup.MonorailStation;
@@ -209,7 +213,6 @@ namespace MetroOverhaul.InitializationSteps
             {
                 if (lane.m_laneType == NetInfo.LaneType.Vehicle)
                 {
-                    lane.m_verticalOffset = 0.35f;
                     if (lane.m_direction == NetInfo.Direction.Backward)
                     {
                         lane.m_direction = NetInfo.Direction.Forward;
@@ -284,7 +287,6 @@ namespace MetroOverhaul.InitializationSteps
                             theLanes[i].m_direction = NetInfo.Direction.AvoidBackward;
                         }
                     }
-                    theLanes[i].m_verticalOffset = 0.35f;
                 }
             }
             prefab.m_lanes = theLanes.Except(removedLanes).ToArray();
@@ -319,7 +321,6 @@ namespace MetroOverhaul.InitializationSteps
                     {
                         theLanes[i].m_position += -4.5f;
                     }
-                    theLanes[i].m_verticalOffset = 0.35f;
                 }
             }
             prefab.m_lanes = theLanes.ToArray();
@@ -375,7 +376,6 @@ namespace MetroOverhaul.InitializationSteps
                             break;
                     }
                     count++;
-                    theLanes[i].m_verticalOffset = 0.35f;
                 }
                 else if (theLanes[i].m_laneType == NetInfo.LaneType.Pedestrian)
                 {
@@ -452,7 +452,6 @@ namespace MetroOverhaul.InitializationSteps
                             break;
                     }
                     vehicleCount++;
-                    theLane.m_verticalOffset = 0.35f;
                 }
             }
             prefab.m_lanes = theLanes.ToArray();
@@ -523,7 +522,6 @@ namespace MetroOverhaul.InitializationSteps
                             break;
                     }
                     vehicleLaneCount++;
-                    theLanes[i].m_verticalOffset = 0.35f;
                 }
             }
             prefab.m_lanes = theLanes.ToArray();
