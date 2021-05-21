@@ -36,7 +36,10 @@ namespace MetroOverhaul
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
-
+            if (OptionsWrapper<Options>.Options.improvedMetroTrainAi)
+            {
+                Redirector<MetroTrainAIDetour>.Deploy();
+            }
             _updater = null;
             LateBuildUpQueue.Clear();
             InstallAssets();
