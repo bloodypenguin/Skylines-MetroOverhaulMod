@@ -14,12 +14,13 @@ namespace MetroOverhaul
 {
     public class AssetsUpdater
     {
+        private bool m_MetroDepotPlaced { get; set; }
+        private bool m_MetroStationPlaced { get; set; }
         private static NetManager ninstance = Singleton<NetManager>.instance;
         private static BuildingManager binstance = Singleton<BuildingManager>.instance;
         private static TerrainManager tinstance = Singleton<TerrainManager>.instance;
         public void UpdateExistingAssets(LoadMode mode)
         {
-            UpdateMetroTrainEffects();
             UpdateNoColPillars();
             if (mode == LoadMode.LoadAsset || mode == LoadMode.NewAsset)
             {
@@ -35,7 +36,7 @@ namespace MetroOverhaul
             }
         }
 
-        public static void UpdateBuildingsMetroPaths(LoadMode mode, bool toVanilla = false)
+        public void UpdateBuildingsMetroPaths(LoadMode mode, bool toVanilla)
         {
 #if !DEBUG
             if (mode == LoadMode.NewAsset || mode == LoadMode.NewAsset)
@@ -43,7 +44,6 @@ namespace MetroOverhaul
                 return;
             }
 #endif
-
             try
             {
                 for (uint i = 0; i < PrefabCollection<BuildingInfo>.LoadedCount(); i++)
@@ -75,9 +75,15 @@ namespace MetroOverhaul
                     {
                         continue;
                     }
+                    if (!info.IsMetroDepot())
+                    {
+                        m_MetroDepotPlaced = true;
+                        continue;
+                    }
                     List<ushort> stationNodes = GetStationNodes(b);
                     if (stationNodes != null)
                     {
+                        m_MetroStationPlaced = true;
                         totalStations++;
                         var highestStationNode = stationNodes.OrderBy(n => NodeFrom(n).m_position.y).LastOrDefault();
                         if (NodeFrom(highestStationNode).m_position.y == b.m_position.y - 4)
@@ -456,7 +462,7 @@ namespace MetroOverhaul
             while (nodeID > 0)
             {
                 NetNode node = NodeFrom(nodeID);
-                if (node.Info != null && (node.Info.IsUndergroundMetroStationTrack() || node.Info.name == Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Vanilla)))
+                if (node.Info != null && node.Info.IsMetroStationTrack())
                 {
                     if (stationNodeIDs == null)
                     {
@@ -613,7 +619,7 @@ namespace MetroOverhaul
             }
         }
 
-        private static void UpdateMetroBuildingsMeta()
+        private void UpdateMetroBuildingsMeta()
         {
             var vanillaMetroStation = PrefabCollection<BuildingInfo>.FindLoaded("Metro Entrance");
 
@@ -626,12 +632,12 @@ namespace MetroOverhaul
             {
                 try
                 {
-                    if (info == null || !info.IsMetroDepot() && !info.IsMetroStation())
+                    if (!info.IsMetroStation())
                     {
                         continue;
                     }
 
-                    if (info.IsMetroStation())
+                    if (!m_MetroStationPlaced || m_MetroDepotPlaced)
                     {
                         var ai = info.m_buildingAI as TransportStationAI;
                         if (!OptionsWrapper<Options>.Options.depotsNotRequiredMode && ai != null)
@@ -678,7 +684,7 @@ namespace MetroOverhaul
                 metroStationTrack.m_availableIn = ItemClass.Availability.Editors;
             }
         }
-        private static void UpdateNoColPillars()
+        private void UpdateNoColPillars()
         {
             var noColBuildingInfos = Resources.FindObjectsOfTypeAll<BuildingInfo>().Where(b => b.name.IndexOf("NoCol") > -1);
             foreach (var info in noColBuildingInfos)
@@ -686,7 +692,7 @@ namespace MetroOverhaul
                 info.m_generatedInfo.m_min.y = 32;
             }
         }
-        private static void UpdateMetroTrainEffects()
+        private void UpdateMetroTrainEffects()
         {
             //var vanillaMetro = PrefabCollection<VehicleInfo>.FindLoaded("Metro");
             //var arriveEffect = ((MetroTrainAI)vanillaMetro.m_vehicleAI).m_arriveEffect;

@@ -104,6 +104,12 @@ namespace MetroOverhaul
         {
             base.OnLevelLoaded(mode);
             bool isVanilla = OptionsWrapper<Options>.Options.ghostMode;
+            if (_updater == null)
+            {
+                _updater = new AssetsUpdater();
+                _updater.UpdateBuildingsMetroPaths(mode, isVanilla);
+            }
+
             if (!isVanilla)
             {
                 _cachedMode = mode;
@@ -118,13 +124,10 @@ namespace MetroOverhaul
                         UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Enable asset in Content Manager!", e.Message, false);
                     }
                 }
-                if (_updater == null)
-                {
-                    _updater = new AssetsUpdater();
-                    _updater.UpdateExistingAssets(mode);
-                }
+
+                _updater.UpdateExistingAssets(mode);
             }
-            AssetsUpdater.UpdateBuildingsMetroPaths(mode, isVanilla);
+
             if (!isVanilla)
             {
                 if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame || mode == LoadMode.NewGameFromScenario)
