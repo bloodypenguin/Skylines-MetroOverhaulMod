@@ -379,7 +379,7 @@ namespace MetroOverhaul.InitializationSteps {
         {
             var elevatedInfo = Prefabs.Find<NetInfo>("Train Track Elevated");
             var elevatedRInfo = Prefabs.Find<NetInfo>("Basic Road Elevated");
-            var metroInfo = Prefabs.Find<NetInfo>(Util.GetMetroTrackName(NetInfoVersion.Tunnel, TrackStyle.Modern));
+            var metroInfo = Prefabs.Find<NetInfo>(Util.GetMetroTrackName(NetInfoVersion.Tunnel, NetInfoTrackStyle.Modern));
             var elevatedRMaterial = elevatedRInfo.m_nodes[0].m_material;
             var elevatedRLODMaterial = elevatedRInfo.m_nodes[0].m_lodMaterial;
             var elevatedMaterial = elevatedInfo.m_segments[0].m_material;

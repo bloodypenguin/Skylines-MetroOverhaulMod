@@ -29,7 +29,7 @@ namespace MetroOverhaul.UI
 
         protected override void SubStart()
         {
-            trackStyle = TrackStyle.Modern;
+            trackStyle = NetInfoTrackStyle.Modern;
             trackDirection = 1;
             pillarType = PillarType.WideMedian;
             ExecuteUiInstructions();
@@ -80,7 +80,7 @@ namespace MetroOverhaul.UI
                 Height = 52,
                 EventClick = (c, v) =>
                 {
-                    trackStyle = TrackStyle.Modern;
+                    trackStyle = NetInfoTrackStyle.Modern;
                     ExecuteUiInstructions();
                 }
             });
@@ -95,7 +95,7 @@ namespace MetroOverhaul.UI
                 Height = 52,
                 EventClick = (c, v) =>
                 {
-                    trackStyle = TrackStyle.Classic;
+                    trackStyle = NetInfoTrackStyle.Classic;
                     ExecuteUiInstructions();
                 }
             });
@@ -110,7 +110,7 @@ namespace MetroOverhaul.UI
                 Height = 52,
                 EventClick = (c, v) =>
                 {
-                    trackStyle = TrackStyle.Vanilla;
+                    trackStyle = NetInfoTrackStyle.Vanilla;
                     ExecuteUiInstructions();
                 }
             });
@@ -285,7 +285,7 @@ namespace MetroOverhaul.UI
                     vanillaState = UIButton.ButtonState.Disabled;
                 else
                 {
-                    vanillaState = trackStyle == TrackStyle.Vanilla ? UIButton.ButtonState.Focused : UIButton.ButtonState.Normal;
+                    vanillaState = trackStyle == NetInfoTrackStyle.Vanilla ? UIButton.ButtonState.Focused : UIButton.ButtonState.Normal;
                     btnOneWay.state = UIButton.ButtonState.Normal;
                 }
             }
@@ -305,7 +305,7 @@ namespace MetroOverhaul.UI
             CheckboxDict[ALT_BARRIER].Enable();
             switch (trackStyle)
             {
-                case TrackStyle.Vanilla:
+                case NetInfoTrackStyle.Vanilla:
                     CheckboxDict[ALT_BARRIER].Disable();
                     switch (trackSize)
                     {
@@ -331,7 +331,7 @@ namespace MetroOverhaul.UI
                             break;
                     }
                     break;
-                case TrackStyle.Modern:
+                case NetInfoTrackStyle.Modern:
                     switch (trackSize)
                     {
                         case 0:
@@ -380,7 +380,7 @@ namespace MetroOverhaul.UI
                             break;
                     }
                     break;
-                case TrackStyle.Classic:
+                case NetInfoTrackStyle.Classic:
                     switch (trackSize)
                     {
                         case 0:

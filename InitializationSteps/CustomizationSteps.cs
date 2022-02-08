@@ -344,7 +344,7 @@ namespace MetroOverhaul.InitializationSteps
                 VehicleLanesToAdd = 2
             });
             prefab.m_minCornerOffset = 18;
-            var vanillaMetroTrack = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Tunnel, TrackStyle.Vanilla));
+            var vanillaMetroTrack = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Tunnel, NetInfoTrackStyle.Vanilla));
             var speedLimit = vanillaMetroTrack.m_lanes.First(l => l.m_vehicleType != VehicleInfo.VehicleType.None).m_speedLimit;
             var theLanes = prefab.m_lanes.ToList();
             var count = 0;

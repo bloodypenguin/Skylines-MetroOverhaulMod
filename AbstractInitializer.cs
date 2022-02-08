@@ -11,7 +11,7 @@ namespace MetroOverhaul {
     public abstract class AbstractInitializer : MonoBehaviour
     {
         private bool _isInitialized;
-        private Dictionary<string, NetInfo> _customNetInfos;
+        protected static Dictionary<string, NetInfoMetadata> _customNetInfoMetadata;
         private Dictionary<string, BuildingInfo> _customBuildingInfos;
         private static readonly Dictionary<string, NetInfo> OriginalNetInfos = new Dictionary<string, NetInfo>();
         private static readonly Dictionary<string, BuildingInfo> OriginalBuildingInfos = new Dictionary<string, BuildingInfo>();
@@ -26,23 +26,23 @@ namespace MetroOverhaul {
         public void Awake()
         {
             DontDestroyOnLoad(this);
-            _customNetInfos = new Dictionary<string, NetInfo>();
             _customBuildingInfos = new Dictionary<string, BuildingInfo>();
+            _customNetInfoMetadata = new Dictionary<string, NetInfoMetadata>();
             _netReplacements = new List<string>();
             _registeredWids = new List<string>();
             OriginalNetInfos.Clear();
             OriginalBuildingInfos.Clear();
         }
-        
+
         public void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
         {
             if (scene.buildIndex == 6)
             {
                 _netReplacements.Clear();
-                _customNetInfos.Clear();
                 OriginalNetInfos.Clear();
                 _customBuildingInfos.Clear();
                 OriginalBuildingInfos.Clear();
+                _customNetInfoMetadata.Clear();
                 _registeredWids.Clear();
                 _isInitialized = false;
             }
@@ -50,10 +50,6 @@ namespace MetroOverhaul {
 
         public void Update()
         {
-            if (OptionsWrapper<Options>.Options.ghostMode)
-            {
-                //return;
-            }
             if (_isInitialized)
             {
                 return;
@@ -73,9 +69,7 @@ namespace MetroOverhaul {
             Loading.QueueLoadingAction(() =>
             {
                 InitializeNetInfoImpl();
-                PrefabCollection<NetInfo>.InitializePrefabs("Metro Extensions", _customNetInfos.Values.ToArray(), null);
-                //PrefabCollection<BuildingInfo>.InitializePrefabs("Metro Building Extensions", _customBuildingInfos.Values.ToArray(), null);
-                //PrefabCollection<BuildingInfo>.BindPrefabs();
+                PrefabCollection<NetInfo>.InitializePrefabs("Metro Extensions", _customNetInfoMetadata.Values.Select(m => m.Info).ToArray(), null);
             });
             _isInitialized = true;
         }
@@ -83,19 +77,43 @@ namespace MetroOverhaul {
         protected abstract void InitializeNetInfoImpl();
         public abstract void InitializeBuildingInfoImpl(BuildingInfo info);
 
-        public bool RegisterWid(BuildingInfo info, bool isPreInitialization)
+        //public bool RegisterWid(BuildingInfo info, bool isPreInitialization)
+        //{
+        //    long workshopId;
+        //    if (Util.TryGetWorkshopId(info, out workshopId))
+        //    {
+        //        if (_registeredWids.IndexOf(info.name) > -1 || info.name.IndexOf(ModTrackNames.ANALOG_PREFIX) > -1)
+        //        {
+        //            return false;
+        //        }
+        //        _registeredWids.Add(info.name);
+        //    }
+        //    var retval = (isPreInitialization && workshopId > -1) || (!isPreInitialization && workshopId == -1);
+        //    return retval;
+        //}
+
+        public static NetInfoMetadata GetNetInfoMetadata(string name)
         {
-            long workshopId;
-            if (Util.TryGetWorkshopId(info, out workshopId))
+            return _customNetInfoMetadata.ContainsKey(name) ? _customNetInfoMetadata[name] : null;
+        }
+
+        public static NetInfoMetadata LookupNetInfoMetadata(NetInfoMetadata netInfoMetadata)
+        {
+            foreach (var metaData in _customNetInfoMetadata.Values)
             {
-                if (_registeredWids.IndexOf(info.name) > -1 || info.name.IndexOf(ModTrackNames.ANALOG_PREFIX) > -1)
+                if(metaData.TrackStyle == netInfoMetadata.TrackStyle)
                 {
-                    return false;
+                    if (metaData.Version == netInfoMetadata.Version)
+                    {
+                        if ((metaData.TrackType != NetInfoTrackType.None && metaData.TrackType == netInfoMetadata.TrackType) ||
+                            metaData.StationTrackType != NetInfoStationTrackType.None && metaData.StationTrackType == netInfoMetadata.StationTrackType)
+                        {
+                            return metaData;
+                        }
+                    }
                 }
-                _registeredWids.Add(info.name);
             }
-            var retval = (isPreInitialization && workshopId > -1) || (!isPreInitialization && workshopId == -1);
-            return retval;
+            return null;
         }
 
         protected void CreateStationClone(BuildingInfo info, Action<BuildingInfo> setupAction = null) {
@@ -108,7 +126,8 @@ namespace MetroOverhaul {
                 }
                 CreateBuildingInfo(info.name + ModTrackNames.ANALOG_PREFIX + suffix, info, setupAction);
         }
-        protected NetInfo CreateNetInfo(string newNetInfoName, string originalNetInfoName, Action<NetInfo> setupAction, string replaces = "")
+        protected NetInfo CreateNetInfo(string newNetInfoName, string originalNetInfoName, Action<NetInfo> setupAction, 
+            NetInfoMetadata netInfoMetaData, string replaces = "")
         {
             var originalPrefab = FindOriginalNetInfo(originalNetInfoName);
 
@@ -117,7 +136,7 @@ namespace MetroOverhaul {
                 Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Prefab '{0}' not found (required for '{1}')", originalNetInfoName, newNetInfoName);
                 return null;
             }
-            if (_customNetInfos.ContainsKey(newNetInfoName))
+            if (_customNetInfoMetadata.ContainsKey(newNetInfoName))
             {
                 Debug.LogErrorFormat("AbstractInitializer#CreatePrefab - Prefab '{0}' was already created", newNetInfoName);
                 return null;
@@ -129,10 +148,20 @@ namespace MetroOverhaul {
                 return null;
             }
             setupAction.Invoke(newPrefab);
-            _customNetInfos.Add(newNetInfoName, newPrefab);
+            if (netInfoMetaData.GroundInfo == null && netInfoMetaData.Version == NEXT.NetInfoVersion.Ground)
+                netInfoMetaData.GroundInfo = newPrefab;
+            netInfoMetaData.Info = newPrefab;
+            _customNetInfoMetadata.Add(newNetInfoName, netInfoMetaData);
             _netReplacements.Add(replaces);
             return newPrefab;
         }
+
+        protected void AddNetInfoMetadata(NetInfoMetadata netInfoMetadata)
+        {
+            string netInfoName = netInfoMetadata.Info.name;
+            _customNetInfoMetadata.Add(netInfoName, netInfoMetadata);
+        }
+
         protected void CreateBuildingInfo(string newBuildingInfoName, string originalBuildingInfoName, Action<BuildingInfo> setupAction = null)
         {
             var originalPrefab = FindOriginalBuildingInfo(originalBuildingInfoName);
@@ -160,10 +189,6 @@ namespace MetroOverhaul {
             _customBuildingInfos.Add(newBuildingInfoName, newPrefab);
             Debug.Log("Prefab Made: " + newPrefab.name);
             PrefabCollection<BuildingInfo>.InitializePrefabs("Metro Building Extensions", newPrefab, null);
-        }
-        protected NetInfo FindCustomNetInfo(string customNetInfoName)
-        {
-            return _customNetInfos[customNetInfoName];
         }
 
         protected static NetInfo FindOriginalNetInfo(string originalNetInfoName)

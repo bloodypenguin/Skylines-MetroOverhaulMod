@@ -23,6 +23,7 @@ namespace MetroOverhaul
             ExtendVanillaTracks();
             if (AppMode != AppMode.AssetEditor)
             {
+                AssetsUpdater.NetInfoMetadata = _customNetInfoMetadata;
                 AssetsUpdater.UpdateVanillaMetroTracks();
             }
         }
@@ -36,11 +37,11 @@ namespace MetroOverhaul
         {
             var elevatedInfo = FindOriginalNetInfo("Basic Road Elevated");
             var trainTrackInfo = FindOriginalNetInfo("Train Track");
-            var metroInfo = FindOriginalNetInfo(Util.GetMetroTrackName(NetInfoVersion.Tunnel, TrackStyle.Vanilla));
-            var metroStationInfo = FindOriginalNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Vanilla));
+            var metroInfo = FindOriginalNetInfo(Util.GetMetroTrackName(NetInfoVersion.Tunnel, NetInfoTrackStyle.Vanilla));
+            var metroStationInfo = FindOriginalNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, NetInfoTrackStyle.Vanilla));
             try
             {
-                var replacements = new Dictionary<NetInfoVersion, string> { { NetInfoVersion.Tunnel, Util.GetMetroTrackName(NetInfoVersion.Tunnel, TrackStyle.Modern) } };
+                var replacements = new Dictionary<NetInfoVersion, string> { { NetInfoVersion.Tunnel, Util.GetMetroTrackName(NetInfoVersion.Tunnel, NetInfoTrackStyle.Modern) } };
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.SetStandardTrackWidths).
@@ -56,7 +57,7 @@ namespace MetroOverhaul
                             {
                                 LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUp.BuildUp(info, version); });
                             }),
-                    NetInfoVersion.All, null, prefabName => prefabName, replacements
+                    NetInfoVersion.All, null, new NetInfoMetadata() { TrackType = NetInfoTrackType.TwoLaneTwoWay, TrackStyle = NetInfoTrackStyle.Modern }, prefabName => prefabName, replacements
                     );
             }
             catch (Exception e)
@@ -83,7 +84,8 @@ namespace MetroOverhaul
                     NetInfoVersion.All,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.TwoLaneTwoWay, TrackStyle = NetInfoTrackStyle.Modern }
                     , prefabName => prefabName + " NoBar"
                     );
             }
@@ -112,7 +114,8 @@ namespace MetroOverhaul
                     NetInfoVersion.All,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.TwoLaneOneWay, TrackStyle = NetInfoTrackStyle.Modern }
                     , prefabName => prefabName + " Two-Lane One-Way"
                     );
             }
@@ -126,7 +129,7 @@ namespace MetroOverhaul
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationTwoLaneOneWay).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
@@ -140,7 +143,8 @@ namespace MetroOverhaul
                     NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.TwoLaneOneWay, TrackStyle = NetInfoTrackStyle.Modern }
                     , prefabName => prefabName + " Two-Lane One-Way NoBar"
                     );
             }
@@ -153,7 +157,7 @@ namespace MetroOverhaul
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationLarge).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.ReplaceTrackIcon).
@@ -169,7 +173,8 @@ namespace MetroOverhaul
                     NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.Quad, TrackStyle = NetInfoTrackStyle.Modern }
                     , prefabName => prefabName + " Large"
                     );
             }
@@ -183,7 +188,7 @@ namespace MetroOverhaul
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationLarge).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.SetLargeTrackWidths).
@@ -197,7 +202,8 @@ namespace MetroOverhaul
                     NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Bridge | NetInfoVersion.Slope | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.Quad, TrackStyle = NetInfoTrackStyle.Modern }
                     , prefabName => prefabName + " Large NoBar"
                     );
             }
@@ -210,7 +216,7 @@ namespace MetroOverhaul
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.ReplaceTrackIcon).
@@ -226,7 +232,8 @@ namespace MetroOverhaul
                    NetInfoVersion.All,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.OneLaneOneWay, TrackStyle = NetInfoTrackStyle.Modern }
                     , prefabName => prefabName + " Small"
                     );
             }
@@ -240,7 +247,7 @@ namespace MetroOverhaul
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.SetSmallTrackWidths).
@@ -254,7 +261,8 @@ namespace MetroOverhaul
                    NetInfoVersion.All,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.OneLaneOneWay, TrackStyle = NetInfoTrackStyle.Modern }
                     , prefabName => prefabName + " Small NoBar"
                     );
             }
@@ -268,7 +276,7 @@ namespace MetroOverhaul
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.SetSmallTrackWidths).
@@ -283,7 +291,8 @@ namespace MetroOverhaul
                    NetInfoVersion.All,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.OneLaneTwoWay, TrackStyle = NetInfoTrackStyle.Modern }
                     , prefabName => prefabName + " Small Two-Way"
                     );
             }
@@ -297,7 +306,7 @@ namespace MetroOverhaul
             {
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
                         Chain(CustomizationSteps.SetSmallTrackWidths).
@@ -311,7 +320,8 @@ namespace MetroOverhaul
                    NetInfoVersion.All,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.OneLaneTwoWay, TrackStyle = NetInfoTrackStyle.Modern }
                     , prefabName => prefabName + " Small Two-Way NoBar"
                     );
             }
@@ -326,7 +336,7 @@ namespace MetroOverhaul
                 var replacements = new Dictionary<NetInfoVersion, string> { { NetInfoVersion.Tunnel, "Metro Station Track" } };
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonCustomizationTwoLaneTwoWay).
                         Chain(CustomizationSteps.SetStandardStationTrackWidths).
                         Chain(CustomizationSteps.CommonConcreteCustomization).
@@ -340,7 +350,8 @@ namespace MetroOverhaul
                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { StationTrackType = NetInfoStationTrackType.SidePlatform, TrackStyle = NetInfoTrackStyle.Modern }
                     , prefabName => prefabName, replacements
                     );
             }
@@ -367,7 +378,8 @@ namespace MetroOverhaul
                    NetInfoVersion.Ground,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { StationTrackType = NetInfoStationTrackType.SidePlatform, TrackStyle = NetInfoTrackStyle.Modern }
                     , prefabName => prefabName
                     );
             }
@@ -395,7 +407,8 @@ namespace MetroOverhaul
                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { StationTrackType = NetInfoStationTrackType.IslandPlatform, TrackStyle = NetInfoTrackStyle.Modern }
                     , prefabName => prefabName + " Island"
                     );
             }
@@ -450,7 +463,8 @@ namespace MetroOverhaul
                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { StationTrackType = NetInfoStationTrackType.DualIslandPlatform, TrackStyle = NetInfoTrackStyle.Modern }
                     , prefabName => prefabName + " Large Dual Island"
                     );
             }
@@ -477,7 +491,8 @@ namespace MetroOverhaul
                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { StationTrackType = NetInfoStationTrackType.SinglePlatform, TrackStyle = NetInfoTrackStyle.Modern }
                     , prefabName => prefabName + " Small"
                     );
             }
@@ -505,7 +520,8 @@ namespace MetroOverhaul
                    NetInfoVersion.Ground | NetInfoVersion.Elevated | NetInfoVersion.Tunnel,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { StationTrackType = NetInfoStationTrackType.ExpressSidePlatform, TrackStyle = NetInfoTrackStyle.Modern }
                     , prefabName => prefabName + " Large"
                     );
             }
@@ -521,8 +537,8 @@ namespace MetroOverhaul
         private void CreateSteelTracks()
         {
             var elevatedInfo = FindOriginalNetInfo("Basic Road Elevated");
-            var metroInfo = FindOriginalNetInfo(Util.GetMetroTrackName(NetInfoVersion.Tunnel, TrackStyle.Modern));
-            var metroStationInfo = FindOriginalNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Modern));
+            var metroInfo = FindOriginalNetInfo(Util.GetMetroTrackName(NetInfoVersion.Tunnel, NetInfoTrackStyle.Modern));
+            var metroStationInfo = FindOriginalNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, NetInfoTrackStyle.Modern));
             var trainTrackInfo = FindOriginalNetInfo("Train Track");
 
             try
@@ -532,7 +548,7 @@ namespace MetroOverhaul
                         //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
                         Chain(CustomizationSteps.CommonCustomization).
-						Chain(CustomizationSteps.CommonCustomizationTwoLaneTwoWay).
+                        Chain(CustomizationSteps.CommonCustomizationTwoLaneTwoWay).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo).
                         Chain(SetupSteelMesh.Setup10mSteelBarMesh, elevatedInfo).
@@ -548,7 +564,8 @@ namespace MetroOverhaul
                             LinkToNonGroundVersions,
                             null,
                             //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
-                            NetInfoVersion.None)
+                            NetInfoVersion.None),
+                            new NetInfoMetadata() { TrackType = NetInfoTrackType.TwoLaneTwoWay, TrackStyle = NetInfoTrackStyle.Classic }
                     , prefabName => "Steel " + prefabName
                     );
             }
@@ -563,7 +580,7 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationLarge).
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetLargeTrackWidths).
                         Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo).
@@ -579,7 +596,8 @@ namespace MetroOverhaul
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
                             LinkToNonGroundVersions,
                             null,
-                            NetInfoVersion.None)
+                            NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.Quad, TrackStyle = NetInfoTrackStyle.Classic }
                     , prefabName => "Steel " + prefabName + " Large"
                     );
             }
@@ -595,7 +613,7 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationLarge).
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetLargeTrackWidths).
                         Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo).
@@ -612,7 +630,8 @@ namespace MetroOverhaul
                             LinkToNonGroundVersions,
                             null,
                             //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
-                            NetInfoVersion.None)
+                            NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.Quad, TrackStyle = NetInfoTrackStyle.Classic }
                     , prefabName => "Steel " + prefabName + " Large NoBar"
                     );
             }
@@ -626,7 +645,7 @@ namespace MetroOverhaul
                 CreateFullPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         Chain(CustomizationSteps.CommonCustomization).
-						Chain(CustomizationSteps.CommonCustomizationTwoLaneTwoWay).
+                        Chain(CustomizationSteps.CommonCustomizationTwoLaneTwoWay).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
@@ -644,7 +663,8 @@ namespace MetroOverhaul
                             LinkToNonGroundVersions,
                             null,
                             //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
-                            NetInfoVersion.None)
+                            NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.TwoLaneTwoWay, TrackStyle = NetInfoTrackStyle.Classic }
                     , prefabName => "Steel " + prefabName + " NoBar"
                     );
             }
@@ -660,7 +680,7 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationTwoLaneOneWay).
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
                         Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo).
@@ -677,7 +697,8 @@ namespace MetroOverhaul
                             LinkToNonGroundVersions,
                             null,
                             //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
-                            NetInfoVersion.None)
+                            NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.TwoLaneOneWay, TrackStyle = NetInfoTrackStyle.Classic }
                     , prefabName => "Steel " + prefabName + " Two-Lane One-Way"
                     );
             }
@@ -693,7 +714,7 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationTwoLaneOneWay).
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetStandardTrackWidths).
                         Chain(SetupSteelMesh.Setup10mSteelMesh, elevatedInfo).
@@ -710,7 +731,8 @@ namespace MetroOverhaul
                             LinkToNonGroundVersions,
                             null,
                             //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
-                            NetInfoVersion.None)
+                            NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.TwoLaneOneWay, TrackStyle = NetInfoTrackStyle.Classic }
                     , prefabName => "Steel " + prefabName + " Two-Lane One-Way NoBar"
                     );
             }
@@ -726,7 +748,7 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetSmallTrackWidths).
                         Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo).
@@ -743,7 +765,8 @@ namespace MetroOverhaul
                             LinkToNonGroundVersions,
                             null,
                             //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
-                            NetInfoVersion.None)
+                            NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.OneLaneOneWay, TrackStyle = NetInfoTrackStyle.Classic }
                     , prefabName => "Steel " + prefabName + " Small"
                     );
             }
@@ -759,7 +782,7 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetSmallTrackWidths).
                         Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo).
@@ -776,7 +799,8 @@ namespace MetroOverhaul
                             LinkToNonGroundVersions,
                             null,
                             //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
-                            NetInfoVersion.None)
+                            NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.OneLaneOneWay, TrackStyle = NetInfoTrackStyle.Classic }
                     , prefabName => "Steel " + prefabName + " Small NoBar"
                     );
             }
@@ -791,7 +815,7 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetSmallTrackWidths).
                         Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo).
@@ -808,7 +832,8 @@ namespace MetroOverhaul
                             LinkToNonGroundVersions,
                             null,
                             //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
-                            NetInfoVersion.None)
+                            NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.OneLaneTwoWay, TrackStyle = NetInfoTrackStyle.Classic }
                     , prefabName => "Steel " + prefabName + " Small Two-Way"
                     );
             }
@@ -824,7 +849,7 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         //                        Chain(CustomizationSteps.SetupTrackProps).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetSmallTrackWidths).
                         Chain(SetupSteelMesh.Setup6mSteelMesh, elevatedInfo).
@@ -841,7 +866,8 @@ namespace MetroOverhaul
                             LinkToNonGroundVersions,
                             null,
                             //TODO(earalov): replace wuth prefabName => "Steel " + prefabName when tunnel/bridge/slope are ready
-                            NetInfoVersion.None)
+                            NetInfoVersion.None),
+                    new NetInfoMetadata() { TrackType = NetInfoTrackType.OneLaneTwoWay, TrackStyle = NetInfoTrackStyle.Classic }
                     , prefabName => "Steel " + prefabName + " Small Two-Way NoBar"
                     );
             }
@@ -858,14 +884,15 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         //Chain(CustomizationSteps.SetupStationProps).
                         Chain(CustomizationSteps.CommonCustomization).
-						Chain(CustomizationSteps.CommonCustomizationTwoLaneTwoWay).
+                        Chain(CustomizationSteps.CommonCustomizationTwoLaneTwoWay).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(SetupSteelMesh.Setup10mStationSteelMesh, elevatedInfo).
                         Chain(SetupSteelTexture.Setup10mSteelTexture)
                    , NetInfoVersion.Ground | NetInfoVersion.Elevated,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { StationTrackType = NetInfoStationTrackType.SidePlatform, TrackStyle = NetInfoTrackStyle.Classic }
                     , prefabName => "Steel " + prefabName
                     );
             }
@@ -908,7 +935,7 @@ namespace MetroOverhaul
                         //Chain(CustomizationSteps.SetupStationProps).
                         Chain(CustomizationSteps.CommonLargeDualIslandCustomization).
                         Chain(CustomizationSteps.SetLargeIslandTrackWidths).
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(SetupSteelMesh.Setup19mSteelStationMesh, elevatedInfo, metroStationInfo).
                         Chain(SetupSteelTexture.Setup19mSteelTexture).
@@ -920,7 +947,8 @@ namespace MetroOverhaul
                    NetInfoVersion.Ground | NetInfoVersion.Elevated,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { StationTrackType = NetInfoStationTrackType.DualIslandPlatform, TrackStyle = NetInfoTrackStyle.Classic }
                     , prefabName => "Steel " + prefabName + " Large Dual Island"
                     );
             }
@@ -935,7 +963,7 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         //Chain(CustomizationSteps.SetupStationProps).
                         Chain(CustomizationSteps.CommonIslandCustomization).
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetIslandTrackWidths).
                         Chain(SetupSteelMesh.Setup19mSteelStationMesh, elevatedInfo, metroStationInfo).
@@ -943,7 +971,8 @@ namespace MetroOverhaul
                    NetInfoVersion.Ground | NetInfoVersion.Elevated,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { StationTrackType = NetInfoStationTrackType.IslandPlatform, TrackStyle = NetInfoTrackStyle.Classic }
                     , prefabName => "Steel " + prefabName + " Island"
                     );
             }
@@ -959,7 +988,7 @@ namespace MetroOverhaul
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
                         //Chain(CustomizationSteps.SetupStationProps).
                         Chain(CustomizationSteps.CommonCustomizationSmall).
-						Chain(CustomizationSteps.CommonCustomization).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.SetSmallTrackWidths).
                         Chain(SetupSteelMesh.Setup6mStationSteelMesh, elevatedInfo, metroStationInfo).
@@ -967,7 +996,8 @@ namespace MetroOverhaul
                    NetInfoVersion.Ground | NetInfoVersion.Elevated,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { StationTrackType = NetInfoStationTrackType.SinglePlatform, TrackStyle = NetInfoTrackStyle.Classic }
                     , prefabName => "Steel " + prefabName + " Small"
                     );
             }
@@ -981,8 +1011,8 @@ namespace MetroOverhaul
             {
                 CreateFullStationPrefab(
                     ActionExtensions.BeginChain<NetInfo, NetInfoVersion>().
-//Chain(CustomizationSteps.SetupStationProps).
-						Chain(CustomizationSteps.CommonCustomization).
+                        //Chain(CustomizationSteps.SetupStationProps).
+                        Chain(CustomizationSteps.CommonCustomization).
                         Chain(CustomizationSteps.CommonSteelCustomization).
                         Chain(CustomizationSteps.CommonCustomizationLarge).
                         Chain(CustomizationSteps.SetLargeStationTrackWidths).
@@ -991,7 +1021,8 @@ namespace MetroOverhaul
                    NetInfoVersion.Ground | NetInfoVersion.Elevated,
                     ActionExtensions.BeginChain<NetInfo, Action<NetInfo, NetInfoVersion>>().
                         Chain<NetInfo, Action<NetInfo, NetInfoVersion>, Func<string, string>, NetInfoVersion>(
-                            LinkToNonGroundVersions, null, NetInfoVersion.None)
+                            LinkToNonGroundVersions, null, NetInfoVersion.None),
+                    new NetInfoMetadata() { StationTrackType = NetInfoStationTrackType.ExpressSidePlatform, TrackStyle = NetInfoTrackStyle.Classic }
                     , prefabName => "Steel " + prefabName + " Large"
                     );
             }
@@ -1035,26 +1066,149 @@ namespace MetroOverhaul
         #region COMMON
         private void ModifyVanillaTrackPrefabs()
         {
-            var groundVersion = Prefabs.Find<NetInfo>(Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Vanilla));
-            foreach (var version in new[] { NetInfoVersion.Ground, NetInfoVersion.Elevated, NetInfoVersion.Bridge, NetInfoVersion.Slope, NetInfoVersion.Tunnel })
+            var vanillaNetInfoMetadataList = new List<NetInfoMetadata>();
+            var groundStationMetaDataDict = new Dictionary<NetInfoStationTrackType, NetInfoMetadata>();
+            for (int i = 0; i < PrefabCollection<NetInfo>.LoadedCount(); i++)
             {
-                var info = Prefabs.Find<NetInfo>(Util.GetMetroTrackName(version, TrackStyle.Vanilla));
-                ReplaceAI(info, version);
-                SetupMetroTrackMeta(info, version);
-                if (version != NetInfoVersion.Ground)
-                    CommonSteps.SetVersion(info, groundVersion, version);
-                CustomizationSteps.CommonVanillaCustomization(info, version);
-                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpVanilla.BuildUp(info, version); });
+                var prefab = PrefabCollection<NetInfo>.GetLoaded((uint)i);
+                var originalAi = prefab.GetAI();
+                if (originalAi != null && originalAi is MetroTrackBaseAI && !prefab.m_isCustomContent)
+                {
+                    var ai = prefab.GetAI();
+                    if (prefab.IsStationTrack())
+                    {
+                        NetInfoMetadata netinfoMetadata = new NetInfoMetadata()
+                        {
+                            TrackStyle = NetInfoTrackStyle.Vanilla,
+                            Info = prefab,
+                            StationTrackType = prefab.GetStationTrackType()
+                        };
+
+                        if (ai is MetroTrackAI)
+                        {
+                            netinfoMetadata.Version = NetInfoVersion.Ground;
+                            netinfoMetadata.GroundInfo = prefab;
+                            groundStationMetaDataDict.Add(netinfoMetadata.StationTrackType, netinfoMetadata);
+                        }
+                        if (ai is MetroTrackBridgeAI)
+                        {
+                            netinfoMetadata.Version = NetInfoVersion.Elevated;
+                        }
+                        else if (ai is MetroTrackTunnelAI)
+                        {
+                            if (prefab.m_setCitizenFlags == CitizenInstance.Flags.Underground)
+                            {
+                                netinfoMetadata.Version = NetInfoVersion.Tunnel;
+                            }
+                            else if (prefab.m_setCitizenFlags == CitizenInstance.Flags.Transition)
+                            {
+                                netinfoMetadata.Version = NetInfoVersion.Sunken;
+                            }
+                        }
+                        vanillaNetInfoMetadataList.Add(netinfoMetadata);
+                    }
+                    else
+                    {
+                        if (ai is MOMMetroTrackAI)
+                        {
+                            vanillaNetInfoMetadataList.Add(new NetInfoMetadata()
+                            {
+                                Info = prefab,
+                                GroundInfo = prefab,
+                                TrackType = prefab.GetTrackType(),
+                                TrackStyle = NetInfoTrackStyle.Vanilla,
+                                Version = NetInfoVersion.Ground
+                            });
+                        }
+                    }
+                }
+            }
+            var vanillaMetadataCount = vanillaNetInfoMetadataList.Count();
+            for (int i = 0; i < vanillaMetadataCount; i++)
+            {
+                var netInfoMetadata = vanillaNetInfoMetadataList[i];
+                if (netInfoMetadata.TrackType != NetInfoTrackType.None)
+                {
+                    if (netInfoMetadata.Version == NetInfoVersion.Ground)
+                    {
+                        var groundNetInfoMetadata = netInfoMetadata;
+                        var ai = netInfoMetadata.Info.GetAI() as MOMMetroTrackAI;
+                        if (ai != null)
+                        {
+                            if (ai.m_elevatedInfo != null)
+                            {
+                                vanillaNetInfoMetadataList.Add(new NetInfoMetadata()
+                                {
+                                    Info = ai.m_elevatedInfo,
+                                    GroundInfo = netInfoMetadata.Info,
+                                    TrackType = netInfoMetadata.TrackType,
+                                    TrackStyle = NetInfoTrackStyle.Vanilla,
+                                    Version = NetInfoVersion.Elevated
+                                });
+                            }
+                            if (ai.m_bridgeInfo != null)
+                            {
+                                vanillaNetInfoMetadataList.Add(new NetInfoMetadata()
+                                {
+                                    Info = ai.m_bridgeInfo,
+                                    GroundInfo = netInfoMetadata.Info,
+                                    TrackType = netInfoMetadata.TrackType,
+                                    TrackStyle = NetInfoTrackStyle.Vanilla,
+                                    Version = NetInfoVersion.Bridge
+                                });
+                            }
+                            if (ai.m_slopeInfo != null)
+                            {
+                                vanillaNetInfoMetadataList.Add(new NetInfoMetadata()
+                                {
+                                    Info = ai.m_slopeInfo,
+                                    GroundInfo = netInfoMetadata.Info,
+                                    TrackType = netInfoMetadata.TrackType,
+                                    TrackStyle = NetInfoTrackStyle.Vanilla,
+                                    Version = NetInfoVersion.Slope
+                                });
+                            }
+                            if (ai.m_tunnelInfo != null)
+                            {
+                                vanillaNetInfoMetadataList.Add(new NetInfoMetadata()
+                                {
+                                    Info = ai.m_tunnelInfo,
+                                    GroundInfo = netInfoMetadata.Info,
+                                    TrackType = netInfoMetadata.TrackType,
+                                    TrackStyle = NetInfoTrackStyle.Vanilla,
+                                    Version = NetInfoVersion.Tunnel
+                                });
+                            }
+                        }
+                    }
+                    else if (netInfoMetadata.StationTrackType != NetInfoStationTrackType.None)
+                    {
+                        netInfoMetadata.GroundInfo = groundStationMetaDataDict[netInfoMetadata.StationTrackType].GroundInfo;
+                    }
+                }
+            }
+
+            var vanillaMetadataCount2 = vanillaNetInfoMetadataList.Count();
+            for (int i = 0; i < vanillaMetadataCount2; i++)
+            {
+                var netInfoMetadata = vanillaNetInfoMetadataList[i];
+                ReplaceAI(netInfoMetadata.Info);
+                SetupMetroTrackMeta(netInfoMetadata.Info, netInfoMetadata.Version);
+                if (netInfoMetadata.Version != NetInfoVersion.Ground)
+                    CommonSteps.SetVersion(netInfoMetadata.Info, netInfoMetadata.GroundInfo, netInfoMetadata.Version);
+                CustomizationSteps.CommonVanillaCustomization(netInfoMetadata.Info, netInfoMetadata.Version);
+                LoadingExtension.EnqueueLateBuildUpAction(() => { LateBuildUpVanilla.BuildUp(netInfoMetadata.Info, netInfoMetadata.Version); });
+                AddNetInfoMetadata(netInfoMetadata);
             }
         }
 
         private void ModifyVanillaStationTrackPrefabs()
         {
-            var groundVersion = Prefabs.Find<NetInfo>(Util.GetMetroStationTrackName(NetInfoVersion.Ground, TrackStyle.Vanilla));
+            var groundVersion = Prefabs.Find<NetInfo>(Util.GetMetroStationTrackName(NetInfoVersion.Ground, NetInfoTrackStyle.Vanilla));
             foreach (var version in new[] { NetInfoVersion.Ground, NetInfoVersion.Elevated, NetInfoVersion.Tunnel })
             {
-                var info = Prefabs.Find<NetInfo>(Util.GetMetroStationTrackName(version, TrackStyle.Vanilla));
-                ReplaceAI(info, version);
+                var info = Prefabs.Find<NetInfo>(Util.GetMetroStationTrackName(version, NetInfoTrackStyle.Vanilla));
+                ReplaceAI(info);
                 if (version != NetInfoVersion.Ground)
                     CommonSteps.SetVersion(info, groundVersion, version);
                 CustomizationSteps.CommonVanillaCustomization(info, version);
@@ -1070,9 +1224,9 @@ namespace MetroOverhaul
                         Chain(SetupBuildingModel, customizationStep));
         }
         protected void CreateFullPrefab(Action<NetInfo, NetInfoVersion> customizationStep,
-            NetInfoVersion versions,
-            Action<NetInfo, Action<NetInfo, NetInfoVersion>> setupOtherVersionsStep,
-            Func<string, string> nameModifier = null, Dictionary<NetInfoVersion, string> replacements = null)
+            NetInfoVersion versions, Action<NetInfo, Action<NetInfo, NetInfoVersion>> setupOtherVersionsStep,
+             NetInfoMetadata netInfoMetadata, Func<string, string> nameModifier = null,
+             Dictionary<NetInfoVersion, string> replacements = null)
         {
             if (nameModifier == null)
             {
@@ -1083,9 +1237,10 @@ namespace MetroOverhaul
             {
                 string replaces = null;
                 replacements?.TryGetValue(NetInfoVersion.Ground, out replaces);
-                groundVersion = CreateNetInfo(nameModifier.Invoke("Metro Track Ground"), Util.GetMetroTrackName(NetInfoVersion.Ground, TrackStyle.Vanilla),
+                netInfoMetadata.Version = NetInfoVersion.Ground;
+                groundVersion = CreateNetInfo(nameModifier.Invoke("Metro Track Ground"), Util.GetMetroTrackName(NetInfoVersion.Ground, NetInfoTrackStyle.Vanilla),
                     ActionExtensions.BeginChain<NetInfo>().
-                        Chain(ReplaceAI, NetInfoVersion.Ground).
+                        Chain(ReplaceAI).
                         Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
                         Chain(p =>
                         {
@@ -1093,8 +1248,9 @@ namespace MetroOverhaul
                             //p.GetComponent<MetroTrackAI>().m_info = null;
                             setupOtherVersionsStep?.Invoke(p, customizationStep);
                         }).
-                        Chain(SetupTrackModel, customizationStep.Chain(SetCosts)), replaces
+                        Chain(SetupTrackModel, NetInfoVersion.Ground, customizationStep.Chain(SetCosts)), netInfoMetadata, replaces
                 );
+                netInfoMetadata.GroundInfo = groundVersion;
             }
             foreach (var version in new[] { NetInfoVersion.Bridge, NetInfoVersion.Tunnel, NetInfoVersion.Elevated, NetInfoVersion.Slope, })
             {
@@ -1104,39 +1260,41 @@ namespace MetroOverhaul
                 }
                 string replaces = null;
                 replacements?.TryGetValue(version, out replaces);
-                CreateNetInfo(nameModifier.Invoke("Metro Track " + version), Util.GetMetroTrackName(version, TrackStyle.Vanilla),
+                netInfoMetadata.Version = version;
+                CreateNetInfo(nameModifier.Invoke("Metro Track " + version), Util.GetMetroTrackName(version, NetInfoTrackStyle.Vanilla),
                     ActionExtensions.BeginChain<NetInfo>().
-                        Chain(ReplaceAI, version).
+                        Chain(ReplaceAI).
                         Chain(SetupMetroTrackMeta, version).
                         Chain(CommonSteps.SetVersion, groundVersion, version).
-                        Chain(SetupTrackModel, customizationStep.Chain(SetCosts)), replaces
+                        Chain(SetupTrackModel, version, customizationStep.Chain(SetCosts)), netInfoMetadata, replaces
                     );
             }
         }
         private void CreateFullStationPrefab(Action<NetInfo, NetInfoVersion> customizationStep,
-    NetInfoVersion versions,
-    Action<NetInfo, Action<NetInfo, NetInfoVersion>> setupOtherVersionsStep,
-    Func<string, string> nameModifier = null, Dictionary<NetInfoVersion, string> replacements = null)
+            NetInfoVersion versions, Action<NetInfo, Action<NetInfo, NetInfoVersion>> setupOtherVersionsStep,
+             NetInfoMetadata netInfoMetadata, Func<string, string> nameModifier = null,
+             Dictionary<NetInfoVersion, string> replacements = null)
         {
             NetInfo groundVersion = null;
             if ((versions & NetInfoVersion.Ground) != 0)
             {
                 Debug.Log("Looking at version Ground 01");
-                groundVersion = CreateNetInfo(nameModifier.Invoke("Metro Station Track Ground"), Util.GetMetroStationTrackName(NetInfoVersion.Ground, TrackStyle.Vanilla),
+
+                netInfoMetadata.Version = NetInfoVersion.Ground;
+                groundVersion = CreateNetInfo(nameModifier.Invoke("Metro Station Track Ground"), Util.GetMetroStationTrackName(NetInfoVersion.Ground, NetInfoTrackStyle.Vanilla),
                     ActionExtensions.BeginChain<NetInfo>().
-                        Chain(ReplaceAI, NetInfoVersion.Ground).
+                        Chain(ReplaceAI).
                         Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
                         Chain(SetupStationTrack, NetInfoVersion.Ground).
                         Chain(p =>
                         {
                             setupOtherVersionsStep?.Invoke(p, customizationStep);
-                            //p.GetComponent<MetroTrackAI>().m_elevatedInfo = null;
-                            //p.GetComponent<MetroTrackAI>().m_info = null;
                         }).
-                        Chain(SetupTrackModel, customizationStep)
+                        Chain(SetupTrackModel, NetInfoVersion.Ground, customizationStep), netInfoMetadata
                 );
+                netInfoMetadata.GroundInfo = groundVersion;
             }
-            foreach (var version in new[] { NetInfoVersion.Tunnel, NetInfoVersion.Elevated })
+            foreach (var version in new[] { NetInfoVersion.Tunnel, NetInfoVersion.Elevated, NetInfoVersion.Sunken })
             {
                 if ((versions & version) == 0)
                 {
@@ -1145,24 +1303,17 @@ namespace MetroOverhaul
                 string replaces = null;
                 replacements?.TryGetValue(version, out replaces);
                 Debug.Log("Looking at version " + version.ToString());
-                CreateNetInfo(nameModifier.Invoke("Metro Station Track " + version), Util.GetMetroStationTrackName(version, TrackStyle.Vanilla),
+                netInfoMetadata.Version = version;
+                CreateNetInfo(nameModifier.Invoke("Metro Station Track " + version), Util.GetMetroStationTrackName(version, NetInfoTrackStyle.Vanilla),
                     ActionExtensions.BeginChain<NetInfo>().
-                        Chain(ReplaceAI, version).
+                        Chain(ReplaceAI).
                         Chain(SetupMetroTrackMeta, version).
                         Chain(SetupStationTrack, version).
                         Chain(CommonSteps.SetVersion, groundVersion, version).
                         Chain(Modifiers.MakePedestrianLanesNarrow, version).
-                        Chain(SetupTrackModel, customizationStep.Chain(SetCosts)), replaces
+                        Chain(SetupTrackModel, version, customizationStep.Chain(SetCosts)), netInfoMetadata, replaces
                     );
             }
-            CreateNetInfo(nameModifier.Invoke("Metro Station Track Sunken"), "Metro Station Track Ground 01", //TODO(earalov): test. check if AI to be replaced with MetroTrackAI
-                ActionExtensions.BeginChain<NetInfo>().
-                    Chain(ReplaceAI, NetInfoVersion.Tunnel).
-                    Chain(SetupMetroTrackMeta, NetInfoVersion.Ground).
-                    Chain(SetupStationTrack, NetInfoVersion.Ground).
-                    Chain(SetupSunkenStationTrack).
-                    Chain(SetupTrackModel, customizationStep)
-            );
         }
         protected void LinkToNonGroundVersions(NetInfo p, Action<NetInfo, NetInfoVersion> customizationStep,
             Func<string, string> nameModifier = null, NetInfoVersion versions = NetInfoVersion.Slope | NetInfoVersion.Tunnel | NetInfoVersion.Elevated | NetInfoVersion.Bridge)
@@ -1177,7 +1328,8 @@ namespace MetroOverhaul
                 {
                     continue;
                 }
-                CommonSteps.SetVersion(FindCustomNetInfo(nameModifier.Invoke(Util.GetMetroTrackName(version, TrackStyle.Vanilla))), p, version);
+                var modifiedName = nameModifier.Invoke(Util.GetMetroTrackName(version, NetInfoTrackStyle.Vanilla));
+                CommonSteps.SetVersion(_customNetInfoMetadata[modifiedName].Info, p, version);
             }
         }
 
@@ -1245,68 +1397,39 @@ namespace MetroOverhaul
                 }
             }
         }
-        private static void ReplaceAI(NetInfo prefab, NetInfoVersion version)
+        private static void ReplaceAI(NetInfo prefab)
         {
             var originalAi = prefab.GetComponent<PlayerNetAI>(); //milestone, construction and maintenance costs to be overriden later
             var canModify = originalAi.CanModify();
             int noiseAccumulation;
             float noiseRadius;
             originalAi.GetNoiseAccumulation(out noiseAccumulation, out noiseRadius);
-            if (originalAi is MetroTrackTunnelAI || version == NetInfoVersion.Tunnel)
+            MetroTrackBaseAI ai;
+            if (originalAi is MetroTrackTunnelAI)
             {
-                if ((originalAi is MetroTrackTunnelAI && version == NetInfoVersion.Slope))
-                {
-                    GameObject.DestroyImmediate(originalAi);
-                    var ai = prefab.gameObject.AddComponent<MOMMetroTrackTunnelAI>();
-                    ai.m_canModify = canModify;
-                    ai.m_noiseAccumulation = noiseAccumulation;
-                    ai.m_noiseRadius = noiseRadius;
-                    ai.m_info = prefab;
-                    prefab.m_netAI = ai;
-                }
-                else
-                {
-                    GameObject.DestroyImmediate(originalAi);
-                    var ai = prefab.gameObject.AddComponent<MOMMetroTrackTunnelAI>();
-                    ai.m_info = prefab;
-                    //ai.m_transportInfo = PrefabCollection<TransportInfo>.FindLoaded("Train");
-                    prefab.m_netAI = ai;
-                }
-
+                ai = prefab.gameObject.AddComponent<MOMMetroTrackTunnelAI>();
+                ((MOMMetroTrackTunnelAI)ai).m_canModify = canModify;
             }
-            else if (version == NetInfoVersion.Bridge || version == NetInfoVersion.Elevated)
+            else if (originalAi is MetroTrackBridgeAI)
             {
-                GameObject.DestroyImmediate(originalAi);
-                var ai = prefab.gameObject.AddComponent<MOMMetroTrackBridgeAI>();
-                ai.m_canModify = canModify;
-                ai.m_noiseAccumulation = noiseAccumulation;
-                ai.m_noiseRadius = noiseRadius;
-                ai.m_info = prefab;
-                prefab.m_netAI = ai;
+                ai = prefab.gameObject.AddComponent<MOMMetroTrackBridgeAI>();
+                ((MOMMetroTrackBridgeAI)ai).m_canModify = canModify;
             }
             else
             {
-                GameObject.DestroyImmediate(originalAi);
-                var ai = prefab.gameObject.AddComponent<MOMMetroTrackAI>();
-                ai.m_noiseAccumulation = noiseAccumulation;
-                ai.m_noiseRadius = noiseRadius;
-                ai.m_info = prefab;
-                prefab.m_netAI = ai;
+                ai = prefab.gameObject.AddComponent<MOMMetroTrackAI>();
             }
-        }
-
-        public static void SetupSunkenStationTrack(NetInfo prefab)
-        {
-            prefab.m_maxHeight = -1;
-            prefab.m_minHeight = -3;
-            prefab.m_lowerTerrain = false;
-            prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels | ItemClass.Layer.Default;
+            DestroyImmediate(originalAi);
+            ai.m_noiseAccumulation = noiseAccumulation;
+            ai.m_noiseRadius = noiseRadius;
+            ai.m_info = prefab;
+            prefab.m_netAI = ai;
         }
 
         public static void SetupStationTrack(NetInfo prefab, NetInfoVersion version)
         {
             prefab.m_followTerrain = false;
-            prefab.m_flattenTerrain = version == NetInfoVersion.Ground && !prefab.name.Contains("Sunken");
+            prefab.m_flattenTerrain = version == NetInfoVersion.Ground;
             prefab.m_createGravel = false;
             prefab.m_createPavement = false;
             prefab.m_createRuining = false;
@@ -1316,51 +1439,34 @@ namespace MetroOverhaul
             prefab.m_useFixedHeight = true;
             prefab.m_availableIn = ItemClass.Availability.Game;
             prefab.m_intersectClass = null;
-            if (version == NetInfoVersion.Ground)
+            switch (version)
             {
-                prefab.m_lowerTerrain = false;
-                prefab.m_clipTerrain = true;
-                //prefab.m_maxHeight = 0.5f;
-            }
-            else
-            {
-                prefab.m_clipTerrain = false;
-                if (version == NetInfoVersion.Elevated)
-                {
-                    //prefab.m_maxHeight = 0.5f;
-                }
-                else if (version == NetInfoVersion.Tunnel)
-                {
+                case NetInfoVersion.Ground:
+                    prefab.m_lowerTerrain = false;
+                    prefab.m_clipTerrain = true;
+                    break;
+                case NetInfoVersion.Elevated:
+                    prefab.m_clipTerrain = false;
+                    break;
+                case NetInfoVersion.Tunnel:
                     prefab.m_maxHeight = -1;
                     prefab.m_minHeight = -5;
                     prefab.m_lowerTerrain = false;
+                    prefab.m_clipTerrain = false;
                     prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels;
-                }
+                    break;
+                case NetInfoVersion.Sunken://TODO Investigate/cross reference this info.
+                    prefab.m_maxHeight = -1;
+                    prefab.m_minHeight = -3;
+                    prefab.m_lowerTerrain = false;
+                    prefab.m_class.m_layer = ItemClass.Layer.MetroTunnels | ItemClass.Layer.Default;
+                    break;
             }
         }
 
-        public static NetInfoVersion DetectVersion(string infoName)
-        {
-            if (infoName.Contains("Elevated"))
-            {
-                return NetInfoVersion.Elevated;
-            }
-            if (infoName.Contains("Bridge"))
-            {
-                return NetInfoVersion.Bridge;
-            }
-            if (infoName.Contains("Slope"))
-            {
-                return NetInfoVersion.Slope;
-            }
-            return infoName.Contains("Tunnel") ? NetInfoVersion.Tunnel : NetInfoVersion.Ground;
-        }
-
-        private static void SetupTrackModel(NetInfo prefab, Action<NetInfo, NetInfoVersion> customizationStep)
+        private static void SetupTrackModel(NetInfo prefab, NetInfoVersion version, Action<NetInfo, NetInfoVersion> customizationStep)
         {
             prefab.m_minHeight = 0; //TODO(earalov): is that minHeight correct for all types of tracks?
-            var version = DetectVersion(prefab.name);
-
             customizationStep.Invoke(prefab, version);
         }
 
@@ -1390,12 +1496,13 @@ namespace MetroOverhaul
         }
         private static void SetupMetroTrackMeta(NetInfo prefab, NetInfoVersion version)
         {
-            var vanillaName = Util.GetMetroTrackName(version, TrackStyle.Vanilla);
+            version = version == NetInfoVersion.Sunken ? NetInfoVersion.Ground : version; //TODO This needs to be fleshed out!
+            var vanillaName = Util.GetMetroTrackName(version, NetInfoTrackStyle.Vanilla);
             NetInfo modelTrack = null;
             if (prefab.name == vanillaName)
-                modelTrack = FindOriginalNetInfo(Util.GetMetroTrackName(version, TrackStyle.Modern));
+                modelTrack = FindOriginalNetInfo(Util.GetMetroTrackName(version, NetInfoTrackStyle.Modern));
             else
-                modelTrack = FindOriginalNetInfo(Util.GetMetroTrackName(version, TrackStyle.Vanilla));
+                modelTrack = FindOriginalNetInfo(Util.GetMetroTrackName(version, NetInfoTrackStyle.Vanilla));
             if (!prefab.name.Contains("Station"))
             {
                 var milestone = modelTrack.GetComponent<PlayerNetAI>().m_createPassMilestone;
@@ -1460,11 +1567,11 @@ namespace MetroOverhaul
                 NetInfo metroTrackInfo = null;
                 if (newPrefab.name.Contains("Station"))
                 {
-                    metroTrackInfo = FindOriginalNetInfo(Util.GetMetroStationTrackName(version, TrackStyle.Vanilla));
+                    metroTrackInfo = FindOriginalNetInfo(Util.GetMetroStationTrackName(version, NetInfoTrackStyle.Vanilla));
                 }
                 else
                 {
-                    metroTrackInfo = FindOriginalNetInfo(Util.GetMetroTrackName(version, TrackStyle.Vanilla));
+                    metroTrackInfo = FindOriginalNetInfo(Util.GetMetroTrackName(version, NetInfoTrackStyle.Vanilla));
                 }
 
                 var baseConstructionCost = metroTrackInfo.GetComponent<PlayerNetAI>().m_constructionCost;
@@ -1490,5 +1597,180 @@ namespace MetroOverhaul
             return 1;
         }
         #endregion
+    }
+    public class NetInfoMetadata
+    {
+        private NetInfo m_GroundInfo;
+        private NetInfoVersion m_Version;
+        private NetInfoTrackType m_TrackType;
+        private NetInfoStationTrackType m_StationTrackType;
+        public NetInfo Info { get; set; }
+
+        public NetInfo GroundInfo
+        {
+            get
+            {
+                if (m_GroundInfo == null)
+                {
+                    m_GroundInfo = GetGroundInfo();
+                }
+                return m_GroundInfo;
+            }
+            set
+            {
+                m_GroundInfo = value;
+            }
+        }
+        private NetInfoTrackStyle m_TrackStyle;
+        public NetInfoTrackStyle TrackStyle
+        {
+            get
+            {
+                return m_TrackStyle;
+            }
+            set
+            {
+                m_TrackStyle = value;
+            }
+        }
+
+        public NetInfoTrackType TrackType
+        {
+            get
+            {
+                if (m_TrackType == NetInfoTrackType.None && Info != null)
+                    m_TrackType = Info.GetTrackType();
+                return m_TrackType;
+            }
+            set
+            {
+                m_TrackType = value;
+            }
+        }
+        public NetInfoStationTrackType StationTrackType
+        {
+            get
+            {
+                if (m_StationTrackType == NetInfoStationTrackType.None && Info != null)
+                    m_StationTrackType = Info.GetStationTrackType();
+                return m_StationTrackType;
+            }
+            set
+            {
+                m_StationTrackType = value;
+            }
+        }
+        public NetInfoVersion Version
+        {
+            get
+            {
+                if (m_Version == NetInfoVersion.None && Info != null)
+                {
+                    m_Version = GetNetInfoVersion();
+                }
+                return m_Version;
+            }
+            set
+            {
+                m_Version = value;
+            }
+        }
+
+        public NetInfoMetadata Lookup()
+        {
+            if (m_TrackStyle != NetInfoTrackStyle.None)
+            {
+                if (m_Version != NetInfoVersion.None)
+                {
+                    if (m_TrackType != NetInfoTrackType.None || m_StationTrackType != NetInfoStationTrackType.None)
+                    {
+                        return AbstractInitializer.LookupNetInfoMetadata(this);
+                    }
+                }
+            }
+            return null;
+        }
+
+        private NetInfo GetGroundInfo()
+        {
+            if (Info != null)
+            {
+                if (Info.GetAI() is MetroTrackAI)
+                {
+                    m_GroundInfo = Info;
+                }
+                else
+                {
+                    for (int i = 0; i < PrefabCollection<NetInfo>.LoadedCount(); i++)
+                    {
+                        var prefab = PrefabCollection<NetInfo>.GetLoaded((uint)i);
+                        var ai = prefab.GetAI() as MetroTrackAI;
+                        if (ai != null)
+                        {
+                            if (Info == ai.m_bridgeInfo || Info == ai.m_elevatedInfo || Info == ai.m_slopeInfo || Info == ai.m_tunnelInfo)
+                            {
+                                m_GroundInfo = prefab;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            return m_GroundInfo;
+        }
+        private NetInfoVersion GetNetInfoVersion()
+        {
+            if (m_Version == NetInfoVersion.None && Info != null)
+            {
+                if (Info.IsStationTrack())
+                {
+                    var ai = Info.GetAI();
+                    if (ai is MOMMetroTrackAI)
+                    {
+                        return NetInfoVersion.Ground;
+                    }
+                    else if (ai is MOMMetroTrackBridgeAI)
+                    {
+                        return NetInfoVersion.Elevated;
+                    }
+                    else if (ai is MOMMetroTrackBridgeAI)
+                    {
+                        if (Info.IsUndergroundMOMMetro())
+                        {
+                            return NetInfoVersion.Tunnel;
+                        }
+                        else
+                        {
+                            return NetInfoVersion.Sunken;
+                        }
+                    }
+                }
+                else if (GroundInfo != null)
+                {
+                    var groundInfoAI = GroundInfo.GetAI() as MOMMetroTrackAI;
+                    if (Info == GroundInfo)
+                    {
+                        return NetInfoVersion.Ground;
+                    }
+                    else if (Info == groundInfoAI.m_elevatedInfo)
+                    {
+                        return NetInfoVersion.Elevated;
+                    }
+                    else if (Info == groundInfoAI.m_bridgeInfo)
+                    {
+                        return NetInfoVersion.Bridge;
+                    }
+                    else if (Info = groundInfoAI.m_slopeInfo)
+                    {
+                        return NetInfoVersion.Slope;
+                    }
+                    else if (Info = groundInfoAI.m_tunnelInfo)
+                    {
+                        return NetInfoVersion.Tunnel;
+                    }
+                }
+            }
+            return NetInfoVersion.None;
+        }
     }
 }

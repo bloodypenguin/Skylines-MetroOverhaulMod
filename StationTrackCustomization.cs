@@ -14,7 +14,7 @@ namespace MetroOverhaul
         public float Rotation { get; set; }
         public float Curve { get; set; }
         public MetroStationTrackAlterType AlterType { get; set; }
-        public StationTrackType TrackType { get; set; }
+        public NetInfoStationTrackType TrackType { get; set; }
         public BuildingInfo.PathInfo Path { get; set; }
         public StationTrackCustomizations()
         {
@@ -23,7 +23,7 @@ namespace MetroOverhaul
             Rotation = SetStationCustomizations.DEF_ROTATION;
             Curve = SetStationCustomizations.DEF_CURVE;
             AlterType = MetroStationTrackAlterType.All;
-            TrackType = StationTrackType.SidePlatform;
+            TrackType = NetInfoStationTrackType.SidePlatform;
         }
 
         public enum MetroStationTrackAlterType

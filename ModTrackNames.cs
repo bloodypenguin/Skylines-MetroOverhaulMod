@@ -148,23 +148,23 @@
             return "";
         }
     }
-    public enum StationTrackType : byte
+    public enum NetInfoStationTrackType : byte
     {
         None = 0,
-        SidePlatform = 1,
-        IslandPlatform = 2,
         SinglePlatform = 3,
-        ExpressSidePlatform = 4,
-        DualIslandPlatform = 5
-        //QuadSideIslandPlatform = 6
+        SidePlatform = 22,
+        IslandPlatform = 13,
+        ExpressSidePlatform = 94,
+        DualIslandPlatform = 109
+        //QuadSideIslandPlatform = 182
     }
-    public enum TrackType
+    public enum NetInfoTrackType
     {
         None,
-        TwowayTwoLane,
-        OnewayTwoLane,
-        TwowayOneLane,
-        OnewayOneLane,
+        OneLaneOneWay,
+        OneLaneTwoWay,
+        TwoLaneOneWay,
+        TwoLaneTwoWay,
         Quad
     }
     public enum TrackVehicleType
@@ -173,7 +173,7 @@
         Train,
         Metro,
     }
-    public enum TrackStyle
+    public enum NetInfoTrackStyle
     {
         None,
         Vanilla,

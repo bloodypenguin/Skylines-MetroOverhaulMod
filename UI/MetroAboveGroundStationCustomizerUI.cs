@@ -218,7 +218,7 @@ namespace MetroOverhaul.UI
                 StackWidths = true,
                 EventClick = (c, v) =>
                 {
-                    trackStyle = TrackStyle.Modern;
+                    trackStyle = NetInfoTrackStyle.Modern;
                     SetNetToolPrefab();
                 }
             });
@@ -234,7 +234,7 @@ namespace MetroOverhaul.UI
                 StackWidths = true,
                 EventClick = (c, v) =>
                 {
-                    trackStyle = TrackStyle.Classic;
+                    trackStyle = NetInfoTrackStyle.Classic;
                     SetNetToolPrefab();
                 }
             });
@@ -250,7 +250,7 @@ namespace MetroOverhaul.UI
                 StackWidths = true,
                 EventClick = (c, v) =>
                 {
-                    trackStyle = TrackStyle.Vanilla;
+                    trackStyle = NetInfoTrackStyle.Vanilla;
                     SetNetToolPrefab();
                 }
             });
@@ -575,19 +575,19 @@ namespace MetroOverhaul.UI
 
                 switch (trackStyle)
                 {
-                    case TrackStyle.None:
-                    case TrackStyle.Modern:
+                    case NetInfoTrackStyle.None:
+                    case NetInfoTrackStyle.Modern:
                         modernState = UIButton.ButtonState.Focused;
                         break;
-                    case TrackStyle.Classic:
+                    case NetInfoTrackStyle.Classic:
                         classicState = UIButton.ButtonState.Focused;
                         break;
-                    case TrackStyle.Vanilla:
+                    case NetInfoTrackStyle.Vanilla:
                         if (vanillaApplicable)
                             vanillaState = UIButton.ButtonState.Focused;
                         break;
                 }
-                if (trackStyle != TrackStyle.None)
+                if (trackStyle != NetInfoTrackStyle.None)
                 {
                     btnModernStyle.parent.GetComponentsInChildren<UIButton>().FirstOrDefault(b => b.name.StartsWith(TS_STARTER)).SimulateClick();
                 }
@@ -598,7 +598,7 @@ namespace MetroOverhaul.UI
             }
             else
             {
-                if (trackStyle != TrackStyle.None)
+                if (trackStyle != NetInfoTrackStyle.None)
                 {
                     btnModernStyle.parent.GetComponentsInChildren<UIButton>().FirstOrDefault(b => b.name.StartsWith(TS_STARTER)).SimulateClick();
                 }

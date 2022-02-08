@@ -5,12 +5,12 @@ namespace MetroOverhaul.NEXT.Extensions
 {
     public static partial class BuildingInfoExtensions
     {
-        public static void SetMetroStyle(this BuildingInfo.PathInfo info, TrackStyle style)
+        public static void SetMetroStyle(this BuildingInfo.PathInfo info, NetInfoTrackStyle style)
         {
             if (info.m_finalNetInfo.IsAbovegroundMetroStationTrack())
             {
                 var trackName = info.m_finalNetInfo.name;
-                if (style == TrackStyle.Vanilla)
+                if (style == NetInfoTrackStyle.Vanilla)
                 {
                     if (info.m_finalNetInfo.IsGroundSidePlatformMetroStationTrack() || info.m_finalNetInfo.IsElevatedSidePlatformMetroStationTrack())
                     {
@@ -18,7 +18,7 @@ namespace MetroOverhaul.NEXT.Extensions
                         info.AssignNetInfo(trackName, false);
                     }
                 }
-                else if (style == TrackStyle.Modern)
+                else if (style == NetInfoTrackStyle.Modern)
                 {
                     trackName = trackName.Substring(trackName.IndexOf("Metro")).Replace(" Ground 01", " Ground");
                     if (trackName.EndsWith("Track"))
@@ -27,7 +27,7 @@ namespace MetroOverhaul.NEXT.Extensions
                     }
                     info.AssignNetInfo(trackName, false);
                 }
-                else if (style == TrackStyle.Classic)
+                else if (style == NetInfoTrackStyle.Classic)
                 {
                     trackName = "Steel " + trackName.Substring(trackName.IndexOf("Metro")).Replace(" Ground 01", " Ground");
                     if (trackName.EndsWith("Track"))

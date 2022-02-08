@@ -27,7 +27,7 @@ namespace MetroOverhaul.UI
 
         protected override void SubStart()
         {
-            trackStyle = TrackStyle.Modern;
+            trackStyle = NetInfoTrackStyle.Modern;
             trackDirection = 1;
             pillarType = PillarType.WideMedian;
             ExecuteUiInstructions();
@@ -78,7 +78,7 @@ namespace MetroOverhaul.UI
                 Height = 52,
                 EventClick = (c, v) =>
                 {
-                    trackStyle = TrackStyle.Modern;
+                    trackStyle = NetInfoTrackStyle.Modern;
                     ExecuteUiInstructions();
                 }
             });
@@ -93,7 +93,7 @@ namespace MetroOverhaul.UI
                 Height = 52,
                 EventClick = (c, v) =>
                 {
-                    trackStyle = TrackStyle.Classic;
+                    trackStyle = NetInfoTrackStyle.Classic;
                     ExecuteUiInstructions();
                 }
             });
@@ -108,7 +108,7 @@ namespace MetroOverhaul.UI
                 Height = 52,
                 EventClick = (c, v) =>
                 {
-                    trackStyle = TrackStyle.Vanilla;
+                    trackStyle = NetInfoTrackStyle.Vanilla;
                     ExecuteUiInstructions();
                 }
             });
@@ -355,7 +355,7 @@ namespace MetroOverhaul.UI
             }
             switch (trackStyle)
             {
-                case TrackStyle.Vanilla:
+                case NetInfoTrackStyle.Vanilla:
                     switch (trackSize)
                     {
                         case 0:
@@ -374,7 +374,7 @@ namespace MetroOverhaul.UI
                             break;
                     }
                     break;
-                case TrackStyle.Modern:
+                case NetInfoTrackStyle.Modern:
                     {
                         switch (isStation)
                         {
@@ -415,19 +415,19 @@ namespace MetroOverhaul.UI
                             case 1:
                                 switch (stationType)
                                 {
-                                    case StationTrackType.SidePlatform:
+                                    case NetInfoStationTrackType.SidePlatform:
                                         prefab = concreteSideStationPrefab;
                                         break;
-                                    case StationTrackType.IslandPlatform:
+                                    case NetInfoStationTrackType.IslandPlatform:
                                         prefab = concreteIslandStationPrefab;
                                         break;
-                                    case StationTrackType.SinglePlatform:
+                                    case NetInfoStationTrackType.SinglePlatform:
                                         prefab = concreteSingleStationPrefab;
                                         break;
-                                    case StationTrackType.ExpressSidePlatform:
+                                    case NetInfoStationTrackType.ExpressSidePlatform:
                                         prefab = concreteQuadSideStationPrefab;
                                         break;
-                                    case StationTrackType.DualIslandPlatform:
+                                    case NetInfoStationTrackType.DualIslandPlatform:
                                         prefab = concreteQuadDualIslandStationPrefab;
                                         break;
                                 }
@@ -435,7 +435,7 @@ namespace MetroOverhaul.UI
                         }
                     }
                     break;
-                case TrackStyle.Classic:
+                case NetInfoTrackStyle.Classic:
                     {
                         switch (isStation)
                         {
@@ -491,19 +491,19 @@ namespace MetroOverhaul.UI
                                 {
                                     switch (stationType)
                                     {
-                                        case StationTrackType.SidePlatform:
+                                        case NetInfoStationTrackType.SidePlatform:
                                             prefab = steelSideStationPrefab;
                                             break;
-                                        case StationTrackType.IslandPlatform:
+                                        case NetInfoStationTrackType.IslandPlatform:
                                             prefab = steelIslandStationPrefab;
                                             break;
-                                        case StationTrackType.SinglePlatform:
+                                        case NetInfoStationTrackType.SinglePlatform:
                                             prefab = steelSingleStationPrefab;
                                             break;
-                                        case StationTrackType.ExpressSidePlatform:
+                                        case NetInfoStationTrackType.ExpressSidePlatform:
                                             prefab = steelQuadSideStationPrefab;
                                             break;
-                                        case StationTrackType.DualIslandPlatform:
+                                        case NetInfoStationTrackType.DualIslandPlatform:
                                             prefab = steelQuadDualIslandStationPrefab;
                                             break;
                                     }

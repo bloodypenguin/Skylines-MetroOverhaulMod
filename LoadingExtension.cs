@@ -103,14 +103,14 @@ namespace MetroOverhaul
         public override void OnLevelLoaded(LoadMode mode)
         {
             base.OnLevelLoaded(mode);
-            bool isVanilla = OptionsWrapper<Options>.Options.ghostMode;
+            bool toVanilla = OptionsWrapper<Options>.Options.ghostMode;
             if (_updater == null)
             {
-                _updater = new AssetsUpdater();
-                _updater.UpdateBuildingsMetroPaths(mode, isVanilla);
+                _updater = new AssetsUpdater(toVanilla);
+                _updater.UpdateBuildingsMetroPaths(mode);
             }
 
-            if (!isVanilla)
+            if (!toVanilla)
             {
                 _cachedMode = mode;
                 while (LateBuildUpQueue.Count > 0)
@@ -128,7 +128,7 @@ namespace MetroOverhaul
                 _updater.UpdateExistingAssets(mode);
             }
 
-            if (!isVanilla)
+            if (!toVanilla)
             {
                 if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame || mode == LoadMode.NewGameFromScenario)
                 {

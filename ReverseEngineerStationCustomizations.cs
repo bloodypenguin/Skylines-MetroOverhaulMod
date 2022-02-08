@@ -39,7 +39,7 @@ namespace MetroOverhaul
                 Depth = RestoreCustomizations(MetroStationTrackAlterType.Depth, m_Building.m_childHealth),
                 Rotation = RestoreCustomizations(MetroStationTrackAlterType.Rotation, m_Building.m_seniors),
                 Curve = RestoreCustomizations(MetroStationTrackAlterType.Curve, m_Building.m_seniorHealth),
-                TrackType = (StationTrackType)(m_Building.m_teens)
+                TrackType = (NetInfoStationTrackType)(m_Building.m_teens)
             };
         }
 

@@ -10,7 +10,7 @@ namespace MetroOverhaul.InitializationSteps
     {
         public static string WidthName = null;
         public static string[] Variations = null;
-        public static StationTrackType trackType;
+        public static NetInfoStationTrackType trackType;
         public static NetInfo.ConnectGroup[] Groups = null;
         public static List<NetInfo.ConnectGroup> LikenessGroups = null;
         public static List<NetInfo.Node> NodeList = null;

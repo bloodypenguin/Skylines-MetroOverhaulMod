@@ -54,6 +54,7 @@
     <Compile Include="Extensions\NetToolExtensions.cs" />
     <Compile Include="Extensions\PropInfoExtensions.cs" />
     <Compile Include="FastDeepCloner.cs" />
+    <Compile Include="IMOMMetroAI.cs" />
     <Compile Include="InitializationSteps\LateBuildUpVanilla.cs" />
     <Compile Include="InitializationSteps\SetupMeshUtil.cs" />
     <Compile Include="InitializationSteps\SetupSteelMesh19m.cs" />

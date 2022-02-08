@@ -1,7 +1,7 @@
 ﻿using ColossalFramework;
 
 namespace MetroOverhaul {
-    class MOMMetroTrackAI : MetroTrackAI
+    class MOMMetroTrackAI : MetroTrackAI, IMOMMetroTrackAI
     {
         public override void UpdateNodeFlags(ushort nodeID, ref NetNode data)
         {

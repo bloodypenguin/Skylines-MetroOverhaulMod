@@ -258,7 +258,7 @@ namespace MetroOverhaul.InitializationSteps {
 
                 case NetInfoVersion.Tunnel:
                     {
-                        var metroInfo = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Tunnel, TrackStyle.Vanilla));
+                        var metroInfo = PrefabCollection<NetInfo>.FindLoaded(Util.GetMetroTrackName(NetInfoVersion.Tunnel, NetInfoTrackStyle.Vanilla));
                         var segment0 = metroInfo.m_segments[0].ShallowClone();
                         var segment1 = info.m_segments[0].ShallowClone();
                         var segment2 = info.m_segments[0].ShallowClone();

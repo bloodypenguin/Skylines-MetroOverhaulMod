@@ -454,7 +454,7 @@ namespace MetroOverhaul.UI
             });
             SliderDict = new Dictionary<MetroStationTrackAlterType, UISlider>();
             PanelDict = new Dictionary<MetroStationTrackAlterType, UIPanel>();
-            CheckboxStationDict = new Dictionary<StationTrackType, UICheckBox>();
+            CheckboxStationDict = new Dictionary<NetInfoStationTrackType, UICheckBox>();
             pnlIndividualTrackManipulator = CreatePanel(new UIPanelParamProps()
             {
                 Name = "pnlIndividualTrackManipulator",
@@ -646,7 +646,7 @@ namespace MetroOverhaul.UI
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_SidePlatformStationTrackAtlas", UIHelper.SidePlatformStationTrack),
                 EventClick = (c, v) =>
                 {
-                    m_TrackType = StationTrackType.SidePlatform;
+                    m_TrackType = NetInfoStationTrackType.SidePlatform;
                     TunnelStationTrackToggleStyles();
                 }
             });
@@ -661,7 +661,7 @@ namespace MetroOverhaul.UI
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_IslandPlatformStationTrackAtlas", UIHelper.IslandPlatformStationTrack),
                 EventClick = (c, v) =>
                 {
-                    m_TrackType = StationTrackType.IslandPlatform;
+                    m_TrackType = NetInfoStationTrackType.IslandPlatform;
                     TunnelStationTrackToggleStyles();
                 }
             });
@@ -676,7 +676,7 @@ namespace MetroOverhaul.UI
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_SinglePlatformStationTrackAtlas", UIHelper.SinglePlatformStationTrack),
                 EventClick = (c, v) =>
                 {
-                    m_TrackType = StationTrackType.SinglePlatform;
+                    m_TrackType = NetInfoStationTrackType.SinglePlatform;
                     TunnelStationTrackToggleStyles();
                 }
             });
@@ -691,7 +691,7 @@ namespace MetroOverhaul.UI
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_ExpressSidePlatformStationTrackAtlas", UIHelper.ExpressSidePlatformStationTrack),
                 EventClick = (c, v) =>
                 {
-                    m_TrackType = StationTrackType.ExpressSidePlatform;
+                    m_TrackType = NetInfoStationTrackType.ExpressSidePlatform;
                     TunnelStationTrackToggleStyles();
                 }
             });
@@ -706,7 +706,7 @@ namespace MetroOverhaul.UI
                 Atlas = UIHelper.GenerateLinearAtlas("MOM_DualIslandPlatformStationTrackAtlas", UIHelper.DualIslandPlatformStationTrack),
                 EventClick = (c, v) =>
                 {
-                    m_TrackType = StationTrackType.DualIslandPlatform;
+                    m_TrackType = NetInfoStationTrackType.DualIslandPlatform;
                     TunnelStationTrackToggleStyles();
                 }
             });
@@ -714,9 +714,9 @@ namespace MetroOverhaul.UI
 
         protected override void TunnelStationTrackToggleStyles()
         {
-            if (m_TrackType == StationTrackType.None)
+            if (m_TrackType == NetInfoStationTrackType.None)
             {
-                m_TrackType = StationTrackType.SidePlatform;
+                m_TrackType = NetInfoStationTrackType.SidePlatform;
             }
 
             if (m_currentBuilding.HasUndergroundMetroStationTracks())
@@ -763,19 +763,19 @@ namespace MetroOverhaul.UI
             m_T.Run();
         }
 
-        private UITextureAtlas GetAtlasFromStationTrackType(StationTrackType trackType)
+        private UITextureAtlas GetAtlasFromStationTrackType(NetInfoStationTrackType trackType)
         {
             switch (trackType)
             {
-                case StationTrackType.SidePlatform:
+                case NetInfoStationTrackType.SidePlatform:
                     return UIHelper.GenerateLinearAtlas("MOM_SidePlatformStationTrackAtlas", UIHelper.SidePlatformStationTrack);
-                case StationTrackType.IslandPlatform:
+                case NetInfoStationTrackType.IslandPlatform:
                     return UIHelper.GenerateLinearAtlas("MOM_IslandPlatformStationTrackAtlas", UIHelper.IslandPlatformStationTrack);
-                case StationTrackType.SinglePlatform:
+                case NetInfoStationTrackType.SinglePlatform:
                     return UIHelper.GenerateLinearAtlas("MOM_SinglePlatformStationTrackAtlas", UIHelper.SinglePlatformStationTrack);
-                case StationTrackType.ExpressSidePlatform:
+                case NetInfoStationTrackType.ExpressSidePlatform:
                     return UIHelper.GenerateLinearAtlas("MOM_ExpressSidePlatformStationTrackAtlas", UIHelper.ExpressSidePlatformStationTrack);
-                case StationTrackType.DualIslandPlatform:
+                case NetInfoStationTrackType.DualIslandPlatform:
                     return UIHelper.GenerateLinearAtlas("MOM_DualIslandPlatformStationTrackAtlas", UIHelper.DualIslandPlatformStationTrack);
             }
             return null;
@@ -794,24 +794,24 @@ namespace MetroOverhaul.UI
                     {
                         switch (m_TrackType)
                         {
-                            case StationTrackType.SidePlatform:
-                                path.AssignNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Modern));
+                            case NetInfoStationTrackType.SidePlatform:
+                                path.AssignNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, NetInfoTrackStyle.Modern));
                                 break;
-                            case StationTrackType.IslandPlatform:
-                                path.AssignNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Modern, StationTrackType.IslandPlatform));
+                            case NetInfoStationTrackType.IslandPlatform:
+                                path.AssignNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, NetInfoTrackStyle.Modern, NetInfoStationTrackType.IslandPlatform));
                                 break;
-                            case StationTrackType.SinglePlatform:
-                                path.AssignNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Modern, StationTrackType.SinglePlatform));
+                            case NetInfoStationTrackType.SinglePlatform:
+                                path.AssignNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, NetInfoTrackStyle.Modern, NetInfoStationTrackType.SinglePlatform));
 
                                 break;
-                            case StationTrackType.ExpressSidePlatform:
-                                path.AssignNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Modern, StationTrackType.ExpressSidePlatform));
+                            case NetInfoStationTrackType.ExpressSidePlatform:
+                                path.AssignNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, NetInfoTrackStyle.Modern, NetInfoStationTrackType.ExpressSidePlatform));
                                 break;
                             //case StationTrackType.QuadSideIslandPlatform:
                             //    path.AssignNetInfo("Metro Station Track Tunnel Large Side Island");
                             //    break;
-                            case StationTrackType.DualIslandPlatform:
-                                path.AssignNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, TrackStyle.Modern, StationTrackType.DualIslandPlatform));
+                            case NetInfoStationTrackType.DualIslandPlatform:
+                                path.AssignNetInfo(Util.GetMetroStationTrackName(NetInfoVersion.Tunnel, NetInfoTrackStyle.Modern, NetInfoStationTrackType.DualIslandPlatform));
                                 break;
                         }
                     }
@@ -837,7 +837,7 @@ namespace MetroOverhaul.UI
 
         private void CreateIndividualTrackSelector(int index, bool selectOnCreate = true)
         {
-            StationTrackType trackType = m_TrackType;
+            NetInfoStationTrackType trackType = m_TrackType;
             if (SetStationCustomizations.PathCustomizationDict.ContainsKey(StationPaths[index]))
             {
                 trackType = SetStationCustomizations.PathCustomizationDict[StationPaths[index]].TrackType;
@@ -1195,7 +1195,7 @@ namespace MetroOverhaul.UI
                 SetStationCustomizations.ResetPathCustomizationDict();
                 //DoStationMechanicsResetAngles();
                 m_PathIndex = -1;
-                m_TrackType = StationTrackType.SidePlatform;
+                m_TrackType = NetInfoStationTrackType.SidePlatform;
                 m_Toggle = MetroStationTrackAlterType.All;
                 ActivateIndividualTrackSelectors(false);
                 PopulateStationCustomizations();

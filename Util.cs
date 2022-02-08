@@ -132,55 +132,55 @@ namespace MetroOverhaul {
 
             }
         }
-        public static string GetMetroTrackName(NetInfoVersion version, TrackStyle style, TrackType type = TrackType.TwowayTwoLane, bool isNoBar = false)
+        public static string GetMetroTrackName(NetInfoVersion version, NetInfoTrackStyle style, NetInfoTrackType type = NetInfoTrackType.TwoLaneTwoWay, bool isNoBar = false)
         {
             var trackName = "Metro Track";
             if (version == NetInfoVersion.Ground)
             {
                 switch (style)
                 {
-                    case TrackStyle.Vanilla:
+                    case NetInfoTrackStyle.Vanilla:
                         trackName += " Ground 01";
                         break;
-                    case TrackStyle.Modern:
+                    case NetInfoTrackStyle.Modern:
                         trackName = string.Format("{0} Ground", trackName);
                         break;
-                    case TrackStyle.Classic:
+                    case NetInfoTrackStyle.Classic:
                         trackName = string.Format("Steel {0} Ground", trackName);
                         break;
                 }
             }
-            else if (version != NetInfoVersion.Tunnel || style != TrackStyle.Vanilla)
+            else if (version != NetInfoVersion.Tunnel || style != NetInfoTrackStyle.Vanilla)
             {
                 switch (style)
                 {
-                    case TrackStyle.Vanilla:
+                    case NetInfoTrackStyle.Vanilla:
                         trackName = string.Format("{0} {1} 01", trackName, version.ToString());
                         break;
-                    case TrackStyle.Modern:
+                    case NetInfoTrackStyle.Modern:
                         trackName = string.Format("{0} {1}",trackName, version.ToString());
                         break;
-                    case TrackStyle.Classic:
+                    case NetInfoTrackStyle.Classic:
                         trackName = string.Format("Steel {0} {1}", trackName, version.ToString());
                         break;
                 }
             }
             switch (type)
             {
-                case TrackType.TwowayOneLane:
+                case NetInfoTrackType.OneLaneTwoWay:
                     trackName += " Small Two-Way";
                     break;
-                case TrackType.OnewayTwoLane:
+                case NetInfoTrackType.TwoLaneOneWay:
                     trackName += " Two-Lane One-Way";
                     break;
-                case TrackType.OnewayOneLane:
+                case NetInfoTrackType.OneLaneOneWay:
                     trackName += " Small";
                     break;
-                case TrackType.Quad:
+                case NetInfoTrackType.Quad:
                     trackName += " Large";
                     break;
             }
-            if (style != TrackStyle.Vanilla)
+            if (style != NetInfoTrackStyle.Vanilla)
             {
                 if (isNoBar)
                 {
@@ -190,20 +190,20 @@ namespace MetroOverhaul {
             return trackName;
         }
 
-        public static string GetMetroStationTrackName(NetInfoVersion version, TrackStyle style, StationTrackType stationType = StationTrackType.SidePlatform)
+        public static string GetMetroStationTrackName(NetInfoVersion version, NetInfoTrackStyle style, NetInfoStationTrackType stationType = NetInfoStationTrackType.SidePlatform)
         {
             string trackName = GetMetroTrackName(version, style).Replace("Metro Track", "Metro Station Track");
             switch (stationType)
             {
-                case StationTrackType.SidePlatform:
+                case NetInfoStationTrackType.SidePlatform:
                     return trackName;
-                case StationTrackType.SinglePlatform:
+                case NetInfoStationTrackType.SinglePlatform:
                     return trackName + " Small";
-                case StationTrackType.IslandPlatform:
+                case NetInfoStationTrackType.IslandPlatform:
                     return trackName + " Island";
-                case StationTrackType.ExpressSidePlatform:
+                case NetInfoStationTrackType.ExpressSidePlatform:
                     return trackName + " Large";
-                case StationTrackType.DualIslandPlatform:
+                case NetInfoStationTrackType.DualIslandPlatform:
                     return trackName + " Large Dual Island";
             }
             return trackName;

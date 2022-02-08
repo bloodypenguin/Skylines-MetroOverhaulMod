@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace MetroOverhaul
 {
-    class MOMMetroTrackBridgeAI : MetroTrackBridgeAI
+    class MOMMetroTrackBridgeAI : MetroTrackBridgeAI, IMOMMetroTrackAI
     {
         public List<BridgePillarItem> pillarList { get; set; }
         private NetTool m_NetTool = null;
