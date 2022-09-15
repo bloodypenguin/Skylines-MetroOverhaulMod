@@ -76,6 +76,12 @@ namespace MetroOverhaul {
             newPrefab.m_prefabInitialized = false;
             return newPrefab;
         }
+
+        public static NetTool GetNetTool()
+        {
+            return Object.FindObjectOfType<NetTool>();
+        }
+
         public static string AssemblyPath => PluginInfo.modPath;
 
 

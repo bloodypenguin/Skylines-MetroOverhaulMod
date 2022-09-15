@@ -10,17 +10,11 @@ namespace MetroOverhaul
     class MOMMetroTrackBridgeAI : MetroTrackBridgeAI
     {
         public List<BridgePillarItem> pillarList { get; set; }
-        private NetTool m_NetTool = null;
         public ItemClass m_IntersectClass = null;
         public bool NoPillarCollision { get; set; }
         public PillarType pillarType { get; set; }
-        //public List<BridgePillarPropItem> pillarPropList { get; set; }
-        //public PropInfo m_ElevatedPillarPropInfo { get; set; }
-        private static NetNode NodeFrom(ushort nodeID)
-        {
-            return Singleton<NetManager>.instance.m_nodes.m_buffer[nodeID];
-        }
 
+        private static NetTool m_NetTool = Util.GetNetTool();
         public override void GetNodeBuilding(ushort nodeID, ref NetNode data, out BuildingInfo building, out float heightOffset)
         {
             if ((data.m_flags & NetNode.Flags.Outside) == NetNode.Flags.None)
@@ -35,23 +29,10 @@ namespace MetroOverhaul
             if (this.m_bridgePillarInfo != null)
             {
                 heightOffset = this.m_bridgePillarOffset - 1f - this.m_bridgePillarInfo.m_generatedInfo.m_size.y;
-                //if (Util.IsMetroTrackCustomizerUIVisible())
-                    //data.UpdateBuilding(nodeID, m_bridgePillarInfo, heightOffset);
                 var position = data.m_position;
-
-                //var theBuilding = Singleton<BuildingManager>.instance.m_buildings.m_buffer[node.m_building];
-
-                //Debug.Log("The existing building is: " + theBuilding.Info.name);
-                //Debug.Log("The updated building is: " + m_bridgePillarInfo);
-
-
                 building = m_bridgePillarInfo;
                 if (pillarList != null && pillarList.Count > 0)
                 {
-                    if (m_NetTool == null)
-                    {
-                        m_NetTool = FindObjectOfType<NetTool>();
-                    }
                     if (m_NetTool?.Prefab != null)
                     {
                         var elevation = m_NetTool.GetElevation();
@@ -115,7 +96,6 @@ namespace MetroOverhaul
                             heightOffset = thePillarInfo.HeightOffset - 1f - info.m_generatedInfo.m_size.y;
                             if (data.m_building != 0)
                             {
-                                //data.UpdateBuilding(nodeID, info, heightOffset);
                                 Debug.Log("BuildingNode is " + data.m_building);
                             }
                         }
