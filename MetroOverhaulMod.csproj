@@ -44,6 +44,7 @@
     <Compile Include="AbstractInitializer.cs" />
     <Compile Include="AssetsUpdater.cs" />
     <Compile Include="Detours\DepotAIDetour.cs" />
+    <Compile Include="Detours\MetroTrainAIDetour.cs" />
     <Compile Include="Detours\PassengerTrainAIDetour.cs" />
     <Compile Include="Detours\RoadsGroupPanelDetour.cs" />
     <Compile Include="Extensions\ActionExtensions.cs" />
