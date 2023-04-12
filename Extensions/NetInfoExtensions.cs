@@ -401,7 +401,45 @@ namespace MetroOverhaul.Extensions
             var ai = info.GetComponent<NetAI>();
             return ai != null && ai is MetroTrackTunnelAI;
         }
-        private static StationTrackType DeduceTrackType(this NetInfo info)
+        public static NetInfoVersion GetNetInfoVersion(this NetInfo info)
+        {
+            if (info == null)
+                return NetInfoVersion.None;
+            var ai = info.GetAI();
+            if (ai == null)
+                return NetInfoVersion.None;
+            if (ai is MetroTrackAI)
+                return NetInfoVersion.Ground;
+            if (ai is MetroTrackBridgeAI)
+            {
+                if (info.IsStationTrack())
+                    return NetInfoVersion.Elevated;
+                else
+                    return info.name.IndexOf("Bridge") > -1 ? NetInfoVersion.Bridge : NetInfoVersion.Elevated;
+            }
+            else if(ai is MetroTrackTunnelAI)
+            {
+                if (info.IsStationTrack())
+                    return NetInfoVersion.Tunnel;
+                else
+                {
+                    if (info.name == Util.GetMetroTrackName(NetInfoVersion.Tunnel, TrackStyle.Vanilla))
+                        return NetInfoVersion.Tunnel;
+                    else
+                    {
+                        if (info.name.IndexOf("Tunnel") > -1)
+                            return NetInfoVersion.Tunnel;
+                        else if (info.name.IndexOf("Slope") > -1)
+                            return NetInfoVersion.Slope;
+                        else
+                            return NetInfoVersion.Sunken;
+                    }
+
+                }
+            }
+            return NetInfoVersion.None;
+        }
+        public static StationTrackType DeduceTrackType(this NetInfo info)
         {
             if (info.IsStationTrack())
             {
@@ -422,9 +460,9 @@ namespace MetroOverhaul.Extensions
                                 return StationTrackType.SidePlatform;
                             }
                         }
-                        else if (sortedVehicleLanes[0].m_position < -6.4f && sortedVehicleLanes[0].m_position > -6.6f)
+                        else if (sortedVehicleLanes[0].m_position <= -6f && sortedVehicleLanes[0].m_position > -6.6f)
                         {
-                            if (sortedVehicleLanes[1].m_position > 6.4f && sortedVehicleLanes[1].m_position < 6.6f)
+                            if (sortedVehicleLanes[1].m_position >= 6f && sortedVehicleLanes[1].m_position < 6.6f)
                             {
                                 return StationTrackType.IslandPlatform;
                             }
