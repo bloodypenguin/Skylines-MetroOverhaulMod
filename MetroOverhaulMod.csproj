@@ -174,14 +174,20 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>D:\Program Files\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="ColossalManaged">
-      <HintPath>D:\Program Files\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\ColossalManaged.dll</HintPath>
+    <Reference Include="ColossalManaged, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ColossalManaged.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="ICities">
-      <HintPath>D:\Program Files\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
+    <Reference Include="ICities, Version=1.17.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ObjUnity3D, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -2797,6 +2803,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assembly-CSharp.dll" />
+    <Content Include="ColossalManaged.dll" />
+    <Content Include="ICities.dll" />
     <Content Include="lib\0Harmony.dll" />
     <Content Include="lib\ObjUnity3D.dll" />
     <Content Include="Resources\Textures\Bridge_Node_Pavement_Steel__MainTex.png">
